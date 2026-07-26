@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/staticwebapp.config.json",
+  "trailingSlash": "auto",
+  "mimeTypes": {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css",
+    ".js": "text/javascript",
+    ".json": "application/json",
+    ".svg": "image/svg+xml"
+  },
+  "globalHeaders": {
+    "cache-control": "public, max-age=600, must-revalidate"
+  },
+  "responseOverrides": {
+    "404": { "rewrite": "/404.html", "statusCode": 404 }
+  }
+}

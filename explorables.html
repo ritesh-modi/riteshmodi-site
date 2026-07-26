@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explorables — Ritesh Modi</title>
+<meta name="description" content="Interactive, explorable explorables you learn by messing with, on AI and the systems behind it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body class="tint p-explorables">
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="brand">ritesh <span class="wv">👋</span></a>
+    <div class="nav-links">
+      <a href="/explorables.html" class="here">Explorables</a>
+      <a href="/about.html">About</a><a href="/books.html">Books</a><a href="/talks.html">Talks</a>
+    </div>
+    <button class="tgl" id="tgl" aria-label="Toggle theme" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<header class="pagehead">
+  <span class="pdot" style="width:220px;height:220px;background:var(--grape);top:-40px;left:-30px"></span>
+  <span class="pdot" style="width:150px;height:150px;background:var(--sky);top:40px;right:80px;opacity:.32"></span>
+  <span class="pdot" style="width:90px;height:90px;background:var(--pink);bottom:-10px;left:40%;opacity:.36"></span>
+  <div class="wrap">
+    <span class="eyebrow">The explorables</span>
+    <h1>Poke the <span class="grad">ideas.</span></h1>
+    <p class="sub">Single-page explorables you learn by messing with. Every one runs live in your browser, no video, no slides. Filter by what you're into.</p>
+  </div>
+</header>
+
+<div class="wrap page-body">
+  <div class="filters" id="filters">
+    <button class="chip on" data-f="all">Everything</button>
+    <button class="chip" data-f="ai">AI</button>
+    <button class="chip" data-f="systems">Systems</button>
+    <button class="chip" data-f="beginner">Beginner-friendly</button>
+    <span class="count" id="count">6 explorables</span>
+  </div>
+
+  <div class="grid" id="grid">
+    <a class="card" data-cat="ai beginner" style="--ac:var(--coral)" href="/explorables/is-it-actually-thinking.html">
+      <div class="thumb"><div class="mini fib">first language is<span class="cc">French</span></div></div>
+      <div class="body"><span class="k">Beginner · AI</span><h3>Is it actually thinking?</h3>
+        <p>What an AI assistant really is: autocomplete that read the internet, not a mind. Feel the prediction happen.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">beginners</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai" style="--ac:var(--grape)" href="/explorables/what-ai-is-good-and-bad-at.html">
+      <div class="thumb"><div class="mini lights"><i></i><i></i><i class="on-g"></i></div></div>
+      <div class="body"><span class="k">AI · judgment</span><h3>Good at, bad at?</h3>
+        <p>A plain map of what AI nails and where it quietly fails, with one live knob: pick a task, get a green or red light.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">using it well</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="systems" style="--ac:var(--teal)" href="/explorables/partitioning-postgres.html">
+      <div class="thumb"><div class="mini parts"><i></i><i></i><i class="lit"></i><i></i><i></i></div></div>
+      <div class="body"><span class="k">Databases · systems</span><h3>Partitioning Postgres</h3>
+        <p>Locality and cheap bulk removal. Drag a project id and watch the planner skip seven of eight partitions.</p>
+        <div class="tags"><span class="tag">Postgres</span><span class="tag">systems</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card soon" data-cat="ai" style="--ac:var(--sun)" href="#">
+      <div class="ribbon">In the works</div>
+      <div class="thumb"><div class="mini qmark">?!</div></div>
+      <div class="body"><span class="k">AI · reliability</span><h3>Why AI makes things up</h3>
+        <p>Hallucination isn't a bug someone forgot to fix. It falls straight out of how the model works, and how to ground it.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">guardrails</span></div></div>
+    </a>
+    <a class="card soon" data-cat="ai" style="--ac:var(--sky)" href="#">
+      <div class="ribbon">In the works</div>
+      <div class="thumb"><div class="mini parts"><i class="lit"></i><i></i><i class="lit"></i><i></i></div></div>
+      <div class="body"><span class="k">AI · embeddings</span><h3>Words become numbers</h3>
+        <p>Drag a word around a space and watch meaning turn into coordinates. Real cosine math you can feel.</p>
+        <div class="tags"><span class="tag">embeddings</span><span class="tag">math</span></div></div>
+    </a>
+    <a class="card soon" data-cat="ai beginner" style="--ac:var(--pink)" href="#">
+      <div class="ribbon">In the works</div>
+      <div class="thumb"><div class="mini fib">so my answer is<span class="cc">better</span></div></div>
+      <div class="body"><span class="k">AI · prompting</span><h3>Prompting, actually</h3>
+        <p>Why the same question gets different answers, and the handful of moves that reliably make them better.</p>
+        <div class="tags"><span class="tag">prompting</span><span class="tag">practical</span></div></div>
+    </a>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <div class="fb">ritesh 👋</div>
+    <div class="fl"><a href="/">Home</a><a href="/about.html">About</a><a href="/books.html">Books</a><a href="/talks.html">Talks</a><a href="https://github.com/">GitHub</a><a href="https://www.linkedin.com/">LinkedIn</a></div>
+    <div class="fn">Ritesh Modi © 2026 · the explorables</div>
+  </div>
+</footer>
+
+<script src="/assets/site.js"></script>
+</body>
+</html>

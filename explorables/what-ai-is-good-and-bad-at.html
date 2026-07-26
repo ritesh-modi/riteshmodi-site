@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is AI good at, and what is it bad at?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDEFF3;--paper-2:#E1E4EB;--ink:#12141A;--ink-soft:#3E4350;
+    --ink-faint:#6F7585;--rule:#CBD0DA;--accent:#2F5BEA;
+    --panel:#111420;--panel-2:#1A1E2B;--panel-ink:#DEE2EC;--panel-faint:#8891A3;
+    --safe:#1F9E6E;--warn:#D08A2B;--risk:#D6483E;
+    --maxw:680px;--wide:1080px;--pad:26px;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --t:.5s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Sans 3",system-ui,sans-serif;font-size:19px;line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--t),color var(--t)}
+
+  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+  .bleed{width:100%;margin:0}
+  section{padding:94px 0}
+  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+
+  h1,h2,h3,.serif{font-family:"Newsreader",Georgia,serif;font-weight:400;line-height:1.1}
+  h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.01em}
+  p{margin:0 0 22px}
+  em{font-style:italic}strong{font-weight:600}
+  .lede{font-family:"Newsreader",serif;font-size:clamp(22px,3vw,29px);line-height:1.4;color:var(--ink-soft)}
+  a{color:var(--accent)}
+
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:11px;margin:0 0 20px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .eyebrow .n{background:var(--accent);color:#fff;border-radius:3px;padding:1px 7px;font-size:11px}
+
+  .try{background:var(--paper-2);border-left:2px solid var(--accent);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}
+  .try .tl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+  .pull{font-family:"Newsreader",serif;font-size:clamp(23px,3.4vw,32px);line-height:1.34;color:var(--accent);border-left:2px solid var(--accent);padding-left:26px;margin:38px 0}
+  .note{background:var(--paper-2);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--ink-soft)}
+  .note .nl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+  .intu{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--paper-2);font-size:17.5px;line-height:1.6}
+  .intu .il{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
+  .intu b{color:var(--ink)}
+
+  /* hero */
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:90px var(--pad) 60px;overflow:hidden}
+  .hero-grid{position:absolute;inset:0;z-index:0;opacity:.5;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:40px 40px;-webkit-mask-image:radial-gradient(ellipse 76% 62% at 50% 42%,#000 22%,transparent 76%);mask-image:radial-gradient(ellipse 76% 62% at 50% 42%,#000 22%,transparent 76%)}
+  .hero-inner{position:relative;z-index:2;max-width:860px;margin:0 auto;width:100%}
+  .hero .kick{font-family:var(--mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 26px}
+  .hero h1{font-size:clamp(38px,6.6vw,74px);letter-spacing:-.02em;line-height:1.04;margin:0 0 26px}
+  .hero h1 .g{font-style:italic;color:var(--safe)}
+  .hero h1 .r{font-style:italic;color:var(--risk)}
+  .hero .lede{max-width:620px}
+  .hero .cues{margin-top:34px;display:flex;flex-direction:column;gap:10px;max-width:520px}
+  .cue{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:14px;background:var(--paper-2);border:1px solid var(--rule);border-radius:8px;padding:11px 15px}
+  .cue .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .cue.g .dot{background:var(--safe);box-shadow:0 0 10px var(--safe)}
+  .cue.r .dot{background:var(--risk);box-shadow:0 0 10px var(--risk)}
+  .cue .q{color:var(--ink)}
+  .cue .v{margin-left:auto;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .cue.g .v{color:var(--safe)}.cue.r .v{color:var(--risk)}
+  .scrollcue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:8px}
+  .scrollcue .bar{width:1px;height:34px;background:var(--rule);position:relative;overflow:hidden}
+  .scrollcue .bar::after{content:"";position:absolute;top:-34px;left:0;width:1px;height:34px;background:var(--ink);animation:drop 1.9s ease-in-out infinite}
+  @keyframes drop{0%{top:-34px}60%,100%{top:34px}}
+  @media (prefers-reduced-motion:reduce){.scrollcue .bar::after{animation:none;top:0}}
+
+  /* numeric counter */
+  .counter{position:fixed;right:22px;bottom:20px;z-index:100;font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);background:var(--paper-2);border:1px solid var(--rule);border-radius:20px;padding:7px 14px;letter-spacing:.1em}
+  .counter b{color:var(--accent)}
+  @media(max-width:640px){.counter{right:14px;bottom:14px}}
+
+  /* demo shell */
+  .demo{border:1px solid var(--rule);background:var(--paper);border-radius:6px;margin-top:30px;overflow:hidden}
+  .demo-head{padding:14px 22px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .demo-body{padding:26px 24px}
+  .cap{font-size:14.5px;color:var(--ink-faint);margin-top:16px;font-style:italic}
+
+  .btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;text-transform:uppercase;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:4px;transition:opacity .2s}
+  .btn:hover{opacity:.88}
+  .btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink-soft)}
+  .chip{font-family:var(--mono);font-size:12.5px;padding:8px 13px;border:1px solid var(--rule);border-radius:20px;background:var(--paper);cursor:pointer;transition:all .18s;color:var(--ink-soft)}
+  .chip:hover{border-color:var(--accent);color:var(--ink)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .chiprow{display:flex;flex-wrap:wrap;gap:9px}
+
+  /* ===== the signal knob ===== */
+  .knob{display:grid;grid-template-columns:1fr 300px;gap:26px}
+  .tasks{display:flex;flex-wrap:wrap;gap:9px;align-content:flex-start}
+  .task{font-family:"Source Sans 3",sans-serif;font-size:15px;text-align:left;padding:10px 14px;border:1px solid var(--rule);border-radius:8px;background:var(--paper);cursor:pointer;transition:all .16s;color:var(--ink-soft);line-height:1.3}
+  .task:hover{border-color:var(--accent);color:var(--ink)}
+  .task.on{border-color:var(--accent);background:rgba(47,91,234,.08);color:var(--ink);box-shadow:inset 0 0 0 1px var(--accent)}
+  .panel{position:sticky;top:24px;align-self:start}
+  .signalbox{background:var(--panel);border-radius:14px;padding:22px;display:flex;gap:20px;align-items:center}
+  .signal{display:flex;flex-direction:column;gap:12px;padding:14px;background:#080a10;border-radius:12px;align-items:center;flex:none}
+  .lamp{width:38px;height:38px;border-radius:50%;background:#20242e;border:2px solid #2a2f3b;transition:all .35s}
+  .signal[data-state="red"] .lamp.red{background:var(--risk);box-shadow:0 0 20px var(--risk);border-color:var(--risk)}
+  .signal[data-state="amber"] .lamp.amber{background:var(--warn);box-shadow:0 0 20px var(--warn);border-color:var(--warn)}
+  .signal[data-state="green"] .lamp.green{background:var(--safe);box-shadow:0 0 20px var(--safe);border-color:var(--safe)}
+  .vword{font-family:"Newsreader",serif;font-size:26px;line-height:1.05;color:var(--panel-ink)}
+  .vsub{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+  .signal-wrap[data-state="green"] .vsub{color:var(--safe)}
+  .signal-wrap[data-state="amber"] .vsub{color:var(--warn)}
+  .signal-wrap[data-state="red"] .vsub{color:var(--risk)}
+  .vtask{font-family:var(--mono);font-size:11px;color:var(--panel-faint);letter-spacing:.03em;margin-bottom:10px;min-height:15px}
+  .vwhy{margin-top:16px;color:var(--ink-soft);font-size:16px;line-height:1.55;min-height:80px}
+  .kcount{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+  @media(max-width:820px){.knob{grid-template-columns:1fr}.panel{position:static}}
+
+  /* ===== sorting scrolly ===== */
+  .scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,460px) minmax(0,1fr);max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+  .scrolly .sg{order:2}
+  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+  .sortfig{width:100%;max-width:440px;background:var(--panel);border-radius:16px;padding:30px 28px;box-shadow:0 20px 50px rgba(18,20,26,.3)}
+  .card-slot{position:relative;height:104px;margin-bottom:16px}
+  .task-card{position:absolute;inset:0;border-radius:10px;padding:16px 18px;background:var(--panel-2);border:1px solid #2a2f3b;color:var(--panel-ink);display:flex;flex-direction:column;justify-content:center}
+  .task-card .cl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--panel-faint);margin-bottom:7px}
+  .task-card .ct{font-family:"Newsreader",serif;font-size:20px;line-height:1.2}
+  .task-card.red{border-color:#4a2b2b}
+  .q-box{border-radius:10px;padding:15px 18px;background:#0b1a2e;border:1px solid #23405f;color:#bcd4ee;font-size:15px;line-height:1.45;margin-bottom:18px}
+  .bins{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bin{border-radius:10px;padding:16px 12px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;border:1.5px solid;transition:all .4s}
+  .bin.green{color:#4bbf90;border-color:#1d3a30;background:#0d1f19}
+  .bin.red{color:#e07a70;border-color:#3f2724;background:#1f1210}
+  .bin.green[data-gel].show{background:rgba(31,158,110,.22);box-shadow:0 0 22px rgba(31,158,110,.3);border-color:var(--safe);color:#8fe6c4}
+  .bin.red[data-gel].show{background:rgba(214,72,62,.22);box-shadow:0 0 22px rgba(214,72,62,.3);border-color:var(--risk);color:#f2a49c}
+  [data-gel]{opacity:.14;transition:opacity .5s ease}
+  [data-gel].show{opacity:1}
+  @media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}
+  .ss{padding:38vh 0 42vh}
+  .stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}
+  .stp.on{opacity:1}
+  .stp .sn{font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .stp h3{font-family:"Newsreader",serif;font-size:clamp(24px,3.4vw,32px);margin:0 0 14px;color:var(--ink)}
+  .stp p{font-size:18px;color:var(--ink-soft);margin:0}
+  @media(max-width:900px){
+    .scrolly{grid-template-columns:1fr;gap:0}
+    .scrolly .sg{order:-1}
+    .sg{position:sticky;height:auto;padding:14px 0}
+    .sortfig{max-width:none}
+    .ss{padding:2vh 0 10vh}
+    .stp{min-height:auto;padding:26px 0}
+  }
+
+  /* ===== red tabs ===== */
+  .rt-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}
+  .rt-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+  .rt-cell{padding:18px 20px}
+  .rt-cell+.rt-cell{border-left:1px solid var(--rule)}
+  .rt-cell .rl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
+  .rt-cell .rv{font-size:16px;color:var(--ink);line-height:1.45}
+  .rt-cell.ask{background:var(--paper-2)}
+  .rt-cell.so .rl{color:var(--risk)}
+  @media(max-width:720px){.rt-body{grid-template-columns:1fr}.rt-cell+.rt-cell{border-left:none;border-top:1px solid var(--rule)}}
+
+  /* ===== tool toggle ===== */
+  .tt-rows{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+  .tt-row{display:grid;grid-template-columns:1fr 120px;gap:14px;align-items:center;border:1px solid var(--rule);border-radius:8px;padding:14px 16px;background:var(--paper)}
+  .tt-row .tq{font-size:15.5px;color:var(--ink-soft)}
+  .pill{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:6px 10px;border-radius:20px;text-align:center;transition:all .35s;border:1px solid}
+  .pill.green{background:rgba(31,158,110,.14);color:var(--safe);border-color:var(--safe)}
+  .pill.amber{background:rgba(208,138,43,.16);color:#a86a12;border-color:var(--warn)}
+  .pill.red{background:rgba(214,72,62,.14);color:var(--risk);border-color:var(--risk)}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  .close{text-align:center;padding:120px var(--pad)}
+  .close h2{font-size:clamp(30px,5vw,50px);margin:0 auto 26px;max-width:760px}
+  .close p{max-width:600px;margin:0 auto 22px;color:var(--ink-soft)}
+
+  footer{border-top:1px solid var(--rule);padding:40px var(--pad) 72px;text-align:center;color:var(--ink-faint);font-size:13px;font-family:var(--mono);line-height:1.9}
+  ::selection{background:var(--accent);color:#fff}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="counter"><b id="cNow">01</b> / 08</div>
+
+<!-- HERO -->
+<header class="hero" data-ch="1">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <p class="kick">A plain map of what an AI assistant can and can't do</p>
+    <h1>What is AI <span class="g">good</span> at, and what is it <span class="r">bad</span> at?</h1>
+    <p class="lede">There is one clean line between the two, and it is not the one most people guess. Once you can see it, you can predict the green lights and the red lights yourself, before you ever hit send.</p>
+    <div class="cues">
+      <div class="cue g"><span class="dot"></span><span class="q">"Write a toast for my sister's wedding"</span><span class="v">green</span></div>
+      <div class="cue r"><span class="dot"></span><span class="q">"What's the score in the match right now?"</span><span class="v">red</span></div>
+    </div>
+  </div>
+  <div class="scrollcue"><span>Read the map</span><span class="bar"></span></div>
+</header>
+
+<!-- CH 1 -->
+<section data-ch="1">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">01</span> The same machine, two different days</p>
+    <h2 class="big">Same assistant, same confidence, opposite results.</h2>
+    <p>Monday, you ask it to write a toast for your sister's wedding. Out comes something warm, funny, genuinely usable. You are impressed. This thing is good.</p>
+    <p>Tuesday, you ask it for the three best studies on sleep and memory, with citations. It gives you three, beautifully formatted, authors and journals and years. You look them up. Two of the papers do not exist. You are alarmed. This thing is broken.</p>
+    <p>Same assistant. Same calm, confident voice both times. So which is it, brilliant or useless? Neither. It is extremely good at one kind of task and quietly terrible at another, and the two feel identical from the outside. The whole trick is learning to tell them apart before you rely on the answer.</p>
+    <div class="try"><span class="tl">Quick gut check</span>Before reading on, guess: is the assistant good or bad at each of these? "Rewrite my email politely." "How many days until my birthday?" "Brainstorm names for a cafe." "What is 4,829 times 7,613?" Hold your answers. We will come back to them.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 2 -->
+<section data-ch="2">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">02</span> The obvious sorting is wrong</p>
+    <h2 class="big">It's not about hard versus easy.</h2>
+    <p>The natural instinct is to sort tasks by difficulty. Easy things it can do, hard things it can't. That feels sensible. It is also completely wrong, and you can break it in one line.</p>
+    <p>Writing a sonnet is hard. It writes a decent one in seconds. Multiplying two four-digit numbers is something a ten-year-old with a pencil can do. On its own, it often gets that wrong. A task that stumps most humans, easy. A task any calculator nails, hard. Difficulty is clearly not the axis.</p>
+    <p>Same with "smart topics" versus "simple topics." It can explain quantum tunneling and then miscount the words in its own last sentence. The line we are looking for does not run between clever and dumb, or hard and easy. It runs somewhere else entirely, and it comes straight out of what this machine actually is.</p>
+    <div class="intu"><span class="il">Picture it</span>Think of a gifted improv actor. Ask for a heartfelt speech, a fake weather report, a pirate's monologue, and it is spellbinding. Now ask, mid-scene, for the exact current time in Tokyo or the square root of 2,209. The talent that makes the improv great does nothing for those. <b>The skill and the task have to match, and "hard" is not what decides the match.</b></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 3: SCROLLY -->
+<section data-ch="3" style="padding-bottom:50px">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">03</span> The line that actually sorts everything</p>
+    <h2 class="big">The only question that matters: plausible, or provably true?</h2>
+    <p>Under the hood, an assistant does one thing: it guesses the words that most plausibly come next, based on the enormous pile of writing it read. That single fact draws the whole map. Scroll through the one question that sorts any task into green or red.</p>
+  </div>
+</section>
+
+<div class="bleed">
+  <div class="scrolly" id="sc1">
+    <div class="sg">
+      <div class="sortfig">
+        <div class="card-slot">
+          <div class="task-card" data-gel="task-poem"><span class="cl">The task</span><span class="ct">"Write a birthday poem for my mum"</span></div>
+          <div class="task-card red" data-gel="task-cite"><span class="cl">The task</span><span class="ct">"Give me three real studies to cite"</span></div>
+        </div>
+        <div class="q-box" data-gel="question">Would an answer that just <em>sounds</em> right be good enough? Or must it be <em>verifiably true?</em></div>
+        <div class="bins">
+          <div class="bin green" data-gel="green-bin">Green<br>good at it</div>
+          <div class="bin red" data-gel="red-bin">Red<br>bad at it</div>
+        </div>
+      </div>
+    </div>
+    <div class="ss">
+      <div class="stp" data-step="0"><span class="sn">Step 1</span><h3>Start with any task at all.</h3><p>Forget hard or easy. Here is something you might actually type into the box one ordinary evening.</p></div>
+      <div class="stp" data-step="1"><span class="sn">Step 2</span><h3>Ask one question about it.</h3><p>Not "can it do this?" Ask instead: would an answer that merely sounds right be good enough here? Or does this have to be checkably, verifiably true?</p></div>
+      <div class="stp" data-step="2"><span class="sn">Step 3</span><h3>If sounding right is enough, green.</h3><p>A birthday poem only has to land well. Warm and plausible is the entire goal, and plausible is exactly what the machine is best in the world at. Green light.</p></div>
+      <div class="stp" data-step="3"><span class="sn">Step 4</span><h3>If it must be true, red.</h3><p>Three real studies have to actually exist. Here, sounding right is the trap: it will produce perfect-looking references for papers that were never written. Same machine, opposite result. Red light.</p></div>
+    </div>
+  </div>
+</div>
+
+<section data-ch="3" style="padding-top:56px">
+  <div class="col reveal">
+    <p>That is the whole map in one question. Not "is this hard?" but "would I be fooled by an answer that only sounds right?" When the answer is no, when plausible is genuinely good enough, you are in the green. When the answer is yes, when it has to match reality exactly, you are in the red, and the machine's greatest talent becomes the exact thing that trips you.</p>
+    <p class="pull">Green is where sounding right is enough. Red is where sounding right is a trap.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 4: THE KNOB -->
+<section data-ch="4">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">04</span> The live map</p>
+    <h2 class="big">Pick a task. Watch the light.</h2>
+    <p>Here is the map you can hold. Click any task and the signal tells you where it lands, green, amber, or red, with the reason underneath. Every reason traces back to that one question. Try to guess the light before you click, then see if the axis you just learned holds up.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>The task map · click any one</span><span class="kcount" id="kCount">explored 0 / 21</span></div>
+      <div class="demo-body">
+        <div class="knob">
+          <div class="tasks" id="taskGrid"></div>
+          <div class="panel">
+            <div class="signal-wrap" id="sigWrap" data-state="none">
+              <div class="signalbox">
+                <div class="signal" id="signal" data-state="none">
+                  <div class="lamp red"></div><div class="lamp amber"></div><div class="lamp green"></div>
+                </div>
+                <div>
+                  <div class="vtask" id="vTask">pick a task &rarr;</div>
+                  <div class="vword" id="vWord">The signal</div>
+                  <div class="vsub" id="vSub">waiting</div>
+                </div>
+              </div>
+              <div class="vwhy" id="vWhy">Click a task on the left. The lamp lights and the reason appears here, always coming back to one thing: does this need a plausible answer, or a provably true one?</div>
+            </div>
+          </div>
+        </div>
+        <p class="cap">Green, it does well. Amber, it drafts well but check the risky part. Red, do not trust it without verifying elsewhere. The verdicts describe a plain assistant working on its own, before any web search or calculator is bolted on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 5: GREEN -->
+<section data-ch="5">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">05</span> The green zone, up close</p>
+    <h2 class="big">Green light: when 'plausible' is exactly what you want.</h2>
+    <p>Look at what lives in the green: drafting an email, summarizing something you pasted, brainstorming twenty options, explaining a settled idea, turning notes into prose, rephrasing, translating everyday text. They look like different jobs. They are secretly the same job.</p>
+    <p>Every one of them is asking for well-shaped, plausible language, and none of them has a single hidden fact that has to be exactly right. A brainstorm wants many good-enough guesses on purpose. A summary works from words you already handed it, so there is nothing external to get wrong. An explanation of how a rainbow forms is the same in every book, so the plausible version and the correct version are the same sentence. This is not the machine getting lucky. This is the machine doing the one thing it is built to do, pointed at a task that only needs that thing.</p>
+    <div class="intu"><span class="il">Picture it</span>Picture a brilliant editor and ghostwriter who has read everything, works instantly, and never gets tired, but who you would not send to the library to verify a fact. Hand that person shaping, drafting, rewording, and riffing, and they are a gift. <b>The green zone is simply the work that plays to that person's actual strength.</b></div>
+    <p class="pull">It is not that these tasks are easy. It is that being roughly right and beautifully shaped is a real win for them.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 6: RED -->
+<section data-ch="6">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">06</span> The red zone, up close</p>
+    <h2 class="big">Red light: when 'plausible' quietly becomes 'wrong.'</h2>
+    <p>The red zone has four regulars, and they are worth knowing by name, because each one hands you a confident answer that is built to fool you. Flip through them. Notice that every failure is the same machine doing its one trick, aimed at a task that needed something else.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>Figure · the four red-zone regulars</span><span class="kcount" id="rtHead">today's facts</span></div>
+      <div class="demo-body">
+        <div class="rt-tabs" id="rtTabs"></div>
+        <div class="rt-body">
+          <div class="rt-cell ask"><div class="rl">You ask</div><div class="rv" id="rtAsk"></div></div>
+          <div class="rt-cell"><div class="rl">What it actually does</div><div class="rv" id="rtDoes"></div></div>
+          <div class="rt-cell so"><div class="rl">So watch out</div><div class="rv" id="rtSo"></div></div>
+        </div>
+        <p class="cap">One pattern behind all four: it reaches for the most plausible-looking output, not a checked one. When plausible and true come apart, it cannot feel the difference.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>The fourth one, its own limits, is the sneakiest. Ask "are you sure?" and it does not go back and verify. It just predicts a reasonable-sounding reply, which might be a confident "yes, I'm sure" that is still wrong, or a nervous apology that caves on a correct answer. It has no honest inner gauge of when it is reliable, so it cannot warn you. That job stays with you.</p>
+    <p class="pull">A red-zone answer is not a glitch. It is the machine succeeding at sounding right, on a task that needed being right.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 7: AMBER plus tools -->
+<section data-ch="7">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">07</span> The middle, and the escape hatch</p>
+    <h2 class="big">Most real tasks are amber: draft with it, check the risky part.</h2>
+    <p>Very few real requests are pure green or pure red. Plan a trip, and the shape is fantastic while the opening hours need checking. Ask for code, and it often works but must be run and tested. Draft a contract clause, and it reads like the real thing while whether it protects you is a lawyer's call. This is the amber majority: lean on it for the draft, then put your own eyes on the one part that would hurt if it were merely plausible.</p>
+    <p>There is also an escape hatch, and it is worth knowing. Many red lights turn green the moment the assistant is given a real tool. Hand it a calculator and the arithmetic becomes an actual calculation. Let it search the web and "what happened today" stops being a guess. Give it a way to run code and it can count and check instead of predict. Flip the switch below and watch the same three tasks move.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>Same tasks, with and without a real tool</span><span class="kcount" id="ttHead">on its own</span></div>
+      <div class="demo-body">
+        <div class="chiprow" id="ttChips"></div>
+        <div class="tt-rows" id="ttRows"></div>
+        <p class="cap">This is why modern assistants quietly reach for a calculator, a search box, or a code runner behind the scenes. The tools exist precisely to cover the red zone.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <div class="note"><span class="nl">The catch</span>A tool helps only when the assistant actually uses one and uses it correctly. If you are not sure whether it looked something up or just guessed, treat the answer as a guess. The map does not disappear with tools, it just gets a few new green roads through the red.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CH 8: the habit -->
+<section data-ch="8">
+  <div class="col reveal">
+    <p class="eyebrow"><span class="n">08</span> Carrying the map with you</p>
+    <h2 class="big">The one habit that keeps you safe.</h2>
+    <p>You do not need to memorize which tasks are green and which are red. You need one reflex, asked before you trust any answer: <em>would this be wrong if it just sounded right?</em> If no, relax and enjoy the draft. If yes, that is a red or amber task, and the confident answer in front of you has earned a check, not your trust.</p>
+    <p>That single question turns a mysterious, occasionally alarming tool into a predictable one. The wedding toast, the brainstorm, the rewrite, the plain-language explainer: green, use freely. The live fact, the exact number, the real citation, the "are you sure": red, verify. Everything else: amber, draft fast, check the part that bites. The assistant did not get more or less trustworthy. You just learned where to look.</p>
+    <div class="intu"><span class="il">Picture it</span>Think of it like a chainsaw versus a butter knife. Nobody calls a chainsaw "bad" because it is poor at spreading butter. You just match the tool to the cut. <b>Knowing the green and red zones is how you stop asking the chainsaw to butter your toast, and start using it for what it is genuinely great at.</b></div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<div class="close reveal">
+  <h2>Great at sounding right. That's the gift and the whole warning.</h2>
+  <p>When your task only needs a plausible, well-made answer, it is one of the most useful tools you will ever touch. When your task needs the truth, exactly, the same talent becomes a trap you now know how to spot.</p>
+  <p>Go back and answer the four gut-check tasks from the top. You can call every light now, and say why.</p>
+</div>
+
+<footer>
+  What is AI good at, and what is it bad at? · a plain map<br>
+  Verdicts describe a general-purpose assistant working on its own. Web search, calculators, and code tools shift many red tasks toward green.<br>
+  Built as a single self-contained page · 2026
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- counter: pick the last section whose top has passed the 40% line ---------- */
+  var cNow=document.getElementById('cNow');
+  var chSections=[].slice.call(document.querySelectorAll('[data-ch]'));
+  function updateCh(){
+    var line=window.innerHeight*0.4, cur='1';
+    chSections.forEach(function(s){ if(s.getBoundingClientRect().top<=line) cur=s.getAttribute('data-ch'); });
+    cNow.textContent=(cur.length<2?'0':'')+cur;
+  }
+  window.addEventListener('scroll',updateCh,{passive:true});
+  window.addEventListener('resize',updateCh,{passive:true});
+  updateCh();
+
+  /* ---------- reveal ---------- */
+  var ro=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+  },{threshold:0.1,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+  /* ---------- CH4: the signal knob ---------- */
+  var TASKS=[
+    {t:`Write a birthday poem for my mum`, v:`green`, why:`A poem only has to sound good and feel right. Plausible and warm is the entire job, and that is what it does best.`},
+    {t:`What's the weather right now?`, v:`red`, why:`It has no live window on the world. Unless it looks it up, "right now" is something it simply cannot see.`},
+    {t:`Summarize this article I pasted`, v:`green`, why:`You handed it the text. It just shortens what is already in front of it, so there is no outside fact to get wrong.`},
+    {t:`Multiply 4,829 x 7,613`, v:`red`, why:`On its own it predicts what the answer looks like instead of calculating it, so long sums come out confident and wrong.`},
+    {t:`Brainstorm 20 names for a cafe`, v:`green`, why:`You want many plausible options, not one true answer. Here, more guessing is the whole point.`},
+    {t:`Give me three real studies to cite`, v:`red`, why:`It predicts what a citation looks like, so it will happily produce real-sounding papers that were never written.`},
+    {t:`Rewrite this email to sound friendlier`, v:`green`, why:`It is reshaping words you already gave it. Moving furniture, not inventing facts.`},
+    {t:`Are you sure that's correct?`, v:`red`, why:`It predicts a confident-sounding reply, not a fresh check. Asking does not make it actually verify anything.`},
+    {t:`Explain how a rainbow forms, simply`, v:`green`, why:`This is settled, everywhere knowledge. The plausible explanation and the correct one are the same words.`},
+    {t:`Plan a 3-day trip to Lisbon`, v:`amber`, why:`The shape and ideas will be great. Opening hours, prices, and "is it still open" need a real check.`},
+    {t:`How many words were in your last reply?`, v:`red`, why:`Counting its own output is not something guessing the next word can reliably do.`},
+    {t:`Turn these bullet points into a paragraph`, v:`green`, why:`Same words, better shape. Pure transformation, squarely its comfort zone.`},
+    {t:`Write code to sort a list`, v:`amber`, why:`It often works, sometimes subtly broken. Treat it as a draft you must run and test before trusting.`},
+    {t:`What's the population of my town today?`, v:`red`, why:`An exact, current number it cannot see. It will confidently offer one that merely sounds right.`},
+    {t:`Suggest a plot twist for my story`, v:`green`, why:`There is no wrong answer to invent. Inventing plausible, surprising things is exactly the point.`},
+    {t:`Give me a lasagna recipe`, v:`amber`, why:`Usually fine, since recipes are everywhere, but confirm quantities and oven times before dinner rides on it.`},
+    {t:`Translate this note to casual Spanish`, v:`green`, why:`Everyday language patterns are dense in its training. Ordinary translation sits right in its lane.`},
+    {t:`Explain a news event from this week`, v:`amber`, why:`The background is fine. Anything that changed recently may be missing, stale, or quietly made up.`},
+    {t:`What did I tell you last week?`, v:`red`, why:`It keeps no memory between separate chats. To it, last week's conversation never happened.`},
+    {t:`Draft a contract clause`, v:`amber`, why:`It will read like a real clause. Whether it actually protects you is a lawyer's call, not a guess's.`},
+    {t:`Give me feedback on my paragraph`, v:`green`, why:`Reacting to text you provided, in the style of countless edits it has seen. Well inside the green.`}
+  ];
+  var VMETA={
+    green:{word:`Good at it`, sub:`green light`},
+    amber:{word:`Check it`,   sub:`amber light`},
+    red:{word:`Bad at it`,    sub:`red light`}
+  };
+  var grid=document.getElementById('taskGrid'),
+      signal=document.getElementById('signal'),
+      sigWrap=document.getElementById('sigWrap'),
+      vTask=document.getElementById('vTask'), vWord=document.getElementById('vWord'),
+      vSub=document.getElementById('vSub'), vWhy=document.getElementById('vWhy'),
+      kCount=document.getElementById('kCount'),
+      explored={};
+  TASKS.forEach(function(task,i){
+    var b=document.createElement('button');
+    b.className='task'; b.type='button'; b.textContent=task.t;
+    b.addEventListener('click',function(){
+      signal.setAttribute('data-state',task.v);
+      sigWrap.setAttribute('data-state',task.v);
+      vTask.textContent='"'+task.t+'"';
+      vWord.textContent=VMETA[task.v].word;
+      vSub.textContent=VMETA[task.v].sub;
+      vWhy.textContent=task.why;
+      grid.querySelectorAll('.task').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      explored[i]=true;
+      kCount.textContent='explored '+Object.keys(explored).length+' / '+TASKS.length;
+    });
+    grid.appendChild(b);
+  });
+
+  /* ---------- CH3: sorting scrolly ---------- */
+  (function(){
+    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
+    var fig=document.getElementById('sc1');
+    var STEP={
+      0:['task-poem'],
+      1:['task-poem','question'],
+      2:['task-poem','question','green-bin'],
+      3:['task-cite','question','red-bin']
+    };
+    function render(i){
+      var show=STEP[i]||STEP[0];
+      fig.querySelectorAll('[data-gel]').forEach(function(g){
+        g.classList.toggle('show', show.indexOf(g.getAttribute('data-gel'))>=0);
+      });
+    }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          steps.forEach(function(s){s.classList.toggle('on',s===e.target);});
+          render(+e.target.getAttribute('data-step'));
+        }
+      });
+    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+    steps.forEach(function(s){io.observe(s);});
+    render(0);
+  })();
+
+  /* ---------- CH6: red tabs ---------- */
+  var RED=[
+    {k:`today's facts`, ask:`"What's in the news today?"`, does:`It reaches for what was common in the frozen pile of text it trained on.`, so:`Anything after its training cutoff, or anything that changed, it cannot see, unless it searches the web.`},
+    {k:`exact math`, ask:`"What is 4,829 x 7,613?"`, does:`It predicts a number that looks about right, digit by digit, from patterns it saw.`, so:`It is not calculating, so unusual or long sums come out confident and wrong, unless it runs a real calculator.`},
+    {k:`real sources`, ask:`"Cite three papers on this."`, does:`It predicts the shape of a citation: plausible authors, a year, a journal name.`, so:`The reference can look flawless and still be entirely invented, unless it actually looks each one up.`},
+    {k:`its own limits`, ask:`"Are you sure? What are you bad at?"`, does:`It predicts a reasonable-sounding answer about itself, like any other prompt.`, so:`It has no honest inner gauge of its reliability, so it cannot truly warn you when it is wrong.`}
+  ];
+  var rtTabs=document.getElementById('rtTabs'), rtAsk=document.getElementById('rtAsk'),
+      rtDoes=document.getElementById('rtDoes'), rtSo=document.getElementById('rtSo'),
+      rtHead=document.getElementById('rtHead');
+  function setRed(i){
+    var r=RED[i];
+    rtAsk.textContent=r.ask; rtDoes.textContent=r.does; rtSo.textContent=r.so;
+    rtHead.textContent=r.k;
+    rtTabs.querySelectorAll('.chip').forEach(function(c,j){c.classList.toggle('on',j===i);});
+  }
+  RED.forEach(function(r,i){
+    var c=document.createElement('button');
+    c.className='chip'; c.type='button'; c.textContent=r.k;
+    c.addEventListener('click',function(){setRed(i);});
+    rtTabs.appendChild(c);
+  });
+  setRed(0);
+
+  /* ---------- CH7: tool toggle ---------- */
+  var TOOL=[
+    {q:`Multiply 4,829 x 7,613`, alone:`red`, tool:`green`, toolname:`calculator`},
+    {q:`Cite three real studies on sleep`, alone:`red`, tool:`amber`, toolname:`web search`},
+    {q:`What major news broke today?`, alone:`red`, tool:`amber`, toolname:`web search`}
+  ];
+  var ttRows=document.getElementById('ttRows'), ttChips=document.getElementById('ttChips'),
+      ttHead=document.getElementById('ttHead'), ttMode='alone';
+  function ttRender(){
+    ttRows.innerHTML='';
+    TOOL.forEach(function(row){
+      var v=ttMode==='alone'?row.alone:row.tool;
+      var label=ttMode==='alone'?(v==='red'?'red':v):(v.toUpperCase());
+      var pillText=ttMode==='alone'?v:(v+' · '+row.toolname);
+      var el=document.createElement('div');
+      el.className='tt-row';
+      el.innerHTML='<div class="tq">"'+row.q+'"</div><div class="pill '+v+'">'+pillText+'</div>';
+      ttRows.appendChild(el);
+    });
+    ttHead.textContent=ttMode==='alone'?'on its own':'given the right tool';
+    ttChips.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-m')===ttMode);});
+  }
+  [['alone','On its own'],['tool','Given the right tool']].forEach(function(pair){
+    var c=document.createElement('button');
+    c.className='chip'; c.type='button'; c.setAttribute('data-m',pair[0]); c.textContent=pair[1];
+    c.addEventListener('click',function(){ttMode=pair[0];ttRender();});
+    ttChips.appendChild(c);
+  });
+  ttRender();
+
+})();
+</script>
+</body>
+</html>

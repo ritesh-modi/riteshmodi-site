@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ritesh Modi — interactive explorables on how AI really works</title>
+<meta name="description" content="Ritesh Modi — Principal Engineer building Gen AI at Microsoft. Interactive, explorable explorables on how AI and the systems behind it actually work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="brand">ritesh <span class="wv">👋</span></a>
+    <div class="nav-links">
+      <a href="/explorables.html">Explorables</a>
+      <a href="/about.html">About</a>
+      <a href="/books.html">Books</a>
+      <a href="/talks.html">Talks</a>
+    </div>
+    <button class="tgl" id="tgl" aria-label="Toggle light or dark theme" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="blobs" aria-hidden="true"></canvas>
+  <div class="hero-inner wrap">
+    <p class="greet">hi, I'm Ritesh <span class="wave" id="wave">👋</span></p>
+    <h1>I build things that<br>explain <span class="grad">how AI<br>actually works.</span></h1>
+    <p class="lede">Interactive explorables you can poke, drag, and break, so a hard idea becomes <span class="rot" id="rot">obvious</span>.</p>
+    <div class="cta-row">
+      <a href="/explorables.html" class="btn solid">Explore the explorables →</a>
+      <a href="/about.html" class="btn ghost">About me</a>
+    </div>
+  </div>
+  <div class="scrolldown"><span>Scroll</span><span class="d"></span></div>
+</header>
+
+<main class="snap">
+<section class="wrap">
+  <div class="sec-head">
+    <div>
+      <span class="eyebrow">Interactive explorables</span>
+      <h2>Poke the ideas.</h2>
+      <p>Single-page explorables that run live in your browser, no video, no slides.</p>
+    </div>
+    <a href="/explorables.html" class="btn ghost sm">See all →</a>
+  </div>
+  <div class="grid">
+    <a class="card" style="--ac:var(--coral)" href="/explorables/is-it-actually-thinking.html">
+      <div class="thumb"><div class="mini fib">first language is<span class="cc">French</span></div></div>
+      <div class="body"><span class="k">Beginner · AI</span><h3>Is it actually thinking?</h3>
+        <p>What an AI assistant really is: autocomplete that read the internet, not a mind. Feel the prediction happen.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">beginners</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" style="--ac:var(--grape)" href="/explorables/what-ai-is-good-and-bad-at.html">
+      <div class="thumb"><div class="mini lights"><i></i><i></i><i class="on-g"></i></div></div>
+      <div class="body"><span class="k">AI · judgment</span><h3>Good at, bad at?</h3>
+        <p>A plain map of what AI nails and where it quietly fails, with one live knob: pick a task, get a green or red light.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">using it well</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" style="--ac:var(--teal)" href="/explorables/partitioning-postgres.html">
+      <div class="thumb"><div class="mini parts"><i></i><i></i><i class="lit"></i><i></i><i></i></div></div>
+      <div class="body"><span class="k">Databases · systems</span><h3>Partitioning Postgres</h3>
+        <p>Locality and cheap bulk removal. Drag a project id and watch the planner skip seven of eight partitions.</p>
+        <div class="tags"><span class="tag">Postgres</span><span class="tag">systems</span></div></div>
+      <div class="go">→</div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="about">
+    <div>
+      <span class="eyebrow">About me</span>
+      <h2>I make hard ideas feel easy, and easy to touch.</h2>
+      <p>I'm a <b>Principal Engineer building Gen AI at Microsoft</b>, and the <b>AI/ML EMEA Community Lead</b>. I was a <b>Microsoft Regional Director</b> from 2018 to 2020. This site is my playground for explorable explanations, where you learn a concept by messing with it, not by reading about it.</p>
+      <a href="/about.html" class="btn ghost sm">More about me →</a>
+    </div>
+    <div class="facepile"><span class="rm">RM</span></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <div><span class="eyebrow">Books</span><h2>Things I wrote down.</h2>
+      <p>Published books on cloud architecture, data, and machine learning.</p></div>
+    <a href="/books.html" class="btn ghost sm">All books →</a>
+  </div>
+  <div class="books">
+    <div class="book" style="background:linear-gradient(150deg,#3A6EA5,#2A4E7C)"><div class="bt">Azure for Architects</div><div class="bm">Cloud architecture · Packt</div></div>
+    <div class="book" style="background:linear-gradient(150deg,#12B39A,#0B7C6B)"><div class="bt">Cloud Native Architectures</div><div class="bm">Design &amp; patterns</div></div>
+    <div class="book" style="background:linear-gradient(150deg,#7A5AF8,#5638C9)"><div class="bt">Machine Learning with Microsoft Tech</div><div class="bm">Applied ML</div></div>
+    <div class="book" style="background:linear-gradient(150deg,#FF9F1C,#E07A00)"><div class="bt">More on the books page</div><div class="bm">See the full shelf →</div></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="two">
+    <div>
+      <span class="eyebrow">Talks &amp; conferences</span>
+      <h2 style="font-size:clamp(28px,4vw,40px);margin:8px 0 20px">On stage</h2>
+      <div class="talk"><span class="yr">2025</span><div><div class="tt">Building production Gen AI on Azure</div><div class="tm">Microsoft AI community · keynote</div></div></div>
+      <div class="talk"><span class="yr">2024</span><div><div class="tt">From RAG to agents, what actually ships</div><div class="tm">EMEA AI/ML community</div></div></div>
+      <a href="/talks.html" class="btn ghost sm" style="margin-top:20px">Talks &amp; recognition →</a>
+    </div>
+    <div>
+      <span class="eyebrow">Recognition</span>
+      <h2 style="font-size:clamp(28px,4vw,40px);margin:8px 0 20px">A few honors</h2>
+      <div class="badges">
+        <div class="badge"><div class="be">🧭</div><div class="bl">Microsoft Regional Director</div><div class="bs">2018 – 2020</div></div>
+        <div class="badge"><div class="be">🌍</div><div class="bl">AI/ML EMEA Community Lead</div><div class="bs">Microsoft</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="fb">ritesh 👋</div>
+    <div class="fl">
+      <a href="/explorables.html">Explorables</a><a href="/about.html">About</a><a href="/books.html">Books</a><a href="/talks.html">Talks</a>
+      <a href="https://github.com/">GitHub</a><a href="https://www.linkedin.com/">LinkedIn</a><a href="https://medium.com/">Medium</a>
+    </div>
+    <div class="fn">Ritesh Modi © 2026 · a playful home for interactive explorables</div>
+  </div>
+</footer>
+</main>
+
+<script src="/assets/site.js"></script>
+</body>
+</html>
