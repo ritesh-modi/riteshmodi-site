@@ -53,7 +53,7 @@
         var f=c.getAttribute('data-f'), n=0;
         cards.forEach(function(card){
           var show = f==='all' || (' '+card.getAttribute('data-cat')+' ').indexOf(' '+f+' ')>=0;
-          card.classList.toggle('hide', !show); if(show) n++;
+          card.classList.toggle('hide', !show); if(show && !card.classList.contains('soon')) n++;
         });
         if(count) count.textContent = n+' explorable'+(n===1?'':'s');
       });

@@ -139,6 +139,20 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 .parts i{width:30px;height:40px;border-radius:9px;background:color-mix(in srgb,var(--ac) 18%,var(--card));border:2px solid color-mix(in srgb,var(--ac) 30%,transparent);display:block}
 .parts i.lit{background:var(--ac);border-color:var(--ac);box-shadow:0 8px 18px color-mix(in srgb,var(--ac) 45%,transparent)}
 .qmark{font-family:"Baloo 2";font-weight:800;font-size:56px;color:color-mix(in srgb,var(--ac) 40%,var(--ink-faint))}
+/* --- marquee mini-previews --- */
+.think{display:flex;gap:12px;align-items:center;padding:18px}
+.think i{width:18px;height:18px;border-radius:50%;background:var(--ac);display:block;opacity:.3;animation:think 1.4s ease-in-out infinite}
+.think i:nth-child(2){animation-delay:.18s}.think i:nth-child(3){animation-delay:.36s}
+@keyframes think{0%,65%,100%{opacity:.3;transform:translateY(0)}32%{opacity:1;transform:translateY(-7px)}}
+.prompt{display:flex;align-items:center;background:#241A38;color:#efe8fb;font-family:"Baloo 2";font-weight:700;font-size:15px;padding:12px 15px;border-radius:14px;box-shadow:var(--shadow-sm)}
+.prompt .cur{width:9px;height:18px;background:var(--ac);display:inline-block;margin-left:5px;border-radius:2px;animation:blink 1.05s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.grc{display:flex;gap:9px}
+.grc i{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:"Baloo 2";font-weight:800;font-size:20px;color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,var(--card));border:2px solid color-mix(in srgb,var(--ac) 32%,transparent)}
+.grc i.mid{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 8px 18px color-mix(in srgb,var(--ac) 45%,transparent)}
+.tokens{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:170px}
+.tokens i{font-style:normal;font-family:"Baloo 2";font-weight:700;font-size:15px;padding:6px 10px;border-radius:9px;color:var(--ac);background:color-mix(in srgb,var(--ac) 15%,var(--card));border:1.5px solid color-mix(in srgb,var(--ac) 34%,transparent)}
+@media(prefers-reduced-motion:reduce){.think i,.prompt .cur{animation:none}.think i{opacity:.72}}
 
 /* ---- filters ---- */
 .filters{display:flex;gap:10px;flex-wrap:wrap;padding:26px 0 40px}

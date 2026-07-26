@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machines don't log in: Azure service principals, OAuth, and the blast radius you chose</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v12:#EDEFF3;--v13:#E1E4EB;--v6:#12141A;--v8:#3E4350;--v7:#6F7585;--v16:#CBD0DA;--v0:#2F5BEA;--v10:#111420;--v11:#DEE2EC;--v15:#D6407A;--v19:#D08A2B;--v17:#1F9E6E;--v1:#7C9BFF;--v3:#B39DFF;--v5:#E5B84B;--v4:#5BC8C0;--v2:#F27DA5;--v9:680px;--v18:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v18:0s}}body{margin:0;background:var(--v12);color:var(--v6);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#2F5BEA}.pII{--v0:#6B4FC7}.pIII{--v0:#0C6F78}.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--v0);z-index:100;transition:width .1s linear,background .4s ease}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1100px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v16);transition:background .3s,transform .3s}.rail a.on{background:var(--v14,#2F5BEA);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v6);outline-offset:3px}.col{max-width:var(--v9);margin:0 auto;padding:0 26px;position:relative}section{padding:104px 0}.divider{max-width:var(--v9);margin:0 auto;height:1px;background:var(--v16)}h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:400;line-height:1.08;margin:0}h1.hero-h{font-size:clamp(37px,6.2vw,60px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Fraunces",serif;font-size:clamp(22px,3vw,29px);line-height:1.38;color:var(--v8)}.part-banner{padding:88px 0 20px;text-align:center}.part-banner .pk{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,40px);font-style:italic}.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v13);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.pull{font-family:"Fraunces",serif;font-size:clamp(24px,3.5vw,33px);line-height:1.32;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v13);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v8)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v7)}.mnote b{color:var(--v8);font-weight:600}@media(min-width:1180px){.mnote{position:absolute;left:calc(100% + 30px);width:210px;margin-top:6px}}@media(max-width:1179px){.mnote{background:var(--v13);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v13)}.demo{border:1px solid var(--v16);background:var(--v10);color:var(--v11);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #252B38;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#767D91;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v7);margin:12px 2px 0}.figcap b{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:9px 16px;border:1px solid #8091FF;border-radius:3px;background:transparent;color:#8091FF;cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:#8091FF;color:var(--v10)}.chip{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:8px 13px;border:1px solid #3a4152;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#A8AEBF}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}select{font-family:"JetBrains Mono",monospace;font-size:13px;background:#1a1f2e;color:#DEE2EC;border:1px solid #3a4152;border-radius:3px;padding:7px 10px}.log{font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.75;min-height:110px;margin-top:18px}.log div{opacity:0;animation:lin .3s forwards}@keyframes lin{to{opacity:1}}@media (prefers-reduced-motion:reduce){.log div{animation:none;opacity:1}}.l-ok{color:#4FC59B}.l-bad{color:#E8695C}.l-warn{color:#E0A94A}.l-dim{color:#767D91}code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--v13);padding:1px 6px;border-radius:3px}.demo code, pre code{background:none;padding:0}pre{background:var(--v10);border:1px solid var(--v16);border-radius:4px;padding:20px 22px;font-size:13px;line-height:1.7;overflow-x:auto;color:var(--v11);margin:26px 0}.cm{color:#767D91}.kw{color:#8091FF}.st{color:#4FC59B}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:"JetBrains Mono",monospace;font-size:11px;fill:#A8AEBF}.fig .elab{font-family:"JetBrains Mono",monospace;font-size:10px;fill:#767D91}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.22}.fig .sel circle{stroke-width:5}.inspector{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.8;border-top:1px solid #252B38;margin-top:16px;padding-top:14px;min-height:96px;color:#A8AEBF}.inspector b{color:#DEE2EC;font-weight:500}.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:11px;color:#767D91;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.jwt-enc{font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.6;word-break:break-all;background:#0b0e17;border-radius:4px;padding:14px 16px;margin-bottom:18px}.seg-h{color:#F27DA5}.seg-p{color:#7C9BFF}.seg-s{color:#767D91}.claims{width:100%;border-collapse:collapse;font-family:"JetBrains Mono",monospace;font-size:12.5px}.claims td{padding:7px 10px;border-top:1px solid #252B38;vertical-align:top}.claims tr.claim{cursor:pointer;transition:background .15s}.claims tr.claim:hover{background:#1a1f2e}.claims tr.claim.on{background:#1a1f2e;box-shadow:inset 2px 0 0 var(--v5)}.claims td:first-child{color:var(--v5);white-space:nowrap}.claims td:last-child{color:#A8AEBF}.jwt-why{margin-top:16px;font-size:15px;line-height:1.65;color:#DEE2EC;border-top:1px solid #252B38;padding-top:16px;min-height:76px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}@media(max-width:640px){.cards{grid-template-columns:1fr}}.face,.layer{font-family:"JetBrains Mono",monospace;font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #3a4152;border-radius:4px;background:transparent;color:#A8AEBF;cursor:pointer;transition:all .18s;line-height:1.5}.face.on,.layer.on{border-color:var(--v0);color:#fff;background:#1a1f2e}.face b,.layer b{display:block;color:#DEE2EC;font-size:13px;margin-bottom:3px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer{width:100%}.face-out,.layer-out{font-size:15px;line-height:1.65;color:#DEE2EC;border-top:1px solid #252B38;padding-top:16px;min-height:96px}.tree{font-family:"JetBrains Mono",monospace;font-size:12px;line-height:2.05;color:#767D91;background:#0b0e17;border-radius:4px;padding:14px 18px;overflow-x:auto;white-space:pre}.tree span{transition:color .25s}.tree .cov{color:var(--v2)}.tree .you{color:var(--v5)}.dots{display:grid;grid-template-columns:repeat(auto-fill,minmax(13px,1fr));gap:5px;margin:20px 0 6px}.dots i{aspect-ratio:1;border-radius:50%;background:#1a1f2e;border:1px solid #252B38;transition:background .3s,border-color .3s}.dots i.lit{background:var(--v2);border-color:var(--v2)}.dots i.you{background:var(--v5);border-color:var(--v5)}@media (prefers-reduced-motion:reduce){.dots i{transition:none}}.mlab{font-family:"JetBrains Mono",monospace;font-size:12px;color:#767D91;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#DEE2EC}.meter{height:12px;background:#1a1f2e;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.pg-controls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:8px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#767D91;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.weeds details{border:1px solid var(--v16);border-radius:4px;margin-bottom:10px;background:var(--v12)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v13)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v8)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Fraunces",serif;font-size:clamp(24px,3.6vw,33px);line-height:1.4;margin:0}footer{border-top:1px solid var(--v16);padding:34px 0 60px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--v7);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:74px 0}}</style></style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#2F5BEA" title="Part I"></a>
+  <a href="#p2" data-c="#6B4FC7" title="Part II"></a>
+  <a href="#p3" data-c="#0C6F78" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 80px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · azure identity · oauth</div>
+    <h1 class="hero-h">Machines don't log in.<br>They <em>authenticate</em>.</h1>
+    <p class="lede">A service principal is how software gets its own identity in Azure: its own passport, its own permissions, its own blast radius. This page builds one from scratch, decodes the token it receives, then hands you the slider that decides how bad a leaked-credential day gets. At the end, a full playground.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#2F5BEA">
+<div class="part-banner">
+  <div class="pk">Part I · chapters 01 to 03</div>
+  <h2>Who's asking?</h2>
+</div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the incident</div>
+    <h2 class="big">The deploy bot logs in as Priya</h2>
+    <div class="try">A gut-check before anything else. Count the automated things at your company that touch a cloud API every night: pipelines, cost reports, backups, sync jobs. Now count how many of them have their own identity. The gap between those numbers is this page.</div>
+    <p>Priya is a data engineer at a retail company. Her Tuesday task: a nightly script that reads yesterday's blob files from a storage account, aggregates spend, and writes a report. The script needs to authenticate to Azure, so she does what nearly every beginner does. She makes it sign in the way she signs in: her username, her password, parked in an environment variable on the build server, because a script cannot type.</p>
+    <aside class="mnote"><b>Names.</b> Microsoft Entra ID is the current name for Azure AD. Docs, blogs, and error codes still say both. Same system.</aside>
+    <p>It works. It works for four months. Then IT enables mandatory multi-factor authentication, and at 2:07 a.m. her script sits at a login prompt with no phone and no thumb. The cost report never runs. Neither do the six other jobs that were also, quietly, being Priya.</p>
+    <p>Nothing was hacked. Nobody meant harm. The system did what it was built to do, which was to treat every login as a person. That assumption is the bug.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the workarounds</div>
+    <h2 class="big">Every password workaround fails a different way</h2>
+    <p>Before the right answer, feel why the obvious answers are wrong. Teams cycle through three of them, usually in this order:</p>
+    <div class="demo">
+      <div class="demo-head"><span>the workaround graveyard</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+          <button class="chip on" data-n="personal">my own account</button>
+          <button class="chip" data-n="shared">shared "svc" user</button>
+          <button class="chip" data-n="baked">key in the code</button>
+        </div>
+        <div id="nOut" style="font-size:15.5px;line-height:1.7;min-height:130px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>Click each workaround to see its specific failure. All three share one root cause.</div>
+    <p style="margin-top:26px">Look at the shape of the failures. A credential built for a person, with a person's lifecycle, a person's MFA, a person's sprawling permissions, is being worn by a program. The costume never fits. The script does not need a borrowed password. It needs to be somebody.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the concept</div>
+    <h2 class="big">Give the software its own passport</h2>
+    <p>The fix is older than Azure: <strong>OAuth 2.0</strong>. Programs stop carrying human passwords. Instead, a central authority (in Azure, <strong>Microsoft Entra ID</strong>) issues short-lived, signed <strong>access tokens</strong>. A program proves who it is once, receives a token good for about an hour, and presents that token with every API call. No password ever travels to the API.</p>
+    <aside class="mnote"><b>Principals.</b> Users, groups, service principals, and managed identities are all "security principals" to Azure. Permissions bind to any of them the same way.</aside>
+    <p>OAuth has several ceremonies for different situations. When a human is present to click Approve, that is the authorization-code flow. When no human exists, as in Priya's nightly script, it is the <strong>client credentials flow</strong>: the application authenticates as itself.</p>
+    <p>And the somebody it becomes has a name. Registering an app in Entra ID creates an <span class="ref" data-ref="reg">app registration</span> and, from it, a <span class="ref" data-ref="sp">service principal</span>: a real identity object in your tenant. It can hold roles. It appears in audit logs. One click disables it during an incident. Hover the terms in this paragraph, or the nodes below, to see how the pieces connect the night everything works. The <span class="ref" data-ref="tok">token</span> is the only thing the <span class="ref" data-ref="res">storage account</span> ever sees.</p>
+    <div class="demo fig-wrap">
+      <div class="demo-head"><span>the cast, one nightly run</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig2"></div>
+        <div class="legend">
+          <span><i style="background:var(--v3)"></i>identity objects</span>
+          <span><i style="background:var(--v5)"></i>tokens + authority</span>
+          <span><i style="background:var(--v4)"></i>resources</span>
+          <span><i style="background:var(--v2)"></i>credentials</span>
+        </div>
+        <div class="inspector" id="fig2Out">hover a node or an edge to inspect it</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 2</b>Hover any node or edge to inspect it. These five colors mean the same thing in every figure on this page.</div>
+    <div class="pull">A service principal is a user account for something that will never forget its password and never pass MFA.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#6B4FC7">
+<div class="part-banner">
+  <div class="pk">Part II · chapters 04 to 08</div>
+  <h2>The machinery</h2>
+</div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · smallest working version</div>
+    <h2 class="big">Four fields buy a token</h2>
+    <p>Create the identity first. One CLI command replaced Priya's password:</p>
+<pre><code><span class="cm"># app registration + service principal + secret + role, in one shot</span>
+az ad sp create-for-rbac \
+  --name <span class="st">"sp-nightly-costs"</span> \
+  --role <span class="st">"Storage Blob Data Reader"</span> \
+  --scopes /subscriptions/&lt;sub-id&gt;/resourceGroups/rg-finance/providers/Microsoft.Storage/storageAccounts/stfinreports</code></pre>
+    <aside class="mnote"><b>/.default</b> in the scope means: every permission this app has been granted for that API. For app-only flows it is the only scope shape the token endpoint accepts.</aside>
+    <p>Then, at 2 a.m., the script trades its credential for a token. A plain HTTPS POST, four form fields, no SDK magic:</p>
+<pre><code>POST https://login.microsoftonline.com/<span class="st">{tenant-id}</span>/oauth2/v2.0/token
+
+grant_type    = client_credentials
+client_id     = <span class="st">a1b2c3d4-…</span>          <span class="cm"># who I claim to be</span>
+client_secret = <span class="st">wxy8Q~…</span>              <span class="cm"># proof of the claim</span>
+scope         = https://management.azure.com/.default   <span class="cm"># which API this token is for</span></code></pre>
+    <p>Every Azure SDK in every language does exactly this underneath. Run the healthy exchange, then run the three classic ways it breaks. The error codes are real; you will meet them.</p>
+    <div class="demo">
+      <div class="demo-head"><span>token exchange · pick a scenario</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+          <button class="chip on" data-x="ok">complete request</button>
+          <button class="chip" data-x="nosecret">secret missing</button>
+          <button class="chip" data-x="expired">secret expired</button>
+          <button class="chip" data-x="wrongaud">wrong audience</button>
+        </div>
+        <div class="log" id="exLog" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Click a scenario to replay the exchange. Note where each failure surfaces: three at the token endpoint, one later, at the API itself.</div>
+    <p style="margin-top:26px">The wrong-audience case deserves a second look. The token endpoint happily issues a token for Microsoft Graph, and the exchange succeeds. The failure arrives later, when ARM refuses it. Where an error surfaces tells you which layer rejected you, and chapter 09 maps all of them.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · inside the token</div>
+    <h2 class="big">The token confesses everything</h2>
+    <p>An access token looks like line noise. It is three base64 segments joined by dots, a <strong>JWT</strong>: <span style="font-family:'JetBrains Mono',monospace;font-size:.85em"><span style="color:var(--v2)">header</span>.<span style="color:var(--v1)">claims</span>.<span style="color:#8b8fa3">signature</span></span>. Nothing in it is encrypted. Anyone holding it can read it, and you should: the claims name <span class="ref" data-ref="r-aud">which API it is for</span>, <span class="ref" data-ref="r-oid">which identity it represents</span>, <span class="ref" data-ref="r-appidacr">how that identity proved itself</span>, and <span class="ref" data-ref="r-exp">when it dies</span>. Its power lives entirely in the signature, which only Entra ID can produce.</p>
+    <aside class="mnote"><b>v1 vs v2.</b> Two endpoint generations, slightly different claim names: v1 says <b>appid</b>, v2 says <b>azp</b>. The weeds section has the details.</aside>
+    <div class="demo">
+      <div class="demo-head"><span>jwt inspector · encoded and decoded live by this page</span></div>
+      <div class="demo-body">
+        <div class="jwt-enc" id="jwtEnc" aria-hidden="true"></div>
+        <table class="claims" id="jwtTable"><tbody></tbody></table>
+        <div class="jwt-why" id="jwtWhy">click a claim, or hover the dotted terms in the paragraph above</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 4</b>Click any claim row for what it means and why security engineers care. The page encodes this token itself: readable, yes; forgeable, no.</div>
+    <p style="margin-top:26px">One absence matters as much as any claim: for a service principal calling ARM there are no permissions inside the token. Azure looks those up fresh on every call, which is what makes chapter 07's slider work the way it does.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">06 · the confusing trio</div>
+    <h2 class="big">One app, three faces</h2>
+    <p>The portal shows three different things for what feels like one identity, and it trips up everyone in their first month. The split earns its keep the moment an app serves more than one tenant. The Azure CLI itself is one blueprint in Microsoft's tenant, yet a distinct service principal of it lives in yours, in your customer's, in everyone's. Hover the figure: the <span style="color:#8a6fd6;font-weight:600">appId</span> is identical everywhere, the <span style="color:#8a6fd6;font-weight:600">oid</span> never is.</p>
+    <div class="demo fig-wrap">
+      <div class="demo-head"><span>one blueprint, one principal per tenant</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig5"></div>
+        <div class="inspector" id="fig5Out">hover the app object or any service principal</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 5</b>Hover any node. Same appId in every tenant; a different oid, and therefore different permissions, in each.</div>
+    <div class="cards">
+      <button class="face on" data-f="reg"><b>App registration</b>the blueprint</button>
+      <button class="face" data-f="sp"><b>Service principal</b>the identity</button>
+      <button class="face" data-f="ent"><b>Enterprise app</b>the admin's door</button>
+    </div>
+    <div class="demo" style="margin-top:0"><div class="demo-body" style="padding-top:18px">
+      <div class="face-out" id="faceOut"></div>
+    </div></div>
+    <div class="figcap"><b>Figure 6</b>Click each face for what it is and which portal blade owns it.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the knob</div>
+    <h2 class="big">Scope is the blast radius</h2>
+    <p>A service principal with no roles can authenticate all day and do nothing. Identity and permission are separate systems. Permissions come from <strong>Azure RBAC</strong>, and a role assignment is a triple: who (the principal's oid), what (a role; here it stays fixed at <strong>Contributor</strong>), and where (a scope). Scope inherits downward. Assign at a subscription and you have assigned to everything inside it, including resources that do not exist yet.</p>
+    <aside class="mnote"><b>Also real:</b> deny assignments, which override allows, and PIM, which makes assignments temporary. Both in the weeds.</aside>
+    <p>The demo tenant: 174 resources, 3 subscriptions, one management group. The gold dot is Priya's storage account. Drag the scope and watch three views of the same assignment move together: the tree it covers, the dots it can touch, and the exact CLI flag that created it.</p>
+    <div class="demo">
+      <div class="demo-head"><span>role assignment · role fixed: contributor</span><span id="scopePct" class="l-warn"></span></div>
+      <div class="demo-body">
+        <label for="scopeSlider" style="font-family:'JetBrains Mono',monospace;font-size:13px;display:block;margin-bottom:8px">assignment scope</label>
+        <input type="range" id="scopeSlider" min="0" max="3" step="1" value="0" aria-label="Scope of the role assignment">
+        <div class="tree" id="scopeTree" style="margin-top:20px"></div>
+        <div class="dots" id="dotGrid" aria-hidden="true"></div>
+        <div class="mlab"><span>resources this identity can modify or delete</span><span class="mval"><span id="mCount">1</span> / 174</span></div>
+        <div class="meter"><i id="mBar"></i></div>
+        <pre style="margin:18px 0 0;border:none;background:#0b0e17;font-size:12px" id="scopeJson"></pre>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 7</b>One slider, three synced representations: the scope tree (covered branches in pink), the resource dots, and the <code style="background:none;color:inherit">--scopes</code> flag as the CLI would take it.</div>
+    <p style="margin-top:26px">The job needs one resource. Every dot past the first is unearned permission: pure downside, waiting. Yet subscription-level Contributor stays the most common grant in real tenants, because it is the one that never produces a 403 support ticket. Least privilege means choosing the smallest scope that lets the job run, then accepting that you will widen it occasionally, on purpose, in writing.</p>
+    <div class="pull">Nobody ever got paged for a role that was too narrow. The wide ones page you years later, all at once.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">08 · the impact</div>
+    <h2 class="big">A leaked secret is an afternoon. Whose depends on chapter 07</h2>
+    <p>Make it concrete. The secret leaks: pushed to a public repo, echoed into a CI log, lifted from the build server. The attacker holds client_id, client_secret, and your tenant id, which was never secret to begin with. One POST later (the same four fields from Figure 3) they hold a valid token. Here is their afternoon, at whatever scope you left the slider on:</p>
+    <div class="demo">
+      <div class="demo-head"><span>attacker's afternoon · contributor @ <span id="atkScope">resource</span></span></div>
+      <div class="demo-body">
+        <div id="atkOut" style="font-size:15.5px;line-height:1.75"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 8</b>This panel tracks Figure 7's slider. Scroll up, move it, come back.</div>
+    <p style="margin-top:26px">Two details worth sitting with. Tokens are <strong>bearer</strong> tokens: whoever bears one, is you, with no second check. And deleting the leaked secret does not kill tokens already issued; they ride until their <code>exp</code>, up to an hour of "we fixed it but it is not fixed." The blast radius you chose in chapter 07 is exactly the size of this list.</p>
+    <div class="note">What Contributor could not do at any scope: grant roles (Owner or User Access Administrator territory) or read Key Vault secrets, because data-plane access is a separate assignment. Azure's control-plane and data-plane split has quietly saved a lot of incidents. Chapter 09 shows where it lives.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#0C6F78">
+<div class="part-banner">
+  <div class="pk">Part III · chapters 09 to 11</div>
+  <h2>The nitty-gritty</h2>
+</div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">09 · production architecture</div>
+    <h2 class="big">Every API call re-litigates your permissions</h2>
+    <p>The full path of one nightly-job request, and it runs on every call, not once per session. Each layer can reject you, and each rejects differently: a <span class="ref" data-ref="l-3">401 means the token itself failed</span>, a <span class="ref" data-ref="l-4">403 means the token was fine and RBAC said no</span>. That distinction is the first thing to check in any access incident.</p>
+    <div class="demo">
+      <div class="demo-head"><span>request path · click a layer</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-l="0"><b>1 · the client</b>holds the credential, asks for tokens, caches them</button>
+          <button class="layer" data-l="1"><b>2 · entra id token endpoint</b>verifies the credential, mints the signed JWT</button>
+          <button class="layer" data-l="2"><b>3 · the wire</b>bearer token over TLS on every request</button>
+          <button class="layer" data-l="3" id="lyr401"><b>4 · resource front door (ARM)</b>validates signature, audience, expiry</button>
+          <button class="layer" data-l="4" id="lyr403"><b>5 · rbac engine</b>evaluates role assignments against the scope</button>
+          <button class="layer" data-l="5"><b>6 · the resource itself</b>control plane cleared; data plane may ask again</button>
+        </div>
+        <div class="layer-out" id="layerOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 9</b>Click each layer for what it checks and how it says no. Hovering the 401/403 phrases in the paragraph highlights the layer that produces each.</div>
+    <p style="margin-top:26px">The design principle hiding in the stack: <strong>the API never sees a secret.</strong> The credential buys tokens at layer 2 and nowhere else. Layers 4 to 6 deal only in short-lived, signed, auditable claims. A compromised API server, a logged request, a sloppy proxy: none of them ever held the thing that mints access.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">10 · limitations and failure modes</div>
+    <h2 class="big">The best secret is no secret</h2>
+    <p>Everything so far assumed a client secret, and the client secret is the weakest thing on this page: a password by another name, generated rather than chosen, still copyable, loggable, committable. Azure offers a ladder of four ways for an identity to prove itself. Each rung removes a failure mode and adds a constraint:</p>
+    <aside class="mnote"><b>Words matter.</b> A certificate is a credential, not a secret: the private key never travels. That distinction is why auditors read <b>appidacr</b>.</aside>
+    <div class="demo">
+      <div class="demo-head"><span>credential ladder · weakest to strongest</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+          <button class="chip on" data-cred="secret">client secret</button>
+          <button class="chip" data-cred="cert">certificate</button>
+          <button class="chip" data-cred="mi">managed identity</button>
+          <button class="chip" data-cred="fed">federation</button>
+        </div>
+        <div id="credOut" style="font-size:15.5px;line-height:1.75;min-height:150px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 10</b>Click each rung. The playground below lets you feel what each choice does to the blast radius.</div>
+    <p style="margin-top:26px">And the honest list of what no rung fixes:</p>
+    <p><strong>Sprawl.</strong> Service principals never resign. Tenants accumulate hundreds: ownerless, still permissioned, secrets expiring silently or, worse, not expiring. Nothing inventories them for you by default.</p>
+    <p><strong>No MFA, ever.</strong> That is the whole point of a service principal, so the identity protections built around humans apply weakly or not at all. Compensate with credential hygiene and narrow scope, not with hope.</p>
+    <p><strong>Revocation lag.</strong> Kill a secret, disable a principal: issued tokens still ride until exp. Up to an hour where the fix has shipped and the door is still open.</p>
+    <p><strong>The audit gap.</strong> Sign-in logs say a principal authenticated. Activity logs say what it did. Correlating them across tools at 2 a.m. is a skill of its own, and narrow scope is what keeps the answer boring.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · in the wild</div>
+    <h2 class="big">How the grown-ups deploy</h2>
+    <p>Assemble the whole page into the setup you will meet at a well-run company, say a bank's platform team shipping through GitHub Actions.</p>
+    <p><strong>CI/CD uses federation, not secrets.</strong> The pipeline authenticates with workload identity federation, rung four of Figure 10: GitHub's own OIDC token, exchanged for an Entra token, trusted only from one repo and one branch. Nothing stored, nothing to rotate, nothing to leak. For new automation outside Azure this is the starting point, not the secret from <code>create-for-rbac</code>.</p>
+    <p><strong>Workloads inside Azure use managed identities.</strong> The nightly job now runs in an Azure Function with a system-assigned identity holding Storage Blob Data Reader on one storage account: the leftmost stop on Figure 7's slider. Priya's password has not been near it in years.</p>
+    <p><strong>The surviving secrets live in Key Vault</strong>, for the third-party SaaS that still demands one, with expiry alerts and rotation runbooks. The <code>appidacr</code> claim from Figure 4 gives auditors the list of apps still authenticating with secrets, reviewed quarterly next to an inventory of every assignment wider than Reader.</p>
+    <p>Why a bank pays for the ceremony: auditors ask two questions. Who can touch production, and prove it. With named principals, narrow scopes, federated credentials, and claims in every log line, both answers are queries. With shared passwords, both answers are meetings.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>Identity answers who's asking.<br>
+    The token proves it for an hour.<br>
+    Scope decides how much that hour can cost you.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="col reveal">
+    <div class="eyebrow">playground</div>
+    <h2 class="big">Now break it yourself</h2>
+    <p>The guided part is over. The argument held the role and the credential constant so one slider could carry chapter 07. Here every control is exposed. Set up an identity, then read what a leak of it would mean. The presets rebuild the configurations this page has been arguing about.</p>
+    <div class="demo">
+      <div class="demo-head"><span>identity workbench · demo tenant, 174 resources</span><span id="pgRisk" class="l-warn"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="legacy">preset: the legacy SP</button>
+          <button class="btn" data-pre="tutorial">preset: tutorial default</button>
+          <button class="btn" data-pre="bank">preset: the well-run bank</button>
+        </div>
+        <div class="pg-controls">
+          <div><label for="pgRole">role</label>
+            <select id="pgRole"><option value="reader">Reader</option><option value="contrib" selected>Contributor</option><option value="owner">Owner</option></select></div>
+          <div><label for="pgCred">credential</label>
+            <select id="pgCred"><option value="secret" selected>client secret</option><option value="cert">certificate</option><option value="mi">managed identity</option><option value="fed">federation</option></select></div>
+          <div><label for="pgScope">scope</label>
+            <input type="range" id="pgScope" min="0" max="3" step="1" value="1" aria-label="Playground scope"></div>
+        </div>
+        <div class="mlab"><span>scope</span><span class="mval" id="pgScopeName"></span></div>
+        <div class="mlab"><span>resources readable</span><span class="mval" id="pgRead"></span></div>
+        <div class="mlab"><span>resources writable</span><span class="mval" id="pgWrite"></span></div>
+        <div class="meter"><i id="pgBar"></i></div>
+        <div class="mlab"><span>can grant roles to others</span><span class="mval" id="pgGrant"></span></div>
+        <div class="mlab"><span>stored credentials to steal</span><span class="mval" id="pgSteal"></span></div>
+        <div class="mlab"><span>if leaked right now</span><span class="mval"></span></div>
+        <div id="pgOut" style="font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;color:#A8AEBF;margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 11</b>Three controls, live consequences. Try the bank preset, then give it Owner at management group and watch the readout argue with you.</div>
+  </div>
+</section>
+
+
+<section style="padding-top:20px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Six rabbit holes the main argument stepped around. Each stands alone.</p>
+    <details><summary>Managed identities are service principals underneath</summary><div class="wbody">List service principals with <code>az ad sp list</code> and you will find your managed identities among them, with <code>servicePrincipalType: ManagedIdentity</code>. Same identity machinery, same RBAC binding, same token claims. The difference is custody: the platform owns the credential and refuses to show it to anyone, including you. Everything this page says about scope and tokens applies to them unchanged.</div></details>
+    <details><summary>Calling Microsoft Graph needs app roles, not RBAC</summary><div class="wbody">Azure RBAC governs ARM: subscriptions, resource groups, resources. Microsoft Graph (users, groups, mail, Teams) has a separate model: application permissions, granted on the app registration and consented by an admin. A principal can be Owner of every subscription and still unable to list users. The <code>roles</code> claim inside a Graph token carries these; an ARM token has no equivalent because ARM checks RBAC live instead.</div></details>
+    <details><summary>Deny assignments and PIM</summary><div class="wbody">Two refinements on the RBAC story. Deny assignments override allows and are mostly created by Azure itself (Blueprints, managed apps) to protect resources from their own owners. Privileged Identity Management makes role assignments just-in-time: the assignment exists but stays inactive until someone activates it, with approval and an expiry. For service principals, PIM support is narrower than for humans; scope discipline does the heavy lifting.</div></details>
+    <details><summary>Token caching, and the 429 you earn without it</summary><div class="wbody">A token is valid for about an hour; asking for a new one per request multiplies your token-endpoint traffic by thousands and eventually meets a throttle. MSAL and the Azure SDKs cache tokens per resource per identity and refresh them shortly before expiry. If you hand-roll the POST from chapter 04, cache the result keyed on (tenant, client, scope) and reuse it until a minute before <code>exp</code>.</div></details>
+    <details><summary>v1 versus v2 tokens</summary><div class="wbody">Two endpoint generations coexist. The v2 endpoint (<code>/oauth2/v2.0/token</code>) takes a <code>scope</code> parameter; v1 took <code>resource</code>. Claim names drift too: v1 says <code>appid</code>, v2 says <code>azp</code>; issuer URLs differ. Validation libraries handle both, but hand-written claim checks that grep for the wrong name fail quietly on the other generation. The <code>ver</code> claim in Figure 4 exists so code can branch.</div></details>
+    <details><summary>ROPC, the flow you will inherit and should retire</summary><div class="wbody">Resource Owner Password Credentials: the app sends a username and password straight to the token endpoint. It is the OAuth flow that looks most like Priya's original sin, which is why old scripts use it. It breaks on MFA, cannot see conditional access properly, and Microsoft documents it as legacy. Finding ROPC in a codebase is finding a migration ticket.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    demo tenant (174 resources, 3 subscriptions) is illustrative; endpoints, CLI commands, claims, error codes, and RBAC behaviour are real · facts snapshot: July 2026 (Microsoft Entra ID, formerly Azure AD)<br>
+    built with the interactive-explainer skill · single file · the JWT in Figure 4 is minted by this page, not by Microsoft, which is exactly why its signature proves nothing
+  </div>
+</footer>
+
+<script>!function(){var e=window.matchMedia("(prefers-reduced-motion: reduce)").matches;function t(e){return document.getElementById(e)}var n=t("progress");window.addEventListener("scroll",function(){var e=document.documentElement;n.style.width=e.scrollTop/(e.scrollHeight-e.clientHeight)*100+"%"},{passive:!0});var a=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),a.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){a.observe(e)});var r=document.querySelectorAll("#rail a"),o=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-c");n.style.background=t,r.forEach(function(n){var a=n.getAttribute("href")==="#"+e.target.id;n.classList.toggle("on",a),a&&n.style.setProperty("--v14",t)})}})},{rootMargin:"-40% 0px -40% 0px"});function s(e,n,a){var r=t(a);function o(t){r.innerHTML=n[t],document.querySelectorAll("["+e+"]").forEach(function(n){n.classList.toggle("on",n.getAttribute(e)===t)})}return document.querySelectorAll("["+e+"]").forEach(function(t){t.addEventListener("click",function(){o(t.getAttribute(e))})}),o(document.querySelector("["+e+"]").getAttribute(e)),o}["p1","p2","p3"].forEach(function(e){o.observe(t(e))}),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),n=e.closest("section");function a(a){e.classList.toggle("hot",a),n.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",a)}),n.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",a),"TR"!==e.tagName&&"BUTTON"!==e.tagName||e.classList.toggle("on",a)})}e.addEventListener("mouseenter",function(){a(!0)}),e.addEventListener("mouseleave",function(){a(!1)}),e.addEventListener("click",function(){a(!e.classList.contains("hot"))})}),s("data-n",{personal:"<strong>Run it as me.</strong> Breaks when you enable MFA (a script cannot answer a prompt), when you change your password (every job dies at once), and when you leave the company (your account goes, the jobs go with it). An auditor asks why Priya read 4&nbsp;GB of finance blobs at 2 a.m., and the honest answer is that she didn't. The script also inherits everything you can touch, which is far more than it needs.",shared:'<strong>Make a "service account" user.</strong> A human-shaped account (svc-reports@…) with its password in the team wiki. Same MFA problem. The password must rotate, and eleven jobs share it, and nobody knows all eleven places it is pasted. The audit log says one user did everything, done by everyone. Security teams call this account the pet cemetery.',baked:"<strong>Hard-code an access key.</strong> Skip identity entirely and paste the storage account's master key into the script. The repo goes public for forty minutes and scanners find it in less than five. The key grants full read, write, and delete on the whole account, forever, with no expiry. And because a raw key names a resource rather than a caller, rotating it revokes every consumer at once."},"nOut");function i(e,t){var n=document.createElementNS("http://www.w3.org/2000/svg",e);for(var a in t)n.setAttribute(a,t[a]);return n}function c(e,t,n,a,r){var o=i("line",{x1:t.x,y1:t.y,x2:n.x,y2:n.y,stroke:a,"stroke-width":1.6,class:"evis"}),s=i("line",{x1:t.x,y1:t.y,x2:n.x,y2:n.y,stroke:"rgba(0,0,0,0)","stroke-width":22}),c=i("g",{"data-part":r});return c.appendChild(o),e.appendChild(c),{tgt:s,wrap:c,vis:o}}function l(e,t,n,a){var r=i("g",{"data-part":a});r.appendChild(i("circle",{cx:t.x,cy:t.y,r:9,fill:"#111420",stroke:n,"stroke-width":2.5}));var o=i("text",{x:t.x,y:t.y+(t.ly||26),"text-anchor":"middle",class:"nlab"});return o.textContent=t.label,r.appendChild(o),e.appendChild(r),{tgt:i("circle",{cx:t.x,cy:t.y,r:22,fill:"rgba(0,0,0,0)"}),wrap:r}}function d(e,t,n,a,r,o){function s(){e.classList.add("dimmed"),n.classList.add("hot"),n.classList.add("sel"),a.innerHTML=r}t.addEventListener("mouseenter",s),t.addEventListener("mouseleave",function(){e.classList.remove("dimmed"),n.classList.remove("hot"),n.classList.remove("sel"),a.innerHTML=o}),t.addEventListener("click",s)}!function(){var e=[{id:"reg",label:"app registration",color:"var(--v3)",html:"<b>app registration</b> · the blueprint, in the home tenant only. Holds the client_id, the credential list, and nothing that can act."},{id:"sp",label:"service principal",color:"var(--v3)",html:"<b>service principal</b> · the identity minted from the blueprint into this tenant. Roles bind to its oid. Disable it here during an incident."},{id:"entra",label:"entra id",color:"var(--v5)",html:"<b>entra id</b> · the token authority. The only place the credential ever goes. Verifies it, signs a JWT with the tenant's keys."},{id:"res",label:"stfinreports",color:"var(--v4)",html:"<b>storage account</b> · the resource. Sees only the bearer token, never the secret, and asks RBAC whether the oid may act."}],n=e.map(function(t,n){var a=-Math.PI/2+2*n*Math.PI/e.length;return t.x=280+Math.round(167.2*Math.cos(a)),t.y=117+Math.round(72.16*Math.sin(a)),t}),a={};n.forEach(function(e){a[e.id]=e});var r=[{a:"reg",b:"sp",color:"var(--v3)",part:"e-mint",html:"<b>minted from</b> · one registration produces one service principal per tenant that uses the app."},{a:"sp",b:"entra",color:"var(--v2)",part:"e-auth",html:"<b>authenticates</b> · the client credentials POST. The pink edge is the only one a secret ever crosses."},{a:"entra",b:"res",color:"var(--v5)",part:"tok",html:"<b>the token's journey</b> · minted by Entra, presented to the resource as a Bearer header on every call, dead in about an hour."},{a:"sp",b:"res",color:"var(--v4)",part:"e-rbac",html:"<b>role assignment</b> · Contributor, Reader, or a data-plane role, bound to the oid at some scope. Chapter 07 is entirely about this edge."}],o=i("svg",{viewBox:"0 0 560 250",class:"fig-svg"}),s=i("g",{});o.appendChild(s);var p=[],u=t("fig2Out"),h="hover a node or an edge to inspect it";r.forEach(function(e){var t=c(s,a[e.a],a[e.b],e.color,e.part);p.push(t.tgt),d(o,t.tgt,t.wrap,u,e.html,h)}),n.forEach(function(e){var t="entra"===e.id?"tok":"res"===e.id?"res":e.id,n=l(s,e,e.color,t);p.push(n.tgt),d(o,n.tgt,n.wrap,u,e.html,h)}),p.forEach(function(e){s.appendChild(e)}),t("fig2").appendChild(o),t("fig2").classList.add("fig")}();var p={ok:[["l-dim","POST /{tenant}/oauth2/v2.0/token  grant_type=client_credentials"],["l-dim","        client_id=a1b2c3d4…  client_secret=●●●  scope=…management.azure.com/.default"],["l-ok",'200 OK  { "token_type": "Bearer", "expires_in": 3599, "access_token": "eyJ0eXAi…" }'],["l-dim","GET stfinreports.blob.core.windows.net/reports   Authorization: Bearer eyJ0eXAi…"],["l-ok","200 OK · 312 blobs listed · no password anywhere on the wire"]],nosecret:[["l-dim","POST /{tenant}/oauth2/v2.0/token  grant_type=client_credentials"],["l-dim","        client_id=a1b2c3d4…  scope=…/.default          (client_secret omitted)"],["l-bad","401  AADSTS7000218: request body must contain client_assertion or client_secret"],["l-dim","no token was issued. The failure stops at the token endpoint."]],expired:[["l-dim","POST /{tenant}/oauth2/v2.0/token  grant_type=client_credentials"],["l-dim","        client_id=a1b2c3d4…  client_secret=●●●  scope=…/.default"],["l-bad","401  AADSTS7000222: the provided client secret keys are expired"],["l-warn","the classic 3 a.m. page: the secret hit its max lifetime and nobody owned the reminder."]],wrongaud:[["l-dim","POST /{tenant}/oauth2/v2.0/token  scope=https://graph.microsoft.com/.default"],["l-ok","200 OK  a perfectly valid token … for Microsoft Graph"],["l-dim","GET management.azure.com/subscriptions?api-version=…  Authorization: Bearer eyJ…"],["l-bad","401  InvalidAuthenticationToken: the access token audience is invalid"],["l-warn","the exchange succeeded; the aud claim doomed it later. One token, one API."]]},u=t("exLog"),h=[];function g(t){h.forEach(clearTimeout),h=[],u.innerHTML="",document.querySelectorAll("[data-x]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-x")===t)}),p[t].forEach(function(t,n){h.push(setTimeout(function(){var e=document.createElement("div");e.className=t[0],e.textContent=t[1],u.appendChild(e)},e?0:380*n))})}function f(e){return btoa(JSON.stringify(e)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}document.querySelectorAll("[data-x]").forEach(function(e){e.addEventListener("click",function(){g(e.getAttribute("data-x"))})}),g("ok");var b=Math.floor(Date.now()/1e3),m={aud:"https://management.azure.com",iss:"https://sts.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47/",iat:b,nbf:b,exp:b+3900,appid:"a1b2c3d4-e5f6-4a0b-9c8d-7e6f5a4b3c2d",appidacr:"1",idtyp:"app",oid:"9f8e7d6c-5b4a-4392-8171-60594837261a",tid:"72f988bf-86f1-41af-91ab-2d7cd011db47",ver:"1.0"},v=f({typ:"JWT",alg:"RS256",kid:"kWbkaa6qs8wsTnBwiiNYOhHbnAw"}),y=f(m);t("jwtEnc").innerHTML=`<span class="seg-h">${v}</span>.<span class="seg-p">${y.slice(0,120)}…</span>.<span class="seg-s">[signature: 256 bytes of RSA, omitted. You can read a token; you cannot forge one]</span>`;var w={aud:"<b>aud, audience.</b> Which API this token is FOR: here, Azure Resource Manager. ARM rejects tokens minted for Graph or Storage even from the same principal, which is what Figure 3's fourth scenario ran into. One token, one API.",iss:"<b>iss, issuer.</b> Which authority signed this, tenant included. APIs check the signature against the tenant's published keys. A token signed by any other key fails instantly.",iat:"<b>iat and nbf.</b> Freshness bounds: issued-at and not-before. Small clock skew is tolerated; a token from the future is not.",nbf:"<b>iat and nbf.</b> Freshness bounds: issued-at and not-before. Small clock skew is tolerated; a token from the future is not.",exp:"<b>exp, expiry.</b> Roughly 60 to 90 minutes after issue, and it is the entire revocation story: disable the principal and issued tokens still work until exp. Short lifetimes are why the breach window is an hour rather than a quarter.",appid:"<b>appid, the client.</b> The app registration's id, identical in every tenant that uses the app. It tells you which software asked. Incident response starts by querying it.",appidacr:"<b>appidacr, how it authenticated.</b> 1 means client secret, 2 means certificate. Auditors grep for the 1s: that is the list of apps still on the weakest rung of Figure 10's ladder.",idtyp:"<b>idtyp: app.</b> No human involved; a pure application token from the client credentials flow. Conditional access rules written for users mostly pass it by. That absence is both the feature and your problem.",oid:"<b>oid, the service principal's object id.</b> The identity in YOUR tenant. RBAC assignments bind to this, not to appid, and Figure 7's slider points at it.",tid:"<b>tid, tenant id.</b> Whose directory issued this. Multi-tenant apps get one token per tenant, and permissions never bleed across.",ver:"<b>ver, token format version.</b> Claim names shift between v1.0 and v2.0 endpoints (appid versus azp). Trivia, until a validation library reads the wrong one. The weeds section expands this."},k=document.querySelector("#jwtTable tbody"),x=t("jwtWhy");Object.keys(m).forEach(function(e){var t=document.createElement("tr");t.className="claim",t.tabIndex=0,t.setAttribute("data-part","r-"+e);var n=m[e];function a(){x.innerHTML=w[e],document.querySelectorAll(".claim").forEach(function(e){e.classList.toggle("on",e===t)})}t.innerHTML="<td>"+e+"</td><td>"+("number"==typeof n?n+' <span style="color:#767D91">('+new Date(1e3*n).toTimeString().slice(0,8)+")</span>":n)+"</td>",t.addEventListener("click",a),t.addEventListener("mouseenter",function(){x.innerHTML=w[e]}),t.addEventListener("mouseleave",function(){t.classList.contains("on")||(x.innerHTML="click a claim, or hover the dotted terms in the paragraph above")}),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),a())}),k.appendChild(t)}),function(){var e={x:90,y:120,label:"app object",ly:30},n=["your tenant","customer A","customer B"],a=["9f8e7d6c…","41c2a980…","d07f3b12…"],r=i("svg",{viewBox:"0 0 560 240"}),o=i("g",{});r.appendChild(o),o.appendChild(i("rect",{x:20,y:e.y-58,width:140,height:116,rx:10,fill:"none",stroke:"var(--v3)","stroke-dasharray":"4 4",opacity:.5}));var s=i("text",{x:90,y:e.y-68,"text-anchor":"middle",class:"elab"});s.textContent="home tenant",o.appendChild(s);var p=t("fig5Out"),u="hover the app object or any service principal",h=[],g=n.map(function(e,t){return{x:430,y:44+152*t/2*1.06+0,label:"sp · "+e,ly:26,y:44+76*t}});g.forEach(function(t,a){o.appendChild(i("rect",{x:t.x-100,y:t.y-30,width:230,height:60,rx:10,fill:"none",stroke:"#3a4152"}));var s=i("text",{x:t.x-90,y:t.y-38,"text-anchor":"start",class:"elab"});s.textContent=n[a],o.appendChild(s);var l=c(o,e,t,"var(--v3)","m-"+a);h.push(l.tgt),d(r,l.tgt,l.wrap,p,`<b>minted into ${n[a]}</b> · consent created this principal from the one blueprint.`,u)});var f=l(o,e,"var(--v3)","app");h.push(f.tgt),d(r,f.tgt,f.wrap,p,'<b>app object</b> · appId <span style="color:var(--v5)">a1b2c3d4…</span> · lives once, in the home tenant. The blueprint.',u),g.forEach(function(e,t){var s=l(o,{x:e.x,y:e.y,label:"service principal",ly:24},"var(--v3)","sp-"+t);h.push(s.tgt),d(r,s.tgt,s.wrap,p,`<b>service principal in ${n[t]}</b> · appId <span style="color:var(--v5)">a1b2c3d4…</span> (same everywhere) · oid <span style="color:var(--v3)">${a[t]}</span> (unique here). Roles bind to the oid.`,u)}),h.forEach(function(e){o.appendChild(e)}),t("fig5").appendChild(r),t("fig5").classList.add("fig")}(),s("data-f",{reg:"<strong>App registration: the blueprint.</strong> Lives in exactly one tenant, its home. Defines what the app IS: client id, credentials, redirect URIs, requested API permissions. Created by a developer under App registrations. Registering grants nothing; a blueprint cannot act.",sp:"<strong>Service principal: the identity.</strong> The instance minted from the blueprint into a tenant; the thing with the oid. It authenticates, holds RBAC roles, appears in audit logs, and gets disabled during incidents. One registration produces one principal per tenant that uses it.",ent:"<strong>Enterprise applications: the same object, other door.</strong> Not a third thing. It is the portal blade where service principals appear, built for admins. Disable sign-in here, review permissions here, and scroll the list of principals other companies' blueprints have planted in your tenant. It is longer than you expect."},"faceOut");for(var A=[{n:1,pct:1,name:"resource · stfinreports",path:"/subscriptions/prod/resourceGroups/rg-finance/providers/Microsoft.Storage/storageAccounts/stfinreports"},{n:9,pct:5,name:"resource group · rg-finance (9 resources)",path:"/subscriptions/prod/resourceGroups/rg-finance"},{n:58,pct:33,name:"subscription · prod (58 resources)",path:"/subscriptions/prod"},{n:174,pct:100,name:"management group · contoso (174 resources, 3 subs)",path:"/providers/Microsoft.Management/managementGroups/contoso"}],T=["Reads and rewrites the finance reports in <strong>one storage account</strong>. Bad: poisoned numbers, exfiltrated data. But bounded. They map your tenant, find 173 other dots, and every one answers <span style=\"font-family:'JetBrains Mono',monospace\">403 AuthorizationFailed</span>. Cleanup means rotating one secret and diffing one account. An afternoon, and it is yours.","Owns <strong>rg-finance</strong>: deletes the reporting function app, rewrites the automation feeding it, plants a container instance that phones home. Key Vault secrets stay unreadable (data plane, separate grant) though the vault itself can be attacked with a delete. Blast stays in one team's corner; the incident review stays one very long meeting.","Owns <strong>everything in prod</strong>: snapshots VM disks and downloads them, spins up GPU fleets that arrive as next month's bill, rewrites firewall rules, parks backdoor compute in groups nobody watches. Granting roles is still out of reach, and with 58 writable resources, persistence hardly needs it. This is a disclosure-letter incident.","Owns <strong>every subscription the company has</strong>, including the sandbox nobody audits. Attacks the weakest one, pivots, hides persistence in the noise of 174 resources. Inheritance means resources created next year are pre-owned too. Recovery is not a secret rotation; it is a forensic rebuild of trust in the estate."],C=t("dotGrid"),E=0;E<174;E++){var L=document.createElement("i");0===E&&(L.className="you"),C.appendChild(L)}var S=C.children,M=t("scopeTree");[{t:"mg-contoso                    174 resources",lvl:3},{t:"├─ sub prod                    58",lvl:2},{t:"│   ├─ rg-finance               9",lvl:1},{t:"│   │   ├─ stfinreports         ★",lvl:0},{t:"│   │   └─ 8 more …",lvl:1},{t:"│   ├─ rg-web                  14",lvl:2},{t:"│   └─ rg-data                 35",lvl:2},{t:"├─ sub dev                     71",lvl:3},{t:"└─ sub sandbox                 45",lvl:3}].forEach(function(e){var t=document.createElement("span");t.textContent=e.t+"\n",t.setAttribute("data-lvl",e.lvl),M.appendChild(t)});var R=M.children;function I(e){for(var n=A[e],a=1;a<174;a++)S[a].classList.toggle("lit",a<n.n);for(var r=0;r<R.length;r++){var o=+R[r].getAttribute("data-lvl")<=e;R[r].className=o?3===r?"you":"cov":""}t("mCount").textContent=n.n,t("mBar").style.width=n.pct+"%",t("mBar").style.background=0===e?"var(--v17)":1===e?"var(--v19)":"var(--v15)",t("scopePct").textContent=n.pct+"% of tenant",t("scopePct").className=0===e?"l-ok":1===e?"l-warn":"l-bad",t("scopeJson").textContent='az role assignment create \\\n  --assignee <oid> \\\n  --role "Contributor" \\\n  --scope '+n.path,t("atkOut").innerHTML=T[e],t("atkScope").textContent=["resource","resource group","subscription","management group"][e]}t("scopeSlider").addEventListener("input",function(){I(+this.value)}),I(0);var O=["<b>The client.</b> Holds the credential, or better (Figure 10, upper rungs) holds nothing. Good clients cache the token for its hour of life; requesting a fresh one per call is the classic beginner bug that works until the token endpoint throttles you at the worst moment.","<b>Entra ID token endpoint.</b> The only place the secret ever goes. Verifies it, confirms the principal is enabled, signs a JWT with the tenant's private key. Its refusal: <span style=\"font-family:'JetBrains Mono',monospace\">invalid_client</span>, the error Figure 3 showed twice.","<b>The wire.</b> <span style=\"font-family:'JetBrains Mono',monospace\">Authorization: Bearer eyJ…</span> on every request. Bearer means possession is proof, and TLS is what stands between your token and anyone curious. Never write a token to a log; CI logs are the modern sticky note.","<b>ARM front door.</b> Fetches the tenant's public keys, verifies the signature, then aud, then exp and nbf. Pure cryptography, microseconds, every call. Its refusal: <b>401</b>. This is also why Figure 4 being readable does not matter: readable is not mintable.","<b>RBAC engine.</b> Takes the token's oid, walks assignments from management group down to the resource, unions the roles, subtracts deny assignments, checks the action. Figure 7's slider lives here. Its refusal: <b>403 AuthorizationFailed</b>, authenticated and still refused.","<b>The resource.</b> Control plane cleared, and the data plane may still ask again: managing a storage account (Contributor) is not reading its blobs (Storage Blob Data Reader). This second wall is why chapter 08's attacker never read the Key Vault. Deliberate, and permanent."],B=t("layerOut");function q(e){B.innerHTML=O[e],document.querySelectorAll(".layer").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-l")===String(e))})}document.querySelectorAll(".layer").forEach(function(e){e.addEventListener("click",function(){q(+e.getAttribute("data-l"))})}),q(0),t("lyr401").setAttribute("data-part","l-3"),t("lyr403").setAttribute("data-part","l-4"),s("data-cred",{secret:"<strong>Client secret.</strong> A generated string, at most two years of life. Removes human passwords from scripts. Remains: a copyable string that lands in env vars, CI variables, and shell history; an expiry that fires the silent 3 a.m. outage; scanners that find committed ones in minutes. Fine for a first tutorial, a liability as a habit. Stamps <span style=\"font-family:'JetBrains Mono',monospace\">appidacr: 1</span>, the claim auditors grep for.",cert:"<strong>Certificate.</strong> The client signs its token request with a private key; Entra holds only the public half. Removes the reusable string from the wire entirely. Remains: a private key you must store well (Key Vault or an HSM, never the repo) and a rotation ceremony. Stamps <span style=\"font-family:'JetBrains Mono',monospace\">appidacr: 2</span>. The compliance-grade default for third parties.",mi:"<strong>Managed identity.</strong> For workloads running inside Azure. The platform holds and rotates the credential itself; your code asks a local metadata endpoint for tokens and never sees any credential at all. Nothing to store, nothing to leak, nothing to expire on you. Remains: Azure-only, and anything that can execute code on the machine can mint its tokens, so machine compromise equals identity compromise. Underneath, it is still a service principal.",fed:'<strong>Workload identity federation.</strong> For workloads outside Azure: GitHub Actions, GitLab, other clouds. Entra is configured to trust the external platform\'s own OIDC tokens: a token from repo X on branch main IS the deploy principal. Zero stored secrets anywhere. Remains: your trust boundary now includes GitHub\'s issuer, and a subject-claim typo ("any branch" instead of "main") quietly widens who can deploy. The current best practice for CI/CD.'},"credOut");var H={reader:{write:!1,grant:!1,label:"Reader"},contrib:{write:!0,grant:!1,label:"Contributor"},owner:{write:!0,grant:!0,label:"Owner"}},_={secret:{steal:"1 secret string (copyable)",factor:25,note:"a string on a build server"},cert:{steal:"1 private key (a file, if you can reach it)",factor:15,note:"a key file, hopefully in a vault"},mi:{steal:"none stored; compromise the machine instead",factor:8,note:"platform-held, Azure-only"},fed:{steal:"none stored anywhere",factor:5,note:"trust in an external issuer"}};function P(){var e,n=H[t("pgRole").value],a=_[t("pgCred").value],r=+t("pgScope").value,o=A[r],s=n.write?o.n:0,i=Math.min(100,Math.round(s/174*60+(n.grant?18:0)+a.factor));t("pgScopeName").textContent=o.name,t("pgRead").textContent=o.n+" / 174",t("pgWrite").textContent=s+" / 174",t("pgBar").style.width=Math.max(3,i)+"%",t("pgBar").style.background=i>55?"var(--v15)":i>28?"var(--v19)":"var(--v17)",t("pgGrant").textContent=n.grant?"yes (Owner includes role assignment)":"no",t("pgSteal").textContent=a.steal,t("pgRisk").textContent="leak severity "+i+"/100",t("pgRisk").className=i>55?"l-bad":i>28?"l-warn":"l-ok",e=n.write?n.grant?"An attacker owns "+o.n+" resources AND can grant roles: they mint themselves durable access, and cleanup means auditing every assignment in scope. The worst square on the board.":"An attacker writes to "+o.n+" resources but cannot grant roles. Destruction and persistence inside scope; the RBAC blast wall holds at the boundary.":"An attacker reads "+o.n+" resources: exfiltration and reconnaissance, no destruction. Painful, survivable, and the audit log shows exactly what was read.",t("pgOut").textContent=e+" Credential surface: "+a.note+". Issued tokens survive revocation for up to an hour regardless."}["pgRole","pgCred"].forEach(function(e){t(e).addEventListener("change",P)}),t("pgScope").addEventListener("input",P);var F={legacy:{role:"contrib",cred:"secret",scope:3},tutorial:{role:"contrib",cred:"secret",scope:2},bank:{role:"reader",cred:"fed",scope:0}};document.querySelectorAll("[data-pre]").forEach(function(e){e.addEventListener("click",function(){var n=F[e.getAttribute("data-pre")];t("pgRole").value=n.role,t("pgCred").value=n.cred,t("pgScope").value=n.scope,P()})}),P()}();
+</script>
+</body>
+</html>

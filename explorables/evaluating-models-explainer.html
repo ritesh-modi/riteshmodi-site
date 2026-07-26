@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is it actually better? A beginner's guide to comparing AI models and testing prompts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v11:#EBEEEA;--v12:#DFE4DD;--v1:#16211A;--v3:#3E4B42;--v2:#6D7A71;--v15:#C8CFC6;--v0:#2F7351;--v9:#12201A;--v10:#DCE3DC;--v14:#E0776A;--v19:#E0A94A;--v16:#4FC08A;--v7:"JetBrains Mono",ui-monospace,Menlo,monospace;--v4:#6BA3E8;--v5:#E4A066;--v18:#8FA09A;--v6:680px;--v20:1120px;--v8:26px;--v17:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v17:0s}}body{margin:0;background:var(--v11);color:var(--v1);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#2F7351}.pII{--v0:#9C4A20}.pIII{--v0:#3B5BA0}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v12);box-shadow:0 6px 22px rgba(22,33,26,.18)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v15);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:var(--v7);font-size:15px;font-weight:500;color:var(--v1)}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:13px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v15);transition:background .3s,transform .3s}.rail a.on{background:var(--v13,#2F7351);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v1);outline-offset:3px}.col{max-width:var(--v6);margin:0 auto;padding:0 var(--v8);position:relative}.wide{max-width:var(--v20);margin:0 auto;padding:0 var(--v8)}.bleed{width:100%;margin:0}section{padding:100px 0}.divider{max-width:var(--v6);margin:0 auto;height:1px;background:var(--v15)}h1,h2,h3{font-family:"Spectral",Georgia,serif;font-weight:400;line-height:1.1;margin:0}h1.hero-h{font-size:clamp(38px,6.2vw,60px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(29px,4.8vw,44px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Spectral",serif;font-size:clamp(21px,2.9vw,29px);line-height:1.4;color:var(--v3)}.part-banner{padding:92px 0 20px;text-align:center}.part-banner .pk{font-family:var(--v7);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,42px);font-style:italic}.eyebrow{font-family:var(--v7);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v12);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.intu{border:1px solid var(--v15);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v12);font-size:17.5px;line-height:1.64}.intu .il{font-family:var(--v7);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v1)}.pull{font-family:"Spectral",serif;font-size:clamp(24px,3.4vw,33px);line-height:1.32;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v12);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v3)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v2)}.mnote b{color:var(--v3);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v12);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v12)}.demo{border:1px solid var(--v15);background:var(--v9);color:var(--v10);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #26332c;font-family:var(--v7);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#7f8f86;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v2);margin:12px 2px 0}.figcap b{font-family:var(--v7);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:var(--v7);font-size:12.5px;padding:9px 16px;border:1px solid var(--v16);border-radius:3px;background:transparent;color:var(--v16);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v16);color:var(--v9)}.chip{font-family:var(--v7);font-size:12.5px;padding:8px 13px;border:1px solid #35443c;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#aab7b0}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}select{font-family:var(--v7);font-size:13px;background:#1b2a22;color:#DCE3DC;border:1px solid #35443c;border-radius:3px;padding:7px 10px}code{font-family:var(--v7);font-size:.88em;background:var(--v12);padding:1px 6px;border-radius:3px}.demo code{background:none;padding:0}.ans{border-radius:6px;padding:14px 16px;font-size:14.5px;line-height:1.6}.ans.a{border:1px solid var(--v4);background:rgba(107,163,232,.08)}.ans.b{border:1px solid var(--v5);background:rgba(228,160,102,.08)}.ans .who{font-family:var(--v7);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.ans.a .who{color:var(--v4)}.ans.b .who{color:var(--v5)}.dots{display:flex;flex-wrap:wrap;gap:5px;margin:16px 0 6px}.dots i{width:15px;height:15px;border-radius:3px;transition:background .2s}.dots i.a{background:var(--v4)}.dots i.b{background:var(--v5)}.dots i.tie{background:var(--v18)}.dots i.off{background:#1b2a22;border:1px solid #26332c}.mlab{font-family:var(--v7);font-size:12px;color:#7f8f86;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#DCE3DC}.meter{height:12px;background:#1b2a22;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i,.dots i{transition:none}}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:var(--v7);font-size:11px;fill:#aab7b0}.fig .elab{font-family:var(--v7);font-size:10px;fill:#7f8f86}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.2}.fig .sel rect,.fig .sel circle{stroke-width:4}.inspector{font-family:var(--v7);font-size:12.5px;line-height:1.8;border-top:1px solid #26332c;margin-top:16px;padding-top:14px;min-height:92px;color:#aab7b0}.inspector b{color:#DCE3DC;font-weight:500}.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--v7);font-size:11px;color:#7f8f86;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer{font-family:var(--v7);font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #35443c;border-radius:4px;background:transparent;color:#aab7b0;cursor:pointer;transition:all .18s;line-height:1.5}.layer.on{border-color:var(--v0);color:#fff;background:#1b2a22}.layer b{display:block;color:#DCE3DC;font-size:13px;margin-bottom:3px}.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px solid #26332c;padding-top:16px;min-height:120px}@media(max-width:600px){.cmp{grid-template-columns:1fr}}.cmp .side{font-size:14.5px;line-height:1.6;color:#DCE3DC}.cmp .side .h{font-family:var(--v7);font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.cmp .claude .h{color:var(--v4)}.cmp .gpt .h{color:var(--v5)}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v8);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:var(--v7);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v9);color:var(--v10);border:1px solid var(--v15);border-radius:6px;padding:24px}[data-gel]{opacity:.12;transition:opacity .45s ease,transform .45s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v11);border-bottom:1px solid var(--v15);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:var(--v7);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7f8f86;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:var(--v7);font-size:12px;padding:7px 12px;border:1px solid #35443c;border-radius:4px;background:transparent;color:#aab7b0;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.weeds details{border:1px solid var(--v15);border-radius:4px;margin-bottom:10px;background:var(--v11)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v12)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v3)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Spectral",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.42;margin:0}footer{border-top:1px solid var(--v15);padding:34px 0 60px;font-family:var(--v7);font-size:12.5px;color:var(--v2);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:72px 0}}</style></style>
+</head>
+<body>
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#2F7351" title="Part I"></a>
+  <a href="#p2" data-c="#9C4A20" title="Part II"></a>
+  <a href="#p3" data-c="#3B5BA0" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · evaluating ai models</div>
+    <h1 class="hero-h">Is it actually better,<br>or does it just feel better?</h1>
+    <p class="lede">Two chatbots give you two answers. Picking the "better" one by gut is a coin flip. This guide teaches the small, sturdy method real teams use to compare models, test prompts, and read a model's behavior, then walks you through doing every bit of it yourself in claude.ai and ChatGPT.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#2F7351">
+<div class="part-banner"><div class="pk">Part I · chapters 01 to 04</div><h2>Comparing</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the moment</div>
+    <h2 class="big">Two answers, no way to tell</h2>
+    <div class="try">Maya needs help drafting customer emails. She asks two different AI models the exact same thing and gets the two replies below. Read both, and decide, honestly, which model is better. Then notice how you decided.</div>
+    <div class="demo">
+      <div class="demo-head"><span>same prompt: "write a polite reply declining a refund"</span></div>
+      <div class="demo-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="twoAns">
+          <div class="ans a"><div class="who">model A</div>Thank you for reaching out. After reviewing your order against our policy, we are not able to approve a refund in this case. I know that is not the answer you were hoping for, and I am happy to explain the reasoning or look at other options with you.</div>
+          <div class="ans b"><div class="who">model B</div>Hi! Thanks so much for your message. Unfortunately we can't offer a refund here as it falls outside our policy window. I completely understand this is frustrating. Is there anything else I can do to help make this right?</div>
+        </div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>Two real-shaped answers to one prompt. Most people pick one in a second, then invent a reason. That speed is the problem this guide is about.</div>
+    <p style="margin-top:26px">You probably had a preference within a second, then reached for a reason: this one is warmer, that one is more professional. But you judged on <em>one</em> example, and your reason arrived <em>after</em> your gut did. That is not comparison. That is a first impression wearing the costume of a decision.</p>
+    <p>Doing better is not hard, and it does not require being technical. It requires a method with three small parts, and the willingness to run more than one example. That is the whole guide.</p>
+    <div class="pull">"It feels better" is where evaluation starts, not where it ends.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the trap</div>
+    <h2 class="big">One example is a coin flip</h2>
+    <p>Here is why a single try fools you. Models are not identical from run to run, and any one question is a fluke waiting to happen. Press the button below to run the same one-question showdown again and again, and watch the winner flip around with nothing changed.</p>
+    <div class="demo">
+      <div class="demo-head"><span>one test case · run it repeatedly</span><span id="flipTally" class="mval"></span></div>
+      <div class="demo-body" style="text-align:center">
+        <div id="flipWho" style="font-family:'Spectral',serif;font-size:clamp(26px,5vw,40px);margin:8px 0 18px">press run</div>
+        <button class="btn" id="flipBtn" style="font-size:14px;padding:11px 22px">▶ run this one test</button>
+        <div id="flipHist" style="font-family:var(--v7);font-size:13px;color:#7f8f86;margin-top:18px;min-height:22px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 2</b>Click run several times. Same test, and the "winner" keeps changing. If you had stopped after your first click, you would have crowned a coin toss.</div>
+    <div class="intu"><span class="il">picture it</span>
+      You are deciding which of two coffee shops is better, so you buy one drink from each on one morning. Shop A's barista was new today; Shop B nailed it. You crown Shop B. But come back ten mornings and the picture changes completely. <b>One visit measures the morning, not the shop.</b> One AI answer measures that roll of the dice, not the model.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the method</div>
+    <h2 class="big">A task, a test set, and a fair score</h2>
+    <p>An evaluation, stripped to its bones, is three things. A <strong>task</strong>: the one job you actually need done, stated clearly ("decline a refund politely but firmly"). A <strong>test set</strong>: several real examples of that task, not one, so flukes cancel out. And a <strong>score</strong>: a way to judge each answer that you decide <em>before</em> you look, so your gut cannot rewrite the rules mid-game.</p>
+    <div class="intu"><span class="il">picture it</span>
+      This is how a cooking contest works, and for the same reason. Judges agree on the dish and the scoring (taste, presentation, follows the brief) before anyone cooks. Every chef gets the same brief. Judges taste without knowing whose plate it is. Strip any one of those away and you no longer have a contest, you have a popularity vote. <b>A fair AI comparison is the same three rules: same task, several tries, blind scoring.</b></p></div>
+    <p>"Blind" is the quiet hero. If you know which answer came from your favorite model, you will find reasons to prefer it. Hiding the labels while you score is the cheapest way to stop fooling yourself, and you will do it by hand in Part III.</p>
+    <div class="note">You do not need numbers-heavy rigor to start. A test set can be five examples in a document, and a score can be a thumbs up or down. The method matters more than the mathematics; running five cases beats agonizing over one.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · the knob · the test set</div>
+    <h2 class="big">Watch the truth appear as you add tests</h2>
+    <p>This is the heart of the whole method, so here it is as one slider. Below is a bench comparing two models on a task. Model A really is a little better here, but only a little, and each single test is noisy. Drag the number of test cases and watch the verdict go from a meaningless coin toss to a steady, trustworthy answer.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>a/b test bench · live</span><span id="benchVerdict" class="mval"></span></div>
+      <div class="demo-body">
+        <label for="benchN" style="font-family:var(--v7);font-size:13px;color:#aab7b0;display:block;margin-bottom:8px">
+          test cases run: <span class="mval" id="benchNv">1</span></label>
+        <input type="range" id="benchN" min="1" max="60" step="1" value="1" aria-label="Number of test cases">
+        <div class="dots" id="benchDots" style="margin-top:18px"></div>
+        <div class="mlab"><span style="color:var(--v4)">Model A wins</span><span class="mval"><span id="benchA">0</span></span></div>
+        <div class="meter"><i id="benchBarA" style="background:var(--v4)"></i></div>
+        <div class="mlab"><span style="color:var(--v5)">Model B wins</span><span class="mval"><span id="benchB">0</span></span></div>
+        <div class="meter"><i id="benchBarB" style="background:var(--v5)"></i></div>
+        <div class="mlab" style="margin-top:14px"><span>confidence in the verdict</span><span class="mval" id="benchConf"></span></div>
+        <div class="meter"><i id="benchConfBar"></i></div>
+        <button class="btn" id="benchReroll" style="margin-top:16px">↻ run a fresh batch</button>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 3</b>Drag from 1 to 60 test cases. At a handful, the winner flip-flops and confidence stays low. Past twenty or thirty, Model A's real, small edge surfaces and stops moving. That plateau is a verdict you can trust.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <p>Two lessons live in that slider. First, more tests do not change which model is better; they change how <em>sure</em> you can be. Second, the number you need is bigger than feels necessary. Five tests is far better than one, but a close call may need twenty or more before it settles. When two models are far apart, a few tests suffice; when they are close, you must look harder.</p>
+    <div class="pull">You are not measuring the model. You are measuring the model minus the noise, and noise only fades with numbers.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#9C4A20">
+<div class="part-banner"><div class="pk">Part II · chapters 05 to 07</div><h2>Testing prompts and reading behavior</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · change one thing</div>
+    <h2 class="big">Test prompts like a scientist, not a gambler</h2>
+    <p>Comparing models is one use of the bench. The other, and the one you will use daily, is comparing <em>prompts</em>. When an answer disappoints, the temptation is to rewrite the whole prompt and hope. The reliable move is the opposite: keep your test set fixed, change exactly <strong>one thing</strong>, and measure whether the score moved. Click through four versions of one prompt and watch a single change at a time do the work.</p>
+    <div class="demo">
+      <div class="demo-head"><span>one prompt, changed one step at a time</span><span id="promptScore" class="mval"></span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="chip on" data-pv="0">v1 · bare</button>
+          <button class="chip" data-pv="1">+ role</button>
+          <button class="chip" data-pv="2">+ an example</button>
+          <button class="chip" data-pv="3">+ a constraint</button>
+        </div>
+        <div id="promptOut" style="font-family:var(--v7);font-size:13px;line-height:1.7;color:#DCE3DC;min-height:120px"></div>
+        <div class="meter" style="margin-top:14px"><i id="promptBar"></i></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 4</b>Click through the versions. Each adds one thing and the score on the fixed test set climbs. Because only one thing changed each time, you know exactly what earned the gain.</div>
+    <div class="intu"><span class="il">picture it</span>
+      A cook whose soup is off does not change the salt, the heat, the herbs, and the pot all at once, then declare victory. They change one, taste, and learn. Change five things and the soup might improve, but you have learned nothing you can repeat. <b>One change per test is the only way the result teaches you anything.</b></p></div>
+  </div>
+</section>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">06 · the dice inside</div>
+    <h2 class="big">Why the same prompt gives different answers</h2>
+    <p>You saw the winner flip in chapter 02. Here is the reason, and it has a name and a dial. To sound natural, a model does not always pick its single most likely next word; it rolls weighted dice. How loaded those dice are is called <strong>temperature</strong>. Scroll to watch one prompt sampled again and again as the temperature rises.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scTemp">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v7);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7f8f86;margin-bottom:8px">prompt: "a two-word tagline for a coffee shop"</div>
+      <div style="font-family:var(--v7);font-size:12px;color:var(--v19);margin-bottom:16px" id="tempLabel">temperature: not set yet</div>
+      <div class="fig" id="tempFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 0 · the prompt</div><p>One simple prompt, asked eight times. What comes back depends entirely on the temperature setting, the model's dice.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 1 · temperature 0 · frozen</div><p>At zero, the dice are locked to the single most likely answer. Ask eight times, get the same thing eight times. Repeatable, and a little lifeless.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 2 · temperature 0.7 · balanced</div><p>Turn it up and the model explores. Now you see a few genuinely different taglines. This is the everyday setting: varied but still sensible.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 3 · temperature 1.3 · wild</div><p>High temperature loosens the dice all the way. Eight asks, eight different answers, some inspired and some nonsense. Creative, and a gamble.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 4 · why it matters for testing</div><p>This is why one test lies. At any temperature above zero the model varies on its own, so to judge it fairly you must ask several times, or pin the temperature low, or both.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 5</b>Scroll-driven. The same prompt sampled eight times. As temperature rises the answers spread from identical to all-different. Identical bars mean identical outputs.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      Temperature is the difference between asking a careful accountant and a jazz musician to finish your sentence. The accountant gives the same sensible ending every time. The musician riffs, brilliant some nights, strange on others. Neither is "better"; they fit different jobs. <b>You want the accountant for a policy answer and the musician for brainstorming names,</b> and knowing which you are talking to is half of reading a model's behavior.</p></div>
+    <p>The everyday chat apps hide this dial and set it somewhere in the middle for you. That is a fine default, but it means the same question can give you a keeper today and a dud tomorrow. When you evaluate, that variation is the noise your test set is fighting.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the tell-tale behaviors</div>
+    <h2 class="big">Six behaviors every beginner should learn to spot</h2>
+    <p>Reading a model means noticing how it tends to go wrong, so you can catch it. These six show up constantly. Hover each to see what it is and the quick test that reveals it.</p>
+    <div class="demo">
+      <div class="demo-head"><span>model behaviors · hover one</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig7"></div>
+        <div class="inspector" id="fig7Out">hover a behavior to learn it and how to test for it</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 6</b>Hover each tile. Every one comes with a one-move test you can run in any chat window in under a minute.</div>
+    <aside class="mnote"><b>The big one.</b> Of these, made-up facts (hallucination) burns beginners most, because a wrong answer is delivered with the exact same confidence as a right one. Always verify anything that matters.</aside>
+    <p style="margin-top:26px">Notice that none of these need special tools. A made-up fact reveals itself when you ask the same question two different ways and get two different "facts." A refusal reveals itself when a rephrase gets through. You are already equipped to test all six.</p>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#3B5BA0">
+<div class="part-banner"><div class="pk">Part III · chapters 08 to 11</div><h2>Doing it for real</h2></div>
+
+
+<section style="padding-top:70px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">08 · the walkthrough</div>
+    <h2 class="big">Run your own A/B test in ten minutes</h2>
+    <p>Enough theory. Here is the exact sequence to compare two models yourself, using nothing but a browser and the free-tier chat apps. Scroll through it once, then do it for real. The panel shows what your screen looks like at each step.</p>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scHow">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v7);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7f8f86;margin-bottom:16px">your screen</div>
+      <div class="fig" id="howFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 1 · write your test set</div><p>In a plain document, write five real examples of your task. For Maya: five actual refund situations. This is your test set, and it is the part most people skip. Do not skip it.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 2 · open the two models</div><p>Open two browser tabs. In claude.ai, pick a model from the dropdown near the message box. In ChatGPT, pick one from the model menu at the top. To compare two models on the <em>same</em> app, just switch the picker between runs.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 3 · paste the same prompt</div><p>Paste test case one into both, word for word. The prompts must be identical, or you are testing your typing, not the models. Send, and keep both answers.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 4 · regenerate to feel the noise</div><p>Under each answer, click the regenerate button two or three times. Watch the answer wobble. This is chapter 02 in your own hands, and it is why one run is not enough.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 5 · score blind, then tally</div><p>Paste the answers into a doc with the names stripped off. Score each against your rule. Only then reveal which was which and count the wins. That number, not your first impression, is your verdict.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 7</b>Scroll-driven, pinned on the right. Five steps from blank document to a verdict you can defend. Every step uses only the free chat apps.</div></div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">09 · where the buttons are</div>
+    <h2 class="big">The same moves in claude.ai and ChatGPT</h2>
+    <p>Both apps can do everything the method needs; they just put the controls in different places, and both hide the temperature dial on purpose. Click each move to see where it lives in each app, and where to go when you want the real lab with the dial exposed. Names and menus shift every few months, so treat this as a map, not a screenshot.</p>
+    <div class="demo">
+      <div class="demo-head"><span>claude.ai vs chatgpt · click a move</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-l="0"><b>pick / switch the model</b>the single most important control</button>
+          <button class="layer" data-l="1"><b>set a system prompt</b>standing instructions for every reply</button>
+          <button class="layer" data-l="2"><b>regenerate an answer</b>see the run-to-run noise</button>
+          <button class="layer" data-l="3"><b>start a clean, memory-free chat</b>so old context cannot leak in</button>
+          <button class="layer" data-l="4"><b>expose the temperature dial</b>the real testing lab</button>
+        </div>
+        <div class="cmp" id="cmpOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 8</b>Click each move. Left is claude.ai, right is ChatGPT. The last row is the important one: the chat apps hide temperature; the developer consoles hand it to you.</div>
+    <aside class="mnote"><b>Snapshot.</b> Interfaces here reflect mid-2026. If a menu has moved, the idea has not: every one of these five moves still exists somewhere in both apps.</aside>
+    <p style="margin-top:26px">The last move is worth the detour. When you outgrow the chat window and want to pin the temperature, set a real system prompt, and see two answers side by side, both companies offer a free developer console: the <strong>Anthropic Console</strong> for Claude and the <strong>OpenAI Playground</strong> for GPT. Same models, every dial exposed. That is where serious prompt testing happens.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">10 · your homework</div>
+    <h2 class="big">The five-case eval you can run today</h2>
+    <p>Everything so far collapses into one small, repeatable recipe. It takes about fifteen minutes and it will change how you pick and prompt models forever.</p>
+    <div class="demo">
+      <div class="demo-head"><span>the recipe · click a step</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-r="0"><b>1 · name the task in one sentence</b></button>
+          <button class="layer" data-r="1"><b>2 · write five real test cases</b></button>
+          <button class="layer" data-r="2"><b>3 · decide the score before you look</b></button>
+          <button class="layer" data-r="3"><b>4 · run both models on all five</b></button>
+          <button class="layer" data-r="4"><b>5 · score blind, tally, decide</b></button>
+        </div>
+        <div class="layer-out" id="recipeOut" style="font-size:15px;line-height:1.65;color:#DCE3DC;border-top:1px solid #26332c;padding-top:16px;min-height:96px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 9</b>Click through the five steps. This is the entire method from Part I made concrete enough to start right now.</div>
+    <div class="pull">Five real cases, scored blind, beats a thousand hot takes about which model is smartest.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · honest limits</div>
+    <h2 class="big">A method, not a verdict machine</h2>
+    <p>The bench gives you evidence, not certainty. Knowing where it falls short is what separates a useful eval from a misleading one.</p>
+    <p><strong>Your eval is only as good as your test set.</strong> Five easy cases will crown a model that folds on the hard tenth. Choose cases that include the tricky, the edge, the ones you actually fear, not just the friendly ones.</p>
+    <p><strong>Scores are partly subjective.</strong> "Better" for a support email is not "better" for a poem. Your scoring rule encodes your taste, and that is fine, as long as you write it down and apply it blindly and consistently.</p>
+    <p><strong>The models move under you.</strong> Providers update models without renaming them, so a verdict from March may not hold in June. Re-run your little eval when a model changes or when the stakes are high. It is cheap.</p>
+    <p><strong>Public benchmarks are not your task.</strong> A model topping a leaderboard was measured on someone else's test set, not yours. It is a hint, never a substitute for five cases of your own work. The weeds cover why.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>A first impression is one roll of the dice.<br>
+    A test set is the dice rolled enough times to see the shape.<br>
+    Same task, several tries, scored blind.<br>
+    That is the whole craft, and you can start with five cases today.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div style="max-width:var(--v6);margin:0 auto">
+      <div class="eyebrow">the confidence lab</div>
+      <h2 class="big">How sure should you be?</h2>
+      <p>Put the method together. Set how far apart the two models really are, how many cases you run, and whether you pinned the temperature, and read how much you can trust the verdict. The presets rebuild the three situations you will actually meet.</p>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><span>verdict confidence · illustrative</span><span id="labGrade" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="obvious">preset: one clearly better</button>
+          <button class="btn" data-pre="close">preset: a close call</button>
+          <button class="btn" data-pre="lazy">preset: the lazy one-shot</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>how different the models really are</label>
+            <div class="toggle" id="labGap">
+              <button data-v="far" class="on">far apart</button>
+              <button data-v="near">close</button>
+            </div></div>
+          <div><label>temperature pinned low?</label>
+            <div class="toggle" id="labTemp">
+              <button data-v="on" class="on">yes (less noise)</button>
+              <button data-v="off">no (chat default)</button>
+            </div></div>
+          <div style="grid-column:1/-1"><label>test cases: <span id="labNv" class="mval" style="color:#aab7b0">10</span></label>
+            <input type="range" id="labN" min="1" max="60" step="1" value="10" aria-label="Test cases"></div>
+        </div>
+        <div class="mlab"><span>confidence in the verdict</span><span class="mval" id="labConf"></span></div>
+        <div class="meter"><i id="labConfBar"></i></div>
+        <div class="mlab"><span>effort (cases × runs)</span><span class="mval" id="labEffort"></span></div>
+        <div class="meter"><i id="labEffortBar"></i></div>
+        <div id="labOut" style="font-family:var(--v7);font-size:12.5px;line-height:1.8;color:#aab7b0;margin-top:16px;border-top:1px solid #26332c;padding-top:14px"></div>
+      </div>
+    </div>
+    <div style="max-width:var(--v6);margin:0 auto">
+      <div class="figcap"><b>Figure 10</b>Try the close-call preset, then drag cases up: watch how many more you need when the models are near each other. The lazy one-shot preset shows why a single run tells you almost nothing.</div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>Temperature and top-p, precisely</summary><div class="wbody">Temperature scales how sharply the model favors its top guesses before it samples. Near zero it almost always takes the single most likely token, so answers repeat. Higher values flatten the odds so long-shot words get a chance. Top-p (nucleus sampling) is a cousin: it keeps only the smallest set of tokens whose probability adds up past p, then samples among those. For repeatable testing, pin temperature low. For brainstorming, raise it. The chat apps choose a middle value for you and hide the control.</div></details>
+    <details><summary>Blind scoring, and why order matters too</summary><div class="wbody">Hiding which model wrote an answer stops brand bias. But there is a subtler trap: if Model A is always on the left, you may favor left. Shuffle the position as well as the label. Serious evals randomize both, and sometimes ask a scorer to rank rather than rate, because relative judgments ("A is better than B") are steadier than absolute ones ("A is a 7").</div></details>
+    <details><summary>Using an AI to grade the AI (LLM-as-judge)</summary><div class="wbody">Scoring by hand does not scale past a few dozen cases, so teams often ask a strong model to score the answers against a written rubric. It is fast and surprisingly decent, but it inherits the judge's biases: it tends to prefer longer answers and its own style. Use it to triage at scale, spot-check its grades by hand, and never let the same model be both contestant and judge.</div></details>
+    <details><summary>Public benchmarks: MMLU, and why the leaderboard is not your job</summary><div class="wbody">Benchmarks like MMLU (a big multiple-choice exam) or coding and math test sets let the field compare models on shared ground. They are useful and they are not your task. A model can ace a physics exam and still write worse refund emails than a smaller one, because your task was never on the test. Read benchmarks as a rough filter for the shortlist, then run your own five cases to actually choose.</div></details>
+    <details><summary>Reasoning models change the temperature story</summary><div class="wbody">A newer class of models "thinks" in hidden steps before answering. For these, the useful dials and the way you test shift: you care more about whether the final answer is right than about sampling variety, and some providers restrict the temperature control entirely. The evaluation method does not change, though. Same task, several cases, blind scoring still decides it.</div></details>
+    <details><summary>Reproducibility: pin the model version</summary><div class="wbody">"GPT" or "Claude" is a family, not a fixed thing. In the chat apps you rarely know the exact build you are talking to, and it can change overnight. If a result must be reproducible, use the developer console where you can name a specific dated model version, record it alongside your scores, and re-run against that same version later. Undated results have a quiet expiry date.</div></details>
+    <details><summary>Cost and speed are part of "better"</summary><div class="wbody">A model that wins your quality bench by a hair but costs five times as much and answers twice as slowly may still be the wrong choice. Real evaluation scores three things at once: quality, price, and latency. The smaller, cheaper, faster model that is "good enough" on your test set is very often the right pick, and only a test set can tell you where "good enough" lands.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    the a/b bench, prompt scores, temperature samples, and confidence meters are illustrative teaching aids driven by real sampling and simple models in your browser, not measurements of any specific product · app interfaces reflect a mid-2026 snapshot and will change<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function e(e){return document.getElementById(e)}function t(e,t){var a=document.createElementNS("http://www.w3.org/2000/svg",e);for(var n in t)a.setAttribute(n,t[n]);return a}var a=e("pdialFill"),n=e("pdialTxt"),r=2*Math.PI*23;a.style.strokeDasharray=r,a.style.strokeDashoffset=r,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);a.style.strokeDashoffset=r*(1-Math.min(1,Math.max(0,t||0)))},{passive:!0});var o=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),o.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){o.observe(e)});var s,i,l,c,d=document.querySelectorAll("#rail a"),p={p1:"I",p2:"II",p3:"III"},h=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-c");a.style.stroke=t,p[e.target.id]&&(n.textContent=p[e.target.id],n.style.color=t),d.forEach(function(a){var n=a.getAttribute("href")==="#"+e.target.id;a.classList.toggle("on",n),n&&a.style.setProperty("--v13",t)})}})},{rootMargin:"-40% 0px -40% 0px"});function u(e,t){var a=[].slice.call(document.querySelectorAll("#"+e+" .stp")),n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(a.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});a.forEach(function(e){n.observe(e)}),t(0)}["p1","p2","p3"].forEach(function(t){h.observe(e(t))}),s=0,i=0,l=0,c=[],e("flipBtn").addEventListener("click",function(){s++;var t=Math.random()<.5?"A":"B";"A"===t?i++:l++,c.push(t),c.length>16&&c.shift(),e("flipWho").innerHTML='Model <span style="color:'+("A"===t?"var(--v4)":"var(--v5)")+'">'+t+"</span> won",e("flipTally").textContent="A: "+i+"  ·  B: "+l+"  ("+s+" runs)",e("flipHist").textContent=c.join("  ")+(s>=4?"   ← still flipping":"")}),function(){function t(){var e=Math.random();return e<.57?"a":e<.92?"b":"tie"}function a(e){for(var a=[],n=0;n<e;n++)a.push(t());return a}var n=1,r=a(60);function o(){var t=r.slice(0,n),a=t.filter(function(e){return"a"===e}).length,o=t.filter(function(e){return"b"===e}).length,s=(t.filter(function(e){return"tie"===e}).length,e("benchDots"));s.innerHTML="";for(var i=0;i<60;i++){var l=document.createElement("i");l.className=i<n?r[i]:"off",s.appendChild(l)}e("benchA").textContent=a,e("benchB").textContent=o;var c=a+o;e("benchBarA").style.width=(c?a/c*100:0)+"%",e("benchBarB").style.width=(c?o/c*100:0)+"%";var d,p=c?Math.abs(a-o)/c:0,h=Math.round(Math.min(99,(1-Math.pow(.9,n))*(40+60*p)));e("benchConf").textContent=h+"%",e("benchConfBar").style.width=h+"%",e("benchConfBar").style.background=h>70?"var(--v16)":h>40?"var(--v19)":"var(--v14)",d=n<3?'<span style="color:var(--v14)">too few to say anything</span>':h<45?'<span style="color:var(--v19)">still a coin toss</span>':a>=o?'<span style="color:var(--v16)">Model A looks better</span>':'<span style="color:var(--v5)">Model B looks better (noise?)</span>',e("benchVerdict").innerHTML=d}e("benchN").addEventListener("input",function(){n=+this.value,e("benchNv").textContent=n,o()}),e("benchReroll").addEventListener("click",function(){r=a(60),o()}),o()}();var v=[{t:'prompt: "reply to this refund request"',note:"Bare. The model guesses tone and length. Answers are all over the place across the test set.",score:38},{t:'prompt: "You are a support agent. Reply to this refund request."',note:"+ role. One sentence sets the voice. Tone steadies across cases; score climbs.",score:58},{t:'prompt: "You are a support agent. Here is a good reply: [example]. Now reply to this one."',note:"+ an example. Showing one ideal answer locks the format and warmth. Bigger jump than the role alone.",score:76},{t:'prompt: "...reply. Rules: decline clearly, stay warm, under 60 words, offer one next step."',note:"+ a constraint. Explicit rules cut the rambling and the over-apologizing. Now it is consistent and on-brief.",score:88}];!function(){function t(t){var a=v[t];e("promptOut").innerHTML='<div style="color:var(--v19);margin-bottom:10px">'+a.t+"</div>"+a.note,e("promptBar").style.width=a.score+"%",e("promptBar").style.background=a.score>75?"var(--v16)":a.score>50?"var(--v19)":"var(--v14)",e("promptScore").innerHTML='score on test set: <span style="color:#DCE3DC">'+a.score+"/100</span>",document.querySelectorAll("[data-pv]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-pv")===t)})}document.querySelectorAll("[data-pv]").forEach(function(e){e.addEventListener("click",function(){t(+e.getAttribute("data-pv"))})}),t(0)}(),function(){var a=t("svg",{viewBox:"0 0 520 250"}),n=t("g",{});a.appendChild(n);var r={},o=["var(--v4)","var(--v5)","var(--v16)","var(--v19)","var(--v18)","#B39DDB","#E48FB0","#66C2C2"];function s(e){return e in r||(r[e]=o[Object.keys(r).length%o.length]),r[e]}function i(e,a){var r=t("g",{"data-gel":e});return a.forEach(function(e,a){var n=20+a%4*126,o=30+90*Math.floor(a/4);r.appendChild(t("rect",{x:n,y:o,width:116,height:32,rx:5,fill:"#1b2a22",stroke:s(e),"stroke-width":1.6}));var i=t("text",{x:n+10,y:o+21,class:"elab",fill:"#DCE3DC"});i.textContent=e,r.appendChild(i)}),n.appendChild(r),r}var l=t("g",{"data-gel":"prompt"});l.appendChild(t("text",{x:20,y:130,class:"nlab",fill:"var(--v19)"})).textContent="ask 8 times → scroll to set the temperature",n.appendChild(l),i("low",["Brew Happy.","Brew Happy.","Brew Happy.","Brew Happy.","Brew Happy.","Brew Happy.","Brew Happy.","Brew Happy."]),i("med",["Brew Happy.","Daily Grind.","Brew Happy.","Bean There.","Daily Grind.","Brew Happy.","Sip Slow.","Daily Grind."]),i("high",["Brew Happy.","Cosmic Bean.","Sip Slow.","Wander Roast.","Bean There.","Ink & Steam.","Daily Grind.","Moon Drip."]),e("tempFig").appendChild(a);var c={0:{gels:["prompt"],lab:"not set yet"},1:{gels:["low"],lab:"0.0 · frozen (8 identical)"},2:{gels:["med"],lab:"0.7 · balanced (a few variants)"},3:{gels:["high"],lab:"1.3 · wild (8 different)"},4:{gels:["high"],lab:"1.3 · this variety is the noise"}};u("scTemp",function(t){var n=c[t]||c[0];e("tempLabel").textContent="temperature: "+n.lab,a.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",n.gels.indexOf(e.getAttribute("data-gel"))>=0)})})}(),function(){var a=[{label:"RANDOMNESS",c:"var(--v4)",html:"<b>randomness.</b> The same prompt gives different answers. <b>Test:</b> ask the identical thing three times in fresh chats. Big swings mean high variability; judge it on several runs, not one."},{label:"MADE-UP FACTS",c:"var(--v14)",html:"<b>made-up facts (hallucination).</b> Confident, wrong, and impossible to tell apart from confident-and-right by tone. <b>Test:</b> ask for a source, or ask the same fact two ways; contradictions expose it. Always verify what matters."},{label:"REFUSALS",c:"var(--v19)",html:"<b>over-refusal.</b> Declining a harmless request because it pattern-matches something risky. <b>Test:</b> rephrase and add context. If a gentler wording sails through, the first was an over-refusal, not a real limit."},{label:"CONTEXT / MEMORY",c:"var(--v16)",html:'<b>context and memory.</b> The model only "knows" what is in the current chat (plus any memory feature). <b>Test:</b> reference something from earlier and see if it holds; start a new chat to confirm it truly reset.'},{label:"PHRASING SENSITIVITY",c:"var(--v5)",html:"<b>phrasing sensitivity.</b> Small wording changes swing the answer more than you would expect. <b>Test:</b> ask the same question two ways; a big gap means the prompt, not the model, is driving the result."},{label:"VERBOSITY",c:"var(--v18)",html:'<b>verbosity.</b> Padding a two-line answer into six paragraphs. <b>Test:</b> add "answer in one sentence" and see if it can be crisp. Length is a style you can usually just ask away.'}],n=t("svg",{viewBox:"0 0 560 250"}),r=t("g",{});n.appendChild(r);var o=e("fig7Out"),s=[];a.forEach(function(e,a){var i=14+182*(a%3),l=24+104*Math.floor(a/3),c=t("g",{"data-part":"bh"+a});c.appendChild(t("rect",{x:i,y:l,width:170,height:84,rx:6,fill:"#1b2a22",stroke:e.c,"stroke-width":1.6}));var d=t("text",{x:i+14,y:l+30,class:"nlab",fill:"#DCE3DC"});d.textContent=e.label,c.appendChild(d);var p=t("text",{x:i+14,y:l+52,class:"elab"});p.textContent="hover to test it",c.appendChild(p),r.appendChild(c);var h=t("rect",{x:i,y:l,width:170,height:84,fill:"rgba(0,0,0,0)"});s.push(h),function(e,t,a,n,r,o){function s(){e.classList.add("dimmed"),t.classList.add("hot"),t.classList.add("sel"),n.innerHTML=r}a.addEventListener("mouseenter",s),a.addEventListener("mouseleave",function(){e.classList.remove("dimmed"),t.classList.remove("hot"),t.classList.remove("sel"),n.innerHTML=o}),a.addEventListener("click",s)}(n,c,h,o,e.html,"hover a behavior to learn it and how to test for it")}),s.forEach(function(e){r.appendChild(e)}),e("fig7").appendChild(n)}(),function(){var a=t("svg",{viewBox:"0 0 500 300"}),n=t("g",{});function r(e,a,r,o,s,i,l){var c=t("g",{"data-gel":l});c.appendChild(t("rect",{x:e,y:a,width:r,height:o,rx:6,fill:"#1b2a22",stroke:s,"stroke-width":1.8})),c.appendChild(t("rect",{x:e,y:a,width:r,height:18,rx:6,fill:s,opacity:.18})),c.appendChild(t("circle",{cx:e+10,cy:a+9,r:2.5,fill:s}));var d=t("text",{x:e+22,y:a+13,class:"elab",fill:"#DCE3DC"});return d.textContent=i,c.appendChild(d),n.appendChild(c),c}function o(e,a,n,r,o){e.appendChild(t("rect",{x:a,y:n,width:r,height:6,rx:3,fill:o||"#3a4a42"}))}a.appendChild(n);for(var s=r(150,30,200,60,"var(--v0)","test-set.doc","doc"),i=0;i<4;i++)o(s,164,44+10*i,150-14*i,"#3a4a42");r(20,110,220,150,"var(--v4)","claude.ai","open"),r(260,110,220,150,"var(--v5)","ChatGPT","open"),r(30,150,200,30,"var(--v4)","same prompt","paste"),r(270,150,200,30,"var(--v5)","same prompt","paste2");var l=t("g",{"data-gel":"regen"});l.appendChild(t("text",{x:36,y:206,class:"elab",fill:"var(--v19)"})).textContent="↻ regenerate ×3",n.appendChild(l);var c=t("g",{"data-gel":"regen"});c.appendChild(t("text",{x:276,y:206,class:"elab",fill:"var(--v19)"})).textContent="↻ regenerate ×3",n.appendChild(c),r(140,232,220,52,"var(--v16)","blind score → tally","score").appendChild(t("text",{x:154,y:270,class:"elab",fill:"#DCE3DC"})).textContent="A: 3   B: 2   → A wins",e("howFig").appendChild(a);var d={0:["doc"],1:["doc","open"],2:["open","paste","paste2"],3:["open","paste","paste2","regen"],4:["open","score"]};u("scHow",function(e){var t=d[e]||[];a.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",t.indexOf(e.getAttribute("data-gel"))>=0)})})}();var f=[{c:"In the message box, a <b>model dropdown</b> (Opus, Sonnet, Haiku). Switch it between runs to compare two Claude models.",g:"A <b>model picker at the top-left</b> of the chat (GPT-4o, the o-series, and others). Switch it to compare two GPT models."},{c:"Use a <b>Project</b> and set its custom instructions, or pick a <b>Style</b>. These persist across every chat in that project.",g:"Set <b>Custom Instructions</b> in Settings, or build a <b>Custom GPT</b> with a fixed system prompt you reuse."},{c:"A <b>retry / regenerate</b> control under each response. Run it a few times to feel the run-to-run noise.",g:"A <b>regenerate</b> button under each response, same idea. Watch the answer wobble."},{c:"Start a <b>New chat</b>. A fresh chat has no memory of the last one unless it is inside a Project with shared context.",g:"Turn on a <b>Temporary chat</b>, or switch memory off in settings, so nothing carries over between tests."},{c:"Open the <b>Anthropic Console</b> (console.anthropic.com). Its Workbench exposes temperature, the system prompt, and side-by-side runs.",g:"Open the <b>OpenAI Playground</b> (platform.openai.com/playground). It exposes temperature, the system prompt, and model comparison."}];!function(){function t(t){var a=f[t];e("cmpOut").innerHTML='<div class="side claude"><div class="h">claude.ai</div>'+a.c+'</div><div class="side gpt"><div class="h">ChatGPT</div>'+a.g+"</div>",document.querySelectorAll("[data-l]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-l")===t)})}document.querySelectorAll("[data-l]").forEach(function(e){e.addEventListener("click",function(){t(+e.getAttribute("data-l"))})}),t(0)}();var g=['<b>Name the task in one sentence.</b> "Decline a refund politely but firmly, in under 60 words." A vague task cannot be scored, so sharpen it until you could hand it to a stranger.',"<b>Write five real test cases.</b> Five actual refund messages, including an angry one and an edge case. Real and varied beats five easy ones that any model passes.","<b>Decide the score before you look.</b> Pick two or three things you will judge: declines clearly, stays warm, obeys the length. Write them down now, so your gut cannot move the goalposts later.","<b>Run both models on all five.</b> Same prompt, same five cases, in each model. Regenerate a couple of times so you are not judging one lucky roll.","<b>Score blind, tally, decide.</b> Strip the names, score each answer against your rule, then reveal and count. The winner of five blind cases is your model, for this task, today."];!function(){function t(t){e("recipeOut").innerHTML=g[t],document.querySelectorAll("[data-r]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-r")===t)})}document.querySelectorAll("[data-r]").forEach(function(e){e.addEventListener("click",function(){t(+e.getAttribute("data-r"))})}),t(0)}();var b={gap:"far",temp:"on",N:10};function m(e,t){document.querySelectorAll("#"+e+" button").forEach(function(a){a.addEventListener("click",function(){b[t]=a.getAttribute("data-v"),document.querySelectorAll("#"+e+" button").forEach(function(e){e.classList.toggle("on",e===a)}),y()})})}function y(){var t,a="far"===b.gap?60:26,n="on"===b.temp?.86:.93,r=Math.round(Math.min(99,(1-Math.pow(n,b.N))*a+("far"===b.gap?18:4))),o="on"===b.temp?1:3,s=b.N*o;e("labConf").textContent=r+"%",e("labConfBar").style.width=r+"%",e("labConfBar").style.background=r>70?"var(--v16)":r>40?"var(--v19)":"var(--v14)",e("labEffort").textContent=s+" runs",e("labEffortBar").style.width=Math.min(100,s/180*100)+"%",e("labEffortBar").style.background=s>90?"var(--v14)":s>40?"var(--v19)":"var(--v16)",e("labGrade").textContent="confidence "+r+"%",t=b.N<3?"One or two cases tells you almost nothing, no matter how far apart the models are. This is the trap from chapter 02.":"near"===b.gap&&r<55?"The models are close, so you need many more cases before the winner stops moving. Close calls are expensive to settle honestly.":r>75?"A trustworthy verdict. Either the models are far apart or you ran enough cases to see past the noise.":"Getting there. Add cases, or pin the temperature low to cut the noise, and the confidence climbs.",e("labOut").textContent=t}m("labGap","gap"),m("labTemp","temp"),e("labN").addEventListener("input",function(){b.N=+this.value,e("labNv").textContent=b.N,y()});var w={obvious:{gap:"far",temp:"on",N:12},close:{gap:"near",temp:"on",N:12},lazy:{gap:"near",temp:"off",N:1}};document.querySelectorAll("[data-pre]").forEach(function(t){t.addEventListener("click",function(){var a=w[t.getAttribute("data-pre")];b.gap=a.gap,b.temp=a.temp,b.N=a.N,e("labN").value=a.N,e("labNv").textContent=a.N,[["labGap","gap"],["labTemp","temp"]].forEach(function(e){document.querySelectorAll("#"+e[0]+" button").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===b[e[1]])})}),y()})}),y()}();
+</script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<style>
+  /* ============================================================
+     THE REGULATORY ATLAS — the 10 frameworks, explained
+     Identity: "legal field guide" — warm stone + oxblood
+     Type: serif display (legal gravitas) / sans body / mono metadata
+     ============================================================ */
+  :root{
+    --paper:#F3F2EE; --surface:#FAF9F6; --raised:#FFFFFF;
+    --ink:#211F1C; --ink-soft:#3A362F; --slate:#615C52; --slate-2:#847E72;
+    --ox:#8A3A3C; --ox-deep:#6F2B2D; --gild:#9A7A38;
+    --hair:#DEDAD1; --hair-2:#EAE7DE;
+    /* domain semantics (NOT the accent) */
+    --privacy:#3A7C82; --privacy-bg:#E3EEEF;
+    --finance:#9A7A38; --finance-bg:#F0EAD8;
+    --security:#3E5C89; --security-bg:#E4E9F2;
+    --ai:#6E4E93; --ai-bg:#EAE3F2;
+    --shadow:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18);
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --read:44rem;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#16140F; --surface:#1B1813; --raised:#201D17; --ink:#ECE8DF; --ink-soft:#CFC9BC; --slate:#9A9385; --slate-2:#7C7566;
+      --ox:#CE8082; --ox-deep:#DE9698; --gild:#C9A857;
+      --hair:#302B22; --hair-2:#282318;
+      --privacy:#6FB4BA; --privacy-bg:#16292B; --finance:#C9A857; --finance-bg:#2A2413;
+      --security:#7C9AD0; --security-bg:#1A2233; --ai:#A585C9; --ai-bg:#241A31;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F2EE;--surface:#FAF9F6;--raised:#FFFFFF;--ink:#211F1C;--ink-soft:#3A362F;--slate:#615C52;--slate-2:#847E72;
+    --ox:#8A3A3C;--ox-deep:#6F2B2D;--gild:#9A7A38;--hair:#DEDAD1;--hair-2:#EAE7DE;
+    --privacy:#3A7C82;--privacy-bg:#E3EEEF;--finance:#9A7A38;--finance-bg:#F0EAD8;--security:#3E5C89;--security-bg:#E4E9F2;--ai:#6E4E93;--ai-bg:#EAE3F2;
+    --shadow:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18);
+  }
+  :root[data-theme="dark"]{
+    --paper:#16140F;--surface:#1B1813;--raised:#201D17;--ink:#ECE8DF;--ink-soft:#CFC9BC;--slate:#9A9385;--slate-2:#7C7566;
+    --ox:#CE8082;--ox-deep:#DE9698;--gild:#C9A857;--hair:#302B22;--hair-2:#282318;
+    --privacy:#6FB4BA;--privacy-bg:#16292B;--finance:#C9A857;--finance-bg:#2A2413;--security:#7C9AD0;--security-bg:#1A2233;--ai:#A585C9;--ai-bg:#241A31;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  ::selection{background:var(--ox);color:#fff;}
+  a{color:var(--ox-deep);text-underline-offset:2px;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--ox);outline-offset:2px;border-radius:2px;}
+  .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.6rem 1rem;z-index:100;}
+  .skip:focus{left:.5rem;top:.5rem;}
+
+  .wrap{max-width:54rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem) 6rem;}
+  .reading{max-width:var(--read);}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;text-wrap:balance;color:var(--ink);}
+  h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;margin:.1rem 0;}
+  h3{font-size:1.15rem;margin:1.4rem 0 .3rem;}
+  p{margin:.7rem 0;color:var(--ink-soft);}
+  strong{color:var(--ink);font-weight:650;}
+  ul{color:var(--ink-soft);padding-left:1.15rem;margin:.4rem 0;} li{margin:.28rem 0;} li::marker{color:var(--ox);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--hair-2);padding:.08em .38em;border-radius:4px;}
+
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ox-deep);display:flex;align-items:center;gap:.6rem;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair);}
+
+  .toggle{position:fixed;top:1rem;right:1rem;z-index:60;background:var(--raised);border:1px solid var(--hair);color:var(--ink-soft);width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .toggle:hover{color:var(--ox-deep);border-color:var(--ox);}
+
+  /* cover */
+  .cover{padding:3.2rem 0 1rem;}
+  .cover .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ox-deep);}
+  .cover h1{font-size:clamp(2.2rem,5.5vw,3.7rem);line-height:1.03;letter-spacing:-.02em;margin:.9rem 0 .5rem;max-width:16ch;}
+  .cover .lede{font-size:1.14rem;color:var(--slate);max-width:50ch;}
+
+  /* overview map grouped by domain */
+  .map{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.9rem;margin:1.8rem 0;}
+  .dom{background:var(--raised);border:1px solid var(--hair);border-radius:12px;padding:1rem 1.1rem;box-shadow:var(--shadow);}
+  .dom .dh{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;}
+  .dom .dh::before{content:"";width:.6rem;height:.6rem;border-radius:2px;}
+  .dom.privacy .dh{color:var(--privacy);} .dom.privacy .dh::before{background:var(--privacy);}
+  .dom.finance .dh{color:var(--finance);} .dom.finance .dh::before{background:var(--finance);}
+  .dom.security .dh{color:var(--security);} .dom.security .dh::before{background:var(--security);}
+  .dom.ai .dh{color:var(--ai);} .dom.ai .dh::before{background:var(--ai);}
+  .dom a{display:block;text-decoration:none;color:var(--ink-soft);font-size:.9rem;padding:.2rem 0;border-bottom:1px solid var(--hair-2);}
+  .dom a:last-child{border-bottom:none;}
+  .dom a:hover{color:var(--ox-deep);}
+  .dom a b{color:var(--ink);font-weight:600;}
+
+  /* framework entry */
+  .fw{margin:2.4rem 0;padding-top:1.5rem;border-top:2px solid var(--ink);scroll-margin-top:1rem;}
+  .fw-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;}
+  .fw-num{font-family:var(--mono);font-size:.8rem;color:var(--slate-2);}
+  .fw-head h2{margin:0;}
+  .fw-abbr{font-family:var(--mono);font-size:.9rem;color:var(--ox-deep);background:var(--hair-2);padding:.1rem .5rem;border-radius:5px;}
+  .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0 0;}
+  .tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.03em;padding:.16rem .55rem;border-radius:20px;border:1px solid var(--hair);color:var(--slate);background:var(--surface);}
+  .tag.privacy{background:var(--privacy-bg);color:var(--privacy);border-color:color-mix(in srgb,var(--privacy) 30%,transparent);}
+  .tag.finance{background:var(--finance-bg);color:var(--finance);border-color:color-mix(in srgb,var(--finance) 30%,transparent);}
+  .tag.security{background:var(--security-bg);color:var(--security);border-color:color-mix(in srgb,var(--security) 30%,transparent);}
+  .tag.ai{background:var(--ai-bg);color:var(--ai);border-color:color-mix(in srgb,var(--ai) 30%,transparent);}
+
+  .fields{display:grid;gap:0;margin:1.1rem 0;border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--raised);box-shadow:var(--shadow);}
+  .fields .row{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--hair-2);}
+  .fields .row:last-child{border-bottom:none;}
+  .fields .lab{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ox-deep);padding-top:.15rem;}
+  .fields .row.why{background:linear-gradient(100deg,var(--finance-bg),transparent 82%);}
+  .fields .row.why .lab{color:var(--gild);}
+  .fields .body{font-size:.92rem;color:var(--ink-soft);}
+  .fields .body b{color:var(--ink);}
+  .fields .body p{margin:.15rem 0;}
+  .fields .body ul{margin:.3rem 0;}
+  @media (max-width:640px){.fields .row{grid-template-columns:1fr;gap:.25rem;}}
+
+  .note{border:1px dashed var(--ox);border-radius:10px;padding:.75rem 1rem;margin:1rem 0;background:color-mix(in srgb,var(--ox) 7%,transparent);}
+  .note .h{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ox-deep);margin-bottom:.25rem;}
+  .note p{margin:.1rem 0;font-size:.88rem;}
+
+  .tbl-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--hair);border-radius:10px;}
+  table{border-collapse:collapse;width:100%;font-size:.82rem;}
+  thead th{background:var(--surface);text-align:left;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:.6rem .7rem;border-bottom:1px solid var(--hair);}
+  tbody td{padding:.55rem .7rem;border-bottom:1px solid var(--hair-2);color:var(--ink-soft);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td b{color:var(--ink);}
+
+  .mininav{position:sticky;top:0;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);padding:.55rem 0;margin-top:1rem;z-index:40;display:flex;gap:.2rem;flex-wrap:wrap;font-family:var(--mono);font-size:.66rem;}
+  .mininav a{text-decoration:none;color:var(--slate);padding:.2rem .45rem;border-radius:5px;}
+  .mininav a:hover{background:var(--hair-2);color:var(--ink);}
+
+  .foot{margin-top:3.4rem;padding-top:1.3rem;border-top:2px solid var(--ink);font-size:.8rem;color:var(--slate);}
+  hr.rule{border:none;border-top:1px solid var(--hair);margin:2rem 0;}
+</style>
+
+<a href="#f1" class="skip">Skip to the frameworks</a>
+<button class="toggle" id="themeBtn" aria-label="Toggle light and dark theme" title="Toggle theme">◐</button>
+
+<div class="wrap">
+  <header class="cover">
+    <div class="kicker">A Regulatory Field Guide · Companion to the GRC course</div>
+    <h1>The Regulatory Atlas</h1>
+    <p class="lede">The ten frameworks in the GRC database — what each one is, who it binds, what it demands, and what happens if you ignore it. From GDPR to the EU AI Act.</p>
+  </header>
+
+  <section class="reading">
+    <p class="eyebrow">How to read this atlas</p>
+    <h2>Law, standard, or framework — know which you're holding</h2>
+    <p>Not everything here is a “law.” The distinction changes what non-compliance <em>costs</em> you, so it's the first thing to check on any entry:</p>
+    <ul>
+      <li><strong>Law / regulation</strong> — enacted by a government; ignoring it brings <em>fines or prison</em> (GDPR, SOX, HIPAA, CCPA, EU AI Act).</li>
+      <li><strong>Standard</strong> — a formal specification you get <em>certified</em> against; often demanded by customers or contracts (ISO 27001).</li>
+      <li><strong>Industry / contractual standard</strong> — enforced by an industry body via contract, not statute (PCI DSS).</li>
+      <li><strong>Voluntary framework</strong> — a best-practice model you adopt to organize your work; no direct penalty, but it's what regulators expect to see (NIST CSF, and the AI-governance constructs AICM &amp; AIEU).</li>
+    </ul>
+    <p>Each entry is tagged by <strong>domain</strong> (colored), <strong>jurisdiction</strong>, <strong>instrument type</strong>, and the year it took effect. Here's the whole landscape, grouped by what it protects:</p>
+  </section>
+
+  <div class="map">
+    <div class="dom privacy"><div class="dh">Privacy &amp; personal data</div>
+      <a href="#f1"><b>GDPR</b> — EU personal data</a>
+      <a href="#f3"><b>HIPAA</b> — US health data</a>
+      <a href="#f7"><b>CCPA / CPRA</b> — California residents</a>
+    </div>
+    <div class="dom finance"><div class="dh">Financial &amp; corporate</div>
+      <a href="#f2"><b>SOX</b> — US financial reporting</a>
+    </div>
+    <div class="dom security"><div class="dh">Information security &amp; cyber</div>
+      <a href="#f4"><b>ISO 27001</b> — security management</a>
+      <a href="#f5"><b>PCI DSS</b> — cardholder data</a>
+      <a href="#f6"><b>NIST CSF</b> — cyber risk</a>
+    </div>
+    <div class="dom ai"><div class="dh">AI governance</div>
+      <a href="#f8"><b>EU AI Act</b> — AI by risk tier</a>
+      <a href="#f9"><b>AICM</b> — AI lifecycle compliance</a>
+      <a href="#f10"><b>AIEU</b> — trustworthy-AI ethics</a>
+    </div>
+  </div>
+
+  <nav class="mininav" aria-label="Jump to a framework">
+    <a href="#f1">1·GDPR</a><a href="#f2">2·SOX</a><a href="#f3">3·HIPAA</a><a href="#f4">4·ISO 27001</a><a href="#f5">5·PCI DSS</a><a href="#f6">6·NIST CSF</a><a href="#f7">7·CCPA</a><a href="#f8">8·AI Act</a><a href="#f9">9·AICM</a><a href="#f10">10·AIEU</a><a href="#compare">★ Compare</a>
+  </nav>
+
+  <!-- ===== 1 GDPR ===== -->
+  <article class="fw reading" id="f1">
+    <div class="fw-head"><span class="fw-num">01</span><h2>General Data Protection Regulation</h2><span class="fw-abbr">GDPR</span></div>
+    <div class="tags"><span class="tag privacy">Privacy</span><span class="tag">European Union</span><span class="tag">Law · Reg (EU) 2016/679</span><span class="tag">In force 2018</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The EU's comprehensive personal-data law. It governs how any organization <b>collects, uses, stores, and shares personal data</b> about people in the EU/EEA — and it applies even if your company sits outside Europe, as long as you handle Europeans' data (<b>extraterritorial reach</b>).</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Anyone processing EU residents' personal data. It splits roles into the <b>controller</b> (decides why/how data is used) and the <b>processor</b> (handles it on the controller's behalf). Larger operations must appoint a <b>Data Protection Officer (DPO)</b>.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li>A <b>lawful basis</b> for every use of data (consent, contract, legal obligation, legitimate interests, etc.).</li>
+        <li>Core principles: <b>purpose limitation, data minimization, accuracy, storage limitation, security, accountability</b>.</li>
+        <li><b>Data-subject rights</b>: access, correction, erasure (“right to be forgotten”), portability, objection, and a right not to be subject to solely automated decisions (Art. 22).</li>
+        <li><b>Breach notification</b> to the regulator within <b>72 hours</b>; a <b>DPIA</b> for high-risk processing.</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Fines up to <b>€20 million or 4% of global annual turnover</b>, whichever is higher.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>It set the global template — most modern privacy laws copy it. For AI, Art. 22 (automated decisions) collides directly with the AI Act: an AI that auto-rejects a loan triggers <em>both</em>. You can't govern AI without GDPR in the room.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 2 SOX ===== -->
+  <article class="fw reading" id="f2">
+    <div class="fw-head"><span class="fw-num">02</span><h2>Sarbanes-Oxley Act</h2><span class="fw-abbr">SOX</span></div>
+    <div class="tags"><span class="tag finance">Financial</span><span class="tag">United States</span><span class="tag">Law · 2002</span><span class="tag">Public companies</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>A US federal law passed after the <b>Enron and WorldCom</b> accounting scandals. Its aim: make corporate financial statements <b>trustworthy</b> by forcing strong internal controls and holding executives personally accountable for them.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>US <b>publicly traded companies</b> (and foreign firms listed on US exchanges), plus their auditors. It created the <b>PCAOB</b> to oversee those auditors.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li><b>Section 302</b>: the CEO and CFO personally <b>certify</b> each financial report is accurate.</li>
+        <li><b>Section 404</b>: management <em>and</em> the external auditor must assess and attest to <b>Internal Control over Financial Reporting (ICFR)</b> — the famous, expensive one.</li>
+        <li><b>Section 802</b>: records-retention and anti-document-shredding rules.</li>
+        <li>Whistleblower protections; independent audit committees.</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Criminal: executives face <b>fines and up to 20 years' imprisonment</b> for willful false certification or fraud.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>SOX is why “segregation of duties,” “journal-entry approval,” and “control testing” are everyday words in finance. It made <b>internal control</b> a board-level, legally-personal obligation — the mindset all of GRC inherited.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 3 HIPAA ===== -->
+  <article class="fw reading" id="f3">
+    <div class="fw-head"><span class="fw-num">03</span><h2>Health Insurance Portability &amp; Accountability Act</h2><span class="fw-abbr">HIPAA</span></div>
+    <div class="tags"><span class="tag privacy">Health privacy</span><span class="tag">United States</span><span class="tag">Law · 1996</span><span class="tag">PHI</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The US law protecting <b>Protected Health Information (PHI)</b> — medical records and any health data that can identify a person. It sets national standards for keeping that information private and secure.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p><b>Covered entities</b> — health providers, health plans, and clearinghouses — and their <b>business associates</b> (vendors that touch PHI, e.g. a cloud host or a billing firm).</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li><b>Privacy Rule</b>: limits use/disclosure of PHI to the “minimum necessary.”</li>
+        <li><b>Security Rule</b>: <b>administrative, physical, and technical safeguards</b> for electronic PHI (access controls, encryption, audit logs).</li>
+        <li><b>Breach Notification Rule</b>: notify affected individuals (and, for large breaches, the media and regulator).</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Tiered civil penalties (up to ~<b>$1.9M per violation category per year</b>) and criminal penalties up to <b>10 years' imprisonment</b> for knowing misuse.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>The template for sector-specific data protection. Its “safeguards” trio (admin/physical/technical) is a clean way to teach that security isn't just technology — it's also people and process. Vital for any healthcare AI (e.g. the triage example in the main course).</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 4 ISO 27001 ===== -->
+  <article class="fw reading" id="f4">
+    <div class="fw-head"><span class="fw-num">04</span><h2>ISO/IEC 27001:2022</h2><span class="fw-abbr">ISO 27001</span></div>
+    <div class="tags"><span class="tag security">Security</span><span class="tag">International</span><span class="tag">Standard (certifiable)</span><span class="tag">2022 revision</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The world's leading <b>standard</b> for an <b>Information Security Management System (ISMS)</b> — a documented, risk-based way of running security across the whole organization. Not a law: you get <b>certified</b> against it by an accredited auditor.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Any organization, voluntarily — but very often <b>required by customers</b> as a condition of doing business, especially in B2B and cloud.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li>A working <b>ISMS</b> built on <b>risk assessment and treatment</b>.</li>
+        <li>Consideration of <b>93 controls</b> in <b>Annex A</b>, grouped into four themes: <b>Organizational, People, Physical, Technological</b>.</li>
+        <li><b>Continual improvement</b> (the Plan-Do-Check-Act cycle) and management review.</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>No government fine — but you can <b>fail or lose certification</b> (via 3-year cycles with annual surveillance audits), which can cost you contracts.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>It teaches the <b>management-system</b> idea: security isn't a one-time project but a governed, repeating cycle. That exact pattern is what the AI world is now copying (see AICM, and its real cousin ISO 42001).</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 5 PCI DSS ===== -->
+  <article class="fw reading" id="f5">
+    <div class="fw-head"><span class="fw-num">05</span><h2>Payment Card Industry Data Security Standard</h2><span class="fw-abbr">PCI DSS</span></div>
+    <div class="tags"><span class="tag security">Security</span><span class="tag">International</span><span class="tag">Industry standard (contractual)</span><span class="tag">v4.0</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>A security standard for <b>anyone who stores, processes, or transmits credit-card data</b>. It's set not by a government but by the card brands' council (the <b>PCI SSC</b> — Visa, Mastercard, Amex, etc.) and enforced through your <b>contracts</b> with banks and processors.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Every merchant and service provider that handles cardholder data — from a corner shop to a global platform. Your <b>transaction volume</b> sets your validation level (a simple self-questionnaire vs. a full on-site audit).</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><p><b>12 requirements</b> across 6 goals: build/maintain a secure network, <b>protect stored cardholder data</b> (encryption), manage vulnerabilities, enforce <b>strong access control</b> (incl. MFA), monitor and test networks, and maintain a security policy.</p></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Contractual <b>fines from card brands</b>, higher transaction fees, and — the real killer — losing your <b>ability to accept card payments</b>.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>The clearest example that <b>“compliance” isn't always “law.”</b> A private contract can bind you just as hard as a statute. Great for teaching that the source of an obligation matters less than its consequences.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 6 NIST CSF ===== -->
+  <article class="fw reading" id="f6">
+    <div class="fw-head"><span class="fw-num">06</span><h2>NIST Cybersecurity Framework</h2><span class="fw-abbr">NIST CSF</span></div>
+    <div class="tags"><span class="tag security">Security</span><span class="tag">United States</span><span class="tag">Voluntary framework</span><span class="tag">v2.0 (2024)</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>A <b>voluntary</b>, outcome-based framework from the US National Institute of Standards and Technology for organizing an entire cybersecurity program into a shared language. Not a checklist of controls — a map of <b>outcomes</b> to aim for.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Originally for US critical infrastructure; now used <b>worldwide, across every sector</b>, because it's flexible and free.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><p>Nothing mandatory — you self-adopt. It's built on <b>six core functions</b> (v2.0 added the first): <b>Govern, Identify, Protect, Detect, Respond, Recover</b>. Organizations rate their maturity in <b>Tiers (1–4)</b> and set target <b>Profiles</b>.</p></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>None directly — but it's the <b>de-facto benchmark</b> regulators and courts point to when asking “was your security reasonable?”</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Its six functions are a superb mental model for <em>any</em> risk domain, including AI. Note that v2.0 added <b>Govern</b> at the top — the whole field is realizing, as this course argues, that governance comes first.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 7 CCPA ===== -->
+  <article class="fw reading" id="f7">
+    <div class="fw-head"><span class="fw-num">07</span><h2>California Consumer Privacy Act</h2><span class="fw-abbr">CCPA / CPRA</span></div>
+    <div class="tags"><span class="tag privacy">Privacy</span><span class="tag">California, US</span><span class="tag">Law · 2018 (CPRA 2023)</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>California's landmark privacy law — the US's closest answer to GDPR — later strengthened by the <b>CPRA</b> amendment. It gives California residents <b>control over the personal information</b> businesses collect about them.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>For-profit businesses that handle Californians' data <b>and</b> meet a threshold (e.g. ~$25M+ revenue, or data on 100k+ consumers, or majority of revenue from selling data). Enforced by a dedicated agency, the <b>CPPA</b>.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li>Consumer rights to <b>know, delete, correct</b>, and <b>opt out of the sale/sharing</b> of their data.</li>
+        <li>A right to <b>limit use of sensitive personal information</b>.</li>
+        <li><b>Non-discrimination</b> for exercising these rights.</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Civil penalties of <b>$2,500 per violation</b>, rising to <b>$7,500</b> for intentional violations or those involving minors — multiplied across thousands of consumers.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Shows that privacy law is <b>fragmenting by geography</b> — a US company can face GDPR, CCPA, and a dozen other state laws at once. Managing that patchwork is a core GRC job, and AI training data makes it harder.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 8 AI Act ===== -->
+  <article class="fw reading" id="f8">
+    <div class="fw-head"><span class="fw-num">08</span><h2>EU Artificial Intelligence Act</h2><span class="fw-abbr">AI Act</span></div>
+    <div class="tags"><span class="tag ai">AI governance</span><span class="tag">European Union</span><span class="tag">Law · Reg (EU) 2024/1689</span><span class="tag">Phasing in 2025–2027</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The world's first comprehensive AI law. It regulates AI <b>by risk tier</b>: the more potential for harm, the heavier the obligations — from an outright ban down to no rules at all.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p><b>Providers</b> (who build/place AI on the market) and <b>deployers</b> (who use it), anywhere in the world, if the AI's output is used in the EU. Extraterritorial, like GDPR.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li><b>Unacceptable risk</b> → <b>banned</b> (social scoring, manipulative AI).</li>
+        <li><b>High risk</b> (Annex III: credit, hiring, biometrics…) → full regime: risk management, data governance, human oversight, technical documentation, <b>conformity assessment</b>, and EU registration.</li>
+        <li><b>Limited risk</b> (chatbots, deepfakes) → <b>transparency</b> only.</li>
+        <li><b>Minimal risk</b> → no obligations. Separate rules cover <b>general-purpose AI</b> models.</li>
+      </ul></div></div>
+      <div class="row"><div class="lab">Teeth</div><div class="body"><p>Up to <b>€35M or 7%</b> of global turnover (banned uses); <b>€15M or 3%</b> (most obligations); <b>€7.5M or 1%</b> (misinformation to regulators). High-risk duties apply from <b>August 2026</b>.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>This is <em>the</em> framework the whole GRC course orbits. Its risk-tier logic — do the governance work in proportion to the danger — is the model every organization now has to operationalize. Explored in depth in Module 04 of the main course.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 9 AICM ===== -->
+  <article class="fw reading" id="f9">
+    <div class="fw-head"><span class="fw-num">09</span><h2>AI Compliance Management</h2><span class="fw-abbr">AICM</span></div>
+    <div class="tags"><span class="tag ai">AI governance</span><span class="tag">International</span><span class="tag">Management framework</span><span class="tag">Lifecycle</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The discipline of keeping AI compliant <b>over its whole lifecycle</b> — not just at launch. Where the AI Act says <em>what</em> you must achieve, AICM is the <em>how</em>: the standing processes that make compliance repeatable and durable.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Any organization operating AI systems it must keep compliant as models, data, and laws all change over time.</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li><b>Risk classification</b> of every system before build.</li>
+        <li>Standing <b>conformity-assessment</b> and <b>documentation</b> processes (not one-offs).</li>
+        <li><b>Post-market monitoring</b> for drift and incidents.</li>
+        <li><b>Lifecycle tracking</b> from development through decommissioning.</li>
+      </ul></div></div>
+      <div class="note"><div class="h">Reality check</div><p>“AICM” is this dataset's stand-in for a real practice area rather than a single named law. Its real-world cousins are <b>ISO/IEC 42001:2023</b> (the AI management-system standard) and the <b>NIST AI Risk Management Framework</b>. Teach it as the <em>management-system layer for AI</em>.</p></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>It's what stops compliance from <b>decaying</b>. A model that passed its assessment at launch and silently drifted for six months is compliant on paper and dangerous in reality — the AICM lens is what catches that.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== 10 AIEU ===== -->
+  <article class="fw reading" id="f10">
+    <div class="fw-head"><span class="fw-num">10</span><h2>AI Ethics in the EU</h2><span class="fw-abbr">AIEU</span></div>
+    <div class="tags"><span class="tag ai">AI governance</span><span class="tag">European Union</span><span class="tag">Ethics guidelines</span><span class="tag">Trustworthy AI</span></div>
+    <div class="fields">
+      <div class="row"><div class="lab">What</div><div class="body"><p>The <b>ethics layer</b> above the law. Where the AI Act sets the legal floor, AIEU raises the bar to what is <b>legitimate and trustworthy</b> — the practices that keep public trust even where the law is silent.</p></div></div>
+      <div class="row"><div class="lab">Who</div><div class="body"><p>Anyone building AI that affects people, especially in high-stakes settings where “legal” isn't the same as “acceptable.”</p></div></div>
+      <div class="row"><div class="lab">Requires</div><div class="body"><ul>
+        <li><b>Transparency &amp; explainability</b> — people can understand a decision.</li>
+        <li><b>Fairness &amp; non-discrimination</b>; <b>human oversight &amp; autonomy</b>.</li>
+        <li><b>Accountability</b>, <b>robustness &amp; safety</b>, and <b>protection of fundamental rights</b>.</li>
+      </ul></div></div>
+      <div class="note"><div class="h">Reality check</div><p>Like AICM, “AIEU” represents a practice area, not one statute. Its real basis is the EU's <b>Ethics Guidelines for Trustworthy AI</b> (2019), whose <b>seven requirements</b> the list above mirrors. Many are now hard law <em>inside</em> the AI Act — ethics that graduated into obligation.</p></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>It's the reminder that governance isn't only about avoiding fines — it's about deserving trust. The gap between “legal” and “right” is exactly where reputations are made or lost.</p></div></div>
+    </div>
+  </article>
+
+  <!-- ===== COMPARE ===== -->
+  <section id="compare">
+    <hr class="rule">
+    <p class="eyebrow reading">One-screen summary</p>
+    <h2 class="reading">The ten at a glance</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Framework</th><th>Domain</th><th>Where</th><th>Type</th><th>What happens if you ignore it</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><b>GDPR</b></td><td>Privacy</td><td>EU</td><td>Law</td><td>Up to €20M / 4% global turnover</td></tr>
+          <tr><td>2</td><td><b>SOX</b></td><td>Financial</td><td>US</td><td>Law</td><td>Executive fines + up to 20 yrs prison</td></tr>
+          <tr><td>3</td><td><b>HIPAA</b></td><td>Health privacy</td><td>US</td><td>Law</td><td>Civil fines + up to 10 yrs prison</td></tr>
+          <tr><td>4</td><td><b>ISO 27001</b></td><td>Security</td><td>Intl</td><td>Standard</td><td>Lose certification → lose contracts</td></tr>
+          <tr><td>5</td><td><b>PCI DSS</b></td><td>Security</td><td>Intl</td><td>Contract</td><td>Fines + lose card-processing ability</td></tr>
+          <tr><td>6</td><td><b>NIST CSF</b></td><td>Security</td><td>US</td><td>Voluntary</td><td>No fine, but the “reasonable security” benchmark</td></tr>
+          <tr><td>7</td><td><b>CCPA</b></td><td>Privacy</td><td>California</td><td>Law</td><td>$2,500–$7,500 per violation</td></tr>
+          <tr><td>8</td><td><b>EU AI Act</b></td><td>AI</td><td>EU</td><td>Law</td><td>Up to €35M / 7% global turnover</td></tr>
+          <tr><td>9</td><td><b>AICM</b></td><td>AI</td><td>Intl</td><td>Framework</td><td>Compliance decays; drift goes uncaught</td></tr>
+          <tr><td>10</td><td><b>AIEU</b></td><td>AI</td><td>EU</td><td>Guidelines</td><td>Legal but untrusted; reputational harm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="reading">
+      <h3>Three patterns worth pointing out to students</h3>
+      <ul>
+        <li><b>The consequence, not the label, is what binds you.</b> A contract (PCI) or a lost certification (ISO) can hurt as much as a statute.</li>
+        <li><b>Privacy is fragmenting; AI is consolidating.</b> Privacy splinters into GDPR + CCPA + dozens of state laws, while AI is being pulled into one horizontal law (the AI Act) plus its ethics and lifecycle layers.</li>
+        <li><b>Old frameworks still apply to AI.</b> An AI system rarely triggers only the AI rules — GDPR, SOX, and HIPAA all come along for the ride. Govern the <em>system</em>, not the single law.</li>
+      </ul>
+    </div>
+    <div class="foot reading">
+      <p><strong>The Regulatory Atlas</strong> — a field guide to the ten frameworks in the GRC database, companion to the courses <em>“GRC for Generative AI”</em> and <em>“The Seven Building Blocks of GRC.”</em> Descriptions of real laws are simplified for teaching and are not legal advice; “AICM” and “AIEU” are the dataset's representations of real practice areas (ISO 42001 / NIST AI RMF; the EU Trustworthy-AI guidelines) rather than single named statutes. Penalty figures are indicative and subject to change.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var root=document.documentElement, btn=document.getElementById('themeBtn');
+    function cur(){var s=root.getAttribute('data-theme');return s?s:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+    function paint(){btn.textContent=cur()==='dark'?'☀':'☾';}
+    paint();
+    btn.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');paint();});
+  })();
+</script>

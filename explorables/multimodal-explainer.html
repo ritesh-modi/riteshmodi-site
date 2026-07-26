@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One brain, many senses: what multimodal really means (and how multi-model differs)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v14:#EDF1F4;--v15:#DFE6EB;--v1:#101A20;--v3:#38474F;--v2:#69777F;--v18:#C6D0D7;--v0:#0C6F78;--v12:#0C171C;--v13:#DCE5EA;--v17:#E0607A;--v21:#E0A94A;--v19:#3FC7A9;--v10:"JetBrains Mono",monospace;--v7:#6EA0FF;--v5:#C08BFF;--v4:#45D3BE;--v8:#FF8FB0;--v6:#E8C25C;--v9:680px;--v22:1120px;--v11:26px;--v20:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v20:0s}}body{margin:0;background:var(--v14);color:var(--v1);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#0C6F78}.pII{--v0:#6D28D9}.pIII{--v0:#C2410C}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v15);box-shadow:0 6px 22px rgba(16,26,32,.22)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v18);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:var(--v10);font-size:15px;font-weight:500;color:var(--v1)}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:13px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v18);transition:background .3s,transform .3s}.rail a.on{background:var(--v16,#0C6F78);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v1);outline-offset:3px}.col{max-width:var(--v9);margin:0 auto;padding:0 var(--v11);position:relative}.wide{max-width:var(--v22);margin:0 auto;padding:0 var(--v11)}.bleed{width:100%;margin:0}section{padding:100px 0}.divider{max-width:var(--v9);margin:0 auto;height:1px;background:var(--v18)}h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:400;line-height:1.08;margin:0}h1.hero-h{font-size:clamp(38px,6.4vw,62px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Fraunces",serif;font-size:clamp(22px,3vw,30px);line-height:1.38;color:var(--v3)}.part-banner{padding:92px 0 20px;text-align:center}.part-banner .pk{font-family:var(--v10);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,42px);font-style:italic}.eyebrow{font-family:var(--v10);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v15);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.intu{border:1px solid var(--v18);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v15);font-size:17.5px;line-height:1.64}.intu .il{font-family:var(--v10);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v1)}.pull{font-family:"Fraunces",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.3;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v15);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v3)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v2)}.mnote b{color:var(--v3);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v15);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v15)}.demo{border:1px solid var(--v18);background:var(--v12);color:var(--v13);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #23323a;font-family:var(--v10);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#7d8c94;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v2);margin:12px 2px 0}.figcap b{font-family:var(--v10);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:var(--v10);font-size:12.5px;padding:9px 16px;border:1px solid var(--v6);border-radius:3px;background:transparent;color:var(--v6);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v6);color:var(--v12)}.chip{font-family:var(--v10);font-size:12.5px;padding:8px 13px;border:1px solid #33424a;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#a7b4bc}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}select{font-family:var(--v10);font-size:13px;background:#182831;color:#DCE5EA;border:1px solid #33424a;border-radius:3px;padding:7px 10px}code{font-family:var(--v10);font-size:.88em;background:var(--v15);padding:1px 6px;border-radius:3px}.demo code,pre code{background:none;padding:0}pre{background:var(--v12);border:1px solid var(--v18);border-radius:4px;padding:20px 22px;font-size:13px;line-height:1.7;overflow-x:auto;color:var(--v13);margin:26px 0}.cm{color:#7d8c94}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:var(--v10);font-size:11px;fill:#a7b4bc}.fig .elab{font-family:var(--v10);font-size:10px;fill:#7d8c94}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.2}.fig .sel circle,.fig .sel rect{stroke-width:4}.inspector{font-family:var(--v10);font-size:12.5px;line-height:1.8;border-top:1px solid #23323a;margin-top:16px;padding-top:14px;min-height:92px;color:#a7b4bc}.inspector b{color:#DCE5EA;font-weight:500}.legend{display:flex;gap:15px;flex-wrap:wrap;font-family:var(--v10);font-size:11px;color:#7d8c94;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.nbr{font-family:var(--v10);font-size:12.5px;line-height:1.9}.nbr b{color:#DCE5EA}.mtag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;margin-right:8px;vertical-align:1px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}@media(max-width:640px){.cards{grid-template-columns:1fr}}.layer{font-family:var(--v10);font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #33424a;border-radius:4px;background:transparent;color:#a7b4bc;cursor:pointer;transition:all .18s;line-height:1.5}.layer.on{border-color:var(--v0);color:#fff;background:#182831}.layer b{display:block;color:#DCE5EA;font-size:13px;margin-bottom:3px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer-out{font-size:15px;line-height:1.65;color:#DCE5EA;border-top:1px solid #23323a;padding-top:16px;min-height:96px}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v11);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:var(--v10);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v12);color:var(--v13);border:1px solid var(--v18);border-radius:6px;padding:24px}[data-gel]{opacity:.12;transition:opacity .45s ease,transform .45s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v14);border-bottom:1px solid var(--v18);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:var(--v10);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#7d8c94;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.mlab{font-family:var(--v10);font-size:12px;color:#7d8c94;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#DCE5EA}.meter{height:12px;background:#182831;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:var(--v10);font-size:12px;padding:7px 12px;border:1px solid #33424a;border-radius:4px;background:transparent;color:#a7b4bc;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.weeds details{border:1px solid var(--v18);border-radius:4px;margin-bottom:10px;background:var(--v14)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v15)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v3)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Fraunces",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.4;margin:0}footer{border-top:1px solid var(--v18);padding:34px 0 60px;font-family:var(--v10);font-size:12.5px;color:var(--v2);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:72px 0}}</style></style>
+</head>
+<body>
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#0C6F78" title="Part I"></a>
+  <a href="#p2" data-c="#6D28D9" title="Part II"></a>
+  <a href="#p3" data-c="#C2410C" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · multimodal ai</div>
+    <h1 class="hero-h">One brain,<br>many senses.</h1>
+    <p class="lede">A model that can read, see, hear, and speak is called multimodal. This guide starts from a phone pointed at a foreign menu, builds up the shared space that lets one model mix its senses, tours the tools doing it today, and then draws the line most people get wrong: multimodal is not the same as multi-model.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#0C6F78">
+<div class="part-banner"><div class="pk">Part I · chapters 01 to 04</div><h2>Senses</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the moment</div>
+    <h2 class="big">One question, four senses</h2>
+    <div class="try">You are hungry in a city where you do not read the language. You point your phone at the menu and ask, out loud, "which of these is vegetarian and under fifteen dollars?" Notice everything that question quietly demands.</div>
+    <p>To answer it, something has to <em>see</em> the menu, <em>read</em> the words on it in a script you cannot, <em>understand</em> that a little leaf icon next to a dish means meat-free, <em>reason</em> about which prices clear your budget, and then <em>speak</em> the reply so you can keep your eyes on the street. Seeing, reading, reasoning, speaking. Four different kinds of skill, braided into one ordinary request.</p>
+    <p>A text-only assistant cannot begin. It has no eyes. You would have to type out a menu you cannot read, which is the whole problem. The question only works if one system can take in a picture and a voice, and hand back a spoken answer. That capability has a name, and this guide is about what is really going on behind it.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A friend who only reads English, sitting across from you, is a text-only model. Hand them a Japanese menu and they are stuck. A friend who can look at the menu, sound out the characters, notice the little vegetarian mark, do the arithmetic, and say the answer back to you is doing something different in kind. <b>They are not smarter, they have more senses wired into the same head,</b> and that is exactly the jump we are about to unpack.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the word</div>
+    <h2 class="big">A modality is a kind of data</h2>
+    <p>Start with the root word. A <strong>modality</strong> is a <em>type</em> of information, defined by its nature and not its file format. Text is one modality. Images are another. So are audio, and video, and less obvious ones: a depth map from a camera, a table of numbers, a stream of sensor readings, even source code. Hover each to see what makes it its own modality and how a machine takes it in.</p>
+    <div class="demo">
+      <div class="demo-head"><span>the common modalities · hover one</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig1"></div>
+        <div class="legend">
+          <span><i style="background:var(--v7)"></i>text</span>
+          <span><i style="background:var(--v5)"></i>image</span>
+          <span><i style="background:var(--v4)"></i>audio</span>
+          <span><i style="background:var(--v8)"></i>video</span>
+        </div>
+        <div class="inspector" id="fig1Out">hover a modality</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>Hover each modality. These four colours mean the same thing in every figure on this page.</div>
+    <aside class="mnote"><b>Format is not modality.</b> A PNG and a JPEG are two formats of one modality, the image. A modality is about the <em>kind</em> of thing, not how it is encoded on disk.</aside>
+    <p style="margin-top:26px">Hold onto one fact that the rest of the guide leans on. A computer cannot work with any of these directly. It turns every one of them into numbers first: long lists of numbers called vectors. A word, a patch of a photo, a slice of sound, all become vectors. That shared fate is the seed of everything multimodal.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the old way</div>
+    <h2 class="big">The pipeline, and where it leaks</h2>
+    <p>Before one model could do it all, engineers chained specialists together. The menu problem became an assembly line: a vision tool reads text off the image, a translator converts it, a language model reasons about it, a speech tool voices the result. Each box is good at its one job. The trouble is the gaps between them. Step through the line.</p>
+    <div class="demo">
+      <div class="demo-head"><span>the stitched pipeline · click a stage</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-l="0"><b>1 · OCR reads the image</b>pulls characters out of the photo</button>
+          <button class="layer" data-l="1"><b>2 · translate</b>foreign text to English text</button>
+          <button class="layer" data-l="2"><b>3 · language model reasons</b>picks the vegetarian, checks the price</button>
+          <button class="layer" data-l="3"><b>4 · text to speech</b>reads the answer aloud</button>
+        </div>
+        <div class="layer-out" id="pipeOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 2</b>Click each stage. Watch what gets lost at every seam: the layout, the leaf icon, the tone. Each box only sees text passed from the last one.</div>
+    <p style="margin-top:26px">The pipeline works, and for years it was the only option. But every arrow between boxes is a place where meaning drains out. The reasoning model never sees the photo, so it cannot use the little leaf icon that a human reads instantly. The words arrive stripped of layout, colour, and emphasis. Information that lived in the image dies at the first arrow, because after step one the rest of the line is working with text about the menu, not the menu.</p>
+    <div class="intu"><span class="il">picture it</span>
+      This is the child's game of telephone. Four people in a line, each whispering to the next, each only hearing words. The person who saw the original picture is at the front, and by the time the message reaches the end it is words about words about a photo nobody at the back ever saw. <b>Every hand-off throws away everything that will not fit into the whisper,</b> and a lot of what a menu tells you does not fit into words.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · the idea</div>
+    <h2 class="big">One model, sharing one space</h2>
+    <p>The leap is to stop whispering down a line and put all the senses in one head. A <strong>multimodal model</strong> is a single model trained so that different kinds of data live in the <em>same</em> internal space of vectors. The photo of the menu, the words on it, and your spoken question are not translated into each other. They are all turned into vectors of the same shape, in one shared space, and the one model reasons over all of them together.</p>
+    <p>Because the picture and the words share a space, the model can notice that the leaf icon sits next to a particular dish and that the dish is priced at twelve dollars, in a single thought, without anything being whispered. Nothing is lost to a hand-off, because there are no hand-offs. That shared space is the whole trick, and the next part lets you play with it directly.</p>
+    <div class="pull">Multimodal is not four tools in a trench coat. It is one mind with four senses feeding it at once.</div>
+    <aside class="mnote"><b>Vocabulary.</b> You will hear "vision-language model" for the image-and-text kind, and "any-to-any" or "omni" for models that also take and make audio and video. All are multimodal; they differ in which senses.</aside>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#6D28D9">
+<div class="part-banner"><div class="pk">Part II · chapters 05 to 07</div><h2>The shared space</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · the shared space</div>
+    <h2 class="big">Where a photo of a dog meets the word "dog"</h2>
+    <p>Here is the idea made concrete. Every piece of data, whatever its modality, becomes a point in one high-dimensional space. The model is trained so that things which <em>mean</em> the same thing land near each other, no matter which sense they came from. A photo of a dog, the written word "dog", and the sound of a bark all cluster in the same neighbourhood.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Think of a library where books are not shelved by format but by <em>meaning</em>. Every item about dogs sits together: the photo album, the paperback, the audiobook of barks, all on one shelf, because the shelf is chosen by what the thing is about, not whether it is paper or sound. A multimodal model builds exactly this library inside itself. <b>The address of a thing is its meaning,</b> so a picture and a word about the same idea end up as neighbours.</p></div>
+    <p>That is not loose talk. A point in that space is a real, concrete thing: a short list of numbers. Turning a word into that list is called making an <strong>embedding</strong>. Here is the word "dog" as a tiny four-number embedding. Each number is one coordinate, one learned dimension of meaning.</p>
+    <div class="demo">
+      <div class="demo-head"><span>the word "dog" as a 4-number embedding · hover a number</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig4"></div>
+        <div class="inspector" id="fig4Out">an embedding is just a list of numbers; hover one to read it</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Hover each cell. Four numbers place "dog" at one spot in a 4-D space. Real models use hundreds or thousands of these numbers, but four is enough to see the idea.</div>
+    <div class="intu"><span class="il">picture it</span>
+      A street address is a few numbers that pin down one house: a number for the street, a number for the block, a number for the floor. An embedding is the same trick for meaning. Each number nudges the item along one axis, and together they pin it to one spot. "puppy" would sit at almost the same numbers as "dog"; "car" would sit far away. <b>A photo of a dog gets its own four numbers, and the model is trained to make them land right next to the word's,</b> which is why the two end up neighbours. Twelve of these addresses, flattened from four numbers down to two so your eyes can see them, are the dots you will drag in the next chapter.</p></div>
+    <p>It is literal geometry you can measure, so in the next chapter you can drag a point through it and watch which neighbours light up.</p>
+  </div>
+</section>
+
+
+<section style="padding-top:30px">
+  <div class="col reveal" style="margin-bottom:6px">
+    <div class="eyebrow">06 · the knob · the embedding space</div>
+    <h2 class="big">Drag through the space and watch senses mix</h2>
+    <p>Below is a flattened view of one shared space. Each dot is a real item: some are images, some are words, some are sounds, coloured by modality. Grab the ringed query point and drag it anywhere. The page measures, live, which items sit nearest and lists them. Notice that the nearest neighbours are almost never all the same colour. That mixing is multimodality, made visible.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>shared embedding space · click or drag anywhere</span><span id="spaceReg" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="fig" id="space" style="touch-action:none"></div>
+        <div class="legend" style="margin-top:10px">
+          <span><i style="background:var(--v7)"></i>a word</span>
+          <span><i style="background:var(--v5)"></i>an image</span>
+          <span><i style="background:var(--v4)"></i>a sound</span>
+          <span><i style="background:var(--v6)"></i>your query</span>
+        </div>
+        <div class="nbr" id="spaceOut" style="margin-top:16px;border-top:1px solid #23323a;padding-top:14px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 4</b>Drag the gold query. The three nearest items are highlighted and listed with their modality. Park it among the animal cluster and the top matches are a photo, a word, and a bark, all at once.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <p>This is what "understanding across modalities" actually means underneath the marketing. Not that the model has a soul that grasps dogs, but that it has learned to place a dog photo and the word dog close together, so a question asked in one sense can be answered with material from another. Search your photo library by typing words, caption an image, find music that matches a mood: all of it is a query landing in this shared space and reading off its neighbours.</p>
+    <div class="pull">Meaning is the address. Once every sense writes to the same address book, they can all read each other's mail.</div>
+  </div>
+</section>
+
+
+<section style="padding-top:50px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">07 · fusion</div>
+    <h2 class="big">How three senses become one stream</h2>
+    <p>How does a photo end up in the same space as a sentence? The model turns each modality into a sequence of tokens, the same currency it already uses for text, then runs the whole mixed sequence through one network. Scroll to watch a sentence, an image, and a clip of sound converge into a single stream.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scFuse">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v10);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7d8c94;margin-bottom:16px">three inputs, one sequence</div>
+      <div class="fig" id="fuseFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 0 · three raw inputs</div><p>A sentence, a photo, and two seconds of audio. Three modalities, three completely different kinds of raw data. Right now they have nothing in common.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 1 · words become vectors</div><p>The sentence is chopped into pieces (roughly words), and each piece is turned into a short list of numbers, a vector. Here, four numbers each, shown as four little bars. That list is the embedding from Figure 3.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 2 · the photo becomes vectors too</div><p>The photo is cut into a grid of small patches, and each patch becomes its own four-number vector. Look at the bars: a patch is the exact same shape as a word. That is the quiet miracle.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 3 · sound becomes vectors too</div><p>The audio is sliced into short frames, and each frame becomes four numbers as well. Now every sense, however different it started, has been rewritten as vectors of one shape.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 4 · one stream, one network</div><p>Because they are all the same shape, the vectors simply line up into a single row and flow through one network. From here the model does not care which numbers came from a word, a patch, or a sound. That is fusion.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 5</b>Scroll-driven. Watch the four-bar vectors: a word, an image patch, and an audio frame all become the same four-number shape, then line up into one sequence for one network. That sameness of shape is what makes fusion possible.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      Imagine three musicians who play different instruments and cannot read each other's sheet music. Now rewrite every part into one shared notation. Suddenly they can play together, because the notes on the page mean the same thing to all of them. Tokenising each modality into vectors of one shape is that shared notation. <b>Once everything is written in the same notes, one network can play all the senses at once.</b></p></div>
+    <p>People argue about <em>when</em> to merge the streams: early, right at the input, or late, after each sense is processed on its own for a while. That is the early-fusion versus late-fusion debate, and it is in the weeds. The headline holds either way: make the senses share a notation, and one model can reason across all of them.</p>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#C2410C">
+<div class="part-banner"><div class="pk">Part III · chapters 08 to 11</div><h2>Nuances, tools, and the big distinction</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">08 · the landscape</div>
+    <h2 class="big">The tools, sense by sense</h2>
+    <p>The idea is abstract; the tools are not. Each modality has both native multimodal assistants that handle it inside one model and specialist tools built for it alone. Hover each modality to see representative examples. The roster shifts every few months, so treat these as landmarks, not a leaderboard.</p>
+    <div class="demo">
+      <div class="demo-head"><span>who does what · hover a modality</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig8"></div>
+        <div class="legend">
+          <span><i style="background:var(--v5)"></i>image</span>
+          <span><i style="background:var(--v4)"></i>voice + audio</span>
+          <span><i style="background:var(--v8)"></i>video</span>
+          <span><i style="background:var(--v7)"></i>native multimodal</span>
+        </div>
+        <div class="inspector" id="fig8Out">hover a modality to see the tools</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 6</b>Hover each sense. Names are examples current around 2026 and will change; the categories are what to remember.</div>
+    <aside class="mnote"><b>Two families.</b> Native multimodal assistants (one model does many senses) versus single-purpose generators (one tool, one sense done extremely well). Most real products wire several together.</aside>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">09 · a nuance</div>
+    <h2 class="big">Taking senses in is not the same as putting them out</h2>
+    <p>"Multimodal" hides a distinction worth making. A model can be multimodal on the way <em>in</em>, the way <em>out</em>, or both. Many assistants read images and hear speech but only ever reply in text. Others are <strong>any-to-any</strong>: they can also emit an image, a voice, a clip. Click through the three shapes.</p>
+    <div class="demo">
+      <div class="demo-head"><span>input, output, or both</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="chip on" data-io="in">many in, text out</button>
+          <button class="chip" data-io="out">text in, one sense out</button>
+          <button class="chip" data-io="any">any to any</button>
+        </div>
+        <div id="ioOut" style="font-size:15.5px;line-height:1.7;min-height:130px;color:#DCE5EA"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 7</b>Click each shape. The menu answer needs many-in and voice-out, which is why a truly hands-free version needs an any-to-any model or a small pipeline on the output side.</div>
+    <p style="margin-top:26px">There is a second nuance underneath: <em>real-time</em> versus <em>turn-based</em>. Early voice assistants were a pipeline in disguise, speech-to-text then a text model then text-to-speech, with a pause you could feel. Newer native-voice models process the audio directly and reply while you are still talking, which is why they can be interrupted and can hear a laugh. Same word, "voice", very different machinery.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A person who can read and listen but only writes their replies on paper is multimodal on the way in, text on the way out. Someone who can also draw you a picture and say the answer aloud is any-to-any. <b>Both hear you; only one can answer in kind.</b> When a product says "multimodal," always ask: in, out, or both?</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">10 · the big distinction</div>
+    <h2 class="big">Multimodal is not multi-model</h2>
+    <p>Here is the confusion this guide exists to clear up. The words rhyme, so people swap them, but they describe different things. <strong>Multimodal</strong> is about <em>senses</em>: one model, many kinds of data. <strong>Multi-model</strong> is about <em>architecture</em>: many separate models, each a specialist, with something routing work between them. Take one request through both and the difference is plain.</p>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scArch">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v10);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#7d8c94;margin-bottom:16px">one request: "describe this photo, then write code to sort its colours"</div>
+      <div class="fig" id="archFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">the request</div><p>A single request that mixes a picture, a description task, and a coding task. Watch how each architecture handles it.</p></div>
+      <div class="stp" data-step="1"><div class="sk">multimodal · one brain</div><p>A multimodal model takes the whole thing at once. The same model sees the photo, describes it, and writes the code. One brain, several senses, no routing.</p></div>
+      <div class="stp" data-step="2"><div class="sk">multi-model · a router reads first</div><p>A multi-model system starts with a router. It inspects the request and decides which specialist should handle which part.</p></div>
+      <div class="stp" data-step="3"><div class="sk">multi-model · specialists fire</div><p>The router dispatches: a vision model for the photo, a code model for the sorting, maybe a third to stitch the pieces. Separate models, each expert at one job.</p></div>
+      <div class="stp" data-step="4"><div class="sk">the line, drawn</div><p>Multimodal counts senses inside one model. Multi-model counts models inside one system. A multimodal model can even be one of the specialists a multi-model system routes to. They stack; they are not rivals.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 8</b>Scroll-driven, pinned on the right. Top path: one multimodal brain. Bottom path: a router feeding specialist models. Different axis entirely: senses versus models.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      Multimodal is one person who can see, hear, and speak. Multi-model is a company: a receptionist who reads your request and forwards it to the right department, a designer, a coder, an editor, each a specialist. The person has many senses. The company has many people and a receptionist. <b>You can hire a multimodal person into a multi-model company,</b> which is exactly why the two ideas get tangled: real systems often use both at once.</p></div>
+    <p>One more trap. A "mixture of experts" model sounds like a multi-model system but is not. Its experts live <em>inside</em> one model and are switched between token by token, invisibly. That is an efficiency trick within a single model, not a router calling separate products. The weeds untangle it.</p>
+    <div class="pull">Multimodal counts your senses. Multi-model counts your specialists. One is a brain; the other is an org chart.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · limitations</div>
+    <h2 class="big">Many senses, real blind spots</h2>
+    <p>A model with more senses is not a model with fewer flaws. Some of the gaps are specific to mixing modalities, and they matter in production.</p>
+    <p><strong>The senses are uneven.</strong> Most multimodal models are strongest in text, decent at images, weaker at audio, and shakiest on video. A confident answer about a picture can still be wrong in ways a caption never reveals. Trust each sense only as far as your own tests show it earns.</p>
+    <p><strong>Grounding fails across senses too.</strong> A model can describe a stop sign that is not in the photo, or mishear a word that changes a whole instruction. Hallucination did not go away when we added eyes; it got new places to happen.</p>
+    <p><strong>Other senses are expensive.</strong> An image can cost hundreds or thousands of tokens; video multiplies that by every frame. Multimodal requests are heavier and slower than text, and the bill and the latency both grow with how much you feed in.</p>
+    <p><strong>Privacy changes shape.</strong> Sending a photo or your voice is not like sending a sentence. It can carry a face, a location, a room, a person who never agreed to be uploaded. More senses in means more of the world leaving your device.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>A modality is a sense.<br>
+    Multimodal is one model with several.<br>
+    Multi-model is several models with a router.<br>
+    The menu needed the first; a whole product often needs both.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div style="max-width:var(--v9);margin:0 auto">
+      <div class="eyebrow">the assistant lab</div>
+      <h2 class="big">Design the menu assistant</h2>
+      <p>Put it together. Choose which senses come in, which go out, and whether you build it as one multimodal model or a multi-model system with a router. Watch capability, cost, and complexity move against each other. The presets rebuild the pipeline era, a modern native assistant, and a full product.</p>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><span>assistant builder · illustrative</span><span id="labVerdict" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="pipe">preset: 2019 pipeline</button>
+          <button class="btn" data-pre="native">preset: native assistant</button>
+          <button class="btn" data-pre="product">preset: full product</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>inputs (senses in)</label>
+            <div class="toggle" id="labIn">
+              <button data-v="text" class="on">text</button>
+              <button data-v="image" class="on">image</button>
+              <button data-v="audio">audio</button>
+              <button data-v="video">video</button>
+            </div></div>
+          <div><label>outputs (senses out)</label>
+            <div class="toggle" id="labOut2">
+              <button data-v="text" class="on">text</button>
+              <button data-v="voice">voice</button>
+              <button data-v="image">image</button>
+            </div></div>
+          <div><label>architecture</label>
+            <div class="toggle" id="labArch">
+              <button data-v="mm" class="on">one multimodal model</button>
+              <button data-v="multi">multi-model + router</button>
+            </div></div>
+          <div><label>real-time voice</label>
+            <div class="toggle" id="labRT">
+              <button data-v="off" class="on">off</button>
+              <button data-v="on">on</button>
+            </div></div>
+        </div>
+        <div class="mlab"><span>capability on the menu task</span><span class="mval" id="labCap"></span></div>
+        <div class="meter"><i id="labCapBar"></i></div>
+        <div class="mlab"><span>relative cost per request</span><span class="mval" id="labCost"></span></div>
+        <div class="meter"><i id="labCostBar"></i></div>
+        <div class="mlab"><span>build complexity</span><span class="mval" id="labCx"></span></div>
+        <div class="meter"><i id="labCxBar"></i></div>
+        <div id="labOut" style="font-family:var(--v10);font-size:12.5px;line-height:1.8;color:#a7b4bc;margin-top:16px;border-top:1px solid #23323a;padding-top:14px"></div>
+      </div>
+    </div>
+    <div style="max-width:var(--v9);margin:0 auto">
+      <div class="figcap"><b>Figure 9</b>Build one. Turn on every sense and real-time voice and watch cost and complexity climb. The native preset is where most assistants sensibly sit today.</div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>How the shared space is actually trained (CLIP)</summary><div class="wbody">The classic recipe is contrastive training. Take millions of image-and-caption pairs. Push each image's vector toward its true caption's vector and away from every other caption in the batch. Do this at scale and the model learns to place matching images and text at the same address, with no labels beyond "these two go together." CLIP was the landmark version; the same contrastive idea now stretches to audio and video. It is why you can search images with words.</div></details>
+    <details><summary>Why an image costs so many tokens</summary><div class="wbody">A model reads an image as a grid of patches, and each patch becomes a token, the same unit it counts for text. A single high-resolution image can turn into hundreds or low thousands of tokens depending on how finely it is cut. That is why vision requests cost more than short text ones, and why sending ten photos can quietly blow a context window. Video is images times frames, which is why a minute of video is so heavy.</div></details>
+    <details><summary>Early fusion, late fusion, and hybrids</summary><div class="wbody">Early fusion merges the modalities right at the input, so the network reasons across senses from the first layer; it is powerful but data-hungry and rigid. Late fusion processes each modality separately and combines them near the end; it is modular and easier to train but reasons across senses less deeply. Most modern systems are hybrids, doing some per-modality processing before an early merge. The trade is depth of cross-sense reasoning against flexibility and cost.</div></details>
+    <details><summary>Mixture of experts is not multi-model</summary><div class="wbody">A mixture-of-experts model routes each token to a few internal sub-networks called experts, so only part of the model runs per token. It looks like routing, but every expert lives inside one model, shares its training, and is invisible from outside; you call one model. A multi-model system routes between separate, independently built models or products. MoE is an efficiency trick within a model; multi-model is an architecture across models. Same word "route", different level.</div></details>
+    <details><summary>Multimodal RAG and embeddings</summary><div class="wbody">The shared space powers retrieval too. Store your images, audio, and documents as vectors in one space, then answer a text question by fetching the nearest items of any modality and feeding them to the model. It is retrieval-augmented generation where the corpus is not just text. A support bot that finds the right diagram from a typed question is doing multimodal retrieval under the hood.</div></details>
+    <details><summary>How you tell a real image from a generated one</summary><div class="wbody">As image and video generators improve, provenance becomes the question. The main efforts are invisible watermarks baked into generated pixels and signed metadata standards such as C2PA that travel with a file to record how it was made. Neither is complete: watermarks can be weakened and metadata can be stripped. Treat any single signal as a hint, not proof, and expect this to stay an arms race.</div></details>
+    <details><summary>Why the numbers on this page are illustrative</summary><div class="wbody">The embedding space in Figure 4 is real geometry: the page measures true distances between fixed points and lists genuine nearest neighbours, so dragging the query really does surface mixed-modality matches. The tool names are examples current around 2026 and will age. The lab's capability, cost, and complexity meters are scripted from how these choices actually trade off, not measured against live systems, because one self-contained file cannot run them. Trust the directions, not the digits, and test real tools for real numbers.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    the menu scenario and the lab meters are teaching aids; the embedding space in Figure 4 is real geometry measured in your browser; tool names are examples current around 2026 and will change<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function t(t){return document.getElementById(t)}function e(t,e){var a=document.createElementNS("http://www.w3.org/2000/svg",t);for(var o in e)a.setAttribute(o,e[o]);return a}var a=t("pdialFill"),o=t("pdialTxt"),n=2*Math.PI*23;a.style.strokeDasharray=n,a.style.strokeDashoffset=n,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);a.style.strokeDashoffset=n*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0});var i=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),i.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(t){i.observe(t)});var r=document.querySelectorAll("#rail a"),l={p1:"I",p2:"II",p3:"III"},s=new IntersectionObserver(function(t){t.forEach(function(t){if(t.isIntersecting){var e=t.target.getAttribute("data-c");a.style.stroke=e,l[t.target.id]&&(o.textContent=l[t.target.id],o.style.color=e),r.forEach(function(a){var o=a.getAttribute("href")==="#"+t.target.id;a.classList.toggle("on",o),o&&a.style.setProperty("--v16",e)})}})},{rootMargin:"-40% 0px -40% 0px"});function d(t,e,a,o,n,i){function r(){t.classList.add("dimmed"),e.classList.add("hot"),e.classList.add("sel"),o.innerHTML=n}a.addEventListener("mouseenter",r),a.addEventListener("mouseleave",function(){t.classList.remove("dimmed"),e.classList.remove("hot"),e.classList.remove("sel"),o.innerHTML=i}),a.addEventListener("click",r)}function c(t){return'<span class="mtag" style="background:'+{text:"var(--v7)",image:"var(--v5)",audio:"var(--v4)",video:"var(--v8)"}[t]+';color:#0C171C">'+t+"</span>"}["p1","p2","p3"].forEach(function(e){s.observe(t(e))}),document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),a=t.closest("section");function o(o){t.classList.toggle("hot",o),a.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",o)}),a.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",o)})}t.addEventListener("mouseenter",function(){o(!0)}),t.addEventListener("mouseleave",function(){o(!1)}),t.addEventListener("click",function(){o(!t.classList.contains("hot"))})}),function(){var a=[{label:"TEXT",mod:"text",color:"var(--v7)",html:`${c("text")} <b>words</b>. Read as a sequence of tokens (word-pieces). The oldest and strongest modality for today's models.`},{label:"IMAGE",mod:"image",color:"var(--v5)",html:`${c("image")} <b>pixels</b>. Read as a grid of patches, each turned into a vector. Covers photos, diagrams, screenshots, scanned documents.`},{label:"AUDIO",mod:"audio",color:"var(--v4)",html:`${c("audio")} <b>sound over time</b>. Sliced into short frames or a spectrogram. Speech, music, and noise are all this one modality.`},{label:"VIDEO",mod:"video",color:"var(--v8)",html:`${c("video")} <b>images plus time plus audio</b>. The heaviest modality: many frames per second, each an image, often with a sound track alongside.`}],o=e("svg",{viewBox:"0 0 560 250"}),n=e("g",{});o.appendChild(n);var i=t("fig1Out"),r=[],l=18;a.forEach(function(t,a){var s=e("g",{"data-part":"m"+a});s.appendChild(e("rect",{x:60,y:l,width:440,height:48,rx:6,fill:"#182831",stroke:t.color,"stroke-width":1.6}));var c=e("text",{x:80,y:l+24+4,class:"nlab"});c.textContent=t.label,s.appendChild(c),n.appendChild(s);var h=e("rect",{x:60,y:l,width:440,height:48,fill:"rgba(0,0,0,0)"});r.push(h),d(o,s,h,i,t.html,"hover a modality"),l+=58}),r.forEach(function(t){n.appendChild(t)}),t("fig1").appendChild(o)}();var h=["<b>1 · OCR.</b> An optical-character-recognition model finds text in the photo and returns it as a string. It does not understand the menu; it only transcribes glyphs. A stylised font or a photo at an angle is where it first stumbles, and everything downstream inherits the mistake.",'<b>2 · translate.</b> A translation model turns the foreign string into English. Useful, and lossy: it drops the layout, the prices\' alignment, the little leaf icon, the fact that one item was in a "specials" box. Only the words survive the arrow.',"<b>3 · language model reasons.</b> Now a text model picks the vegetarian dish and checks the price. But it has never seen the photo. It cannot use the leaf icon, cannot tell the garnish from the main, cannot see that a dish was crossed out. It reasons over a thin text shadow of a rich picture.",'<b>4 · text to speech.</b> A final model reads the answer aloud. Flat, after the fact, and unable to react if you interrupt to ask "which one again?" Four good tools, three lossy seams between them.'];function u(t,e){var a=[].slice.call(document.querySelectorAll("#"+t+" .stp")),o=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(a.forEach(function(e){e.classList.toggle("on",e===t.target)}),e(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});a.forEach(function(t){o.observe(t)}),e(0)}!function(){var e=t("pipeOut");function a(t){e.innerHTML=h[t],document.querySelectorAll("#p1 [data-l]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-l")===String(t))})}document.querySelectorAll("#p1 [data-l]").forEach(function(t){t.addEventListener("click",function(){a(+t.getAttribute("data-l"))})}),a(0)}(),function(){var a=[{v:.82,note:'This axis happens to track something like <b>"is it a living thing?"</b> High for dog, high for puppy, near zero for car. The model invented this axis on its own; nobody labelled it.'},{v:.14,note:'Low here. If one axis leans toward <b>"is it a vehicle?"</b>, dog scores near the bottom and car near the top. Each number is one such leaning.'},{v:.9,note:'High. Think of it as <b>"is it a common household pet?"</b> Dog and cat score high, wolf lower, car nothing. The real meaning of the axis is fuzzy; what matters is that similar things get similar numbers.'},{v:.07,note:'Low. Whatever this axis captures, "dog" barely registers on it, while some other word would light it up. Four numbers, four independent leanings, one point in space.'}],o=e("svg",{viewBox:"0 0 560 150"}),n=e("g",{});o.appendChild(n);var i=t("fig4Out"),r=[];n.appendChild(e("text",{x:20,y:34,class:"nlab",fill:"var(--v7)"})).textContent='"dog"',n.appendChild(e("text",{x:20,y:52,class:"elab"})).textContent="becomes";var l=88,s=118;a.forEach(function(t,a){var c=120+100*a,h=80*t.v,u=e("g",{"data-part":"d"+a});u.appendChild(e("rect",{x:c,y:38,width:l,height:80,rx:3,fill:"#182831",stroke:"#2a3a42","stroke-width":1})),u.appendChild(e("rect",{x:c,y:s-h,width:l,height:h,rx:3,fill:"var(--v6)",opacity:.35+.6*t.v})),u.appendChild(e("text",{x:c+44,y:s-h-7,"text-anchor":"middle",class:"nlab",fill:"#DCE5EA"})).textContent=t.v.toFixed(2),u.appendChild(e("text",{x:c+44,y:134,"text-anchor":"middle",class:"elab"})).textContent="dim "+(a+1),n.appendChild(u);var v=e("rect",{x:c,y:38,width:l,height:100,fill:"rgba(0,0,0,0)"});r.push(v),d(o,u,v,i,"<b>dim "+(a+1)+" = "+t.v.toFixed(2)+".</b> "+t.note,"an embedding is just a list of numbers; hover one to read it")}),n.appendChild(e("text",{x:120,y:142,class:"elab",fill:"var(--v6)"})).textContent="= [ 0.82, 0.14, 0.90, 0.07 ]  · one point in 4-D space",r.forEach(function(t){n.appendChild(t)}),t("fig4").appendChild(o)}(),function(){var a=[{x:120,y:80,mod:"image",label:"photo of a dog"},{x:158,y:110,mod:"text",label:'"dog"'},{x:110,y:130,mod:"audio",label:"a bark"},{x:178,y:52,mod:"text",label:'"puppy"'},{x:430,y:90,mod:"image",label:"photo of a car"},{x:392,y:120,mod:"text",label:'"car"'},{x:450,y:132,mod:"audio",label:"an engine"},{x:410,y:70,mod:"text",label:'"traffic"'},{x:270,y:250,mod:"image",label:"plate of pasta"},{x:232,y:222,mod:"text",label:'"dinner"'},{x:305,y:224,mod:"audio",label:"sizzling"},{x:262,y:284,mod:"text",label:'"restaurant"'}],o={text:"var(--v7)",image:"var(--v5)",audio:"var(--v4)"},n=e("svg",{viewBox:"0 0 560 340"}),i=e("g",{});n.appendChild(i);var r=e("g",{});i.appendChild(r),a.forEach(function(t){i.appendChild(e("circle",{cx:t.x,cy:t.y,r:7,fill:"#182831",stroke:o[t.mod],"stroke-width":2.5}));var a=e("text",{x:t.x+11,y:t.y+4,class:"elab"});a.textContent=t.label,i.appendChild(a)});var l={x:270,y:160},s=e("circle",{cx:l.x,cy:l.y,r:10,fill:"var(--v6)",stroke:"#fff","stroke-width":2,style:"cursor:grab"}),d=e("circle",{cx:l.x,cy:l.y,r:18,fill:"none",stroke:"var(--v6)","stroke-width":1.5,"stroke-dasharray":"3 3"});i.appendChild(d),i.appendChild(s);var h=e("circle",{cx:l.x,cy:l.y,r:26,fill:"rgba(0,0,0,0)",style:"cursor:grab"});i.appendChild(h),t("space").appendChild(n);var u=t("spaceOut"),v=t("spaceReg");function p(){var t=a.map(function(t){return{it:t,dist:Math.hypot(t.x-l.x,t.y-l.y)}}).sort(function(t,e){return t.dist-e.dist}).slice(0,3);r.innerHTML="",t.forEach(function(t){r.appendChild(e("line",{x1:l.x,y1:l.y,x2:t.it.x,y2:t.it.y,stroke:"var(--v6)","stroke-width":1.4,opacity:.6}))});var o={};t.forEach(function(t){o[t.it.mod]=1}),u.innerHTML="<b>3 nearest items:</b><br>"+t.map(function(t){return c(t.it.mod)+t.it.label}).join("<br>"),v.innerHTML=Object.keys(o).length>=2?'<span style="color:var(--v6)">mixing '+Object.keys(o).length+" senses</span>":"one sense nearby"}var f=!1;function g(t,e){var a=function(t,e){var a=n.getBoundingClientRect(),o=n.viewBox.baseVal;return{x:(t-a.left)/a.width*o.width,y:(e-a.top)/a.height*o.height}}(t,e);l.x=Math.max(16,Math.min(544,a.x)),l.y=Math.max(16,Math.min(324,a.y)),[s,d,h].forEach(function(t){t.setAttribute("cx",l.x),t.setAttribute("cy",l.y)}),p()}n.style.cursor="pointer",n.addEventListener("pointerdown",function(t){t.preventDefault(),f=!0,s.style.cursor="grabbing",g(t.clientX,t.clientY)}),window.addEventListener("pointermove",function(t){f&&g(t.clientX,t.clientY)}),window.addEventListener("pointerup",function(){f&&(f=!1,s.style.cursor="grab")}),p()}(),function(){var a=e("svg",{viewBox:"0 0 520 320"}),o=e("g",{});function n(t,a,o,n){for(var i=e("g",{}),r=function(t){for(var e=[],a=0;a<4;a++)e.push(.2+.7*Math.abs(Math.sin(1.7*t+2.3*a)));return e}(n),l=0;l<4;l++)i.appendChild(e("rect",{x:t+8*l,y:a,width:7,height:18,rx:1.5,fill:o,opacity:.25+.7*r[l],stroke:o,"stroke-width":.5,"stroke-opacity":.4}));return i}function i(t,a,i,r,l,s){var d=e("g",{"data-gel":r});d.appendChild(e("text",{x:14,y:t+13,class:"elab",fill:a})).textContent=i;for(var c=0;c<l;c++)d.appendChild(n(112+42*c,t,a,s+c));return o.appendChild(d),d}a.appendChild(o);var r=e("g",{"data-gel":"raw"});r.appendChild(e("rect",{x:112,y:20,width:118,height:26,rx:4,fill:"#182831",stroke:"var(--v7)","stroke-width":1.5})),r.appendChild(e("text",{x:122,y:37,class:"elab",fill:"var(--v7)"})).textContent='"a small dog"',r.appendChild(e("rect",{x:250,y:16,width:50,height:34,rx:4,fill:"#182831",stroke:"var(--v5)","stroke-width":1.5})),r.appendChild(e("text",{x:258,y:37,class:"elab",fill:"var(--v5)"})).textContent="photo",r.appendChild(e("rect",{x:320,y:20,width:70,height:26,rx:4,fill:"#182831",stroke:"var(--v4)","stroke-width":1.5})),r.appendChild(e("text",{x:328,y:37,class:"elab",fill:"var(--v4)"})).textContent="2s audio",o.appendChild(r),i(74,"var(--v7)","3 words"," tok-t",3,1),i(120,"var(--v5)","5 patches","tok-i",5,4),i(166,"var(--v4)","4 frames","tok-a",4,9);var l=e("g",{"data-gel":"tok-t"});l.appendChild(e("text",{x:250,y:69,class:"elab",fill:"#DCE5EA"})).textContent="each = [.8 .2 .9 .1]",l.appendChild(e("text",{x:250,y:83,class:"elab",fill:"#7d8c94"})).textContent="4 numbers, one shape",o.appendChild(l);var s=e("g",{"data-gel":"merge"});s.appendChild(e("text",{x:14,y:225,class:"elab",fill:"var(--v6)"})).textContent="one sequence";for(var d=["var(--v7)","var(--v7)","var(--v7)","var(--v5)","var(--v5)","var(--v5)","var(--v4)","var(--v4)"],c=0;c<8;c++)s.appendChild(n(112+42*c,212,d[c],c+2));s.appendChild(e("rect",{x:112,y:258,width:336,height:28,rx:4,fill:"#101a20",stroke:"var(--v6)","stroke-width":1.6})),s.appendChild(e("text",{x:150,y:276,class:"elab",fill:"var(--v6)"})).textContent="one shared network reads them all",o.appendChild(s),t("fuseFig").appendChild(a);var h={0:["raw"],1:["raw","tok-t"],2:["raw","tok-t","tok-i"],3:["raw","tok-t","tok-i","tok-a"],4:["tok-t","tok-i","tok-a","merge"]};u("scFuse",function(t){var e=h[t]||[];a.querySelectorAll("[data-gel]").forEach(function(t){t.classList.toggle("show",e.indexOf(t.getAttribute("data-gel"))>=0)})})}(),function(){var a=e("svg",{viewBox:"0 0 520 320"}),o=e("g",{});function n(t,a,n,i,r,l,s,d){var c=e("g",{"data-gel":s});c.appendChild(e("rect",{x:t,y:a,width:n,height:i,rx:6,fill:"#182831",stroke:r,"stroke-width":1.8}));var h=e("text",{x:t+n/2,y:a+(d?i/2:i/2+4),"text-anchor":"middle",class:"nlab",fill:"#DCE5EA"});if(h.textContent=l,c.appendChild(h),d){var u=e("text",{x:t+n/2,y:a+i/2+16,"text-anchor":"middle",class:"elab"});u.textContent=d,c.appendChild(u)}return o.appendChild(c),c}function i(t,a,n,i,r){var l=e("g",{"data-gel":r});l.appendChild(e("line",{x1:t,y1:a,x2:n,y2:i,stroke:"#5a6a72","stroke-width":1.6})),o.appendChild(l)}a.appendChild(o),n(190,14,140,34,"var(--v6)","the request","req"),o.appendChild(e("text",{x:14,y:96,class:"elab",fill:"var(--v7)"})).textContent="multimodal",i(260,48,260,74,"mm"),n(160,76,200,40,"var(--v7)","one multimodal model","mm","sees + describes + codes"),o.appendChild(e("text",{x:14,y:170,class:"elab",fill:"var(--v8)"})).textContent="multi-model",i(260,116,260,150,"router"),n(200,150,120,34,"var(--v8)","router","router"),i(230,184,120,214,"spec"),i(260,184,260,214,"spec"),i(290,184,400,214,"spec"),n(60,214,120,40,"var(--v5)","vision model","spec","the photo"),n(210,214,100,40,"var(--v7)","code model","spec","the sort"),n(340,214,120,40,"var(--v4)","combiner","spec","stitch it"),t("archFig").appendChild(a);var r={0:["req"],1:["req","mm"],2:["req","router"],3:["req","router","spec"],4:["req","mm","router","spec"]};u("scArch",function(t){var e=r[t]||[];a.querySelectorAll("[data-gel]").forEach(function(t){t.classList.toggle("show",e.indexOf(t.getAttribute("data-gel"))>=0)})})}(),function(){var a=[{label:"IMAGE",color:"var(--v5)",html:"<b>generate:</b> DALL·E 3, Midjourney, Stable Diffusion, Adobe Firefly, Flux. <b>understand:</b> GPT-4o, Gemini, Claude, and open models like LLaVA read what is in a picture."},{label:"VOICE + AUDIO",color:"var(--v4)",html:"<b>speech to text:</b> Whisper, Deepgram. <b>text to speech:</b> ElevenLabs, OpenAI, PlayHT. <b>music + sound:</b> Suno, Udio. <b>real-time voice:</b> GPT-4o voice, Gemini Live."},{label:"VIDEO",color:"var(--v8)",html:"<b>generate:</b> Sora, Runway Gen-3, Google Veo, Pika, Kling, Luma. Still the youngest and most expensive modality, improving fast, weakest at long, consistent shots."},{label:"NATIVE MULTIMODAL",color:"var(--v7)",html:"<b>one model, many senses:</b> GPT-4o, Gemini, Claude take text and images together, some also voice. These are the assistants that skip the pipeline and reason across senses at once."}],o=e("svg",{viewBox:"0 0 560 250"}),n=e("g",{});o.appendChild(n);var i=t("fig8Out"),r=[],l=18;a.forEach(function(t,a){var s=e("g",{"data-part":"t"+a});s.appendChild(e("rect",{x:60,y:l,width:440,height:48,rx:6,fill:"#182831",stroke:t.color,"stroke-width":1.6}));var c=e("text",{x:80,y:l+24+4,class:"nlab"});c.textContent=t.label,s.appendChild(c),n.appendChild(s);var h=e("rect",{x:60,y:l,width:440,height:48,fill:"rgba(0,0,0,0)"});r.push(h),d(o,s,h,i,t.html,"hover a modality to see the tools"),l+=58}),r.forEach(function(t){n.appendChild(t)}),t("fig8").appendChild(o)}();var v={in:'<b>Many senses in, text out.</b> The most common shape today. The model reads your image and hears your speech, then replies only in written text. Great for "what is in this photo?"; it cannot draw you a new one or speak back on its own.',out:"<b>Text in, one sense out.</b> A single-purpose generator: you type a prompt, it produces an image, a voice clip, or a video. Powerful in its lane, blind outside it. This is most image and video tools.",any:"<b>Any to any.</b> Senses flow in and out freely: give it a photo and a spoken question, get back a spoken answer and a fresh image. This is what a fully hands-free menu assistant needs, and the hardest kind to build."};!function(){var e=t("ioOut");function a(t){e.innerHTML=v[t],document.querySelectorAll("[data-io]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-io")===t)})}document.querySelectorAll("[data-io]").forEach(function(t){t.addEventListener("click",function(){a(t.getAttribute("data-io"))})}),a("in")}();var p={in:{text:1,image:1,audio:0,video:0},out:{text:1,voice:0,image:0},arch:"mm",rt:"off"};function f(t,e){document.querySelectorAll("#"+t+" button").forEach(function(t){t.addEventListener("click",function(){var a=t.getAttribute("data-v");p[e][a]=p[e][a]?0:1,t.classList.toggle("on",!!p[e][a]),m()})})}function g(t,e){document.querySelectorAll("#"+t+" button").forEach(function(a){a.addEventListener("click",function(){p[e]=a.getAttribute("data-v"),document.querySelectorAll("#"+t+" button").forEach(function(t){t.classList.toggle("on",t===a)}),m()})})}function m(){var e=p.in.text+p.in.image+p.in.audio+p.in.video,a=p.out.text+p.out.voice+p.out.image,o=20;p.in.image&&(o+=34),p.in.audio&&(o+=10),p.out.voice&&(o+=18),p.out.text&&(o+=8),"on"===p.rt&&p.in.audio&&p.out.voice&&(o+=12),p.in.image||(o=12),o=Math.max(6,Math.min(99,o));var n=1+.7*e+.6*a+(p.in.video?4:0)+(p.out.image?1.5:0);"on"===p.rt&&(n+=2),"multi"===p.arch&&(n+=1.5);var i="multi"===p.arch?60:22;i+=3*(e+a)+("on"===p.rt?14:0)+(p.in.video?12:0),i=Math.min(99,i),t("labCap").textContent=Math.round(o)+"%",t("labCapBar").style.width=o+"%",t("labCapBar").style.background=o>75?"var(--v19)":o>45?"var(--v21)":"var(--v17)";var r,l=Math.round(10*n)/10;t("labCost").textContent=l+"×",t("labCostBar").style.width=Math.min(100,l/12*100)+"%",t("labCostBar").style.background=l>7?"var(--v17)":l>3.5?"var(--v21)":"var(--v19)",t("labCx").textContent=Math.round(i)+"/100",t("labCxBar").style.width=i+"%",t("labCxBar").style.background=i>70?"var(--v17)":i>40?"var(--v21)":"var(--v19)",t("labVerdict").textContent="menu task "+Math.round(o)+"%",r=p.in.image?"multi"===p.arch?"A multi-model system with a router: more moving parts and higher build complexity, but you can pick the best specialist for each sense. Worth it once one model can no longer cover every job well.":o>80?"A single native multimodal model covers the whole task cleanly: it sees the menu, hears you, and can answer aloud, with the least plumbing. This is where most assistants sensibly sit.":"A workable start. Add image input to see the menu and voice output to keep it hands-free, and the capability on this task climbs fast.":"Without image input the assistant cannot see the menu at all. This is the one sense the task cannot do without.",t("labOut").textContent=r}f("labIn","in"),f("labOut2","out"),g("labArch","arch"),g("labRT","rt");var b={pipe:{in:{text:1,image:1,audio:0,video:0},out:{text:1,voice:1,image:0},arch:"multi",rt:"off"},native:{in:{text:1,image:1,audio:1,video:0},out:{text:1,voice:1,image:0},arch:"mm",rt:"off"},product:{in:{text:1,image:1,audio:1,video:1},out:{text:1,voice:1,image:1},arch:"multi",rt:"on"}};document.querySelectorAll("[data-pre]").forEach(function(t){t.addEventListener("click",function(){var e=b[t.getAttribute("data-pre")];p.in=Object.assign({},e.in),p.out=Object.assign({},e.out),p.arch=e.arch,p.rt=e.rt,[["labIn","in"],["labOut2","out"]].forEach(function(t){document.querySelectorAll("#"+t[0]+" button").forEach(function(e){e.classList.toggle("on",!!p[t[1]][e.getAttribute("data-v")])})}),[["labArch","arch"],["labRT","rt"]].forEach(function(t){document.querySelectorAll("#"+t[0]+" button").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-v")===p[t[1]])})}),m()})}),m()}();
+</script>
+</body>
+</html>

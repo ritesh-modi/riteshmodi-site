@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your API needs a way to say no — rate limiting, explained live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v7:#14110C;--v8:#1F1B14;--v1:#E9E3D5;--v3:#ADA294;--v2:#847C6C;--v10:#2B2620;--v0:#E0A33D;--v5:#0B0906;--v6:#DFD9CA;--v9:#D9604B;--v13:#E0A33D;--v11:#5FA97C;--v4:680px;--v12:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v12:0s}}body{margin:0;background:var(--v7);color:var(--v1);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--v12),color var(--v12)}.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--v0);z-index:100;transition:width .1s linear}.col{max-width:var(--v4);margin:0 auto;padding:0 26px}section{padding:104px 0}.divider{max-width:var(--v4);margin:0 auto;height:1px;background:var(--v10)}h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:400;line-height:1.08;margin:0}h1.hero-h{font-size:clamp(38px,6.5vw,62px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(31px,5vw,48px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Newsreader",serif;font-size:clamp(22px,3vw,30px);line-height:1.36;color:var(--v3)}.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v8);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.pull{font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.3;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v8);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v3)}.demo{border:1px solid var(--v10);background:var(--v5);color:var(--v6);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid var(--v10);font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--v2);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.btn{font-family:"IBM Plex Mono",monospace;font-size:12.5px;padding:9px 16px;border:1px solid var(--v0);border-radius:3px;background:transparent;color:var(--v0);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v0);color:var(--v5)}.chip{font-family:"IBM Plex Mono",monospace;font-size:12.5px;padding:8px 13px;border:1px solid var(--v10);border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:var(--v3)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v5)}input[type=range]{width:100%;accent-color:var(--v0)}.log{font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.75;background:var(--v5);border-radius:4px;padding:6px 2px;min-height:150px;margin-top:18px}.log div{opacity:0;animation:lin .3s forwards}@keyframes lin{to{opacity:1}}@media (prefers-reduced-motion:reduce){.log div{animation:none;opacity:1}}.l-ok{color:var(--v11)}.l-bad{color:var(--v9)}.l-warn{color:var(--v13)}.l-dim{color:var(--v2)}code,pre{font-family:"IBM Plex Mono",monospace}pre{background:var(--v5);border:1px solid var(--v10);border-radius:4px;padding:20px 22px;font-size:13.5px;line-height:1.7;overflow-x:auto;color:var(--v6)}.cm{color:var(--v2)}.kw{color:var(--v0)}.meter{height:12px;background:var(--v8);border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .25s ease,background .25s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.mlab{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--v2);display:flex;justify-content:space-between;margin-top:10px}.mval{color:var(--v6)}.bucket-wrap{display:flex;gap:26px;align-items:flex-end;margin:8px 0 18px}.bucket{width:74px;height:150px;border:2px solid var(--v10);border-top:none;border-radius:0 0 8px 8px;position:relative;overflow:hidden;flex:none}.bucket i{position:absolute;bottom:0;left:0;right:0;background:var(--v0);height:100%;transition:height .25s ease}@media (prefers-reduced-motion:reduce){.bucket i{transition:none}}.bucket b{position:absolute;top:6px;left:0;right:0;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500;color:var(--v6);z-index:2}.bmeta{flex:1;min-width:0}.svgbox{margin-top:26px;border:1px solid var(--v10);border-radius:5px;background:var(--v5);padding:18px 12px 8px;overflow-x:auto}.svgbox svg{display:block;min-width:520px;width:100%;height:auto}.ax{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--v2)}.ph{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--v0)}.close-sec{text-align:center;padding:130px 0}.close-sec p{font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.35;margin:0}footer{border-top:1px solid var(--v10);padding:34px 0 60px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--v2);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v5)}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:74px 0}.bucket-wrap{flex-direction:column;align-items:stretch}.bucket{align-self:center}}</style></style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+
+<header style="padding:120px 0 90px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · systems</div>
+    <h1 class="hero-h">Your API needs a way to say <em>no</em></h1>
+    <p class="lede">Rate limiting is the art of refusing work cheaply so you can keep doing work at all.
+    Below, a live token bucket you can starve, feed, and flood — and watch exactly when it starts saying no.</p>
+  </div>
+</header>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the incident</div>
+    <h2 class="big">One laptop can outrun your whole cluster</h2>
+    <div class="try">Do this math in your head: a <code>while(true)</code> loop with no sleep, sending one HTTP request per iteration. How many requests per second is that from a single laptop?</div>
+    <p>Whatever you guessed, it's more. A tight loop over a keep-alive connection pushes <span style="font-family:'IBM Plex Mono',monospace">2,000–10,000</span> requests a second. From one machine. On hotel Wi-Fi.</p>
+    <p>Maya runs checkout for a mid-size shop: three pods, comfortable at 220 requests a second, Friday peak around 310. At 18:04 a partner's integration script hits a bug — its error handler retries instantly, forever. By 18:05 her service is fielding 4,100 requests a second from one API key. Latency climbs, health checks fail, pods restart, and every restart makes the survivors' load worse.</p>
+    <p>Nothing was hacked. Nobody meant harm. The system did exactly what it was built to do: <em>try to serve everyone</em> — which is precisely the bug.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the naive fix</div>
+    <h2 class="big">Retries turn a slowdown into an outage</h2>
+    <p>The instinctive answer is capacity: add pods, the load balancer spreads the pain. But watch what actually happens when demand passes supply and every failed request <em>comes back</em>. Press play.</p>
+    <div class="demo">
+      <div class="demo-head"><span>checkout-svc · friday 18:04</span><button class="btn" id="stormBtn">▶ replay the storm</button></div>
+      <div class="demo-body" style="padding-top:14px">
+        <div class="log" id="stormLog" aria-live="polite"><div class="l-dim">— press replay to watch five minutes compress into ten lines —</div></div>
+      </div>
+    </div>
+    <p style="margin-top:26px">Every timeout produced a retry. Every retry added load. Every added load produced more timeouts. Scaling out buys minutes; the feedback loop eats them. The fleet didn't lose to 4,100 rps — it lost to <em>its own refusal to refuse</em>.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the concept</div>
+    <h2 class="big">The fix is a counter that says no early</h2>
+    <p>Here's the move Maya's team shipped that weekend, and it's almost embarrassingly small: <strong>count each client's requests, and past a line, refuse instantly.</strong> That's rate limiting. The refusal is the feature — a rejected request costs microseconds and no database work, so saying no stays cheap even at 10,000 rps.</p>
+    <p>The counting scheme they used — the one most of the industry uses — is a <strong>token bucket</strong>. Give each client a bucket holding at most <span style="font-family:'IBM Plex Mono',monospace">C</span> tokens. Tokens drip in at <span style="font-family:'IBM Plex Mono',monospace">r</span> per second. Each request takes one token to pass. Empty bucket, no entry: HTTP <span style="font-family:'IBM Plex Mono',monospace">429 Too Many Requests</span>.</p>
+    <div class="pull">A system that can't say no doesn't have a capacity — it has a hope.</div>
+    <div class="note">Cousins you'll meet in the wild: fixed windows (simple, bursty at the boundary), sliding windows (smoother, more state), leaky bucket (shapes output instead of input). The bucket below covers the intuition for all of them.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · smallest working version</div>
+    <h2 class="big">Ten lines decide every request</h2>
+    <p>The entire mechanism, no framework, no queue:</p>
+<pre><code>tokens   = 10        <span class="cm"># capacity C — the burst allowance</span>
+refill   = 5         <span class="cm"># r tokens per second — the sustained rate</span>
+last     = now()
+
+<span class="kw">def</span> allow():
+    <span class="kw">global</span> tokens, last
+    tokens = min(10, tokens + (now() - last) * refill)
+    last   = now()
+    <span class="kw">if</span> tokens &gt;= 1:
+        tokens -= 1; <span class="kw">return</span> True    <span class="cm"># 200: do the work</span>
+    <span class="kw">return</span> False                    <span class="cm"># 429: refuse in ~0 ms</span></code></pre>
+    <p style="margin-top:24px">Now run it. A burst of twelve requests lands on a full bucket. Step through what the counter does:</p>
+    <div class="demo">
+      <div class="demo-head"><span>token bucket · C=10 · r=5/s</span><span><button class="btn" id="stepBtn">step →</button> <button class="btn" id="stepReset" style="margin-left:8px">reset</button></span></div>
+      <div class="demo-body" style="padding-top:14px">
+        <div class="log" id="stepLog" aria-live="polite"><div class="l-dim">— press step to advance —</div></div>
+      </div>
+    </div>
+    <p style="margin-top:26px">Twelve arrived; eleven got served within half a second; two were told — instantly, politely, with a machine-readable status — to come back later. Total cost of the two refusals: effectively zero. Compare that to chapter 02, where refusal-by-collapse cost everything.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · inside the bucket</div>
+    <h2 class="big">The bucket makes two different promises</h2>
+    <p>Before you touch the knob, read the bucket's diary. Full bucket, a burst of 8 spends it in one gulp; idle time pays it back at 5 tokens a second; then a <em>sustained</em> 8&nbsp;rps — 3 more than the refill — drains it for good:</p>
+    <div class="svgbox">
+      <svg viewBox="0 0 540 205" role="img" aria-label="Bucket level over eight seconds: a burst drops it from 10 to 2, refill restores it, sustained overload drains it to zero">
+        <line x1="30" y1="20" x2="30" y2="160" stroke="#2B2620"/>
+        <line x1="30" y1="160" x2="510" y2="160" stroke="#2B2620"/>
+        <line x1="30" y1="20" x2="510" y2="20" stroke="#2B2620" stroke-dasharray="3 4"/>
+        <text class="ax" x="8" y="24">10</text>
+        <text class="ax" x="14" y="164">0</text>
+        <polyline points="30,20 90,20 90,132 186,20 210,20 410,160 510,160"
+          fill="none" stroke="#E0A33D" stroke-width="2.5" stroke-linejoin="round"/>
+        <text class="ph" x="66" y="90">burst spends it</text>
+        <text class="ph" x="128" y="52">refill pays it back</text>
+        <text class="ph" x="238" y="100">sustained 8 rps drains it</text>
+        <text class="ph" x="404" y="150" fill="#D9604B">empty: every extra request bounces</text>
+        <text class="ax" x="26" y="182">0s</text><text class="ax" x="146" y="182">2s</text>
+        <text class="ax" x="266" y="182">4s</text><text class="ax" x="386" y="182">6s</text><text class="ax" x="496" y="182">8s</text>
+      </svg>
+    </div>
+    <p style="margin-top:26px">Two promises, two numbers. <strong>Capacity (10) is the savings account</strong> — how big a spike you'll absorb without complaint. <strong>Refill (5/s) is the salary</strong> — the rate you'll sustain forever. Clients that spend in bursts live off capacity; clients that grind steadily live off refill. Mixing the two up is the most common rate-limit misconfiguration in production.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">06 · the knob</div>
+    <h2 class="big">Drag the traffic. The refill rate doesn't move</h2>
+    <p>This is the whole chapter: one slider. It sets incoming traffic λ against the same bucket — capacity 10, refill 5/s — running live right now. Push λ past 5 and watch which number saturates and which one climbs.</p>
+    <div class="demo">
+      <div class="demo-head"><span>live simulation · C=10 · r=5/s</span><span id="simState" class="l-warn">running</span></div>
+      <div class="demo-body">
+        <label for="lamSlider" style="font-family:'IBM Plex Mono',monospace;font-size:13px;display:block;margin-bottom:8px">
+          incoming traffic λ = <span class="mval" id="lamVal">3</span> req/s
+        </label>
+        <input type="range" id="lamSlider" min="1" max="30" step="1" value="3" aria-label="Incoming requests per second">
+        <div class="bucket-wrap" style="margin-top:26px">
+          <div class="bucket" aria-hidden="true"><b id="bktNum">10</b><i id="bktFill" style="height:100%"></i></div>
+          <div class="bmeta">
+            <div class="mlab"><span>allowed throughput</span><span class="mval"><span id="okRate">3.0</span> / 5.0 max</span></div>
+            <div class="meter"><i id="okBar" style="background:var(--v11)"></i></div>
+            <div class="mlab"><span>rejected (429)</span><span class="mval"><span id="rejPct">0</span>%</span></div>
+            <div class="meter"><i id="rejBar" style="background:var(--v11)"></i></div>
+            <div class="mlab" style="margin-top:14px"><span>steady state says</span><span class="mval" id="steady">allowed = 3, rejected = 0%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:26px">Below 5 rps, the bucket is a bystander — everything passes. At exactly 5, you're spending your salary to the cent. Past 5, allowed throughput <em>flatlines at the refill rate</em> no matter how hard you push, and the 429 percentage absorbs the entire difference. At λ=30 the service still does its 5 rps of real work, calmly, while refusing 83% of the flood in microseconds.</p>
+    <div class="pull">Overload doesn't change what the system does. It changes who gets told no.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the fine print</div>
+    <h2 class="big">A 429 is a promise kept — but it isn't free</h2>
+    <p>Rate limiting does not solve overload. It <em>chooses who feels it</em> — and every choice of C and r is a real trade-off. Same bucket, three configurations:</p>
+    <div class="demo">
+      <div class="demo-head"><span>choose a policy</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+          <button class="chip on" data-t="tight">tight · C=5, r=5</button>
+          <button class="chip" data-t="bursty">bursty · C=50, r=5</button>
+          <button class="chip" data-t="generous">generous · C=50, r=20</button>
+        </div>
+        <div id="polOut" style="font-size:16.5px;line-height:1.7"></div>
+      </div>
+    </div>
+    <p style="margin-top:26px">And the parts the bucket can't fix, stated plainly:</p>
+    <p><strong>Distributed counters drift.</strong> Ten gateway nodes each holding "the" bucket will collectively let through more than one bucket's worth, unless they share state (Redis, usually) — which adds a network hop to the thing you built to be free.</p>
+    <p><strong>Clients retry.</strong> A 429 with no <span style="font-family:'IBM Plex Mono',monospace">Retry-After</span> header and no client-side jitter just reruns chapter 02 with a different status code.</p>
+    <p><strong>Fairness is per-key, not global.</strong> Limit by API key and one customer's ten keys beat another's one. Limit by IP and a whole office NAT looks like one abuser. The counter is easy; deciding <em>what to count</em> is the design work.</p>
+  </div>
+</section>
+
+
+<section class="close-sec">
+  <div class="col reveal">
+    <p>Capacity is what you forgive.<br>Refill is what you promise.<br>The 429 is you keeping that promise out loud.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    token bucket · C=10 · r=5/s throughout — all numbers computed live by the page's own simulation, none measured or invented<br>
+    built with the interactive-explainer skill · single file · no dependencies
+  </div>
+</footer>
+
+<script>!function(){var e=window.matchMedia("(prefers-reduced-motion: reduce)").matches,t=document.getElementById("progress");window.addEventListener("scroll",function(){var e=document.documentElement;t.style.width=e.scrollTop/(e.scrollHeight-e.clientHeight)*100+"%"},{passive:!0});var n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),n.unobserve(e.target))})},{threshold:.1,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){n.observe(e)});var a=[["l-dim","18:04:00  in: 310 rps   p95: 90 ms    all pods healthy"],["l-warn","18:04:20  in: 1,900 rps  p95: 480 ms   partner key k_7f2a climbing"],["l-warn","18:04:40  in: 4,100 rps  p95: 2.1 s    db pool exhausted"],["l-bad","18:05:05  timeouts: 34%  → clients retry → in: 6,800 rps"],["l-bad","18:05:30  pod-2 OOM-killed · restarting"],["l-bad","18:05:31  pod-1, pod-3 absorb load → p95: 9.4 s"],["l-bad","18:05:58  health checks failing fleet-wide"],["l-bad","18:06:10  in: 9,200 rps — most of it retries of failures"],["l-bad","18:06:40  checkout availability: 0%"],["l-dim","18:07:—   paging on-call. revenue: also paging."]],r=document.getElementById("stormLog"),o=[];document.getElementById("stormBtn").addEventListener("click",function(){o.forEach(clearTimeout),o=[],r.innerHTML="",a.forEach(function(t,n){o.push(setTimeout(function(){var e=document.createElement("div");e.className=t[0],e.textContent=t[1],r.appendChild(e)},e?0:420*n))})});var s=[["l-dim","t=0.00s  burst: 12 requests arrive at once · bucket: 10.0 tokens"],["l-ok","t=0.00s  #01–#10 each take a token → 200 OK · bucket: 0.0"],["l-bad","t=0.00s  #11, #12 find an empty bucket → 429 in ~0 ms · bucket: 0.0"],["l-warn","t=0.40s  refill at 5/s has added 2 tokens · bucket: 2.0"],["l-ok","t=0.41s  #13 arrives → takes a token → 200 OK · bucket: 1.0"],["l-dim","tally:   served 11 · refused 2 · time spent refusing: ~0 ms"]],i=document.getElementById("stepLog"),l=0;document.getElementById("stepBtn").addEventListener("click",function(){if(0===l&&(i.innerHTML=""),!(l>=s.length)){var e=document.createElement("div");e.className=s[l][0],e.textContent=s[l][1],i.appendChild(e),l++}}),document.getElementById("stepReset").addEventListener("click",function(){l=0,i.innerHTML='<div class="l-dim">— press step to advance —</div>'});var d=3,c=10,u=0,m=[],h=[],g=document.getElementById("lamSlider"),p=document.getElementById("lamVal"),v=document.getElementById("bktNum"),f=document.getElementById("bktFill"),y=document.getElementById("okRate"),b=document.getElementById("okBar"),k=document.getElementById("rejPct"),E=document.getElementById("rejBar"),B=document.getElementById("steady");g.addEventListener("input",function(){d=+this.value,p.textContent=d;var e=Math.min(d,5),t=d>5?Math.round((d-5)/d*100):0;B.textContent="allowed = "+e+", rejected = "+t+"%"});setInterval(function(){c=Math.min(10,c+.5),u+=.1*d;for(var e=0,t=0;u>=1;)u-=1,c>=1?(c-=1,e++):t++;m.push(e),h.push(t),m.length>50&&(m.shift(),h.shift());var n=m.reduce(function(e,t){return e+t},0),a=h.reduce(function(e,t){return e+t},0),r=n/(.1*m.length),o=n+a?Math.round(a/(n+a)*100):0;v.textContent=c.toFixed(1),f.style.height=c/10*100+"%",y.textContent=r.toFixed(1),b.style.width=Math.min(100,r/5*100)+"%",k.textContent=o,E.style.width=o+"%";var s=o>50?"var(--v9)":o>0?"var(--v13)":"var(--v11)";E.style.background=s,b.style.background=r>=4.9?"var(--v13)":"var(--v11)"},100);var I={tight:"<strong>Tight (C=5, r=5).</strong> No savings account: even a 6-request burst from a healthy client eats a 429. Abuse is contained within one second — and so is every perfectly innocent page load that fires six API calls at once. You will hear about this from the frontend team.",bursty:'<strong>Bursty (C=50, r=5).</strong> Same sustained promise, ten times the forgiveness. Spiky-but-honest clients never notice the limiter. The cost: a bad actor gets 50 free requests <em>per key</em> before the brakes bite — multiply by a thousand keys and your "5 rps limit" absorbs 50,000 requests before saying a single no.',generous:"<strong>Generous (C=50, r=20).</strong> Four times the salary. Fewer complaints, fewer support tickets — and the limiter now permits 4× the load your capacity planning assumed. A limit the backend can't actually serve isn't a limit; it's a comforting label on the old outage."},w=document.getElementById("polOut");function x(e){w.innerHTML=I[e],document.querySelectorAll("[data-t]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-t")===e)})}document.querySelectorAll("[data-t]").forEach(function(e){e.addEventListener("click",function(){x(e.getAttribute("data-t"))})}),x("tight")}();
+</script>
+</body>
+</html>

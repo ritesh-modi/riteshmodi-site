@@ -1,0 +1,359 @@
+<style>
+  /* ============================================================
+     THE SEVEN BUILDING BLOCKS OF GRC — a teaching lesson
+     Identity: warm academic "lecture primer" — pine green + clay
+     Type: Palatino serif display / system sans body / mono terms
+     ============================================================ */
+  :root {
+    --paper:    #F4F5F2;
+    --surface:  #FBFBF8;
+    --raised:   #FFFFFF;
+    --ink:      #1A211E;
+    --ink-soft: #303A35;
+    --slate:    #5C665F;
+    --slate-2:  #7A857D;
+    --pine:     #2E5E4E;   /* primary accent */
+    --pine-deep:#234A3D;
+    --clay:     #B0663B;   /* warm highlight — "why it matters" */
+    --clay-deep:#8F4E2A;
+    --hair:     #DBDED7;
+    --hair-2:   #E8EAE3;
+    --good:     #3F7A57; --good-bg:#E4EEE7;
+    --warn:     #B5872F; --warn-bg:#F2EAD7;
+    --crit:     #A8443B; --crit-bg:#F2E1DE;
+    --chip-bg:  #E9ECE4;
+    --shadow:   0 1px 2px rgba(26,33,30,.05), 0 10px 26px -14px rgba(26,33,30,.16);
+    --serif: "Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono: ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --read: 42rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#12160F; --surface:#171C15; --raised:#1C221A; --ink:#E9EBE2; --ink-soft:#C8CDC2;
+      --slate:#98A198; --slate-2:#79837A; --pine:#63AC8C; --pine-deep:#7EC0A2;
+      --clay:#D08A5E; --clay-deep:#E0A176; --hair:#2A312A; --hair-2:#232A22;
+      --good:#6FB389; --good-bg:#1D2C22; --warn:#D6A954; --warn-bg:#2C2716;
+      --crit:#D57C70; --crit-bg:#2E1D1A; --chip-bg:#242B23;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 12px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F4F5F2;--surface:#FBFBF8;--raised:#FFFFFF;--ink:#1A211E;--ink-soft:#303A35;
+    --slate:#5C665F;--slate-2:#7A857D;--pine:#2E5E4E;--pine-deep:#234A3D;--clay:#B0663B;--clay-deep:#8F4E2A;
+    --hair:#DBDED7;--hair-2:#E8EAE3;--good:#3F7A57;--good-bg:#E4EEE7;--warn:#B5872F;--warn-bg:#F2EAD7;
+    --crit:#A8443B;--crit-bg:#F2E1DE;--chip-bg:#E9ECE4;
+    --shadow:0 1px 2px rgba(26,33,30,.05),0 10px 26px -14px rgba(26,33,30,.16);
+  }
+  :root[data-theme="dark"]{
+    --paper:#12160F;--surface:#171C15;--raised:#1C221A;--ink:#E9EBE2;--ink-soft:#C8CDC2;
+    --slate:#98A198;--slate-2:#79837A;--pine:#63AC8C;--pine-deep:#7EC0A2;--clay:#D08A5E;--clay-deep:#E0A176;
+    --hair:#2A312A;--hair-2:#232A22;--good:#6FB389;--good-bg:#1D2C22;--warn:#D6A954;--warn-bg:#2C2716;
+    --crit:#D57C70;--crit-bg:#2E1D1A;--chip-bg:#242B23;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  ::selection{background:var(--pine);color:#fff;}
+  a{color:var(--pine-deep);text-underline-offset:2px;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--pine);outline-offset:2px;border-radius:2px;}
+  .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.6rem 1rem;z-index:100;}
+  .skip:focus{left:.5rem;top:.5rem;}
+
+  .wrap{max-width:52rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem) 6rem;}
+  .reading{max-width:var(--read);}
+
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;text-wrap:balance;color:var(--ink);}
+  h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.12;margin:.1rem 0 .3rem;}
+  h3{font-size:1.2rem;margin:1.6rem 0 .4rem;}
+  p{margin:.7rem 0;color:var(--ink-soft);}
+  strong{color:var(--ink);font-weight:650;}
+  ul,ol{color:var(--ink-soft);padding-left:1.15rem;} li{margin:.3rem 0;} li::marker{color:var(--pine);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--chip-bg);padding:.08em .38em;border-radius:4px;color:var(--ink);}
+
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pine-deep);display:flex;align-items:center;gap:.6rem;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair);}
+
+  /* ---- toggle ---- */
+  .toggle{position:fixed;top:1rem;right:1rem;z-index:60;background:var(--raised);border:1px solid var(--hair);color:var(--ink-soft);width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .toggle:hover{color:var(--pine-deep);border-color:var(--pine);}
+
+  /* ---- cover ---- */
+  .cover{padding:3.2rem 0 1rem;}
+  .cover .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pine-deep);}
+  .cover h1{font-size:clamp(2.2rem,5.5vw,3.6rem);line-height:1.04;letter-spacing:-.02em;margin:.9rem 0 .5rem;max-width:18ch;}
+  .cover .lede{font-size:1.14rem;color:var(--slate);max-width:48ch;}
+  .cover-meta{display:flex;flex-wrap:wrap;gap:1.2rem 2rem;margin-top:1.8rem;padding-top:1.3rem;border-top:1px solid var(--hair);font-family:var(--mono);font-size:.74rem;}
+  .cover-meta span{display:block;color:var(--slate-2);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem;}
+  .cover-meta b{color:var(--ink);font-weight:600;}
+
+  /* ---- running analogy banner ---- */
+  .analogy-intro{background:linear-gradient(100deg,var(--good-bg),var(--surface) 70%);border:1px solid var(--hair);border-left:3px solid var(--pine);border-radius:0 12px 12px 0;padding:1.2rem 1.4rem;margin:1.8rem 0;}
+  .analogy-intro .h{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--pine-deep);margin-bottom:.4rem;}
+
+  /* ---- GRC letters ---- */
+  .letters{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:1.4rem 0;}
+  .letter{background:var(--raised);border:1px solid var(--hair);border-radius:11px;padding:1rem 1.1rem;box-shadow:var(--shadow);}
+  .letter b{font-family:var(--serif);font-size:2.2rem;color:var(--pine);display:block;line-height:1;}
+  .letter .t{font-weight:650;color:var(--ink);margin:.35rem 0 .1rem;}
+  .letter p{font-size:.82rem;margin:.1rem 0 0;color:var(--slate);}
+  @media (max-width:620px){.letters{grid-template-columns:1fr;}}
+
+  /* ---- building block card ---- */
+  .block{margin:2.6rem 0;padding-top:1.6rem;border-top:2px solid var(--ink);scroll-margin-top:1rem;}
+  .block-head{display:flex;gap:1rem;align-items:baseline;}
+  .block-num{font-family:var(--serif);font-size:2.4rem;font-weight:600;color:var(--pine);line-height:1;letter-spacing:-.03em;}
+  .block-head .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate-2);}
+  .block-head h2{margin:.15rem 0 0;}
+  .oneline{font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--ink);margin:.9rem 0 .2rem;}
+
+  .lesson{display:grid;gap:0;margin:1.2rem 0;border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--raised);box-shadow:var(--shadow);}
+  .lesson .row{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--hair-2);}
+  .lesson .row:last-child{border-bottom:none;}
+  .lesson .lab{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--pine-deep);padding-top:.15rem;}
+  .lesson .row.why .lab{color:var(--clay-deep);}
+  .lesson .row.why{background:linear-gradient(100deg,var(--warn-bg),transparent 80%);}
+  .lesson .body{font-size:.92rem;color:var(--ink-soft);}
+  .lesson .body b{color:var(--ink);}
+  .lesson .body p{margin:.2rem 0;}
+  .lesson .body .an{color:var(--pine-deep);font-style:italic;}
+  @media (max-width:640px){.lesson .row{grid-template-columns:1fr;gap:.25rem;}}
+
+  /* ---- vocab chips ---- */
+  .chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:.4rem 0;}
+  .chip{font-family:var(--mono);font-size:.72rem;background:var(--chip-bg);border:1px solid var(--hair);border-radius:20px;padding:.15rem .6rem;color:var(--ink);}
+  .chip.g{background:var(--good-bg);color:var(--good);border-color:color-mix(in srgb,var(--good) 30%,transparent);}
+  .chip.w{background:var(--warn-bg);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent);}
+  .chip.c{background:var(--crit-bg);color:var(--crit);border-color:color-mix(in srgb,var(--crit) 35%,transparent);}
+
+  /* ---- misconception ---- */
+  .miscon{border:1px dashed var(--clay);border-radius:10px;padding:.8rem 1rem;margin:1rem 0;background:var(--warn-bg);}
+  .miscon .h{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--clay-deep);margin-bottom:.25rem;}
+  .miscon p{margin:.1rem 0;font-size:.9rem;}
+
+  /* ---- teach prompt ---- */
+  .teach{display:flex;gap:.7rem;align-items:flex-start;margin:1rem 0 .2rem;font-size:.92rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--hair);border-radius:9px;}
+  .teach .q{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--pine-deep);background:var(--chip-bg);padding:.2rem .45rem;border-radius:5px;white-space:nowrap;}
+
+  /* ---- tables ---- */
+  .tbl-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--hair);border-radius:10px;}
+  table{border-collapse:collapse;width:100%;font-size:.85rem;}
+  thead th{background:var(--surface);text-align:left;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:.6rem .8rem;border-bottom:1px solid var(--hair);}
+  tbody td{padding:.6rem .8rem;border-bottom:1px solid var(--hair-2);color:var(--ink-soft);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .mininav{position:sticky;top:0;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);padding:.6rem 0;margin:1rem 0 0;z-index:40;display:flex;gap:.3rem;flex-wrap:wrap;font-family:var(--mono);font-size:.68rem;}
+  .mininav a{text-decoration:none;color:var(--slate);padding:.2rem .5rem;border-radius:5px;}
+  .mininav a:hover{background:var(--chip-bg);color:var(--ink);}
+
+  .foot{margin-top:3.5rem;padding-top:1.4rem;border-top:2px solid var(--ink);font-size:.82rem;color:var(--slate);}
+  hr.rule{border:none;border-top:1px solid var(--hair);margin:2rem 0;}
+</style>
+
+<a href="#b1" class="skip">Skip to the lesson</a>
+<button class="toggle" id="themeBtn" aria-label="Toggle light and dark theme" title="Toggle theme">◐</button>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="kicker">A Teaching Lesson · Foundations of GRC</div>
+    <h1>The Seven Building Blocks of GRC</h1>
+    <p class="lede">What each one <em>is</em>, in plain language — and why an organization can't govern anything, least of all AI, without it. Built to teach from.</p>
+    <div class="cover-meta">
+      <div><span>Audience</span><b>Students &amp; new practitioners</b></div>
+      <div><span>Running example</span><b>One AI-adopting firm</b></div>
+      <div><span>Blocks</span><b>7 concepts</b></div>
+      <div><span>Prereqs</span><b>None</b></div>
+    </div>
+  </header>
+
+  <!-- WHAT IS GRC -->
+  <section class="reading">
+    <p class="eyebrow">Start here</p>
+    <h2>First: what do the three letters mean?</h2>
+    <p><strong>GRC</strong> stands for <strong>Governance, Risk, and Compliance</strong> — three jobs every serious organization must do at once. They sound abstract, so anchor them:</p>
+    <div class="letters">
+      <div class="letter"><b>G</b><div class="t">Governance</div><p>Setting direction and deciding <em>who is accountable</em>. “Who is in charge, and by what rules?”</p></div>
+      <div class="letter"><b>R</b><div class="t">Risk</div><p>Understanding <em>what could go wrong</em> and how badly. “What are we worried about, and how much?”</p></div>
+      <div class="letter"><b>C</b><div class="t">Compliance</div><p>Proving you <em>meet the rules</em> that bind you. “Can we show we're following the law?”</p></div>
+    </div>
+    <p>Here's the key idea for the whole lesson: <strong>these three jobs are done using seven concrete things</strong> — frameworks, policies, controls, risks, mitigations, audit findings, and compliance mappings. Learn these seven and you can read <em>any</em> GRC system, in any industry, including one governing generative AI. They are the vocabulary of the discipline.</p>
+
+    <div class="analogy-intro">
+      <div class="h">★ The one organization we'll follow throughout</div>
+      <p style="margin:0">Every block below closes with a <strong>real example</strong> drawn from a single company: a <strong>mid-size financial-services firm</strong> that has governed money well for decades and is now deploying AI for the first time. Watch what happens to it. Its traditional GRC is mature and green; its AI GRC is red in <em>every one</em> of the seven blocks — and the blocks, taken in order, explain exactly why.</p>
+    </div>
+  </section>
+
+  <nav class="mininav" aria-label="The seven blocks">
+    <a href="#b1">1 · Frameworks</a>
+    <a href="#b2">2 · Policies</a>
+    <a href="#b3">3 · Controls</a>
+    <a href="#b4">4 · Risks</a>
+    <a href="#b5">5 · Mitigations</a>
+    <a href="#b6">6 · Audit Findings</a>
+    <a href="#b7">7 · Compliance Mappings</a>
+    <a href="#vocab">★ Vocabulary</a>
+  </nav>
+
+  <!-- ===================== BLOCK 1 ===================== -->
+  <article class="block reading" id="b1">
+    <div class="block-head"><span class="block-num">1</span><div><div class="k">The external rulebook</div><h2>Regulatory Frameworks</h2></div></div>
+    <p class="oneline">The laws, regulations, and standards you are required to obey.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>A framework is a body of rules imposed on you <b>from the outside</b> — by a government, a regulator, or an industry body. You don't get to negotiate them; you either comply or face consequences (fines, lawsuits, losing your licence).</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>Each framework has a <b>jurisdiction</b> — the territory where it applies. This decides whether it even affects you: a US health law doesn't bind a European bakery. Frameworks also change over time, so each carries a <b>last-updated</b> date — following a stale version is itself a failure.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Frameworks are the <b>“why”</b> behind everything else. Every rule you set and every safeguard you build ultimately exists to satisfy some framework. Miss one that applies to you and no amount of internal effort protects you — you're breaking a law you didn't know you were under.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>An EU financial firm is bound by <b>GDPR</b> (privacy), <b>SOX</b> (financial reporting), <b>PCI DSS</b> (card data) — and now, for its AI, three new ones: the <b>EU AI Act</b>, <b>AICM</b>, and <b>AIEU</b>. The AI frameworks arrived far more recently than the rest, which is exactly why most firms are behind on them.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“A framework and a policy are the same thing.” No — a <b>framework is external</b> (the law), a <b>policy is internal</b> (your response to the law). Confusing them is the single most common beginner mistake.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Name two rulebooks your school or workplace must follow that nobody inside it invented. Who wrote them, and what happens if you ignore them?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 2 ===================== -->
+  <article class="block reading" id="b2">
+    <div class="block-head"><span class="block-num">2</span><div><div class="k">Your own rules</div><h2>Policies</h2></div></div>
+    <p class="oneline">The organization's own statements of intent — what <em>you</em> require of yourselves.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>A policy is an <b>internal rule you write for yourself</b>, usually to satisfy a framework or to prevent a risk. It says <em>what</em> must be true (“every high-risk model decision is reviewed by a person”) but not <em>how</em> you'll make it true — that's the next block.</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>A real policy always has an <b>owner</b> — a named senior person answerable for it (not “the company,” an actual role). It has an <b>effective date</b> and a <b>review date</b>, because rules must be re-approved periodically. And it has a <b>status</b>:</p><div class="chips"><span class="chip g">Active</span><span class="chip">Draft</span><span class="chip w">Under Review</span><span class="chip">Retired</span></div><p>Only an <b>Active</b> policy has real authority. A draft is just a proposal.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Policies turn a vague intention (“be secure”) into a stated <b>commitment</b> someone owns. Without a policy, there's no mandate — nobody can be told to build a safeguard, and nobody can be held accountable when one is missing. Policy is where <b>governance</b> becomes real.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>Our AI firm has 12 policies. Eleven are <b>Active</b>. The one that matters most — the <b>AI Governance Policy</b> — is stuck <b>Under Review</b>. Because it was never ratified, no one has the authority to demand AI safeguards. That one un-approved policy is the root of the firm's entire AI failure.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“We have a policy, so we're covered.” A policy is only a <b>promise</b>. If no mechanism enforces it and no evidence shows it's followed, it protects no one. A policy without controls (Block 3) is a poster on a wall.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Why might a company keep a policy in “Under Review” for a year? What is the quiet cost of never finishing it?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 3 ===================== -->
+  <article class="block reading" id="b3">
+    <div class="block-head"><span class="block-num">3</span><div><div class="k">The safeguards</div><h2>Controls</h2></div></div>
+    <p class="oneline">The actual mechanisms that make a policy real and reduce risk.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>If a policy says <em>what</em> must be true, a control is the <b>concrete thing that makes it true</b>. It's the safeguard you can point at, switch on, and test. Controls are the workhorses of GRC — most of the real effort lives here.</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>Controls come in <b>four types</b> by <em>when</em> they act:</p><div class="chips"><span class="chip">Preventive — stops it happening</span><span class="chip">Detective — catches it happening</span><span class="chip">Corrective — fixes it after</span><span class="chip">Compensating — a backup when the ideal isn't possible</span></div><p style="margin-top:.5rem">And crucially, a control has <b>two separate health checks</b>, not one:</p><p>• <b>Implementation status</b> — does it <em>exist</em>? <span class="chip g">Implemented</span> <span class="chip w">Partially</span> <span class="chip">Planned</span> <span class="chip c">Not Implemented</span><br>• <b>Effectiveness</b> — does it <em>work</em>? Proven by <em>testing</em>. <span class="chip g">Effective</span> <span class="chip w">Partially</span> <span class="chip c">Ineffective</span> <span class="chip">Not Assessed</span></p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Controls are where intent becomes protection. The two-status split is the deep lesson: a control can be <b>built but never tested</b> — so you <em>cannot yet claim it works</em>. “We built a review step” and “the review step actually gets used, on every case” are different facts. Auditors care about the second.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>The firm's data-encryption control is <b>Implemented + Effective</b>, tested last month — mature. But all 12 of its <b>AI controls</b> (bias testing, human oversight, conformity assessment…) are <b>Planned</b> or <b>Not Implemented</b>, and <em>not one</em> is <b>Effective</b>. The firm knows how to build controls; it just hasn't pointed that skill at AI yet.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“Implemented means it works.” Not necessarily. <b>Implemented</b> means it exists; <b>Effective</b> means testing proved it works. A fire extinguisher bolted to the wall but never inspected is implemented and possibly useless.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Give one preventive, one detective, and one corrective control for the risk “laptop gets stolen.” Which stops the harm, which spots it, which limits it?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 4 ===================== -->
+  <article class="block reading" id="b4">
+    <div class="block-head"><span class="block-num">4</span><div><div class="k">What could go wrong</div><h2>Risks</h2></div></div>
+    <p class="oneline">The potential harmful events — scored so you can rank and act on them.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>A risk is a <b>future event that might happen and would hurt</b> if it did. GRC doesn't try to eliminate all risk (impossible) — it tries to <em>see</em> risks clearly and decide which ones to act on first.</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>To compare risks fairly, you <b>score two dimensions</b>, each 1–5, and multiply:</p><p style="text-align:center;font-family:var(--serif);font-size:1.1rem;color:var(--ink)">Likelihood × Impact = Risk Score</p><p>The score (1–25) sorts into levels:</p><div class="chips"><span class="chip">Low 1–5</span><span class="chip">Medium 6–11</span><span class="chip w">High 12–19</span><span class="chip c">Critical 20–25</span></div><p style="margin-top:.5rem">Each risk also has a <b>status</b> — the decision you've made about it: <span class="chip">Open</span> <span class="chip g">Mitigated</span> <span class="chip w">Accepted</span> <span class="chip">Transferred</span> <span class="chip">Closed</span> — and a named <b>owner</b>.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Scoring is a <b>forcing function</b>. Two people who both call a risk “bad” might be far apart on how bad — saying “likelihood 4, impact 5” out loud settles the argument and, more importantly, forces leadership to <em>confront</em> a danger they were treating as routine. A number gets budget; a worry doesn't.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>The firm's worst risk is “<b>Deploying a high-risk AI system without the required assessment.</b>” Likelihood 4 (it's on track to happen), Impact 5 (huge fines + real people harmed) = <b>20 = Critical</b> — the only Critical on its whole register. That single number is what finally makes a launch decision a boardroom conversation.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“Our goal is zero risk.” No — zero risk means zero activity. The goal is <b>informed risk</b>: know what you're carrying, and consciously decide to reduce, accept, or avoid it.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Score two risks for a school: “a student trips on a loose stair” vs. “a data breach leaks student records.” Which scores higher, and does that match your gut?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 5 ===================== -->
+  <article class="block reading" id="b5">
+    <div class="block-head"><span class="block-num">5</span><div><div class="k">The plan of action</div><h2>Risk Mitigations</h2></div></div>
+    <p class="oneline">The dated plan for reducing a specific risk — often by building a control.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>A mitigation is the <b>“what we're going to do about it”</b> attached to a risk. It connects a worry (Block 4) to an action or a control (Block 3), with a <em>deadline</em>. It's what turns a risk register from a list of fears into a project plan.</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>Every mitigation picks one of the <b>four risk-treatment strategies</b> — remember them as the <b>four T's</b>:</p><div class="chips"><span class="chip">Avoid — don't do the risky thing</span><span class="chip">Mitigate — reduce it with a control</span><span class="chip">Transfer — insure / contract it away</span><span class="chip">Accept — consciously live with it</span></div><p style="margin-top:.5rem">It also tracks <b>status</b> and dates: <span class="chip">Planned</span> <span class="chip w">In Progress</span> <span class="chip g">Completed</span> <span class="chip c">Overdue</span>.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>A risk you've <em>logged</em> but aren't <em>treating</em> is just a documented failure waiting to happen. Mitigations add <b>accountability and time</b> — a named owner and a due date. Watching mitigations slip to <b>Overdue</b> is often the earliest warning sign of a program in trouble.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>Every mitigation tied to the firm's AI risks reads <b>Planned</b> or <b>In Progress</b> — never <b>Completed</b>. The <em>intent</em> to fix things exists on paper; the <em>delivery</em> is entirely outstanding. That gap between plan and done is the story of most struggling programs.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“Transferring a risk (e.g. buying insurance) makes it go away.” It moves the <em>financial</em> blow, not the <em>event</em> — and you usually <b>can't transfer legal or regulatory responsibility</b>. If your AI breaks the law, insurance won't make you compliant.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>For “our website could be hacked,” write one mitigation using each of the four T's. Which feels most responsible, and why can't you always just Avoid?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 6 ===================== -->
+  <article class="block reading" id="b6">
+    <div class="block-head"><span class="block-num">6</span><div><div class="k">The independent check</div><h2>Audit Findings</h2></div></div>
+    <p class="oneline">An independent examiner's proof that a control does — or doesn't — work.</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>An audit finding is a <b>gap discovered by someone independent</b> when they inspect a control. It's the reality check on all your confident claims — the moment “we think it works” meets “let's actually test it.”</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>Each finding names the <b>specific control</b> that failed (findings are never vague), and carries:</p><p>• a <b>severity</b>: <span class="chip c">Critical</span> <span class="chip w">High</span> <span class="chip">Medium</span> <span class="chip">Low</span> <span class="chip">Informational</span><br>• a <b>status</b>: <span class="chip c">Open</span> <span class="chip w">In Remediation</span> <span class="chip g">Closed</span> <span class="chip">Risk Accepted</span><br>• a <b>remediation owner</b> and a <b>due date</b> — a dated, owned commitment to fix it.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>This is <b>independence</b> — the value is that the checker isn't the builder. A finding with an owner and a deadline is a <b>commitment</b>; without them it's just a complaint. The real worth of an audit isn't discovering the gap — it's the <em>tracked promise</em> to close it.</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>The firm's most serious finding: “<b>No conformity assessment completed for any AI system despite the law taking effect.</b>” Severity <b>Critical</b>, still <b>Open</b>. An independent voice confirming, in writing, the same danger the control data implied — which is much harder for leadership to ignore.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“Audits are about catching people out.” Good audit is about <b>assurance</b> — giving leadership trustworthy proof of what's actually working, so they can fix the real gaps before an outsider (or an attacker) finds them first.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Why should the person who <em>built</em> a safeguard not be the one who <em>audits</em> it? What might they be blind to?</span></div>
+  </article>
+
+  <!-- ===================== BLOCK 7 ===================== -->
+  <article class="block reading" id="b7">
+    <div class="block-head"><span class="block-num">7</span><div><div class="k">The proof of compliance</div><h2>Compliance Mappings</h2></div></div>
+    <p class="oneline">The crosswalk that proves “this safeguard satisfies that specific rule.”</p>
+    <div class="lesson">
+      <div class="row"><div class="lab">Plain meaning</div><div class="body"><p>A compliance mapping is the <b>link that connects a control to a specific requirement</b> in a framework — and points to the <em>evidence</em> that proves it. It's literally how the “C” in GRC gets calculated: not by opinion, but by mapped, evidenced links.</p></div></div>
+      <div class="row"><div class="lab">Details to know</div><div class="body"><p>Each mapping records the <b>control</b>, the <b>framework</b>, the exact <b>requirement reference</b> (e.g. “Art. 14 — Human Oversight”), a <b>status</b> — <span class="chip g">Compliant</span> <span class="chip w">Partially</span> <span class="chip c">Non-Compliant</span> <span class="chip">Not Assessed</span> — and the one field that decides everything: the <b>evidence location</b>, a pointer to the document that proves the claim.</p></div></div>
+      <div class="row why"><div class="lab">Why it matters</div><div class="body"><p>Here's the hardest truth in GRC: <b>compliance is not what you do — it's what you can prove.</b> A safeguard that works perfectly but has <em>no evidence attached</em> counts, to an auditor or a regulator, as <b>non-compliant</b>. The evidence pointer is the difference between “trust me” and “here it is.”</p></div></div>
+      <div class="row"><div class="lab">Real example</div><div class="body"><p>The firm's traditional mappings (GDPR, card rules) point to real documents and read <b>Compliant</b>. Every one of its <b>AI</b> mappings reads <b>Non-Compliant</b> with the evidence field <b>empty</b>. Same organization — the difference between green and red is entirely whether there's a document to point at.</p></div></div>
+    </div>
+    <div class="miscon"><div class="h">Common misconception</div><p>“If we're doing the right thing, we're compliant.” Doing it isn't enough — you must be able to <b>show</b> it on demand, tied to the exact rule. No evidence, no compliance, no matter how good your intentions.</p></div>
+    <div class="teach"><span class="q">Ask the class</span><span>Your team genuinely reviews every high-risk AI decision by hand — but logs nothing. The auditor asks for proof. Are you compliant? Why is the answer uncomfortable?</span></div>
+  </article>
+
+  <!-- ===================== HOW THEY CONNECT ===================== -->
+  <section class="reading">
+    <hr class="rule">
+    <p class="eyebrow">Putting it together</p>
+    <h2>One story, told in seven words</h2>
+    <p>The blocks aren't a pile of definitions — they form a single sentence of accountability. Read it as one continuous story about the firm:</p>
+    <p style="font-size:1.05rem;border-left:3px solid var(--pine);padding-left:1rem;color:var(--ink)">The <b>EU AI Act</b> (framework) demands human oversight of high-risk AI, so the firm writes an <b>AI Governance Policy</b> (policy) requiring a person to review every automated decision, delivered by a <b>human-in-the-loop review step and its audit trail</b> (control), because it fears <b>deploying a high-risk system without the required assessment</b> (risk — likelihood 4 × impact 5 = <b>20, Critical</b>), which it is reducing by <b>standing up conformity assessments this quarter</b> (mitigation); the <b>auditor's report</b> (audit finding) records, in writing, that no conformity assessment has been completed at all — <b>Critical, Open</b>; and the <b>compliance mapping</b> ought to show that review step satisfies <b>Art. 14 — Human Oversight</b>, except its evidence field is empty, so it reads <b>Non-Compliant</b>.</p>
+    <p>That single thread — external rule → internal rule → mechanism → worry → plan → independent check → documented proof — is the entire discipline. When you can follow it end to end for any one safeguard, you understand GRC. And it works identically whether the safeguard is a firewall, a second signature on an expense claim, or a bias test on an AI model.</p>
+  </section>
+
+  <!-- ===================== VOCABULARY ===================== -->
+  <section id="vocab">
+    <hr class="rule">
+    <p class="eyebrow reading">Teacher's quick reference</p>
+    <h2 class="reading">The vocabulary vault</h2>
+    <p class="reading">Hand these to students as flashcards. Each set is a small, closed list — memorizing them is most of the battle.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Term set</th><th>The options</th><th>The idea in one line</th></tr></thead>
+        <tbody>
+          <tr><td><b>Control types</b></td><td>Preventive · Detective · Corrective · Compensating</td><td>Classified by <em>when</em> the safeguard acts — before, during, after, or as a backup.</td></tr>
+          <tr><td><b>Control existence</b></td><td>Implemented · Partially · Planned · Not Implemented</td><td>Does the safeguard <em>exist</em> yet?</td></tr>
+          <tr><td><b>Control effectiveness</b></td><td>Effective · Partially · Ineffective · Not Assessed</td><td>Does it <em>work</em>? Proven only by testing.</td></tr>
+          <tr><td><b>Risk score</b></td><td>Likelihood (1–5) × Impact (1–5)</td><td>Turns a worry into a comparable number, 1–25.</td></tr>
+          <tr><td><b>Risk levels</b></td><td>Low · Medium · High · Critical</td><td>The score bucketed for priority.</td></tr>
+          <tr><td><b>Risk treatment (4 T's)</b></td><td>Avoid · Mitigate · Transfer · Accept</td><td>The four choices for any risk. There is no fifth.</td></tr>
+          <tr><td><b>Compliance status</b></td><td>Compliant · Partially · Non-Compliant · Not Assessed</td><td>Requirement met <em>and evidenced</em> — or not.</td></tr>
+          <tr><td><b>Finding severity</b></td><td>Critical · High · Medium · Low · Informational</td><td>How urgently a discovered gap must be fixed.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reading">
+      <h3>The five things students should leave able to say</h3>
+      <ol>
+        <li>A <b>framework</b> is a rule imposed on you; a <b>policy</b> is a rule you impose on yourself.</li>
+        <li>A <b>control</b> can exist without working — <em>implemented</em> and <em>effective</em> are two different facts.</li>
+        <li>A <b>risk</b> is scored (likelihood × impact) so it can be ranked and funded, not just feared.</li>
+        <li>Every risk gets one of exactly <b>four treatments</b>: avoid, mitigate, transfer, accept.</li>
+        <li><b>Compliance is what you can prove</b> — no evidence means non-compliant, however well you're doing.</li>
+      </ol>
+    </div>
+
+    <div class="foot reading">
+      <p><strong>The Seven Building Blocks of GRC</strong> — a foundations lesson for teaching governance, risk &amp; compliance from first principles. Companion to the practitioner course <em>“GRC for Generative AI.”</em> Examples draw on a synthetic financial-services dataset; the firm is imaginary, the failure pattern is not.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var root=document.documentElement, btn=document.getElementById('themeBtn');
+    function cur(){var s=root.getAttribute('data-theme');return s?s:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+    function paint(){btn.textContent=cur()==='dark'?'☀':'☾';}
+    paint();
+    btn.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');paint();});
+  })();
+</script>

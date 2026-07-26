@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The words for the machine: a plain-language map of GenAI, from token to agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v13:#ECEEEA;--v14:#E0E3DE;--v5:#1A1E1C;--v7:#454E49;--v6:#727C76;--v17:#CDD2CC;--v0:#2B6E7B;--v11:#141A18;--v12:#DCE3DE;--v16:#E0776A;--v20:#E0A94A;--v18:#5FA97C;--v9:"JetBrains Mono",ui-monospace,Menlo,monospace;--v3:#5FB0BC;--v2:#E5B267;--v4:#B392D8;--v1:#7DBE8C;--v8:680px;--v21:1120px;--v10:26px;--v19:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v19:0s}}body{margin:0;background:var(--v13);color:var(--v5);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#2B6E7B}.pII{--v0:#9C5A2A}.pIII{--v0:#6A4C93}.pIV{--v0:#3B6E4A}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v14);box-shadow:0 6px 22px rgba(26,30,28,.2)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v17);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:var(--v9);font-size:13px;font-weight:500;color:var(--v5)}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:11px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:15px 0;background:var(--v17);transition:background .3s,transform .3s}.rail a.on{background:var(--v15,#2B6E7B);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v5);outline-offset:3px}.col{max-width:var(--v8);margin:0 auto;padding:0 var(--v10);position:relative}.wide{max-width:var(--v21);margin:0 auto;padding:0 var(--v10)}.bleed{width:100%;margin:0}section{padding:96px 0}.divider{max-width:var(--v8);margin:0 auto;height:1px;background:var(--v17)}h1,h2,h3{font-family:"Lora",Georgia,serif;font-weight:500;line-height:1.14;margin:0}h1.hero-h{font-size:clamp(37px,6vw,58px);letter-spacing:-.01em;margin:18px 0 26px;font-weight:500}h2.big{font-size:clamp(28px,4.6vw,42px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Lora",serif;font-size:clamp(21px,2.8vw,28px);line-height:1.44;color:var(--v7)}.part-banner{padding:90px 0 20px;text-align:center}.part-banner .pk{font-family:var(--v9);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(27px,4.2vw,40px);font-style:italic}.eyebrow{font-family:var(--v9);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v14);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.intu{border:1px solid var(--v17);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v14);font-size:17.5px;line-height:1.64}.intu .il{font-family:var(--v9);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v5)}.pull{font-family:"Lora",serif;font-size:clamp(23px,3.3vw,32px);line-height:1.34;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v14);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v7)}.term{font-family:var(--v9);font-size:.82em;background:var(--v14);padding:1px 7px;border-radius:3px;color:var(--v0);font-weight:500}.mnote{font-size:13.5px;line-height:1.55;color:var(--v6)}.mnote b{color:var(--v7);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v14);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.demo{border:1px solid var(--v17);background:var(--v11);color:var(--v12);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #263029;font-family:var(--v9);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#84918a;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v6);margin:12px 2px 0}.figcap b{font-family:var(--v9);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:var(--v9);font-size:12.5px;padding:9px 16px;border:1px solid var(--v3);border-radius:3px;background:transparent;color:var(--v3);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v3);color:var(--v11)}.chip{font-family:var(--v9);font-size:12.5px;padding:8px 13px;border:1px solid #33443b;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#a7b6ae}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}code{font-family:var(--v9);font-size:.88em;background:var(--v14);padding:1px 6px;border-radius:3px}.demo code{background:none;padding:0}.trace{font-family:var(--v9);font-size:13px;line-height:1.75}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:var(--v9);font-size:11px;fill:#a7b6ae}.fig .elab{font-family:var(--v9);font-size:10px;fill:#84918a}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.18}.fig .sel rect,.fig .sel circle{stroke-width:4}.inspector{font-family:var(--v9);font-size:12.5px;line-height:1.8;border-top:1px solid #263029;margin-top:16px;padding-top:14px;min-height:96px;color:#a7b6ae}.inspector b{color:#DCE3DE;font-weight:500}.legend{display:flex;gap:15px;flex-wrap:wrap;font-family:var(--v9);font-size:11px;color:#84918a;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer{font-family:var(--v9);font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #33443b;border-radius:4px;background:transparent;color:#a7b6ae;cursor:pointer;transition:all .18s;line-height:1.5}.layer.on{border-color:var(--v0);color:#fff;background:#1d2723}.layer b{display:block;color:#DCE3DE;font-size:13px;margin-bottom:3px}.layer-out{font-size:15px;line-height:1.65;color:#DCE3DE;border-top:1px solid #263029;padding-top:16px;min-height:110px}.ebar{display:inline-block;width:26px;text-align:center}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v10);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:var(--v9);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v11);color:var(--v12);border:1px solid var(--v17);border-radius:6px;padding:24px}[data-gel]{opacity:.12;transition:opacity .45s ease,transform .45s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v13);border-bottom:1px solid var(--v17);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.mlab{font-family:var(--v9);font-size:12px;color:#84918a;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#DCE3DE}.scope-out{font-size:14.5px;line-height:1.6;color:#DCE3DE}.scope-out .u{font-family:var(--v9);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--v2);display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:var(--v9);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#84918a;display:block;margin-bottom:6px}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:var(--v9);font-size:12px;padding:7px 12px;border:1px solid #33443b;border-radius:4px;background:transparent;color:#a7b6ae;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.meter{height:12px;background:#1d2723;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.weeds details{border:1px solid var(--v17);border-radius:4px;margin-bottom:10px;background:var(--v13)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v14)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v7)}.weeds .wbody a{color:var(--v0)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Lora",serif;font-size:clamp(23px,3.4vw,33px);line-height:1.44;margin:0}footer{border-top:1px solid var(--v17);padding:34px 0 60px;font-family:var(--v9);font-size:12.5px;color:var(--v6);line-height:2}footer a{color:var(--v6)}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:70px 0}}</style></style>
+</head>
+<body>
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#2B6E7B" title="Part I"></a>
+  <a href="#p2" data-c="#9C5A2A" title="Part II"></a>
+  <a href="#p3" data-c="#6A4C93" title="Part III"></a>
+  <a href="#p4" data-c="#3B6E4A" title="Part IV"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · genai fundamentals</div>
+    <h1 class="hero-h">The words for the machine.</h1>
+    <p class="lede">You cannot use, trust, or secure a thing you cannot name. This is a plain-language map of the whole GenAI vocabulary, built in the order the ideas actually depend on each other: from the smallest unit a model reads, up through memory and retrieval, to agents that act, and finally to the three jobs of the people who build with them. No term is skipped, and each one arrives only when you need it.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#2B6E7B">
+<div class="part-banner"><div class="pk">Part I · the mind · chapters 01 to 06</div><h2>How a model is made</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · why words first</div>
+    <h2 class="big">Name it, then you can handle it</h2>
+    <div class="try">You type a question into a chatbot and a fluent answer appears. Before reading on, try to say, in one sentence each, what a "token" is, what "context" means, and what makes something an "agent." If any of those is fuzzy, you are in the right place.</div>
+    <p>Every field hides behind its vocabulary, and this one moves fast enough that the words arrive faster than the understanding. The fix is not to memorize a glossary. It is to meet each term exactly when the idea before it makes it necessary, so the words hang on a structure instead of floating loose.</p>
+    <p>That structure is the plan of this guide. First the model itself, and how it is born. Then the memory we bolt on so it can know things. Then the loop that lets it act, and the ways many of them work together. And finally the three distinct jobs of building with all of it. Every term you have half-heard, <span class="term">embedding</span>, <span class="term">RAG</span>, <span class="term">agent</span>, <span class="term">MCP</span>, <span class="term">harness</span>, lands in its place along the way.</p>
+    <div class="pull">The jargon is not a wall. It is a set of handles, and this guide hands them to you one at a time.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the smallest unit</div>
+    <h2 class="big">A model reads in tokens, not words</h2>
+    <p>A model cannot see letters or words the way you do. The first thing that happens to your text is that it gets chopped into <span class="term">tokens</span>: chunks that are often a word, sometimes a piece of one, and each token is turned into a number the machine can work with. Hover the pieces to see how your sentence really looks to the model.</p>
+    <div class="demo">
+      <div class="demo-head"><span>"unbelievably tricky" → tokens → numbers · hover a token</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig2"></div>
+        <div class="inspector" id="fig2Out">hover a token to see its id</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>Hover each token. "Unbelievably" splits into pieces; each token becomes an id number. Everything the model does, it does to these numbers.</div>
+    <div class="intu"><span class="il">picture it</span>
+      Think of how a child sounds out a long word by breaking it into chunks: "un-be-liev-ably." The model does the same thing to everything, not because it is slow, but because chunks are a tidy, reusable alphabet. <b>Tokens are that alphabet, and the model's entire world is a stream of them,</b> which is also why length limits and costs are always counted in tokens, never in words.</p></div>
+    <p style="margin-top:26px">Those billions of numbers the model learned, the settings that turn an input token stream into a sensible output, have a name too: <span class="term">parameters</span>, also called <span class="term">weights</span>. When you hear a model is "70 billion parameters," that is the count of those dials. More dials can mean more capability, and always mean more cost to run.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">03 · the architecture</div>
+    <h2 class="big">The transformer, and its one big idea: attention</h2>
+    <p>Nearly every modern model is a <span class="term">transformer</span>, and its breakthrough is a mechanism called <span class="term">attention</span>. Instead of reading left to right one word at a time, it looks at every word at once and, for each one, weighs how much every other word matters to it. Scroll to watch attention resolve a word whose meaning depends on its neighbors.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scAttn">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v9);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#84918a;margin-bottom:16px">the sentence, all at once</div>
+      <div class="fig" id="attnFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 0 · a tricky word</div><p>"She sat by the <b style="color:var(--v3)">bank</b> and watched the river." Does "bank" mean money or riverside? The word alone cannot tell you.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 1 · look at every other word</div><p>To understand "bank," the model looks at all the other words at the same time, not just the ones nearby, and asks how relevant each is.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 2 · weigh them</div><p>"river" lights up strongly; "watched" and "sat" a little; "she" barely at all. Those weights are the attention. The thicker the line, the more that word shapes the meaning of "bank."</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 3 · meaning resolved</div><p>Pulled toward "river," the model settles on riverside, not finance. It did this for every word at once, in parallel, which is why transformers are fast and good at long-range context.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 2</b>Scroll-driven. Attention is every word weighing every other word's relevance, all at the same time. That parallel weighing is the whole transformer idea.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      At a loud dinner party you do not process the room left to right. You hear your name from across the table and everything else fades; the words that matter to you get louder in your head. <b>Attention is that cocktail-party focus, computed for every word at once:</b> each word decides which others to listen to, and tunes the rest down.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · the schooling</div>
+    <h2 class="big">Pretraining reads the world; the result is a foundation model</h2>
+    <p>Where does the skill come from? From <span class="term">pretraining</span>: a single, staggeringly expensive pass where the model reads an enormous slice of the internet and books and code, learning only to predict the next token. Do that at scale and it absorbs grammar, facts, styles, and reasoning patterns as a side effect. The result is a <span class="term">foundation model</span>: big, general, and adaptable to countless tasks.</p>
+    <p>Straight out of pretraining, it is a <span class="term">base model</span>. A base model is a magnificent autocomplete: give it "The capital of France is" and it says "Paris," but ask it a question and it might just continue with more questions, because it learned to <em>continue text</em>, not to <em>help you</em>. It knows a great deal and takes no instruction.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A base model is a brilliant new graduate who has read the entire library and can finish any sentence you start, but has never held a job and does not yet know that when someone asks a question, they want an answer. <b>All that knowledge, none of the manners.</b> The next chapter is where it learns the job.</p></div>
+    <aside class="mnote"><b>Related term.</b> <span class="term">Fine-tuning</span> is any further training that adapts a foundation model to a narrower task or style, done later and far more cheaply than pretraining.</aside>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · the manners</div>
+    <h2 class="big">RLHF turns a base model into an assistant</h2>
+    <p>To make the knowledgeable graduate genuinely helpful, it goes through <span class="term">RLHF</span>, reinforcement learning from human feedback. People compare the model's answers and prefer the helpful, honest, harmless ones, and the model is nudged to produce more of those. The output is an <span class="term">instruct model</span> or <span class="term">chat model</span>: the same knowledge, now shaped to follow instructions and hold a conversation.</p>
+    <p>This is the thing you actually talk to. When people say <span class="term">LLM</span> (large language model) they usually mean one of these chat models, and <span class="term">GPT</span> (generative pre-trained transformer) is one famous family whose name became shorthand for the whole category. Base underneath, manners on top.</p>
+    <div class="demo">
+      <div class="demo-head"><span>same question, base vs chat · click one</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="chip on" data-bc="base">base model</button>
+          <button class="chip" data-bc="chat">chat model (after RLHF)</button>
+        </div>
+        <div id="bcOut" class="trace" style="min-height:110px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Click each. Same knowledge inside; only the base model was never taught that a question wants an answer. RLHF is the difference.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">06 · using it</div>
+    <h2 class="big">One call is an inference, and it forgets instantly</h2>
+    <p>Actually using a trained model is called <span class="term">inference</span>: text goes in, text comes out, once. The single most surprising fact for newcomers hides here. That call is <span class="term">stateless</span>. The model remembers nothing between calls. Every message you send, it reads fresh, with no memory of the last one unless you resend it. The "conversation" you feel is an illusion the app maintains by resending the whole history each time.</p>
+    <p>Models also come in sizes, and the biggest, newest, most capable ones are called <span class="term">frontier models</span>. Frontier is a moving line: whatever sits at the edge of capability today. Bigger is not automatically better to deploy, though, because of a trade-off worth naming.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A frontier model is a top surgeon: astonishing range, and you do not call one to remove a splinter. More power also means more that can go wrong, cost more, and needs closer supervision. <b>A smaller model is a smaller blast radius,</b> a term borrowed from safety: less it can do means less that can break, leak, or be abused. Match the size to the job, not to the hype.</p></div>
+    <div class="note">This stateless fact is the seam the whole next part is built on. A mind that forgets everything the instant it answers is powerful but useless for real work, so we spend Part II giving it memory it was never born with.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#9C5A2A">
+<div class="part-banner"><div class="pk">Part II · the memory · chapters 07 to 09</div><h2>Giving it knowledge</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the desk</div>
+    <h2 class="big">The context window is everything it can see right now</h2>
+    <p>Since the model forgets between calls, the only thing it knows in the moment is whatever you put in front of it: your question, the conversation so far, any documents you paste. That whole in-the-moment view has a name and a size limit, the <span class="term">context window</span>. It is the model's short-term memory, its working desk, and it is finite. Fill it up and the oldest things fall off the edge.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Imagine a brilliant consultant with perfect knowledge but total amnesia, who can only ever see what is currently on the desk in front of them. Everything you want them to use, you must lay on that desk right now, because the instant you take it away, it is gone from their mind. <b>The context window is that desk, and its size is how much you can lay out at once.</b> All of Part II is techniques for putting the right things on the desk.</p></div>
+    <p style="margin-top:26px">Which raises the real question of memory. You cannot paste your whole company handbook onto the desk every time, and it would not fit. So how do you give the model the right knowledge, at the right moment, from a library far too big for the desk? The answer starts with turning meaning into numbers.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">08 · meaning as coordinates</div>
+    <h2 class="big">Embeddings put similar meanings near each other</h2>
+    <p>Here is the trick that makes searchable memory possible. Any piece of text can be turned into a list of numbers, an <span class="term">embedding</span>, positioned so that things which <em>mean</em> similar things land near each other. "dog" and "puppy" get nearby numbers; "dog" and "invoice" get distant ones. Meaning becomes a location. Hover the coordinates of one word.</p>
+    <div class="demo">
+      <div class="demo-head"><span>the word "refund" as an embedding · hover a number</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig8"></div>
+        <div class="inspector" id="fig8Out">an embedding is a list of numbers that encodes meaning; hover one</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 4</b>Hover each cell. A few numbers place "refund" at one spot in meaning-space. Real embeddings use hundreds of numbers; a handful is enough to see the idea.</div>
+    <p style="margin-top:26px">Store millions of these embeddings in a special database that can instantly find the nearest ones to any query, and you have a <span class="term">vector database</span>. Ask it "anything about returns?" and it hands back the passages whose meaning sits closest, even if they never used the word "returns." It is a search that works by meaning, not by matching keywords.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A normal search is a card catalogue: it finds books with the exact word you typed. A vector database is a librarian who understands what you <em>mean</em>, and walks you to the right shelf even when your words and the book's words are different. <b>Embeddings are the map coordinates of meaning, and the vector database is the librarian who reads that map.</b></p></div>
+  </div>
+</section>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">09 · fetching knowledge</div>
+    <h2 class="big">RAG: look it up, then answer</h2>
+    <p>Now assemble it. When you ask a question, the system finds the relevant passages and lays them on the desk before the model answers. That is <span class="term">RAG</span>, retrieval-augmented generation, and it is how most real AI products know about your private, current, or specific data. Scroll the pipeline.</p>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scRAG">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v9);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#84918a;margin-bottom:16px">retrieval-augmented generation</div>
+      <div class="fig" id="ragFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 1 · the question</div><p>"What is our refund window for damaged items?" The model has never seen your policy; it was trained on the public internet, not your documents.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 2 · turn it into an embedding</div><p>The question becomes a meaning-vector, the same kind of coordinates your documents were stored as. Now they can be compared.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 3 · search the vector database</div><p>The database returns the few passages whose meaning sits nearest the question. Your actual refund policy lights up, even if it never says "window."</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 4 · put them on the desk</div><p>Those passages are pasted into the context window alongside the question. The model now has the facts in front of it, for this one answer.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 5 · answer, grounded</div><p>The model replies using the retrieved text, not its memory. The answer is current, specific, and traceable to your real document.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 5</b>Scroll-driven, pinned on the right. Question in, meaning-search, retrieve, place on the desk, answer. That loop is RAG, and it is everywhere.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <p>There is a cheaper cousin worth naming. If your knowledge is small and stable, you can skip the per-question search and just preload the whole thing into the context window once, then ask many questions against it. That is <span class="term">CAG</span>, cache-augmented generation. RAG fetches the right pages on demand; CAG hands over the whole short book up front. Big or changing knowledge wants RAG; small and fixed wants CAG.</p>
+    <div class="note"><span class="term">Hallucination</span> earns its definition here. When a model lacks a fact, it does not stay silent; it produces a fluent, confident, invented answer. RAG is the main defense: give the model the real passage and it has less need to make one up. It reduces hallucination; it does not abolish it.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#6A4C93">
+<div class="part-banner"><div class="pk">Part III · the agent · chapters 10 to 12</div><h2>Making it act</h2></div>
+
+
+<section style="padding-top:70px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">10 · from answering to acting</div>
+    <h2 class="big">Wrap the model in a loop and it becomes an agent</h2>
+    <p>So far the model only answers. To make it <em>do</em> things, you wrap that stateless inference in a repeating loop. A model in such a loop is an <span class="term">agent</span>, and the loop itself, often called <span class="term">ReAct</span>, cycles through perceive, reason, act, observe. Scroll one turn of the wheel.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scLoop">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v9);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#84918a;margin-bottom:16px">the agentic loop · goal: "book a table for friday"</div>
+      <div class="fig" id="loopFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">perceive</div><p>The agent reads the current state: the goal, what it has done so far, whatever came back from its last action. This is its input for this turn.</p></div>
+      <div class="stp" data-step="1"><div class="sk">reason</div><p>The model thinks about what to do next. "I need an open table Friday; I should check the booking system." A single inference produces this decision.</p></div>
+      <div class="stp" data-step="2"><div class="sk">act</div><p>It takes an action in the world: calls a tool, searches, sends a request. This is the step that makes it an agent rather than a chatbot; it can reach outside itself.</p></div>
+      <div class="stp" data-step="3"><div class="sk">observe</div><p>It reads the result of the action. "The 8pm slot is free." That observation becomes part of what it perceives next turn.</p></div>
+      <div class="stp" data-step="4"><div class="sk">loop, until done</div><p>Perceive, reason, act, observe, again and again, each turn a fresh stateless inference fed the growing history, until the goal is met. The loop is what turns a forgetful answer-machine into something that pursues a goal.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 6</b>Scroll-driven. Perceive, reason, act, observe, repeat. The model is still stateless; the loop, run by ordinary code, is what supplies persistence and agency.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      A single inference is a person answering one question and forgetting it. An agent is that same person handed a checklist, a phone, and a notepad, told "keep going until the table is booked." They look at the notepad, decide, make a call, write down what they heard, and look at the notepad again. <b>The genius is not a smarter person; it is the loop and the notepad wrapped around them.</b></p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · the notepad, in detail</div>
+    <h2 class="big">The kinds of memory an agent needs</h2>
+    <p>That notepad is not one thing. A capable agent juggles several kinds of memory, borrowed by name from how psychologists describe human memory. Hover each to see what it holds and where it lives.</p>
+    <div class="demo">
+      <div class="demo-head"><span>an agent's memory · hover a type</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig11"></div>
+        <div class="inspector" id="fig11Out">hover a memory type</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 7</b>Hover each. Only working memory is the model's own context window; the rest are stores the harness manages around it, because the model itself still remembers nothing.</div>
+    <p style="margin-top:26px">The important thing is that only one of these, working memory, is the context window inside the model. Sensory, long-term, and collective memory all live <em>outside</em> the model, in databases and files that the surrounding code loads onto the desk when needed. The model stays amnesiac; the system around it remembers.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">12 · reaching out and teaming up</div>
+    <h2 class="big">Tools, a universal plug, and agents that talk</h2>
+    <p>The "act" step needs things to act with. Those are <span class="term">tools</span>: functions an agent can call to search, run code, query a database, send a message. The model does not run them; it asks, and the surrounding code runs them and hands back the result. Then come the standards that stop every tool and every agent from being a custom wiring job. Hover each to see what it is.</p>
+    <div class="demo">
+      <div class="demo-head"><span>tools, protocols, and teams · hover a tile</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig12"></div>
+        <div class="legend">
+          <span><i style="background:var(--v4)"></i>tools + protocols</span>
+          <span><i style="background:var(--v1)"></i>teams of agents</span>
+        </div>
+        <div class="inspector" id="fig12Out">hover a tile to learn the term</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 8</b>Hover each. MCP is a universal plug for tools; A2A lets agents talk to agents; a supervisor coordinates a team. All exist so agents can plug into the world and into each other without bespoke wiring.</div>
+    <div class="intu"><span class="il">picture it</span>
+      Before USB, every device had its own incompatible cable drawer. <span class="term">MCP</span> is USB-C for AI tools: one standard socket, so any agent can plug into any tool that speaks it. <span class="term">A2A</span> is the same idea for agents talking to other agents. <b>Standards are boring and they are why an ecosystem can exist instead of a thousand one-off adapters.</b></p></div>
+  </div>
+</section>
+</div>
+
+
+<div class="pIV" id="p4" data-c="#3B6E4A">
+<div class="part-banner"><div class="pk">Part IV · the craft · chapters 13 to 14</div><h2>The three jobs</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">13 · the decomposition</div>
+    <h2 class="big">Agent = Model + Harness</h2>
+    <p>Here is the idea that ties the whole guide together. Everything in Part III, the loop, the tools, the memory stores, the permission checks, the code that assembles the prompt and runs the actions, is called the <span class="term">harness</span>. And the fundamental equation of building with AI is simple: an <strong>agent is a model plus a harness</strong>.</p>
+    <p>This decomposition explains something that confuses everyone. Two products can use the exact same underlying model and behave completely differently, one careful and capable, one clumsy, because the harness around the model is different. The model supplies raw intelligence. The harness supplies memory, tools, guardrails, and the loop. Most of what makes an AI product good or bad, safe or dangerous, lives in the harness, not the model.</p>
+    <div class="pull">The model is the engine. The harness is the rest of the car. You have driven plenty of good engines wrapped in bad cars.</div>
+    <aside class="mnote"><b>Security lives here.</b> Permission boundaries, what a tool may touch, what an agent may do unattended, are harness decisions. This is why naming the harness matters: it is where most of the real risk, and control, sits.</aside>
+  </div>
+</section>
+
+
+<section style="padding-top:30px">
+  <div class="col reveal" style="margin-bottom:6px">
+    <div class="eyebrow">14 · the knob · the three jobs</div>
+    <h2 class="big">Prompt, context, agentic: three nested scopes</h2>
+    <p>All the vocabulary finally resolves into the three distinct jobs of people who build with AI, and they nest inside each other like rings. Drag the scope from the smallest job to the largest, and watch what you are responsible for, and what the same model can do, grow with it.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>the three engineering scopes · drag the ring</span><span id="scopeName" class="mval"></span></div>
+      <div class="demo-body" style="display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center">
+        <div class="fig" id="scopeFig" style="touch-action:none"></div>
+        <div>
+          <div class="scope-out" id="scopeOut" style="min-height:150px"></div>
+          <label for="scopeSlider" style="font-family:var(--v9);font-size:12px;color:#a7b6ae;display:block;margin:20px 0 8px">your scope</label>
+          <input type="range" id="scopeSlider" min="0" max="2" step="1" value="0" aria-label="Engineering scope">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 9</b>Drag the ring (or slider) through the three scopes. Each contains the one before it: context engineering includes prompting, agentic engineering includes both. The unit of work grows from a string, to a whole context window, to an entire system.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <p>That progression is the shape of the whole field. <span class="term">Prompt engineering</span> is crafting one good instruction; your unit of work is a string. <span class="term">Context engineering</span> is curating everything the model sees, the retrieved documents, the memory, the history; your unit is the whole context window. <span class="term">Agentic engineering</span> is designing the harness itself, the loop, the tools, the protocols, the permissions; your unit is the entire system. Every term in this guide belongs to one of these rings.</p>
+    <div class="pull">Write a better sentence. Curate a better desk. Build a better world around the model. Three jobs, one nested inside the next.</div>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIV">
+  <div class="col reveal">
+    <p>A model reads tokens and weighs them with attention.<br>
+    It learns by reading, then learns manners, then answers once and forgets.<br>
+    We give it memory with embeddings and retrieval, and agency with a loop and tools.<br>
+    Wrap a model in a harness and you have an agent. Name each piece, and none of it is magic.</p>
+  </div>
+</section>
+
+
+<div class="pIV">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div style="max-width:var(--v8);margin:0 auto">
+      <div class="eyebrow">the assembly lab</div>
+      <h2 class="big">Build a capable worker, piece by piece</h2>
+      <p>Assemble everything you just named. Start with a bare model and add the parts, retrieval for knowledge, a loop for action, tools, memory, and watch what it can do, and what you now have to manage, both grow. The presets rebuild three real systems.</p>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><span>assemble the system · illustrative</span><span id="labVerdict" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="chatbot">preset: a plain chatbot</button>
+          <button class="btn" data-pre="rag">preset: a RAG assistant</button>
+          <button class="btn" data-pre="agent">preset: a full agent</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>knowledge (RAG + vector db)</label>
+            <div class="toggle" id="labRag"><button data-v="off" class="on">off</button><button data-v="on">on</button></div></div>
+          <div><label>an agentic loop</label>
+            <div class="toggle" id="labLoop"><button data-v="off" class="on">off</button><button data-v="on">on</button></div></div>
+          <div><label>tools (MCP)</label>
+            <div class="toggle" id="labTools"><button data-v="off" class="on">off</button><button data-v="on">on</button></div></div>
+          <div><label>long-term memory</label>
+            <div class="toggle" id="labMem"><button data-v="off" class="on">off</button><button data-v="on">on</button></div></div>
+        </div>
+        <div class="mlab"><span style="color:var(--v1)">what it can do</span><span class="mval" id="labCap"></span></div>
+        <div class="meter"><i id="labCapBar"></i></div>
+        <div class="mlab"><span>harness you must build + secure</span><span class="mval" id="labCx"></span></div>
+        <div class="meter"><i id="labCxBar"></i></div>
+        <div id="labOut" style="font-family:var(--v9);font-size:12.5px;line-height:1.8;color:#a7b6ae;margin-top:16px;border-top:1px solid #263029;padding-top:14px"></div>
+      </div>
+    </div>
+    <div style="max-width:var(--v8);margin:0 auto">
+      <div class="figcap"><b>Figure 10</b>Turn parts on and watch both bars rise together. Every capability you add is also harness you now own, and must secure. Power and responsibility grow as one.</div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>Temperature: the model's dice</summary><div class="wbody">At inference, a model does not always pick its single most likely next token; it samples, and how loosely it samples is called temperature. Low temperature makes it repeatable and focused; high temperature makes it varied and creative. It is why the same prompt can give different answers, and a dial worth knowing exists even though the chat apps usually hide it.</div></details>
+    <details><summary>Fine-tuning versus RAG versus prompting</summary><div class="wbody">Three ways to make a model fit your needs, from heavy to light. Fine-tuning retrains the weights on your data, changing the model itself; powerful, costly, and it bakes knowledge in. RAG leaves the model alone and fetches knowledge at question time; flexible and current. Prompting just words the request well. A rule of thumb: prompt first, add RAG for knowledge, fine-tune only when you need a new skill or style that prompting and retrieval cannot give.</div></details>
+    <details><summary>Why "Agent = Model + Harness" matters for security</summary><div class="wbody">This guide comes from a security lens, and the equation is why. You cannot secure the model's weights, but you own the entire harness: which tools exist, what they may touch, what runs without a human, how untrusted input is handled. Nearly every AI security question, prompt injection, over-broad permissions, data leaks, is a harness question. Naming the harness is the first step to defending it.</div></details>
+    <details><summary>RAG versus CAG, the real trade-off</summary><div class="wbody">RAG searches a big store at every question, so it scales to huge, changing knowledge but adds a retrieval step that can fetch the wrong passage. CAG preloads a fixed body of text into the context once, so it is simpler and has no retrieval errors, but it is capped by the context window size and wastes tokens re-reading everything. Small, stable, and hot: CAG. Large, changing, or occasional: RAG.</div></details>
+    <details><summary>The memory types, and where they actually live</summary><div class="wbody">Sensory memory is the raw incoming buffer, gone in an instant. Working memory is the context window, the only memory inside the model. Long-term memory splits into episodic (what happened, past interactions), semantic (facts and knowledge), and procedural (how to do things, saved routines), all stored outside the model. Collective memory is shared across many agents or sessions. The model is amnesiac; every one of these except working memory is the harness remembering on its behalf.</div></details>
+    <details><summary>Multi-agent systems and the supervisor</summary><div class="wbody">One agent with many tools can become a confused generalist. An alternative is several specialized agents, each with its own loop and narrow job, coordinated by a supervisor agent that breaks the goal into parts and hands them out. It mirrors an org chart: a manager and specialists. It is more powerful and more complex, and, from a security view, a larger surface with more places for things to go wrong.</div></details>
+    <details><summary>The source, and going deeper</summary><div class="wbody">This explainer builds on the vocabulary-first approach of the GenAI Security "GenAI Fundamentals" series, which orders these terms by dependency for exactly the reason stated at the start: you cannot threat-model what you cannot name. The three-scope framing, prompt then context then agentic engineering, and the "Agent = Model + Harness" decomposition come from that lens, where the harness is where security is won or lost.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    every figure is an illustrative teaching aid driven by simple functions in your browser, not a measurement of any product · vocabulary and framing adapted in plain language from the GenAI Security "GenAI Fundamentals: a vocabulary-first overview" series · a mid-2026 snapshot; terms and tools evolve<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function e(e){return document.getElementById(e)}function t(e,t){var n=document.createElementNS("http://www.w3.org/2000/svg",e);for(var a in t)n.setAttribute(a,t[a]);return n}var n=e("pdialFill"),a=e("pdialTxt"),o=2*Math.PI*23;n.style.strokeDasharray=o,n.style.strokeDashoffset=o,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);n.style.strokeDashoffset=o*(1-Math.min(1,Math.max(0,t||0)))},{passive:!0});var r=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),r.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){r.observe(e)});var i=document.querySelectorAll("#rail a"),l={p1:"I",p2:"II",p3:"III",p4:"IV"},s=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-c");n.style.stroke=t,l[e.target.id]&&(a.textContent=l[e.target.id],a.style.color=t),i.forEach(function(n){var a=n.getAttribute("href")==="#"+e.target.id;n.classList.toggle("on",a),a&&n.style.setProperty("--v15",t)})}})},{rootMargin:"-40% 0px -40% 0px"});function d(e,t,n,a,o,r){function i(){e.classList.add("dimmed"),t.classList.add("hot"),t.classList.add("sel"),a.innerHTML=o}n.addEventListener("mouseenter",i),n.addEventListener("mouseleave",function(){e.classList.remove("dimmed"),t.classList.remove("hot"),t.classList.remove("sel"),a.innerHTML=r}),n.addEventListener("click",i)}function c(e,t){var n=[].slice.call(document.querySelectorAll("#"+e+" .stp")),a=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(n.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});n.forEach(function(e){a.observe(e)}),t(0)}function h(e,n,a,o,r){var i=r||3,l=t("svg",{viewBox:"0 0 560 "+(24+74*Math.ceil(o.length/i))}),s=t("g",{});l.appendChild(s);var c=[],h=532/i-8;o.forEach(function(e,o){var r=o%i,p=Math.floor(o/i),v=14+r*(532/i),u=16+74*p,f=t("g",{"data-part":"t"+o});f.appendChild(t("rect",{x:v,y:u,width:h,height:60,rx:6,fill:"#1d2723",stroke:e.c,"stroke-width":1.6})),f.appendChild(t("text",{x:v+13,y:u+27,class:"nlab",fill:"#DCE3DE"})).textContent=e.label,f.appendChild(t("text",{x:v+13,y:u+46,class:"elab"})).textContent="hover to define",s.appendChild(f);var g=t("rect",{x:v,y:u,width:h,height:60,fill:"rgba(0,0,0,0)"});c.push(g),d(l,f,g,n,e.html,a)}),c.forEach(function(e){s.appendChild(e)}),e.appendChild(l)}["p1","p2","p3","p4"].forEach(function(t){s.observe(e(t))}),function(){var n=t("svg",{viewBox:"0 0 560 110"}),a=t("g",{});n.appendChild(a);var o=e("fig2Out"),r=[],i=14;[{t:"un",id:"un",n:"385"},{t:"bel",id:"bel",n:"12903"},{t:"iev",id:"iev",n:"6612"},{t:"ably",id:"ably",n:"4402"},{t:"tricky",id:"tricky",n:"27142"}].forEach(function(e,l){var s=11*e.t.length+26,c=t("g",{"data-part":"tk"+l});c.appendChild(t("rect",{x:i,y:34,width:s,height:40,rx:6,fill:"#1d2723",stroke:"var(--v3)","stroke-width":1.6})),c.appendChild(t("text",{x:i+s/2,y:59,"text-anchor":"middle",class:"nlab",fill:"#DCE3DE"})).textContent=e.t,c.appendChild(t("text",{x:i+s/2,y:92,"text-anchor":"middle",class:"elab"})).textContent="#"+e.n,a.appendChild(c);var h=t("rect",{x:i,y:34,width:s,height:56,fill:"rgba(0,0,0,0)"});r.push(h),d(n,c,h,o,'<b>token "'+e.t+'" = id '+e.n+'.</b> The model never sees the letters, only this number. Common words are one token; rarer ones split into several, which is why "unbelievably" became four.',"hover a token to see its id"),i+=s+10}),r.forEach(function(e){a.appendChild(e)}),e("fig2").appendChild(n)}(),function(){var n=["She","sat","by","the","bank","and","watched","the","river"],a=[.05,.15,.05,.05,1,.05,.45,.05,.95],o=t("svg",{viewBox:"0 0 520 180"}),r=t("g",{});o.appendChild(r);var i=t("g",{"data-gel":"lines"});r.appendChild(i);var l=[],s=16,d=[];n.forEach(function(e,n){var a=9*e.length+18;l.push(s+a/2);var o=t("g",{}),i=t("rect",{x:s,y:120,width:a,height:34,rx:5,fill:"#1d2723",stroke:4===n?"var(--v3)":"#3a4a42","stroke-width":4===n?2.2:1.4});o.appendChild(i),o.appendChild(t("text",{x:s+a/2,y:142,"text-anchor":"middle",class:"elab",fill:4===n?"var(--v3)":"#a7b6ae"})).textContent=e,r.appendChild(o),d.push(i),s+=a+8}),e("attnFig").appendChild(o);var h={0:{lines:!1,hi:[]},1:{lines:!0,hi:[]},2:{lines:!0,hi:[8,6]},3:{lines:!0,hi:[8]}};c("scAttn",function(e){var o,r=h[e]||h[0];o=r.lines,i.innerHTML="",o&&n.forEach(function(e,n){4!==n&&i.appendChild(t("line",{x1:l[4],y1:120,x2:l[n],y2:120,stroke:"var(--v3)","stroke-width":Math.max(.5,6*a[n]),opacity:.25+.7*a[n]}))}),d.forEach(function(e,t){e.setAttribute("stroke",4===t?"var(--v3)":r.hi.indexOf(t)>=0?"var(--v2)":"#3a4a42"),e.setAttribute("stroke-width",4===t||r.hi.indexOf(t)>=0?2.2:1.4)})})}(),function(){var t={base:'<div><span style="color:#84918a">you ▸</span> What is the capital of France?</div><div style="margin-top:10px"><span style="color:var(--v3)">base ▸</span> What is the capital of Germany? What is the capital of Spain? <span style="color:#84918a">(it just continues the pattern of questions)</span></div>',chat:'<div><span style="color:#84918a">you ▸</span> What is the capital of France?</div><div style="margin-top:10px"><span style="color:var(--v1)">chat ▸</span> The capital of France is Paris. <span style="color:#84918a">(RLHF taught it that a question wants an answer)</span></div>'};function n(n){e("bcOut").innerHTML=t[n],document.querySelectorAll("[data-bc]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-bc")===n)})}document.querySelectorAll("[data-bc]").forEach(function(e){e.addEventListener("click",function(){n(e.getAttribute("data-bc"))})}),n("base")}(),function(){var n=[{v:.88,note:'<b>dim 1 = 0.88.</b> An axis that leans toward "money / transactions". "refund", "invoice", "payment" all score high here; "sunset" scores near zero.'},{v:.21,note:'<b>dim 2 = 0.21.</b> Low. Whatever this axis captures, "refund" barely touches it. Another word would light it up instead.'},{v:.74,note:'<b>dim 3 = 0.74.</b> High, perhaps "customer service / complaints". This is how "refund" ends up near "return" and "cancel" even without sharing letters.'},{v:.12,note:'<b>dim 4 = 0.12.</b> Near zero. Four numbers together pin "refund" to one spot; hundreds of them, in a real model, pin it precisely.'}],a=t("svg",{viewBox:"0 0 520 150"}),o=t("g",{});a.appendChild(o);var r=e("fig8Out"),i=[];o.appendChild(t("text",{x:16,y:34,class:"nlab",fill:"var(--v2)"})).textContent='"refund"',o.appendChild(t("text",{x:16,y:52,class:"elab"})).textContent="becomes";var l=84,s=118;n.forEach(function(e,n){var c=120+96*n,h=78*e.v,p=t("g",{"data-part":"d"+n});p.appendChild(t("rect",{x:c,y:40,width:l,height:78,rx:3,fill:"#1d2723",stroke:"#2f3f37","stroke-width":1})),p.appendChild(t("rect",{x:c,y:s-h,width:l,height:h,rx:3,fill:"var(--v2)",opacity:.35+.6*e.v})),p.appendChild(t("text",{x:c+42,y:s-h-7,"text-anchor":"middle",class:"nlab",fill:"#DCE3DE"})).textContent=e.v.toFixed(2),p.appendChild(t("text",{x:c+42,y:134,"text-anchor":"middle",class:"elab"})).textContent="dim "+(n+1),o.appendChild(p);var v=t("rect",{x:c,y:40,width:l,height:98,fill:"rgba(0,0,0,0)"});i.push(v),d(a,p,v,r,e.note,"an embedding is a list of numbers that encodes meaning; hover one")}),o.appendChild(t("text",{x:120,y:142,class:"elab",fill:"var(--v2)"})).textContent="= [ 0.88, 0.21, 0.74, 0.12 ]  · one point in meaning-space",i.forEach(function(e){o.appendChild(e)}),e("fig8").appendChild(a)}(),function(){var n=t("svg",{viewBox:"0 0 500 300"}),a=t("g",{});function o(e,n,o,r,i,l,s,d){var c=t("g",{"data-gel":s});return c.appendChild(t("rect",{x:e,y:n,width:o,height:r,rx:5,fill:"#1d2723",stroke:i,"stroke-width":1.7})),c.appendChild(t("text",{x:e+o/2,y:n+(d?r/2-2:r/2+4),"text-anchor":"middle",class:"nlab",fill:"#DCE3DE"})).textContent=l,d&&(c.appendChild(t("text",{x:e+o/2,y:n+r/2+14,"text-anchor":"middle",class:"elab"})).textContent=d),a.appendChild(c),c}n.appendChild(a),o(150,16,200,40,"var(--v0)",'"refund window?"',"q"),o(150,74,200,34,"var(--v2)","→ embedding [.88 .21 …]","emb");var r=t("g",{"data-gel":"db"});r.appendChild(t("rect",{x:60,y:124,width:380,height:66,rx:6,fill:"#1d2723",stroke:"var(--v2)","stroke-width":1.5})),r.appendChild(t("text",{x:70,y:140,class:"elab",fill:"var(--v2)"})).textContent="vector database (your documents)";[[90,168],[130,160],[180,172],[240,158],[300,170],[360,162],[410,168]].forEach(function(e,n){r.appendChild(t("circle",{cx:e[0],cy:e[1],r:3===n||4===n?7:5,fill:3===n||4===n?"var(--v2)":"#3a4a42",stroke:3===n||4===n?"#fff":"none","stroke-width":1.5}))}),r.appendChild(t("text",{x:270,y:186,"text-anchor":"middle",class:"elab",fill:"var(--v2)"})).textContent="↑ nearest passages light up",a.appendChild(r),o(90,206,320,40,"var(--v3)","context window: question + retrieved policy","ctx"),o(150,258,200,34,"var(--v1)","grounded answer","ans"),e("ragFig").appendChild(n);var i={0:["q"],1:["q","emb"],2:["emb","db"],3:["db","ctx"],4:["ctx","ans"]};c("scRAG",function(e){var t=i[e]||[];n.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",t.indexOf(e.getAttribute("data-gel"))>=0)})})}(),function(){var n=160,a=150,o=t("svg",{viewBox:"0 0 320 300"}),r=t("g",{});o.appendChild(r);r.appendChild(t("circle",{cx:n,cy:a,r:95,fill:"none",stroke:"#33443b","stroke-width":1.5,"stroke-dasharray":"4 5"}));var i=[];[{n:"Perceive",c:"var(--v2)"},{n:"Reason",c:"var(--v3)"},{n:"Act",c:"var(--v4)"},{n:"Observe",c:"var(--v1)"}].forEach(function(e,o){var l=-Math.PI/2+o*Math.PI/2,s=n+95*Math.cos(l),d=a+95*Math.sin(l),c=t("g",{"data-gel":"n"+o});c.appendChild(t("circle",{cx:s,cy:d,r:34,fill:"#1d2723",stroke:e.c,"stroke-width":2})),c.appendChild(t("text",{x:s,y:d+4,"text-anchor":"middle",class:"elab",fill:e.c})).textContent=e.n,r.appendChild(c),i.push({x:s,y:d})});for(var l=t("g",{"data-gel":"loop"}),s=0;s<4;s++){var d=-Math.PI/2+(s+.5)*Math.PI/2,h=n+95*Math.cos(d),p=a+95*Math.sin(d);l.appendChild(t("circle",{cx:h,cy:p,r:3,fill:"#84918a"}))}r.appendChild(l),r.appendChild(t("text",{x:n,y:153,"text-anchor":"middle",class:"elab",fill:"#84918a"})).textContent="until goal met",e("loopFig").appendChild(o);var v={0:["n0"],1:["n0","n1"],2:["n0","n1","n2"],3:["n0","n1","n2","n3"],4:["n0","n1","n2","n3","loop"]};c("scLoop",function(e){var t=v[e]||[];o.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",t.indexOf(e.getAttribute("data-gel"))>=0)})})}(),h(e("fig11"),e("fig11Out"),"hover a memory type",[{label:"SENSORY",c:"var(--v2)",html:"<b>Sensory memory.</b> The raw input buffer, the text as it just arrived, held for an instant before processing. Fleeting; gone almost immediately."},{label:"WORKING",c:"var(--v3)",html:"<b>Working (short-term) memory.</b> The context window itself: everything the model can see right now. The only memory inside the model. Limited in size."},{label:"LONG-TERM",c:"var(--v1)",html:"<b>Long-term memory.</b> Stored outside the model, in three flavors: <b>episodic</b> (what happened, past events), <b>semantic</b> (facts and knowledge), <b>procedural</b> (how to do things, saved routines). Loaded onto the desk when relevant."},{label:"COLLECTIVE",c:"var(--v4)",html:"<b>Collective (organizational) memory.</b> Knowledge shared across many agents or sessions, not held by any single agent. How a team of agents, or many runs, learn from each other."}],2),h(e("fig12"),e("fig12Out"),"hover a tile to learn the term",[{label:"TOOLS",c:"var(--v4)",html:"<b>Tools (function calling).</b> Functions an agent can invoke: search, run code, query a database, send a message. The model asks; the surrounding code actually runs the tool and returns the result."},{label:"MCP",c:"var(--v4)",html:"<b>MCP (Model Context Protocol).</b> A standard way for an agent to discover and call tools, read files, and query data sources. Think of it as USB-C for AI: one socket, many tools, no custom wiring."},{label:"A2A",c:"var(--v4)",html:"<b>A2A (Agent-to-Agent).</b> A protocol for agents to discover each other's abilities and collaborate directly, so a system of agents can divide work without a human relaying messages."},{label:"MULTI-AGENT",c:"var(--v1)",html:"<b>Multi-agent system.</b> Several specialized agents, each running its own loop on a narrow job, coordinating through protocols. More capable and more complex than one do-everything agent."},{label:"SUPERVISOR",c:"var(--v1)",html:"<b>Supervisor agent.</b> A controlling agent that breaks a big goal into parts and hands them to specialist sub-agents, then assembles their results. The manager in the org chart."}],3),function(){var n=150,a=150,o=t("svg",{viewBox:"0 0 300 300"}),r=t("g",{});o.appendChild(r);var i=[{r:130,c:"var(--v1)",name:"agentic"},{r:92,c:"var(--v2)",name:"context"},{r:52,c:"var(--v3)",name:"prompt"}];i.forEach(function(e){r.appendChild(t("circle",{cx:n,cy:a,r:e.r,fill:e.c,"fill-opacity":.06,stroke:e.c,"stroke-opacity":.5,"stroke-width":1.4,"data-ring":e.name}))}),r.appendChild(t("text",{x:n,y:154,"text-anchor":"middle",class:"elab",fill:"var(--v3)"})).textContent="prompt",r.appendChild(t("text",{x:n,y:78,"text-anchor":"middle",class:"elab",fill:"var(--v2)"})).textContent="context",r.appendChild(t("text",{x:n,y:38,"text-anchor":"middle",class:"elab",fill:"var(--v1)"})).textContent="agentic";var l=t("circle",{cx:n,cy:a,r:130,fill:"rgba(0,0,0,0)",style:"cursor:pointer"});r.appendChild(l),e("scopeFig").appendChild(o);var s=[{name:"prompt engineering",u:"unit: a string",out:'<span class="u">prompt engineering · unit: a string</span>You craft one good instruction and send it. Your job is the wording. Terms in play: tokens, the prompt, the model. The smallest, most common job, and where everyone starts.'},{name:"context engineering",u:"unit: the context window",out:'<span class="u">context engineering · unit: the context window</span>You curate everything the model sees: the retrieved documents (RAG), the memory, the conversation history, the examples. Your job is the whole desk, not just one note. This is where quality really lives for most products.'},{name:"agentic engineering",u:"unit: the whole system",out:'<span class="u">agentic engineering · unit: the whole system</span>You build the harness itself: the loop, the tools and MCP, the memory stores, the protocols, the permissions, the verification. Your job is the entire world around the model. The largest scope, and where security is won or lost.'}];function d(t){i.forEach(function(e,n){var a="prompt"===e.name||"context"===e.name&&t>=1||"agentic"===e.name&&t>=2,r=o.querySelector('[data-ring="'+e.name+'"]');r.setAttribute("fill-opacity",a?.16:.04),r.setAttribute("stroke-opacity",a?1:.3),r.setAttribute("stroke-width",a?2.4:1.2)}),e("scopeOut").innerHTML=s[t].out,e("scopeName").innerHTML='<span style="color:'+["var(--v3)","var(--v2)","var(--v1)"][t]+'">'+s[t].name+"</span>"}var c=0;e("scopeSlider").addEventListener("input",function(){d(c=+this.value)});var h=!1;function p(t,r){var i,l,s,h,p=(i=t,l=r,s=o.getBoundingClientRect(),h=o.viewBox.baseVal,{x:(i-s.left)/s.width*h.width,y:(l-s.top)/s.height*h.height}),v=Math.hypot(p.x-n,p.y-a);c=v<70?0:v<111?1:2,e("scopeSlider").value=c,d(c)}l.addEventListener("pointerdown",function(e){e.preventDefault(),h=!0,p(e.clientX,e.clientY)}),window.addEventListener("pointermove",function(e){h&&p(e.clientX,e.clientY)}),window.addEventListener("pointerup",function(){h=!1}),d(0)}();var p={rag:"off",loop:"off",tools:"off",mem:"off"};function v(e,t){document.querySelectorAll("#"+e+" button").forEach(function(n){n.addEventListener("click",function(){p[t]=n.getAttribute("data-v"),document.querySelectorAll("#"+e+" button").forEach(function(e){e.classList.toggle("on",e===n)}),u()})})}function u(){var t=22+("on"===p.rag?20:0)+("on"===p.loop?22:0)+("on"===p.tools?18:0)+("on"===p.mem?14:0),n=8+("on"===p.rag?18:0)+("on"===p.loop?26:0)+("on"===p.tools?24:0)+("on"===p.mem?18:0);t=Math.min(99,t),n=Math.min(99,n),e("labCap").textContent=t+"%",e("labCapBar").style.width=t+"%",e("labCapBar").style.background=t>70?"var(--v18)":t>45?"var(--v20)":"var(--v3)",e("labCx").textContent=n+"/100",e("labCxBar").style.width=n+"%",e("labCxBar").style.background=n>65?"var(--v16)":n>35?"var(--v20)":"var(--v18)";var a,o=[p.rag,p.loop,p.tools,p.mem].filter(function(e){return"on"===e}).length;e("labVerdict").innerHTML=0===o?'<span style="color:var(--v3)">a bare model</span>':o>=4?'<span style="color:var(--v1)">a full agent</span>':'<span style="color:var(--v2)">'+o+" parts added</span>",a=0===o?"Just a model: one stateless call in, text out. It can answer from what it learned, and it knows nothing about you and can do nothing in the world.":"off"===p.loop&&"on"===p.tools?"Tools without a loop cannot really act; an agent needs the loop to call a tool, read the result, and decide again. Turn on the agentic loop.":o>=4?"Every part on: this is a full agent. It can retrieve knowledge, act with tools, remember across sessions, and pursue goals in a loop. Also the largest harness to build and the largest surface to secure.":"Adding parts. Notice both bars move together: each capability you bolt on is also harness you now own and must keep safe. Power and responsibility rise as one.",e("labOut").innerHTML=a}v("labRag","rag"),v("labLoop","loop"),v("labTools","tools"),v("labMem","mem");var f={chatbot:{rag:"off",loop:"off",tools:"off",mem:"off"},rag:{rag:"on",loop:"off",tools:"off",mem:"off"},agent:{rag:"on",loop:"on",tools:"on",mem:"on"}};document.querySelectorAll("[data-pre]").forEach(function(e){e.addEventListener("click",function(){var t=f[e.getAttribute("data-pre")];["rag","loop","tools","mem"].forEach(function(e){p[e]=t[e]}),[["labRag","rag"],["labLoop","loop"],["labTools","tools"],["labMem","mem"]].forEach(function(e){document.querySelectorAll("#"+e[0]+" button").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===p[e[1]])})}),u()})}),u()}();
+</script>
+</body>
+</html>

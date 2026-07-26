@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The GRC Machine — Governance, Risk & Compliance, explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECEEF0;
+    --paper-2:#E3E6E9;
+    --ink:#14202B;
+    --ink-soft:#3C4C5A;
+    --ink-faint:#6B7986;
+    --steel:#4A6D8C;
+    --steel-deep:#2F4A64;
+    --amber:#D98A2B;
+    --red:#C0392B;
+    --teal:#2E8B74;
+    --rule:#C7CDD3;
+    --rule-soft:#D6DBDF;
+    --panel:#182634;
+    --panel-ink:#DDE3E8;
+    --maxw:720px;
+    --wide:1120px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:19px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  /* ---------- progress bar ---------- */
+  .progress{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:linear-gradient(90deg,var(--steel),var(--teal));
+    z-index:100;transition:width .1s linear;
+  }
+
+  /* ---------- shared layout ---------- */
+  .col{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--steel);font-weight:500;
+    display:flex;align-items:center;gap:10px;margin:0 0 18px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--steel);display:inline-block}
+
+  h1,h2,h3{font-family:"Newsreader",serif;font-weight:500;letter-spacing:-.01em;line-height:1.08}
+  .lede{font-family:"Newsreader",serif;font-size:23px;line-height:1.5;color:var(--ink-soft);font-weight:400}
+  p{margin:0 0 22px}
+  .prose p{max-width:640px}
+  em{font-style:italic}
+  strong{font-weight:600}
+  .mono{font-family:"IBM Plex Mono",monospace;font-size:.82em;letter-spacing:.02em}
+
+  a.src{color:var(--steel-deep);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none} }
+
+  /* ================= HERO ================= */
+  .hero{
+    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    position:relative;padding:80px 24px 40px;overflow:hidden;
+  }
+  .hero-grid{
+    position:absolute;inset:0;z-index:0;opacity:.55;
+    background-image:linear-gradient(var(--rule-soft) 1px,transparent 1px),linear-gradient(90deg,var(--rule-soft) 1px,transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%);
+            mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%);
+  }
+  .hero-inner{position:relative;z-index:2;max-width:900px;margin:0 auto;width:100%}
+  .hero h1{
+    font-size:clamp(42px,8.2vw,86px);letter-spacing:-.025em;margin:0 0 26px;font-weight:500;
+  }
+  .hero h1 .i{font-style:italic;color:var(--steel-deep)}
+  .hero .lede{max-width:600px;font-size:clamp(18px,2.6vw,24px)}
+  .kicker{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 30px;
+  }
+  .scrollcue{
+    position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .scrollcue .bar{width:1px;height:40px;background:var(--ink-faint);position:relative;overflow:hidden}
+  .scrollcue .bar::after{content:"";position:absolute;top:-40px;left:0;width:1px;height:40px;background:var(--ink);animation:drop 1.8s ease-in-out infinite}
+  @keyframes drop{0%{top:-40px}60%,100%{top:40px}}
+  @media (prefers-reduced-motion: reduce){ .scrollcue .bar::after{animation:none;top:0} }
+
+  /* ---------- section frame ---------- */
+  section.chapter{padding:96px 0}
+  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+
+  h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.02em}
+  h3.sub{font-size:24px;margin:38px 0 12px;color:var(--ink)}
+
+  .pull{
+    font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.32;
+    color:var(--steel-deep);font-weight:400;font-style:italic;
+    border-left:2px solid var(--steel);padding:6px 0 6px 26px;margin:44px 0;
+  }
+
+  /* ---------- three pillars ---------- */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:40px}
+  .pillar{background:var(--paper);padding:30px 26px;}
+  .pillar .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+  .pillar h4{font-family:"Newsreader",serif;font-weight:500;font-size:26px;margin:0 0 10px}
+  .pillar p{font-size:16px;color:var(--ink-soft);margin:0}
+  .pillar .verb{font-style:italic;color:var(--ink)}
+  @media(max-width:720px){.pillars{grid-template-columns:1fr}}
+
+  /* ================ STICKY SCROLLY: THE MACHINE ================ */
+  .scrolly{position:relative;max-width:var(--wide);margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:40px}
+  .scrolly-graphic{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+  .scrolly-steps{padding:34vh 0 40vh}
+  .step{min-height:66vh;display:flex;flex-direction:column;justify-content:center}
+  .step .num{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;color:var(--steel);margin-bottom:12px}
+  .step h3{font-size:30px;margin:0 0 14px;font-weight:500}
+  .step p{font-size:17.5px;color:var(--ink-soft);max-width:420px}
+  .step.on h3{color:var(--ink)}
+
+  .machine{width:100%;max-width:520px}
+  .layer{transition:opacity .5s ease,transform .5s ease}
+  .layer.dim{opacity:.16}
+  .layer.hot text{font-weight:600}
+  .flow-arrow{opacity:0;transition:opacity .5s ease}
+  .flow-arrow.show{opacity:1}
+  @media (prefers-reduced-motion: reduce){ .layer,.flow-arrow{transition:none} }
+
+  @media(max-width:860px){
+    .scrolly{grid-template-columns:1fr;gap:0}
+    .scrolly-graphic{position:sticky;top:0;height:52vh;background:var(--paper);z-index:5;border-bottom:1px solid var(--rule)}
+    .scrolly-steps{padding:6vh 0 20vh}
+    .step{min-height:auto;padding:40px 0}
+    .machine{max-width:340px}
+  }
+
+  /* ---------- chain diagram inline ---------- */
+  .chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:40px 0;border:1px solid var(--rule);background:var(--rule)}
+  .chain .node{flex:1 1 140px;background:var(--paper);padding:18px 16px;min-width:120px;position:relative}
+  .chain .node .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
+  .chain .node .v{font-family:"Newsreader",serif;font-size:19px;line-height:1.2}
+  .chain .node small{display:block;font-size:13px;color:var(--ink-faint);margin-top:6px;line-height:1.4}
+
+  /* ---------- framework cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:34px}
+  .card{border:1px solid var(--rule);background:var(--paper);padding:22px 20px;transition:transform .2s ease,border-color .2s ease}
+  .card:hover{transform:translateY(-3px);border-color:var(--steel)}
+  .card .id{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--steel);letter-spacing:.06em}
+  .card h4{font-family:"Newsreader",serif;font-size:22px;font-weight:500;margin:8px 0 8px}
+  .card p{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5}
+
+  /* ---------- control type toggle ---------- */
+  .ctrl-demo{border:1px solid var(--rule);background:var(--paper);margin-top:34px}
+  .ctrl-tabs{display:flex;border-bottom:1px solid var(--rule)}
+  .ctrl-tab{flex:1;padding:16px 12px;background:none;border:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);border-right:1px solid var(--rule);transition:background .2s,color .2s}
+  .ctrl-tab:last-child{border-right:none}
+  .ctrl-tab[aria-selected="true"]{background:var(--ink);color:#fff}
+  .ctrl-body{padding:26px 24px;min-height:150px}
+  .ctrl-body h4{font-family:"Newsreader",serif;font-size:23px;font-weight:500;margin:0 0 6px}
+  .ctrl-body .when{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--steel);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
+  .ctrl-body p{font-size:16px;color:var(--ink-soft);margin:0 0 16px}
+  .ctrl-eg{background:var(--paper-2);border-left:2px solid var(--steel);padding:12px 16px;font-size:15px}
+  .ctrl-eg .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:4px}
+
+  /* ---------- risk matrix ---------- */
+  .matrix-wrap{margin-top:34px;display:grid;grid-template-columns:1fr;gap:26px}
+  .matrix-panel{background:var(--panel);color:var(--panel-ink);padding:28px;border-radius:2px}
+  .matrix-panel .eyebrow{color:#7FA8C9}
+  .matrix-panel .eyebrow::before{background:#7FA8C9}
+  .matrix-flex{display:flex;gap:26px;flex-wrap:wrap;align-items:center}
+  .matrix{position:relative;display:grid;grid-template-columns:34px repeat(5,1fr);grid-template-rows:repeat(5,52px) 34px;gap:3px;flex:1 1 320px;min-width:300px}
+  .cell{border-radius:2px;position:relative;cursor:default;transition:filter .15s}
+  .cell:hover{filter:brightness(1.18)}
+  .axis-y,.axis-x{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;color:#9FB3C4;display:flex;align-items:center;justify-content:center;text-align:center}
+  .axis-y{writing-mode:vertical-rl;transform:rotate(180deg)}
+  .corner{}
+  .dot{position:absolute;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink);top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;transition:all .8s cubic-bezier(.6,.05,.2,1);box-shadow:0 3px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;color:var(--ink)}
+  .matrix-side{flex:1 1 240px;min-width:230px}
+  .matrix-side h4{font-family:"Newsreader",serif;font-weight:500;font-size:24px;margin:0 0 12px;color:#fff}
+  .matrix-side p{font-size:15px;color:#B9C6D2;margin:0 0 18px;line-height:1.55}
+  .rr{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;font-size:14px}
+  .rr .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;width:78px;flex:none}
+  .rr .val{font-family:"Newsreader",serif;font-size:18px}
+  .btn{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;cursor:pointer;background:var(--teal);color:#fff;border:none;border-radius:2px;margin-top:14px;transition:opacity .2s}
+  .btn:hover{opacity:.88}
+  .btn.ghost{background:transparent;border:1px solid #3E5568;color:#B9C6D2;margin-left:8px}
+  .legend{display:flex;gap:16px;margin-top:16px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#9FB3C4;flex-wrap:wrap}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
+
+  /* ---------- four T's ---------- */
+  .tees{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:34px}
+  .tee{background:var(--paper);padding:26px 24px}
+  .tee .t{font-family:"Newsreader",serif;font-size:15px;color:var(--steel);font-style:italic;margin-bottom:4px}
+  .tee h4{font-family:"Newsreader",serif;font-size:26px;font-weight:500;margin:0 0 10px}
+  .tee p{font-size:15.5px;color:var(--ink-soft);margin:0 0 10px;line-height:1.5}
+  .tee .eg{font-size:13.5px;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace}
+  @media(max-width:620px){.tees{grid-template-columns:1fr}}
+
+  /* ---------- compliance split ---------- */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:34px}
+  .split > div{background:var(--paper);padding:28px 26px}
+  .split h4{font-family:"Newsreader",serif;font-size:24px;font-weight:500;margin:0 0 6px}
+  .split .who{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
+  .split ul{margin:0;padding-left:18px}
+  .split li{font-size:15.5px;color:var(--ink-soft);margin-bottom:8px}
+  @media(max-width:620px){.split{grid-template-columns:1fr}}
+
+  /* ================ GENAI ================ */
+  .genai{background:var(--panel);color:var(--panel-ink)}
+  .genai .col{color:var(--panel-ink)}
+  .genai .eyebrow{color:#E0A85F}
+  .genai .eyebrow::before{background:#E0A85F}
+  .genai h2.big{color:#fff}
+  .genai .lede{color:#B9C6D2}
+  .genai p{color:#B9C6D2}
+  .genai .pull{color:#E7B570;border-left-color:#E0A85F}
+  .genai h3.sub{color:#fff}
+  .genai .divider{background:#2A3B4A}
+
+  .risk-row{display:grid;grid-template-columns:1fr;gap:2px;background:#243441;border:1px solid #243441;margin-top:30px}
+  .risk-item{background:var(--panel);padding:26px 24px;display:grid;grid-template-columns:150px 1fr;gap:24px}
+  .risk-item .lft{font-family:"Newsreader",serif}
+  .risk-item .lft .nm{font-size:26px;color:#fff;font-weight:500;line-height:1.1}
+  .risk-item .lft .cat{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#E0A85F;margin-top:8px;font-weight:400}
+  .risk-item .rgt p{margin:0 0 14px;font-size:15.5px}
+  .risk-item .rgt .ctrl{font-size:14px;color:#8DA3B5}
+  .risk-item .rgt .ctrl b{color:var(--teal);font-weight:500;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+  @media(max-width:620px){.risk-item{grid-template-columns:1fr;gap:12px}}
+
+  /* ---------- hallucination demo ---------- */
+  .hallu{border:1px solid #2E4150;background:#101A24;margin-top:34px;border-radius:3px;overflow:hidden}
+  .hallu-head{padding:16px 22px;border-bottom:1px solid #2E4150;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;display:flex;justify-content:space-between;align-items:center}
+  .hallu-body{padding:24px 22px}
+  .qline{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#7FA8C9;margin-bottom:10px}
+  .aline{font-size:17px;color:#DDE3E8;line-height:1.55;margin-bottom:6px}
+  .flag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:10px}
+  .flag.bad{background:rgba(192,57,43,.2);color:#E8897E;border:1px solid #C0392B}
+  .flag.good{background:rgba(46,139,116,.18);color:#5FC5A8;border:1px solid var(--teal)}
+  .hallu-controls{display:flex;gap:10px;padding:0 22px 22px;flex-wrap:wrap}
+  .toggle{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border:1px solid #3E5568;background:transparent;color:#B9C6D2;cursor:pointer;border-radius:2px;transition:all .2s}
+  .toggle[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
+  .hl-wrong{color:#E8897E;border-bottom:1px dashed #C0392B}
+  .hl-right{color:#5FC5A8}
+  .cite{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#6B8296}
+
+  /* ---------- closing ---------- */
+  .close-wrap{text-align:center;padding:20px 0 10px}
+  .close-wrap h2{font-size:clamp(28px,4.6vw,42px);max-width:640px;margin:0 auto 22px;font-weight:500}
+  .close-wrap .lede{max-width:560px;margin:0 auto}
+
+  footer{border-top:1px solid var(--rule);padding:40px 24px 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:"IBM Plex Mono",monospace;letter-spacing:.03em;line-height:1.9}
+  footer a{color:var(--steel-deep)}
+
+  ::selection{background:var(--steel);color:#fff}
+  :focus-visible{outline:2px solid var(--steel);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<!-- ========================= HERO ========================= -->
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <p class="kicker">A field guide to Governance · Risk · Compliance</p>
+    <h1>The machine that keeps an organization <span class="i">honest</span> with itself.</h1>
+    <p class="lede">Frameworks, policies, controls, risk, mitigation, compliance — six words that sound like bureaucracy but describe one connected system. Here's how the parts actually fit, and why generative AI is the hardest thing they've ever had to hold.</p>
+  </div>
+  <div class="scrollcue"><span>Scroll</span><span class="bar"></span></div>
+</header>
+
+<!-- ========================= WHY ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Why any of this exists</p>
+    <h2 class="big">Trust doesn't scale. Systems do.</h2>
+    <p>Ten people in a room don't need a compliance department. Everyone can see what everyone else is doing, decisions are made by turning around and asking, and if something feels wrong, someone says so.</p>
+    <p>Now make it ten thousand people across twelve countries. Nobody can see the whole picture anymore. The person approving a payment has never met the person who set the rule. The informal trust that held the small company together simply <em>runs out</em>.</p>
+    <p class="pull">GRC is what you build when you can no longer rely on everyone knowing everyone.</p>
+    <p>It replaces "we'll just be careful" with something explicit and checkable: written intentions, concrete safeguards, a clear-eyed list of what could go wrong, and evidence that the whole thing is real. That's the entire job. The vocabulary just makes it sound harder than it is.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= THREE PILLARS ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">The three letters</p>
+    <h2 class="big">Governance, Risk, Compliance</h2>
+    <p>They're usually said in one breath, which hides that they answer three different questions. The cleanest way to hold them apart is to notice what each one is <em>for</em>.</p>
+  </div>
+  <div class="col reveal">
+    <div class="pillars">
+      <div class="pillar">
+        <div class="tag">G — the steering</div>
+        <h4>Governance</h4>
+        <p>Who is allowed to decide what, and how those decisions get made, reviewed, and overturned. It's the difference between a car with a driver, mirrors and a highway code — and a go-kart anyone can grab. Governance sets <span class="verb">direction</span>.</p>
+      </div>
+      <div class="pillar">
+        <div class="tag">R — the seeing</div>
+        <h4>Risk</h4>
+        <p>Naming what could go wrong <em>before</em> it does, and sizing each threat so attention flows to what matters instead of what's loudest. Risk work is mostly <span class="verb">foresight</span> made systematic.</p>
+      </div>
+      <div class="pillar">
+        <div class="tag">C — the proving</div>
+        <h4>Compliance</h4>
+        <p>Evidence that you actually do what you promised and what the law demands — not a claim, but a paper trail a stranger could audit. Compliance is <span class="verb">proof</span>, on the record.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= THE MACHINE (STICKY SCROLLY) ========================= -->
+<section class="chapter" style="padding-bottom:0">
+  <div class="col prose reveal" style="margin-bottom:10px">
+    <p class="eyebrow">How the pieces connect</p>
+    <h2 class="big">One chain, top to bottom</h2>
+    <p>Here's the part most explanations skip: frameworks, policies and controls aren't a pile of separate documents. They're a single chain of cause and effect, each link making the one below it concrete. Watch it assemble.</p>
+  </div>
+
+  <div class="scrolly" id="scrolly">
+    <div class="scrolly-graphic">
+      <svg class="machine" viewBox="0 0 400 460" id="machine" aria-hidden="true">
+        <!-- FRAMEWORK -->
+        <g class="layer" data-layer="framework">
+          <rect x="40" y="20" width="320" height="60" rx="4" fill="none" stroke="#4A6D8C" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="200" y="46" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#4A6D8C">FRAMEWORK</text>
+          <text x="200" y="64" text-anchor="middle" font-family="Newsreader,serif" font-size="14" fill="#14202B">the blueprint you adopt</text>
+        </g>
+        <line class="flow-arrow" data-arrow="0" x1="200" y1="80" x2="200" y2="100" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- POLICY -->
+        <g class="layer" data-layer="policy">
+          <rect x="60" y="100" width="280" height="58" rx="4" fill="#E3E6E9" stroke="#3C4C5A" stroke-width="1.5"/>
+          <text x="200" y="125" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#3C4C5A">POLICY</text>
+          <text x="200" y="143" text-anchor="middle" font-family="Newsreader,serif" font-size="14" fill="#14202B">the promise you make</text>
+        </g>
+        <line class="flow-arrow" data-arrow="1" x1="200" y1="158" x2="200" y2="178" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- CONTROL -->
+        <g class="layer" data-layer="control">
+          <rect x="80" y="178" width="240" height="58" rx="4" fill="#14202B"/>
+          <text x="200" y="203" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#7FA8C9">CONTROL</text>
+          <text x="200" y="221" text-anchor="middle" font-family="Newsreader,serif" font-size="14" fill="#fff">the promise made real</text>
+        </g>
+        <line class="flow-arrow" data-arrow="2" x1="200" y1="236" x2="200" y2="262" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- RISK (shield being reduced) -->
+        <g class="layer" data-layer="risk">
+          <path d="M200 262 L248 278 L248 316 Q248 348 200 366 Q152 348 152 316 L152 278 Z" fill="none" stroke="#D98A2B" stroke-width="1.5"/>
+          <text x="200" y="308" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" letter-spacing="1.5" fill="#D98A2B">RISK</text>
+          <text x="200" y="326" text-anchor="middle" font-family="Newsreader,serif" font-size="12" fill="#3C4C5A">what controls reduce</text>
+        </g>
+        <line class="flow-arrow" data-arrow="3" x1="200" y1="366" x2="200" y2="386" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
+
+        <!-- COMPLIANCE (checkmark) -->
+        <g class="layer" data-layer="compliance">
+          <rect x="90" y="386" width="220" height="54" rx="4" fill="none" stroke="#2E8B74" stroke-width="1.5"/>
+          <path d="M120 413 l8 8 l16 -18" fill="none" stroke="#2E8B74" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="212" y="410" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#2E8B74">COMPLIANCE</text>
+          <text x="212" y="427" text-anchor="middle" font-family="Newsreader,serif" font-size="13" fill="#14202B">proof it all holds</text>
+        </g>
+
+        <defs>
+          <marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M1 1 L6 4 L1 7" fill="none" stroke="#6B7986" stroke-width="1.2"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="scrolly-steps" id="steps">
+      <div class="step" data-step="framework">
+        <div class="num">01 — START HERE</div>
+        <h3>A framework is a blueprint you don't have to draw</h3>
+        <p>Nobody invents safety from scratch. A framework — <span class="mono">NIST CSF</span>, <span class="mono">ISO 27001</span>, <span class="mono">SOC 2</span> — is a tested structure that says <em>here are the things a serious organization thinks about</em>. Like a building code: it doesn't build your house, but it tells you the house won't fall down.</p>
+      </div>
+      <div class="step" data-step="policy">
+        <div class="num">02 — INTENTION</div>
+        <h3>A policy is a promise, written down</h3>
+        <p>Working from the framework, you commit to positions: <em>"We encrypt all customer data."</em> A policy is direction, not mechanism — it says <em>what</em> must be true, and deliberately not yet <em>how</em>. It's the sentence a leader can stand behind.</p>
+      </div>
+      <div class="step" data-step="control">
+        <div class="num">03 — WHERE IT GETS REAL</div>
+        <h3>A control is the promise turned into physics</h3>
+        <p>The policy said "encrypt data." The control is the actual thing that makes it happen and makes it checkable: <span class="mono">AES-256 at rest, enforced in config, reviewed each quarter.</span> Controls are where words become mechanisms. No control, and the policy is just a wish.</p>
+      </div>
+      <div class="step" data-step="risk">
+        <div class="num">04 — THE POINT OF IT ALL</div>
+        <h3>Every control exists to shrink a risk</h3>
+        <p>Controls aren't collected for their own sake. Each one is aimed at a specific way things could go wrong — a breach, a fraud, an outage. Strip away the jargon and a control is simply <em>a deliberate reduction of a named threat</em>.</p>
+      </div>
+      <div class="step" data-step="compliance">
+        <div class="num">05 — HOLD IT TO THE LIGHT</div>
+        <h3>Compliance proves the chain is real</h3>
+        <p>Finally, someone checks: does the control actually exist, does it work, and does it satisfy the framework and the law? That's compliance — the audit that turns "we're careful" into evidence a regulator, customer or court will accept.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chapter" style="padding-top:60px">
+  <div class="col prose reveal">
+    <p class="pull" style="margin-top:0">Frameworks shape policies. Policies demand controls. Controls reduce risks. Mitigation picks the response. Compliance proves it's all true.</p>
+    <p>Keep that one sentence and you can read almost any GRC document without getting lost — you'll always know which link of the chain you're standing on. The rest of this guide walks each link, then points the whole machine at something it was never designed for: generative AI.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= FRAMEWORKS ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link one — Frameworks</p>
+    <h2 class="big">Borrowed structure beats invented structure</h2>
+    <p>A framework is a menu of what to worry about and roughly how to organize your response, written by people who have already been burned. You pick one that matches your world, then adapt. Choosing a framework is less "which is best" and more "which conversation are we trying to have, and with whom."</p>
+    <div class="cards">
+      <div class="card">
+        <div class="id">NIST CSF 2.0</div>
+        <h4>The common language</h4>
+        <p>Organizes everything into six functions — Govern, Identify, Protect, Detect, Respond, Recover. Flexible, non-prescriptive, great for talking across teams.</p>
+      </div>
+      <div class="card">
+        <div class="id">ISO / IEC 27001</div>
+        <h4>The certifiable one</h4>
+        <p>An international standard for an information-security management system. You can be formally audited and certified — useful when customers demand a badge.</p>
+      </div>
+      <div class="card">
+        <div class="id">SOC 2</div>
+        <h4>The trust report</h4>
+        <p>An attestation, not a certificate: an auditor reports on how well your controls meet criteria like security and availability. The thing enterprise buyers ask for.</p>
+      </div>
+      <div class="card">
+        <div class="id">ISO / IEC 42001</div>
+        <h4>The new one, for AI</h4>
+        <p>A management-system standard built specifically for organizations that develop or use AI. The framework layer catching up to the machine's newest problem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= POLICIES ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link two — Policies</p>
+    <h2 class="big">The promises an organization makes to itself</h2>
+    <p>A policy is a short, quotable commitment: a rule the organization holds itself to. Good policies share a shape — they state a position, name who it applies to, and stay silent on implementation so they don't rot every time a tool changes.</p>
+    <div class="chain reveal">
+      <div class="node"><div class="k">Policy says</div><div class="v">"Access is least-privilege."</div><small>The stable commitment.</small></div>
+      <div class="node"><div class="k">Standard adds</div><div class="v">Reviewed every 90 days.</div><small>The measurable rule.</small></div>
+      <div class="node"><div class="k">Procedure adds</div><div class="v">Manager approves in the portal.</div><small>The step-by-step.</small></div>
+    </div>
+    <p>Policy, standard, procedure: the same intention at three altitudes. The policy rarely changes; the procedure changes whenever the software does. Confusing the two is why so many policy libraries read like they were written for a company that no longer exists.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= CONTROLS ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link three — Controls</p>
+    <h2 class="big">Where policy stops being a wish</h2>
+    <p>Controls are the working parts of the whole machine — the safeguards that actually do something. The most useful way to sort them isn't by technology but by <em>when they act</em> relative to the thing going wrong. Tap through:</p>
+  </div>
+  <div class="col reveal">
+    <div class="ctrl-demo" id="ctrlDemo">
+      <div class="ctrl-tabs" role="tablist" aria-label="Control types">
+        <button class="ctrl-tab" role="tab" aria-selected="true" data-t="prev">Preventive</button>
+        <button class="ctrl-tab" role="tab" aria-selected="false" data-t="det">Detective</button>
+        <button class="ctrl-tab" role="tab" aria-selected="false" data-t="corr">Corrective</button>
+      </div>
+      <div class="ctrl-body" id="ctrlBody">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="col prose reveal" style="padding:34px 0 0;max-width:100%">
+      <p style="max-width:640px;margin:0">Most real safeguards are a blend — and a mature program layers all three, because prevention always eventually fails and you'd rather find out from a detective control than from a headline. This "defense in depth" is why controls come in stacks, not singles.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= RISK MATRIX ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link four — Risk</p>
+    <h2 class="big">Two questions, one grid</h2>
+    <p>You can't fix everything, so risk work forces a ruthless prioritization down to two questions: <em>how likely is this?</em> and <em>how badly would it hurt?</em> Plot every threat on those two axes and the grid tells you where to spend your limited attention. Red isn't "bad luck" — it's "deal with this first."</p>
+  </div>
+  <div class="col reveal" style="max-width:var(--wide)">
+    <div class="matrix-panel">
+      <p class="eyebrow">Live — the risk register, visualized</p>
+      <div class="matrix-flex">
+        <div class="matrix" id="matrix" aria-hidden="true">
+          <!-- built by JS -->
+        </div>
+        <div class="matrix-side">
+          <h4>Inherent vs. residual risk</h4>
+          <p>Every risk starts <strong>inherent</strong> — its size before you do anything. Apply controls and it moves toward its <strong>residual</strong> level: what's left after mitigation. That leftover is what leadership formally accepts. You almost never reach zero, and pretending otherwise is its own risk.</p>
+          <div class="rr"><span class="k">Risk</span><span class="val" id="rName">Customer data breach</span></div>
+          <div class="rr"><span class="k">State</span><span class="val" id="rState">Inherent</span></div>
+          <div class="rr"><span class="k">Score</span><span class="val mono" id="rScore">20 / 25</span></div>
+          <button class="btn" id="applyBtn">Apply controls →</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+          <div class="legend">
+            <span><i style="background:#2E8B74"></i>Low</span>
+            <span><i style="background:#D98A2B"></i>Medium</span>
+            <span><i style="background:#C0392B"></i>High</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= MITIGATION — FOUR T's ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link five — Mitigation</p>
+    <h2 class="big">You have exactly four moves</h2>
+    <p>Once a risk is sized, the response is a genuine choice — and there are only four honest options. Naming them stops teams from pretending "we'll monitor it" is a decision. Every risk on the register ends up tagged with one of these.</p>
+    <div class="tees">
+      <div class="tee">
+        <div class="t">Treat</div>
+        <h4>Reduce it</h4>
+        <p>Add or strengthen controls to lower likelihood or impact. The default move, and the one everything above has been building toward.</p>
+        <div class="eg">e.g. encrypt the data, add MFA</div>
+      </div>
+      <div class="tee">
+        <div class="t">Transfer</div>
+        <h4>Share it</h4>
+        <p>Push some of the loss onto someone else — insurance, or a contract that makes a vendor liable. The risk still exists; the bill for it moves.</p>
+        <div class="eg">e.g. cyber-insurance policy</div>
+      </div>
+      <div class="tee">
+        <div class="t">Tolerate</div>
+        <h4>Accept it</h4>
+        <p>Decide the residual risk is small enough to live with, and record who signed off. A legitimate choice — as long as it's a <em>choice</em>, made out loud.</p>
+        <div class="eg">e.g. accept a low-impact edge case</div>
+      </div>
+      <div class="tee">
+        <div class="t">Terminate</div>
+        <h4>Avoid it</h4>
+        <p>Stop doing the risky thing entirely — kill the feature, exit the market, don't collect the data. The only move that takes a risk to zero.</p>
+        <div class="eg">e.g. don't store card numbers at all</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========================= COMPLIANCE ========================= -->
+<section class="chapter">
+  <div class="col prose reveal">
+    <p class="eyebrow">Link six — Compliance</p>
+    <h2 class="big">Two audiences you have to satisfy</h2>
+    <p>Compliance splits neatly in two by <em>whose rules</em> you're proving you follow. Both need the same currency — evidence — but they answer to different masters, and confusing them is how teams end up technically legal and internally chaotic, or vice versa.</p>
+    <div class="split">
+      <div>
+        <div class="who">Internal · your own rules</div>
+        <h4>Do we follow our own policies?</h4>
+        <ul>
+          <li>Checks that the controls you promised are actually running.</li>
+          <li>Owned by internal audit and risk teams.</li>
+          <li>Failure is caught quietly, fixed before it's external.</li>
+          <li>The rehearsal for the real exam.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="who">External · the law &amp; the market</div>
+        <h4>Do we satisfy regulators and customers?</h4>
+        <ul>
+          <li>Proves you meet laws like <span class="mono">GDPR</span>, <span class="mono">HIPAA</span>, <span class="mono">PCI-DSS</span>.</li>
+          <li>Judged by regulators, external auditors, buyers.</li>
+          <li>Failure means fines, lost deals, public findings.</li>
+          <li>The exam everyone can see the grade on.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:34px">The through-line: compliance never generates safety on its own. It <em>verifies</em> the safety the rest of the chain was supposed to produce. A company can be fully compliant and still unsafe if its controls were pointed at the wrong risks — which is exactly the trap generative AI walks organizations into.</p>
+  </div>
+</section>
+
+<!-- ========================= GENAI ========================= -->
+<section class="chapter genai">
+  <div class="col prose reveal">
+    <p class="eyebrow">The hardest thing the machine has held</p>
+    <h2 class="big">Now point all of it at generative AI</h2>
+    <p>Generative AI doesn't break the machine — it stresses every link at once. The framework is still being written while the technology ships. The policies are unsure what to promise. And the controls have to catch failures that don't look like any failure GRC was built for: a system that is confidently, fluently wrong, and unfair in ways nobody explicitly programmed.</p>
+    <p class="pull">The old question was "did the system do what we told it?" The new one is "did the system do something we never told it — and can't fully explain?"</p>
+    <p>Two failure modes matter most, because they're new in kind, not just degree. Both are ordinary GRC risks once you name them — they just need controls the last decade didn't require.</p>
+
+    <div class="risk-row">
+      <div class="risk-item">
+        <div class="lft">
+          <div class="nm">Bias</div>
+          <div class="cat">Fairness · discrimination risk</div>
+        </div>
+        <div class="rgt">
+          <p>A model learns patterns from data that reflects an unequal world, then reproduces — and can amplify — that inequality at scale. It isn't malice in the code; it's the past, statistically distilled and applied to someone's loan, résumé, or diagnosis. The danger is that it feels neutral <em>because</em> it's a machine.</p>
+          <div class="ctrl"><b>Controls</b> &nbsp;representative evaluation sets · disparity testing across groups · documented model cards · human review for high-stakes decisions · a policy barring AI-only calls on protected outcomes.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <div class="lft">
+          <div class="nm">Hallucination</div>
+          <div class="cat">Accuracy · reliability risk</div>
+        </div>
+        <div class="rgt">
+          <p>Because a language model predicts <em>plausible</em> continuations rather than <em>true</em> ones, it can generate fluent, specific, completely fabricated claims — a citation that doesn't exist, a policy that was never written — with the exact same confidence it uses for facts. Fluency is not knowledge, but it reads like it.</p>
+          <div class="ctrl"><b>Controls</b> &nbsp;grounding / retrieval with citations · confidence thresholds · output validation · human-in-the-loop for consequential answers · logging every generation for audit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <p style="color:#8DA3B5;font-size:16px;max-width:640px;margin-top:40px">See how one control changes the outcome. Below is a model answering a factual question. Toggle the safeguards a GRC program would require, and watch the same risky output get caught instead of shipped.</p>
+
+    <div class="hallu">
+      <div class="hallu-head"><span>AI assistant · customer-facing</span><span id="huStatus" style="color:#E8897E">Unguarded</span></div>
+      <div class="hallu-body">
+        <div class="qline">User: What's our refund window, and who wrote the policy?</div>
+        <div class="aline" id="huAnswer">
+          Our refund window is <span class="hl-wrong">45 days</span>, established in the <span class="hl-wrong">2019 Consumer Fairness Act, section&nbsp;12(b)</span>.
+        </div>
+        <div id="huFlag"><span class="flag bad">⚠ Shipped as-is · plausible, specific, and false</span></div>
+      </div>
+      <div class="hallu-controls">
+        <button class="toggle" id="tGround" aria-pressed="false">+ Grounding &amp; citations</button>
+        <button class="toggle" id="tHuman" aria-pressed="false">+ Human-in-the-loop</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col prose reveal">
+    <h3 class="sub">The frameworks are catching up</h3>
+    <p>The reassuring part: this is still the same machine. The response to AI risk isn't a new discipline — it's the old chain, extended. New frameworks give it structure: the <span class="mono">NIST AI Risk Management Framework</span>, <span class="mono">ISO/IEC 42001</span>, and regulation like the <span class="mono">EU AI Act</span>, which sorts AI uses by risk tier and attaches obligations to each.</p>
+    <p>They flow down exactly as before. A framework (<span class="mono">AI RMF</span>) shapes a policy ("no unreviewed AI in hiring"), which demands controls (bias tests, human sign-off), which reduce a risk (discrimination), which mitigation decides how to handle, which compliance then has to prove. Same six links. Harder problem.</p>
+  </div>
+</section>
+
+<!-- ========================= CLOSE ========================= -->
+<section class="chapter">
+  <div class="col close-wrap reveal">
+    <p class="eyebrow" style="justify-content:center">The whole machine, running</p>
+    <h2>None of these words mean much alone. Together they're how a large thing stays trustworthy.</h2>
+    <p class="lede">A framework you can't turn into policy is a PDF. A policy with no control is a wish. A control aimed at no risk is theater. And a risk nobody proves you've handled is just hope. GRC is the discipline of keeping all six honest at once — and generative AI is simply the newest, sharpest test of whether the chain really holds.</p>
+  </div>
+</section>
+
+<footer>
+  An explainer on Governance, Risk &amp; Compliance and the risks of generative AI.<br>
+  Structure inspired by scrollytelling explainers · built as an interactive reference.<br>
+  Frameworks &amp; standards referenced: NIST CSF · ISO/IEC 27001 · SOC 2 · NIST AI RMF · ISO/IEC 42001 · EU AI Act.
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* progress bar */
+  var progress = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (scrolled*100) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  /* reveal on scroll */
+  var revObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); revObs.unobserve(e.target);} });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ revObs.observe(el); });
+
+  /* ---------- sticky machine stepper ---------- */
+  var layers = {
+    framework: document.querySelector('[data-layer="framework"]'),
+    policy: document.querySelector('[data-layer="policy"]'),
+    control: document.querySelector('[data-layer="control"]'),
+    risk: document.querySelector('[data-layer="risk"]'),
+    compliance: document.querySelector('[data-layer="compliance"]')
+  };
+  var arrows = document.querySelectorAll('.flow-arrow');
+  var order = ['framework','policy','control','risk','compliance'];
+
+  function setActive(name){
+    var idx = order.indexOf(name);
+    order.forEach(function(k,i){
+      var L = layers[k];
+      if(!L) return;
+      L.classList.toggle('dim', i > idx);
+      L.classList.toggle('hot', i === idx);
+    });
+    arrows.forEach(function(a){
+      var ai = parseInt(a.getAttribute('data-arrow'),10);
+      a.classList.toggle('show', ai < idx);
+    });
+  }
+  // start with only framework lit
+  setActive('framework');
+
+  var steps = document.querySelectorAll('.step');
+  var stepObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        steps.forEach(function(s){ s.classList.remove('on'); });
+        e.target.classList.add('on');
+        setActive(e.target.getAttribute('data-step'));
+      }
+    });
+  }, {threshold:0.5});
+  steps.forEach(function(s){ stepObs.observe(s); });
+
+  /* ---------- control type tabs ---------- */
+  var ctrlData = {
+    prev: {
+      title:'Preventive controls',
+      when:'Act before the event',
+      body:'Stop the bad thing from happening in the first place. They\u2019re your first and cheapest line of defense \u2014 a locked door beats an alarm.',
+      egLbl:'In practice',
+      eg:'Multi-factor authentication \u00b7 encryption \u00b7 role-based access \u00b7 input validation \u00b7 mandatory approvals before a payment goes out.'
+    },
+    det: {
+      title:'Detective controls',
+      when:'Act during or after',
+      body:'Notice that something has gone wrong \u2014 or is going wrong right now \u2014 quickly enough to respond. They assume prevention will sometimes fail, and make sure you find out.',
+      egLbl:'In practice',
+      eg:'Log monitoring \u00b7 intrusion detection \u00b7 anomaly alerts \u00b7 the quarterly access review that catches the account nobody deactivated.'
+    },
+    corr: {
+      title:'Corrective controls',
+      when:'Act after the event',
+      body:'Limit the damage and restore normal once something has already happened. This is the difference between an incident and a catastrophe.',
+      egLbl:'In practice',
+      eg:'Backups and restore \u00b7 incident-response runbooks \u00b7 patching the exploited flaw \u00b7 revoking the compromised credential.'
+    }
+  };
+  var ctrlBody = document.getElementById('ctrlBody');
+  function renderCtrl(key){
+    var d = ctrlData[key];
+    ctrlBody.innerHTML =
+      '<div class="when">'+d.when+'</div>'+
+      '<h4>'+d.title+'</h4>'+
+      '<p>'+d.body+'</p>'+
+      '<div class="ctrl-eg"><span class="lbl">'+d.egLbl+'</span>'+d.eg+'</div>';
+  }
+  renderCtrl('prev');
+  document.querySelectorAll('.ctrl-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.ctrl-tab').forEach(function(t){ t.setAttribute('aria-selected','false'); });
+      tab.setAttribute('aria-selected','true');
+      renderCtrl(tab.getAttribute('data-t'));
+    });
+  });
+
+  /* ---------- risk matrix ---------- */
+  var matrix = document.getElementById('matrix');
+  // color by score (likelihood*impact), 1..25
+  function scoreColor(s){
+    if(s <= 6) return '#2E8B74';
+    if(s <= 12) return '#7BA23F';
+    if(s <= 15) return '#D98A2B';
+    if(s <= 19) return '#CF6B2A';
+    return '#C0392B';
+  }
+  // build grid: top row is likelihood 5 (high) down to 1; we render rows high->low
+  var html = '';
+  // We'll place cells; add y-axis label spanning via first column per row
+  for(var row=0; row<5; row++){
+    var likelihood = 5 - row; // top row = highest likelihood
+    // y-axis cell
+    html += '<div class="axis-y" style="grid-row:'+(row+1)+';grid-column:1">'+(row===0?'LIKELY \u2191':(row===4?'\u2193 RARE':''))+'</div>';
+    for(var col=0; col<5; col++){
+      var impact = col+1;
+      var s = likelihood*impact;
+      html += '<div class="cell" data-l="'+likelihood+'" data-i="'+impact+'" style="grid-row:'+(row+1)+';grid-column:'+(col+2)+';background:'+scoreColor(s)+'" title="Likelihood '+likelihood+' \u00d7 Impact '+impact+' = '+s+'"></div>';
+    }
+  }
+  // x-axis row
+  html += '<div class="corner" style="grid-row:6;grid-column:1"></div>';
+  html += '<div class="axis-x" style="grid-row:6;grid-column:2 / span 5">LOW IMPACT &nbsp;\u2192&nbsp; SEVERE</div>';
+  // the moving dot
+  html += '<div class="dot" id="riskDot">R1</div>';
+  matrix.innerHTML = html;
+
+  var dot = document.getElementById('riskDot');
+  var rState = document.getElementById('rState');
+  var rScore = document.getElementById('rScore');
+  var applyBtn = document.getElementById('applyBtn');
+  var resetBtn = document.getElementById('resetBtn');
+
+  // inherent: likelihood 5 (top row=0), impact 4 (col index 3) -> high
+  // residual: likelihood 2, impact 3 -> medium/low
+  var positions = {
+    inherent: {row:0, col:3, l:5, i:4}, // top-ish, high
+    residual: {row:3, col:2, l:2, i:3}
+  };
+  function placeDot(state){
+    var p = positions[state];
+    // grid columns: col index 0 => grid-column 2. rows: row 0 => grid-row 1
+    // We position dot absolutely inside the matched cell using its bounding box.
+    var selector = '.cell[data-l="'+p.l+'"][data-i="'+p.i+'"]';
+    var cell = matrix.querySelector(selector);
+    if(!cell) return;
+    var mRect = matrix.getBoundingClientRect();
+    var cRect = cell.getBoundingClientRect();
+    var x = cRect.left - mRect.left + cRect.width/2;
+    var y = cRect.top - mRect.top + cRect.height/2;
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+    dot.style.transform = 'translate(-50%,-50%)';
+    var s = p.l * p.i;
+    rState.textContent = state.charAt(0).toUpperCase()+state.slice(1);
+    rScore.textContent = s + ' / 25';
+    dot.style.borderColor = (state==='residual') ? '#2E8B74' : '#14202B';
+  }
+  var currentState = 'inherent';
+  function refresh(){ placeDot(currentState); }
+  applyBtn.addEventListener('click', function(){ currentState='residual'; refresh(); });
+  resetBtn.addEventListener('click', function(){ currentState='inherent'; refresh(); });
+  // place once matrix is laid out & on resize
+  var placed=false;
+  var mObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting && !placed){ placed=true; setTimeout(refresh,60); } });
+  }, {threshold:0.2});
+  mObs.observe(matrix);
+  window.addEventListener('resize', function(){ if(placed) refresh(); });
+
+  /* ---------- hallucination demo ---------- */
+  var tGround = document.getElementById('tGround');
+  var tHuman = document.getElementById('tHuman');
+  var huAnswer = document.getElementById('huAnswer');
+  var huFlag = document.getElementById('huFlag');
+  var huStatus = document.getElementById('huStatus');
+  var g=false, h=false;
+  function renderHallu(){
+    if(!g && !h){
+      huStatus.textContent='Unguarded'; huStatus.style.color='#E8897E';
+      huAnswer.innerHTML='Our refund window is <span class="hl-wrong">45 days</span>, established in the <span class="hl-wrong">2019 Consumer Fairness Act, section&nbsp;12(b)</span>.';
+      huFlag.innerHTML='<span class="flag bad">\u26a0 Shipped as-is \u00b7 plausible, specific, and false</span>';
+    } else if(g && !h){
+      huStatus.textContent='Grounded'; huStatus.style.color='#5FC5A8';
+      huAnswer.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md \u00a72]</span> I couldn\u2019t find any law by that name, so I\u2019ve left it out.';
+      huFlag.innerHTML='<span class="flag good">\u2713 Answer tied to a real source \u00b7 the invented law is gone</span>';
+    } else if(!g && h){
+      huStatus.textContent='Held for review'; huStatus.style.color='#E0A85F';
+      huAnswer.innerHTML='<span style="opacity:.6">Our refund window is 45 days, established in the 2019 Consumer Fairness Act\u2026</span>';
+      huFlag.innerHTML='<span class="flag bad" style="border-color:#E0A85F;color:#E7B570;background:rgba(224,168,95,.15)">\u23f8 Paused \u00b7 a human must approve before this reaches the customer</span>';
+    } else {
+      huStatus.textContent='Grounded + reviewed'; huStatus.style.color='#5FC5A8';
+      huAnswer.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md \u00a72, approved by an agent]</span>';
+      huFlag.innerHTML='<span class="flag good">\u2713 Grounded, then checked by a person \u00b7 safe to send</span>';
+    }
+  }
+  tGround.addEventListener('click', function(){ g=!g; tGround.setAttribute('aria-pressed', g); renderHallu(); });
+  tHuman.addEventListener('click', function(){ h=!h; tHuman.setAttribute('aria-pressed', h); renderHallu(); });
+})();
+</script>
+</body>
+</html>

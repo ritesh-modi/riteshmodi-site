@@ -7,229 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#EFEDF2;--paper-2:#E3E0E9;--ink:#191622;--ink-soft:#443E52;
-    --ink-faint:#757085;--rule:#CFCAD8;--accent:#6B4FC7;
-    --panel:#171325;--panel-2:#221B38;--panel-ink:#E3DFEC;--panel-faint:#8E86A6;
-    --safe:#3E8A76;--warn:#C3852F;--risk:#C0435F;
-    --maxw:680px;--wide:1080px;--pad:26px;
-    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
-    --t:.5s cubic-bezier(.4,0,.2,1);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--t),color var(--t)}
-
-  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
-  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-  .bleed{width:100%;margin:0}
-  section{padding:92px 0}
-  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
-
-  h1,h2,h3,.serif{font-family:"Instrument Serif",Georgia,serif;font-weight:400;line-height:1.06}
-  h2.big{font-size:clamp(31px,5vw,48px);margin:0 0 22px;letter-spacing:-.01em}
-  p{margin:0 0 22px}
-  em{font-style:italic}strong{font-weight:600}
-  .lede{font-family:"Instrument Serif",serif;font-size:clamp(22px,3vw,31px);line-height:1.34;color:var(--ink-soft)}
-  a{color:var(--accent)}
-  .m{font-family:var(--mono);font-size:.84em;color:var(--accent);background:rgba(107,79,199,.09);padding:1px 5px;border-radius:3px}
-
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:11px;margin:0 0 20px}
-  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
-  .eyebrow .n{background:var(--accent);color:#fff;border-radius:3px;padding:1px 7px;font-size:11px}
-
-  .try{background:var(--paper-2);border-left:2px solid var(--accent);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}
-  .try .tl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
-  .pull{font-family:"Instrument Serif",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.28;color:var(--accent);border-left:2px solid var(--accent);padding-left:26px;margin:38px 0}
-  .note{background:var(--paper-2);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--ink-soft)}
-  .note .nl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
-  .intu{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--paper-2);font-size:17.5px;line-height:1.58}
-  .intu .il{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:10px}
-  .intu b{color:var(--ink)}
-
-  /* code */
-  pre.sql{font-family:var(--mono);font-size:13.5px;line-height:1.62;background:var(--panel);color:var(--panel-ink);border-radius:8px;padding:18px 20px;overflow-x:auto;margin:26px 0}
-  pre.sql .k{color:#B9A8F2;font-weight:500}
-  pre.sql .c{color:var(--panel-faint);font-style:italic}
-  pre.sql .s{color:#7FCBAE}
-  pre.sql .hl{background:rgba(107,79,199,.28);border-radius:3px;padding:0 3px}
-  pre.sql .err{color:#EE8AA0}
-
-  /* drawn figures (counted svg mechanism figures) */
-  .dfig{border:1px solid var(--rule);background:var(--paper);border-radius:8px;margin:30px 0;overflow:hidden}
-  .dfig svg{display:block;width:100%;height:auto;background:var(--paper)}
-  .dfig figcaption{font-size:13.5px;color:var(--ink-faint);font-style:italic;padding:12px 18px;border-top:1px solid var(--rule)}
-  .dfig figcaption b{font-family:var(--mono);font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-right:8px}
-  .dfig text{font-family:var(--mono)}
-  .dfig .lab{font-size:11px;letter-spacing:.02em;fill:var(--ink-faint)}
-  .dfig .val{font-size:12px;fill:var(--ink-soft)}
-  .dfig .ttl{font-size:12px;fill:var(--accent);letter-spacing:.04em}
-  .dfig .box{fill:var(--paper-2);stroke:var(--rule);stroke-width:1.5}
-  .dfig .acc{fill:var(--accent)}
-  .dfig .accbox{fill:rgba(107,79,199,.14);stroke:var(--accent);stroke-width:1.5}
-  .dfig .safe{fill:var(--safe)}.dfig .risk{fill:var(--risk)}.dfig .warn{fill:var(--warn)}
-  .dfig .dead{fill:rgba(192,67,95,.5)}
-  .dfig .arrow{stroke:var(--ink-faint);stroke-width:1.5;fill:none}
-  .dfig .flowln{stroke:var(--accent);stroke-width:1.5;fill:none}
-  .dfig .gonebox{fill:rgba(192,67,95,.12);stroke:var(--risk);stroke-width:1.5;stroke-dasharray:4 3}
-  /* every boxed figure element reacts to the cursor */
-  .dfig rect.box,.dfig rect.accbox,.dfig rect.gonebox{transition:opacity .25s,stroke .15s,stroke-width .15s}
-  .dfig rect.box:hover,.dfig rect.accbox:hover,.dfig rect.gonebox:hover{stroke:var(--accent);stroke-width:2.5;cursor:pointer;opacity:1}
-  .dfig [data-scheme]{transition:opacity .3s}
-  .dfig .scheme-dim{opacity:.22}
-
-  /* hero */
-  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:90px var(--pad) 60px;overflow:hidden}
-  .hero-grid{position:absolute;inset:0;z-index:0;opacity:.5;background-image:linear-gradient(var(--rule) 1px,transparent 1px);background-size:100% 40px;-webkit-mask-image:radial-gradient(ellipse 78% 64% at 50% 42%,#000 24%,transparent 78%);mask-image:radial-gradient(ellipse 78% 64% at 50% 42%,#000 24%,transparent 78%)}
-  .hero-inner{position:relative;z-index:2;max-width:860px;margin:0 auto;width:100%}
-  .hero .kick{font-family:var(--mono);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 26px}
-  .hero h1{font-size:clamp(40px,7vw,80px);letter-spacing:-.02em;line-height:1.02;margin:0 0 26px}
-  .hero h1 .i{font-style:italic;color:var(--accent)}
-  .hero .lede{max-width:640px}
-  .hero .cmp{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:13.5px}
-  .cmpcard{flex:1 1 240px;border:1px solid var(--rule);border-radius:8px;padding:14px 16px;background:var(--paper-2)}
-  .cmpcard .t{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px}
-  .cmpcard.bad .t{color:var(--risk)}.cmpcard.good .t{color:var(--safe)}
-  .cmpcard code{color:var(--ink)}
-  .scrollcue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:8px}
-  .scrollcue .bar{width:1px;height:34px;background:var(--rule);position:relative;overflow:hidden}
-  .scrollcue .bar::after{content:"";position:absolute;top:-34px;left:0;width:1px;height:34px;background:var(--ink);animation:drop 1.9s ease-in-out infinite}
-  @keyframes drop{0%{top:-34px}60%,100%{top:34px}}
-  @media (prefers-reduced-motion:reduce){.scrollcue .bar::after{animation:none;top:0}}
-
-  /* chapter rail */
-  .rail{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:13px}
-  .rail a{display:flex;align-items:center;gap:10px;text-decoration:none}
-  .rail .rd{width:9px;height:9px;border-radius:50%;background:var(--rule);transition:all .3s;flex:none}
-  .rail a.on .rd{background:var(--accent);box-shadow:0 0 0 4px rgba(107,79,199,.16)}
-  .rail .rl{font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;opacity:0;transition:opacity .25s;white-space:nowrap;color:var(--ink-faint)}
-  .rail a:hover .rl,.rail a.on .rl{opacity:1;color:var(--ink-soft)}
-  @media(max-width:1120px){.rail{display:none}}
-
-  /* demo shell */
-  .demo{border:1px solid var(--rule);background:var(--paper);border-radius:8px;margin-top:30px;overflow:hidden}
-  .demo-head{padding:14px 22px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .demo-body{padding:26px 24px}
-  .cap{font-size:14.5px;color:var(--ink-faint);margin-top:16px;font-style:italic}
-  .chip{font-family:var(--mono);font-size:12.5px;padding:8px 13px;border:1px solid var(--rule);border-radius:20px;background:var(--paper);cursor:pointer;transition:all .16s;color:var(--ink-soft)}
-  .chip:hover{border-color:var(--accent);color:var(--ink)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .chiprow{display:flex;flex-wrap:wrap;gap:9px}
-
-  /* ===== pruning visualizer ===== */
-  .parts{display:flex;gap:10px;margin:8px 0 4px;flex-wrap:wrap}
-  .pbox{flex:1 1 0;min-width:88px;border:1.5px solid var(--rule);border-radius:8px;padding:14px 10px;text-align:center;background:var(--paper-2);transition:all .35s;position:relative}
-  .pbox .pn{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink-soft)}
-  .pbox .ps{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
-  .pbox.pruned{opacity:.32}
-  .pbox.hit{border-color:var(--accent);background:rgba(107,79,199,.16);box-shadow:0 0 0 1px var(--accent)}
-  .pbox.hit .pn{color:var(--accent)}
-  .pbox.hit .ps{color:var(--accent)}
-  .pbox.gone{opacity:.28;border-style:dashed;border-color:var(--risk);background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(192,67,95,.09) 6px,rgba(192,67,95,.09) 12px)}
-  .pbox.gone .pn{color:var(--risk)}
-  .prow{display:grid;grid-template-columns:1fr;gap:18px}
-  .slabel{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:8px}
-  .slabel b{color:var(--accent);font-size:15px}
-  input[type=range]{width:100%;accent-color:var(--accent)}
-  .verdict{display:flex;align-items:center;gap:12px;margin-top:6px;font-family:var(--mono);font-size:13px}
-  .vbadge{padding:6px 12px;border-radius:6px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border:1px solid}
-  .vbadge.one{background:rgba(62,138,118,.14);color:var(--safe);border-color:var(--safe)}
-  .vbadge.all{background:rgba(192,67,95,.13);color:var(--risk);border-color:var(--risk)}
-  .vbadge.drop{background:rgba(107,79,199,.14);color:var(--accent);border-color:var(--accent)}
-  .vwhy{margin-top:16px;font-size:16px;color:var(--ink-soft);line-height:1.55;min-height:48px}
-
-  /* ===== retention scrolly ===== */
-  .scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,440px);max-width:1240px;margin:0 auto;padding:0 var(--pad)}
-  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
-  .sg-in{width:100%;max-width:520px;background:var(--panel);border-radius:16px;padding:32px 28px;box-shadow:0 20px 50px rgba(23,19,37,.32)}
-  .sg-title{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--panel-faint);margin-bottom:20px}
-  .tl-flow{display:flex;flex-direction:column;gap:9px}
-  .mbox{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;border:1px solid #33294f;border-radius:8px;padding:11px 14px;background:var(--panel-2);transition:all .45s}
-  .mbox .mn{font-family:var(--mono);font-size:12.5px;color:var(--panel-ink)}
-  .mbox .mfill{height:9px;border-radius:5px;background:#2c2447;overflow:hidden}
-  .mbox .mfill i{display:block;height:100%;width:24%;background:#6a5aa8;border-radius:5px;transition:width .5s,background .5s}
-  .mbox.hot{border-color:var(--accent);box-shadow:0 0 18px rgba(107,79,199,.28)}
-  .mbox.hot .mfill i{width:88%;background:var(--accent)}
-  .mbox.hot .mn{color:#C6B7FA}
-  .mbox.def{border-style:dashed;border-color:#4a5a3f}
-  .mbox.def .mn{color:#9db98a}
-  .mbox.def.hot{border-color:var(--safe);box-shadow:0 0 18px rgba(62,138,118,.28)}
-  .mbox.def.hot .mfill i{background:var(--safe)}
-  .mbox.gone{opacity:.25;border-color:var(--risk);border-style:dashed}
-  .mbox.gone .mn{color:var(--risk);text-decoration:line-through}
-  .mbox.gone .mfill i{width:0}
-  .ss{padding:38vh 0 42vh}
-  .stp{min-height:80vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}
-  .stp.on{opacity:1}
-  .stp .sn{font-family:var(--mono);font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-  .stp h3{font-family:"Instrument Serif",serif;font-size:clamp(25px,3.5vw,34px);margin:0 0 14px;color:var(--ink)}
-  .stp p{font-size:18px;color:var(--ink-soft);margin:0}
-  @media(prefers-reduced-motion:reduce){.stp{opacity:1}}
-  @media(max-width:900px){
-    .scrolly{grid-template-columns:1fr;gap:0}
-    .sg{order:-1;position:sticky;height:auto;padding:14px 0}
-    .sg-in{max-width:none}
-    .ss{padding:2vh 0 10vh}
-    .stp{min-height:auto;padding:26px 0}
-  }
-
-  /* ===== DROP vs DELETE toggle ===== */
-  .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:8px;overflow:hidden;margin-top:22px}
-  .cmp2 .cc{padding:20px 22px}
-  .cmp2 .cc+.cc{border-left:1px solid var(--rule)}
-  .cmp2 .ch{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-  .cmp2 .del .ch{color:var(--risk)}.cmp2 .drp .ch{color:var(--safe)}
-  .step{display:flex;gap:10px;margin-bottom:10px;font-size:15px;color:var(--ink-soft);line-height:1.4}
-  .step .sd{font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex:none;margin-top:3px}
-  .costbar{height:10px;border-radius:5px;background:var(--paper-2);overflow:hidden;margin-top:16px}
-  .costbar i{display:block;height:100%;border-radius:5px}
-  .cmp2 .del .costbar i{width:100%;background:var(--risk)}
-  .cmp2 .drp .costbar i{width:5%;background:var(--safe)}
-  .costlab{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:7px}
-  @media(max-width:720px){.cmp2{grid-template-columns:1fr}.cmp2 .cc+.cc{border-left:none;border-top:1px solid var(--rule)}}
-
-  /* ===== gotcha tabs ===== */
-  .gt-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}
-  .gt-body{border:1px solid var(--rule);border-radius:8px;overflow:hidden}
-  .gt-sym{background:var(--panel);color:var(--panel-ink);padding:16px 20px;font-family:var(--mono);font-size:13px;line-height:1.55}
-  .gt-sym .err{color:#EE8AA0}
-  .gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
-  .gt-cell{padding:18px 20px}
-  .gt-cell+.gt-cell{border-left:1px solid var(--rule)}
-  .gt-cell .gl{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
-  .gt-cell.rule .gl{color:var(--accent)}
-  .gt-cell .gv{font-size:15.5px;color:var(--ink);line-height:1.5}
-  .gt-cell .gv code{font-family:var(--mono);font-size:13px;background:var(--paper-2);padding:1px 5px;border-radius:3px}
-  @media(max-width:720px){.gt-grid{grid-template-columns:1fr}.gt-cell+.gt-cell{border-left:none;border-top:1px solid var(--rule)}}
-
-  /* ===== partition-type comparison ===== */
-  .ptwrap{overflow-x:auto}
-  .ptable{min-width:580px;border:1px solid var(--rule);border-radius:8px;overflow:hidden;font-size:14.5px}
-  .ptrow{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr}
-  .ptrow+.ptrow{border-top:1px solid var(--rule)}
-  .ptc{padding:12px 14px;line-height:1.4}
-  .ptc+.ptc{border-left:1px solid var(--rule)}
-  .ptc.lab{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);letter-spacing:.02em;background:var(--paper-2)}
-  .ptrow.head .ptc{font-family:var(--mono);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:500;background:var(--paper-2)}
-  .ptc.on{background:rgba(107,79,199,.1)}
-  .ptrow.head .ptc.on{background:rgba(107,79,199,.2);color:var(--accent)}
-  .ptc .yes{color:var(--safe);font-weight:500}
-  .ptc .no{color:var(--risk);font-weight:500}
-
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
-  .close{text-align:center;padding:120px var(--pad)}
-  .close h2{font-size:clamp(30px,5vw,50px);margin:0 auto 26px;max-width:780px}
-  .close p{max-width:620px;margin:0 auto 22px;color:var(--ink-soft)}
-
-  footer{border-top:1px solid var(--rule);padding:40px var(--pad) 72px;text-align:center;color:var(--ink-faint);font-size:13px;font-family:var(--mono);line-height:1.9}
-  ::selection{background:var(--accent);color:#fff}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-</style>
+<style>:root{--v11:#EFEDF2;--v12:#E3E0E9;--v1:#191622;--v3:#443E52;--v2:#757085;--v14:#CFCAD8;--v0:#6B4FC7;--v7:#171325;--v8:#221B38;--v10:#E3DFEC;--v9:#8E86A6;--v15:#3E8A76;--v17:#C3852F;--v13:#C0435F;--v4:680px;--v18:1080px;--v6:26px;--v5:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;--v16:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v11);color:var(--v1);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--v16),color var(--v16)}.col{max-width:var(--v4);margin:0 auto;padding:0 var(--v6);position:relative}.wide{max-width:var(--v18);margin:0 auto;padding:0 var(--v6)}.bleed{width:100%;margin:0}section{padding:92px 0}.divider{max-width:var(--v4);margin:0 auto;height:1px;background:var(--v14)}h1,h2,h3,.serif{font-family:"Instrument Serif",Georgia,serif;font-weight:400;line-height:1.06}h2.big{font-size:clamp(31px,5vw,48px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}em{font-style:italic}strong{font-weight:600}.lede{font-family:"Instrument Serif",serif;font-size:clamp(22px,3vw,31px);line-height:1.34;color:var(--v3)}a{color:var(--v0)}.m{font-family:var(--v5);font-size:.84em;color:var(--v0);background:rgba(107,79,199,.09);padding:1px 5px;border-radius:3px}.eyebrow{font-family:var(--v5);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.eyebrow .n{background:var(--v0);color:#fff;border-radius:3px;padding:1px 7px;font-size:11px}.try{background:var(--v12);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.try .tl{font-family:var(--v5);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:8px}.pull{font-family:"Instrument Serif",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.28;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v12);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v3)}.note .nl{font-family:var(--v5);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:8px}.intu{border:1px solid var(--v14);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v12);font-size:17.5px;line-height:1.58}.intu .il{font-family:var(--v5);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v1)}pre.sql{font-family:var(--v5);font-size:13.5px;line-height:1.62;background:var(--v7);color:var(--v10);border-radius:8px;padding:18px 20px;overflow-x:auto;margin:26px 0}pre.sql .k{color:#B9A8F2;font-weight:500}pre.sql .c{color:var(--v9);font-style:italic}pre.sql .s{color:#7FCBAE}pre.sql .hl{background:rgba(107,79,199,.28);border-radius:3px;padding:0 3px}pre.sql .err{color:#EE8AA0}.dfig{border:1px solid var(--v14);background:var(--v11);border-radius:8px;margin:30px 0;overflow:hidden}.dfig svg{display:block;width:100%;height:auto;background:var(--v11)}.dfig figcaption{font-size:13.5px;color:var(--v2);font-style:italic;padding:12px 18px;border-top:1px solid var(--v14)}.dfig figcaption b{font-family:var(--v5);font-style:normal;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--v0);margin-right:8px}.dfig text{font-family:var(--v5)}.dfig .lab{font-size:11px;letter-spacing:.02em;fill:var(--v2)}.dfig .val{font-size:12px;fill:var(--v3)}.dfig .ttl{font-size:12px;fill:var(--v0);letter-spacing:.04em}.dfig .box{fill:var(--v12);stroke:var(--v14);stroke-width:1.5}.dfig .acc{fill:var(--v0)}.dfig .accbox{fill:rgba(107,79,199,.14);stroke:var(--v0);stroke-width:1.5}.dfig .safe{fill:var(--v15)}.dfig .risk{fill:var(--v13)}.dfig .warn{fill:var(--v17)}.dfig .dead{fill:rgba(192,67,95,.5)}.dfig .arrow{stroke:var(--v2);stroke-width:1.5;fill:none}.dfig .flowln{stroke:var(--v0);stroke-width:1.5;fill:none}.dfig .gonebox{fill:rgba(192,67,95,.12);stroke:var(--v13);stroke-width:1.5;stroke-dasharray:4 3}.dfig rect.box,.dfig rect.accbox,.dfig rect.gonebox{transition:opacity .25s,stroke .15s,stroke-width .15s}.dfig rect.box:hover,.dfig rect.accbox:hover,.dfig rect.gonebox:hover{stroke:var(--v0);stroke-width:2.5;cursor:pointer;opacity:1}.dfig [data-scheme]{transition:opacity .3s}.dfig .scheme-dim{opacity:.22}.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:90px var(--v6) 60px;overflow:hidden}.hero-grid{position:absolute;inset:0;z-index:0;opacity:.5;background-image:linear-gradient(var(--v14) 1px,transparent 1px);background-size:100% 40px;-webkit-mask-image:radial-gradient(ellipse 78% 64% at 50% 42%,#000 24%,transparent 78%);mask-image:radial-gradient(ellipse 78% 64% at 50% 42%,#000 24%,transparent 78%)}.hero-inner{position:relative;z-index:2;max-width:860px;margin:0 auto;width:100%}.hero .kick{font-family:var(--v5);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--v2);margin:0 0 26px}.hero h1{font-size:clamp(40px,7vw,80px);letter-spacing:-.02em;line-height:1.02;margin:0 0 26px}.hero h1 .i{font-style:italic;color:var(--v0)}.hero .lede{max-width:640px}.hero .cmp{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;font-family:var(--v5);font-size:13.5px}.cmpcard{flex:1 1 240px;border:1px solid var(--v14);border-radius:8px;padding:14px 16px;background:var(--v12)}.cmpcard .t{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:9px}.cmpcard.bad .t{color:var(--v13)}.cmpcard.good .t{color:var(--v15)}.cmpcard code{color:var(--v1)}.scrollcue{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:2;font-family:var(--v5);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--v2);display:flex;flex-direction:column;align-items:center;gap:8px}.scrollcue .bar{width:1px;height:34px;background:var(--v14);position:relative;overflow:hidden}.scrollcue .bar::after{content:"";position:absolute;top:-34px;left:0;width:1px;height:34px;background:var(--v1);animation:drop 1.9s ease-in-out infinite}@keyframes drop{0%{top:-34px}60%,100%{top:34px}}@media (prefers-reduced-motion:reduce){.scrollcue .bar::after{animation:none;top:0}}.rail{position:fixed;left:20px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:13px}.rail a{display:flex;align-items:center;gap:10px;text-decoration:none}.rail .rd{width:9px;height:9px;border-radius:50%;background:var(--v14);transition:all .3s;flex:none}.rail a.on .rd{background:var(--v0);box-shadow:0 0 0 4px rgba(107,79,199,.16)}.rail .rl{font-family:var(--v5);font-size:10.5px;letter-spacing:.03em;opacity:0;transition:opacity .25s;white-space:nowrap;color:var(--v2)}.rail a:hover .rl,.rail a.on .rl{opacity:1;color:var(--v3)}@media(max-width:1120px){.rail{display:none}}.demo{border:1px solid var(--v14);background:var(--v11);border-radius:8px;margin-top:30px;overflow:hidden}.demo-head{padding:14px 22px;border-bottom:1px solid var(--v14);font-family:var(--v5);font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--v2);display:flex;justify-content:space-between;align-items:center;gap:12px}.demo-body{padding:26px 24px}.cap{font-size:14.5px;color:var(--v2);margin-top:16px;font-style:italic}.chip{font-family:var(--v5);font-size:12.5px;padding:8px 13px;border:1px solid var(--v14);border-radius:20px;background:var(--v11);cursor:pointer;transition:all .16s;color:var(--v3)}.chip:hover{border-color:var(--v0);color:var(--v1)}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}.chiprow{display:flex;flex-wrap:wrap;gap:9px}.parts{display:flex;gap:10px;margin:8px 0 4px;flex-wrap:wrap}.pbox{flex:1 1 0;min-width:88px;border:1.5px solid var(--v14);border-radius:8px;padding:14px 10px;text-align:center;background:var(--v12);transition:all .35s;position:relative}.pbox .pn{font-family:var(--v5);font-size:13px;font-weight:600;color:var(--v3)}.pbox .ps{font-family:var(--v5);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--v2);margin-top:4px}.pbox.pruned{opacity:.32}.pbox.hit{border-color:var(--v0);background:rgba(107,79,199,.16);box-shadow:0 0 0 1px var(--v0)}.pbox.hit .pn{color:var(--v0)}.pbox.hit .ps{color:var(--v0)}.pbox.gone{opacity:.28;border-style:dashed;border-color:var(--v13);background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(192,67,95,.09) 6px,rgba(192,67,95,.09) 12px)}.pbox.gone .pn{color:var(--v13)}.prow{display:grid;grid-template-columns:1fr;gap:18px}.slabel{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--v5);font-size:12px;color:var(--v2);margin-bottom:8px}.slabel b{color:var(--v0);font-size:15px}input[type=range]{width:100%;accent-color:var(--v0)}.verdict{display:flex;align-items:center;gap:12px;margin-top:6px;font-family:var(--v5);font-size:13px}.vbadge{padding:6px 12px;border-radius:6px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border:1px solid}.vbadge.one{background:rgba(62,138,118,.14);color:var(--v15);border-color:var(--v15)}.vbadge.all{background:rgba(192,67,95,.13);color:var(--v13);border-color:var(--v13)}.vbadge.drop{background:rgba(107,79,199,.14);color:var(--v0);border-color:var(--v0)}.vwhy{margin-top:16px;font-size:16px;color:var(--v3);line-height:1.55;min-height:48px}.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,440px);max-width:1240px;margin:0 auto;padding:0 var(--v6)}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg-in{width:100%;max-width:520px;background:var(--v7);border-radius:16px;padding:32px 28px;box-shadow:0 20px 50px rgba(23,19,37,.32)}.sg-title{font-family:var(--v5);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--v9);margin-bottom:20px}.tl-flow{display:flex;flex-direction:column;gap:9px}.mbox{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;border:1px solid #33294f;border-radius:8px;padding:11px 14px;background:var(--v8);transition:all .45s}.mbox .mn{font-family:var(--v5);font-size:12.5px;color:var(--v10)}.mbox .mfill{height:9px;border-radius:5px;background:#2c2447;overflow:hidden}.mbox .mfill i{display:block;height:100%;width:24%;background:#6a5aa8;border-radius:5px;transition:width .5s,background .5s}.mbox.hot{border-color:var(--v0);box-shadow:0 0 18px rgba(107,79,199,.28)}.mbox.hot .mfill i{width:88%;background:var(--v0)}.mbox.hot .mn{color:#C6B7FA}.mbox.def{border-style:dashed;border-color:#4a5a3f}.mbox.def .mn{color:#9db98a}.mbox.def.hot{border-color:var(--v15);box-shadow:0 0 18px rgba(62,138,118,.28)}.mbox.def.hot .mfill i{background:var(--v15)}.mbox.gone{opacity:.25;border-color:var(--v13);border-style:dashed}.mbox.gone .mn{color:var(--v13);text-decoration:line-through}.mbox.gone .mfill i{width:0}.ss{padding:38vh 0 42vh}.stp{min-height:80vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sn{font-family:var(--v5);font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.stp h3{font-family:"Instrument Serif",serif;font-size:clamp(25px,3.5vw,34px);margin:0 0 14px;color:var(--v1)}.stp p{font-size:18px;color:var(--v3);margin:0}@media(prefers-reduced-motion:reduce){.stp{opacity:1}}@media(max-width:900px){.scrolly{grid-template-columns:1fr;gap:0}.sg{order:-1;position:sticky;height:auto;padding:14px 0}.sg-in{max-width:none}.ss{padding:2vh 0 10vh}.stp{min-height:auto;padding:26px 0}}.cmp2{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--v14);border-radius:8px;overflow:hidden;margin-top:22px}.cmp2 .cc{padding:20px 22px}.cmp2 .cc+.cc{border-left:1px solid var(--v14)}.cmp2 .ch{font-family:var(--v5);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}.cmp2 .del .ch{color:var(--v13)}.cmp2 .drp .ch{color:var(--v15)}.step{display:flex;gap:10px;margin-bottom:10px;font-size:15px;color:var(--v3);line-height:1.4}.step .sd{font-family:var(--v5);font-size:11px;color:var(--v2);flex:none;margin-top:3px}.costbar{height:10px;border-radius:5px;background:var(--v12);overflow:hidden;margin-top:16px}.costbar i{display:block;height:100%;border-radius:5px}.cmp2 .del .costbar i{width:100%;background:var(--v13)}.cmp2 .drp .costbar i{width:5%;background:var(--v15)}.costlab{font-family:var(--v5);font-size:11px;color:var(--v2);margin-top:7px}@media(max-width:720px){.cmp2{grid-template-columns:1fr}.cmp2 .cc+.cc{border-left:none;border-top:1px solid var(--v14)}}.gt-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:22px}.gt-body{border:1px solid var(--v14);border-radius:8px;overflow:hidden}.gt-sym{background:var(--v7);color:var(--v10);padding:16px 20px;font-family:var(--v5);font-size:13px;line-height:1.55}.gt-sym .err{color:#EE8AA0}.gt-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}.gt-cell{padding:18px 20px}.gt-cell+.gt-cell{border-left:1px solid var(--v14)}.gt-cell .gl{font-family:var(--v5);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--v2);margin-bottom:9px}.gt-cell.rule .gl{color:var(--v0)}.gt-cell .gv{font-size:15.5px;color:var(--v1);line-height:1.5}.gt-cell .gv code{font-family:var(--v5);font-size:13px;background:var(--v12);padding:1px 5px;border-radius:3px}@media(max-width:720px){.gt-grid{grid-template-columns:1fr}.gt-cell+.gt-cell{border-left:none;border-top:1px solid var(--v14)}}.ptwrap{overflow-x:auto}.ptable{min-width:580px;border:1px solid var(--v14);border-radius:8px;overflow:hidden;font-size:14.5px}.ptrow{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr}.ptrow+.ptrow{border-top:1px solid var(--v14)}.ptc{padding:12px 14px;line-height:1.4}.ptc+.ptc{border-left:1px solid var(--v14)}.ptc.lab{font-family:var(--v5);font-size:11.5px;color:var(--v2);letter-spacing:.02em;background:var(--v12)}.ptrow.head .ptc{font-family:var(--v5);font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--v3);font-weight:500;background:var(--v12)}.ptc.on{background:rgba(107,79,199,.1)}.ptrow.head .ptc.on{background:rgba(107,79,199,.2);color:var(--v0)}.ptc .yes{color:var(--v15);font-weight:500}.ptc .no{color:var(--v13);font-weight:500}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}.close{text-align:center;padding:120px var(--v6)}.close h2{font-size:clamp(30px,5vw,50px);margin:0 auto 26px;max-width:780px}.close p{max-width:620px;margin:0 auto 22px;color:var(--v3)}footer{border-top:1px solid var(--v14);padding:40px var(--v6) 72px;text-align:center;color:var(--v2);font-size:13px;font-family:var(--v5);line-height:1.9}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}</style></style>
 </head>
 <body>
 
@@ -246,7 +24,7 @@
   <a href="#ch10" data-r="10"><span class="rd"></span><span class="rl">10 · When to reach for it</span></a>
 </nav>
 
-<!-- HERO -->
+
 <header class="hero" data-ch="1">
   <div class="hero-grid"></div>
   <div class="hero-inner">
@@ -254,15 +32,15 @@
     <h1>One slice grew huge.<br>Don't scan the whole table to <span class="i">fix it.</span></h1>
     <p class="lede">When a single tenant's rows dominate a table, or a log needs monthly retention, one big heap makes every cleanup touch everything. Partitioning splits the table so per-tenant work stays local and removing a slice becomes a metadata operation, not a million-row DELETE.</p>
     <div class="cmp">
-      <div class="cmpcard bad"><div class="t">archive, the slow way</div><code>DELETE FROM claims WHERE …</code><br><span style="color:var(--ink-faint)">scan, mark dead, vacuum, bloat</span></div>
-      <div class="cmpcard good"><div class="t">archive, partitioned</div><code>DROP TABLE claim_events_2026_01;</code><br><span style="color:var(--ink-faint)">unlink a file, done</span></div>
+      <div class="cmpcard bad"><div class="t">archive, the slow way</div><code>DELETE FROM claims WHERE …</code><br><span style="color:var(--v2)">scan, mark dead, vacuum, bloat</span></div>
+      <div class="cmpcard good"><div class="t">archive, partitioned</div><code>DROP TABLE claim_events_2026_01;</code><br><span style="color:var(--v2)">unlink a file, done</span></div>
     </div>
   </div>
   <div class="scrollcue"><span>Start</span><span class="bar"></span></div>
 </header>
 
-<!-- CH 1 -->
-<section id="ch1" data-ch="1" data-defines="heap, tenant slice, dedup anti-join">
+
+<section id="ch1" data-ch="1">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">01</span> The shape of the pain</p>
     <h2 class="big">One project's cleanup shouldn't read every project's rows.</h2>
@@ -313,8 +91,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 2 -->
-<section id="ch2" data-ch="2" data-defines="dead tuple, vacuum, bloat, WAL" data-uses="heap">
+
+<section id="ch2" data-ch="2">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">02</span> Why the big table fights back</p>
     <h2 class="big">A big DELETE is the slowest way to remove data.</h2>
@@ -346,8 +124,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 3 -->
-<section id="ch3" data-ch="3" data-defines="partition, parent, child partition, partition key, pruning, DETACH, DROP" data-uses="heap">
+
+<section id="ch3" data-ch="3">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">03</span> What partitioning actually gives you</p>
     <h2 class="big">A partitioned table is many tables the planner can skip.</h2>
@@ -370,7 +148,7 @@
           <rect id="f3p3" class="box" x="496" y="134" width="130" height="44" rx="5"/><text class="lab" x="561" y="161" text-anchor="middle">p3</text>
         </g>
         <text class="val" id="f3note" x="24" y="196">key 42 hashes to p2, every row with this key lands there</text>
-        <defs><marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--accent)"/></marker></defs>
+        <defs><marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--v0)"/></marker></defs>
       </svg>
       <figcaption><b>Figure 3 · interactive</b>Click 42, 7, or 99. The parent holds no rows; it reads the key and sends the row to one child. A query that names the key lets the planner walk this same arrow to one child and ignore the rest.</figcaption>
     </figure>
@@ -384,8 +162,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 4: THREE TYPES -->
-<section id="ch4" data-ch="4" data-defines="range, list, hash, DEFAULT partition" data-uses="partition, partition key">
+
+<section id="ch4" data-ch="4">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">04</span> The three ways to split</p>
     <h2 class="big">RANGE, LIST, or HASH: the key's shape picks the type.</h2>
@@ -402,24 +180,24 @@
       <div class="demo-body">
       <figure class="dfig" style="border:none;background:none;margin:0 auto 6px;max-width:840px">
       <svg id="f4svg" viewBox="0 0 680 188" role="img" aria-label="Three ways a partition key routes a row: range, list, hash">
-        <!-- RANGE -->
+        
         <text class="ttl" x="26" y="28">RANGE</text>
         <text class="lab" x="26" y="46">ordered cuts</text>
         <line class="arrow" x1="34" y1="120" x2="214" y2="120"/>
-        <line x1="94" y1="112" x2="94" y2="128" stroke="var(--rule)" stroke-width="2"/>
-        <line x1="154" y1="112" x2="154" y2="128" stroke="var(--rule)" stroke-width="2"/>
+        <line x1="94" y1="112" x2="94" y2="128" stroke="var(--v14)" stroke-width="2"/>
+        <line x1="154" y1="112" x2="154" y2="128" stroke="var(--v14)" stroke-width="2"/>
         <text class="lab" x="60" y="146" text-anchor="middle">Jan</text>
         <text class="ttl" x="124" y="146" text-anchor="middle">Feb</text>
         <text class="lab" x="184" y="146" text-anchor="middle">Mar</text>
         <circle class="acc" cx="124" cy="120" r="6"/>
         <text class="val" x="124" y="100" text-anchor="middle">at&#8712;Feb</text>
-        <!-- LIST -->
+        
         <text class="ttl" x="248" y="28">LIST</text>
         <text class="lab" x="248" y="46">named drawers</text>
         <rect class="box" x="248" y="60" width="150" height="26" rx="4"/><text class="lab" x="258" y="77">EU</text>
         <rect class="accbox" x="248" y="92" width="150" height="26" rx="4"/><text class="ttl" x="258" y="109">US &#8592; region='US'</text>
         <rect class="box" x="248" y="124" width="150" height="26" rx="4"/><text class="lab" x="258" y="141">APAC</text>
-        <!-- HASH -->
+        
         <text class="ttl" x="470" y="28">HASH</text>
         <text class="lab" x="470" y="46">hash(key) mod 4</text>
         <text class="val" x="470" y="84">42 &#8594; h &#8594; 2</text>
@@ -427,7 +205,7 @@
         <rect class="box" x="516" y="100" width="40" height="40" rx="4"/><text class="lab" x="536" y="125" text-anchor="middle">1</text>
         <rect class="accbox" x="562" y="100" width="40" height="40" rx="4"/><text class="ttl" x="582" y="125" text-anchor="middle">2</text>
         <rect class="box" x="608" y="100" width="40" height="40" rx="4"/><text class="lab" x="628" y="125" text-anchor="middle">3</text>
-        <rect id="f4hl" x="8" y="8" width="214" height="172" rx="8" fill="none" stroke="var(--accent)" stroke-width="2.5" pointer-events="none"/>
+        <rect id="f4hl" x="8" y="8" width="214" height="172" rx="8" fill="none" stroke="var(--v0)" stroke-width="2.5" pointer-events="none"/>
         <rect id="f4range" x="8"   y="8" width="214" height="172" rx="8" fill="transparent" style="cursor:pointer"/>
         <rect id="f4list"  x="230" y="8" width="212" height="172" rx="8" fill="transparent" style="cursor:pointer"/>
         <rect id="f4hash"  x="452" y="8" width="212" height="172" rx="8" fill="transparent" style="cursor:pointer"/>
@@ -487,8 +265,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 5: HASH -->
-<section id="ch5" data-ch="5" data-defines="hash bucket, locality" data-uses="hash, partition, heap">
+
+<section id="ch5" data-ch="5">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">05</span> Strategy A · locality</p>
     <h2 class="big">Hash by the owner key, and each tenant lands in one partition.</h2>
@@ -537,8 +315,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 6: THE KNOB -->
-<section id="ch6" data-ch="6" data-defines="predicate, partition pruning" data-uses="pruning, partition key, hash bucket">
+
+<section id="ch6" data-ch="6">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">06</span> The live knob</p>
     <h2 class="big">Watch the planner skip seven of eight partitions.</h2>
@@ -569,7 +347,7 @@
           <rect id="f6b7" class="box"    x="570" y="70" width="68" height="34" rx="4"/><text class="lab" x="604" y="91" text-anchor="middle">p7</text>
         </g>
         <text class="val" x="24" y="128" id="f6note">reads 1 of 8 &#183; seven partitions pruned</text>
-        <defs><marker id="a6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--ink-faint)"/></marker></defs>
+        <defs><marker id="a6" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--v2)"/></marker></defs>
       </svg>
       <figcaption style="border:none;padding:6px 0 0"><b>Figure 6 · live</b>Driven by the controls right below. Change the operation or drag the project id and watch the query, the hash, and which partitions light up. Hover any partition to see what it holds.</figcaption>
       </figure>
@@ -598,8 +376,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 7: RANGE plus SCROLLY -->
-<section id="ch7" data-ch="7" data-defines="range partition, retention" data-uses="range, DEFAULT partition, partition, DETACH, DROP" style="padding-bottom:50px">
+
+<section id="ch7" data-ch="7" style="padding-bottom:50px">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">07</span> Strategy B · retention</p>
     <h2 class="big">Range-partition the log by time, and old months just drop.</h2>
@@ -618,9 +396,9 @@
           <g class="f7mo" data-m="2026_05" style="cursor:pointer"><rect class="box" x="344" y="48" width="72" height="46" rx="5"/><text class="lab" x="380" y="108" text-anchor="middle">2026_05</text></g>
           <g class="f7mo" data-m="2026_06" style="cursor:pointer"><rect class="box" x="424" y="48" width="72" height="46" rx="5"/><text class="lab" x="460" y="108" text-anchor="middle">2026_06</text></g>
           <rect class="accbox" x="504" y="48" width="72" height="46" rx="5"/><text class="ttl" x="540" y="108" text-anchor="middle">2026_07</text>
-          <rect x="584" y="48" width="72" height="46" rx="5" fill="none" stroke="var(--rule)" stroke-width="1.5" stroke-dasharray="4 4"/><text class="lab" x="620" y="108" text-anchor="middle">DEFAULT</text>
+          <rect x="584" y="48" width="72" height="46" rx="5" fill="none" stroke="var(--v14)" stroke-width="1.5" stroke-dasharray="4 4"/><text class="lab" x="620" y="108" text-anchor="middle">DEFAULT</text>
         </g>
-        <text class="val" x="504" y="136" fill="var(--accent)" text-anchor="middle">inserts land here</text>
+        <text class="val" x="504" y="136" fill="var(--v0)" text-anchor="middle">inserts land here</text>
         <text class="val" id="f7note" x="24" y="136">click an old month: retention is a DROP, not a scan</text>
       </svg>
       <figcaption><b>Figure 7 · interactive</b>Click any old month to retire it. Writes only touch the current month; retention only unlinks the oldest, a metadata-only DROP. The DEFAULT catches any date without a month yet.</figcaption>
@@ -676,8 +454,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 8 -->
-<section id="ch8" data-ch="8" data-defines="catalog change" data-uses="DROP, DETACH, dead tuple, vacuum, WAL, partition">
+
+<section id="ch8" data-ch="8">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">08</span> The mechanism behind the win</p>
     <h2 class="big">Removal becomes unlinking a file, not deleting a million rows.</h2>
@@ -689,7 +467,7 @@
       <div class="demo-body">
       <figure class="dfig" style="border:none;background:none;margin:0 auto 6px;max-width:860px">
       <svg id="f8svg" viewBox="0 0 680 158" role="img" aria-label="DELETE does work per row; DROP is a single catalog change">
-        <text class="ttl" x="40" y="28" fill="var(--risk)">DELETE (work grows with rows)</text>
+        <text class="ttl" x="40" y="28" fill="var(--v13)">DELETE (work grows with rows)</text>
         <rect class="box" x="40" y="38" width="270" height="84" rx="5"/>
         <rect class="dead" x="52" y="48" width="246" height="10" rx="2"/>
         <rect class="dead" x="52" y="62" width="246" height="10" rx="2"/>
@@ -698,12 +476,12 @@
         <rect class="dead" x="52" y="104" width="246" height="10" rx="2"/>
         <text class="val" x="40" y="140">every row: mark dead + WAL + index entry, then vacuum</text>
         <text class="ttl" x="360" y="72">vs</text>
-        <text class="ttl" x="410" y="28" fill="var(--safe)">DROP PARTITION (one step)</text>
+        <text class="ttl" x="410" y="28" fill="var(--v15)">DROP PARTITION (one step)</text>
         <rect class="box" x="410" y="38" width="230" height="84" rx="5"/>
-        <path d="M470 62 h110 M470 78 h110" stroke="var(--rule)" stroke-width="8" stroke-linecap="round"/>
-        <line x1="500" y1="46" x2="560" y2="96" stroke="var(--safe)" stroke-width="3"/>
-        <text class="val" x="410" y="140" fill="var(--safe)">one catalog change: the file is unlinked, done</text>
-        <rect id="f8hl" x="34" y="18" width="292" height="128" rx="8" fill="none" stroke="var(--accent)" stroke-width="2.5" pointer-events="none"/>
+        <path d="M470 62 h110 M470 78 h110" stroke="var(--v14)" stroke-width="8" stroke-linecap="round"/>
+        <line x1="500" y1="46" x2="560" y2="96" stroke="var(--v15)" stroke-width="3"/>
+        <text class="val" x="410" y="140" fill="var(--v15)">one catalog change: the file is unlinked, done</text>
+        <rect id="f8hl" x="34" y="18" width="292" height="128" rx="8" fill="none" stroke="var(--v0)" stroke-width="2.5" pointer-events="none"/>
         <rect id="f8del" x="34" y="18" width="292" height="128" rx="8" fill="transparent" style="cursor:pointer"/>
         <rect id="f8drp" x="404" y="18" width="244" height="128" rx="8" fill="transparent" style="cursor:pointer"/>
       </svg>
@@ -724,8 +502,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 9 -->
-<section id="ch9" data-ch="9" data-defines="composite primary key" data-uses="partition key, partition, DEFAULT partition">
+
+<section id="ch9" data-ch="9">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">09</span> What bit us</p>
     <h2 class="big">Four gotchas that turn a clean design into an error message.</h2>
@@ -737,7 +515,7 @@
         <text class="lab" x="24" y="46">PRIMARY&#160;KEY</text>
         <g id="f9pk" style="cursor:pointer"><rect id="f9pkr" class="accbox" x="140" y="28" width="176" height="34" rx="6"/><text class="ttl" x="228" y="50" text-anchor="middle">project_id</text></g>
         <rect class="box" x="326" y="28" width="176" height="34" rx="6"/><text class="val" x="414" y="50" text-anchor="middle">profile_id</text>
-        <text id="f9sub" class="lab" x="228" y="78" text-anchor="middle" fill="var(--accent)">&#9654; click project_id to toggle it in / out of the key</text>
+        <text id="f9sub" class="lab" x="228" y="78" text-anchor="middle" fill="var(--v0)">&#9654; click project_id to toggle it in / out of the key</text>
         <g>
           <rect id="f9r0" class="box" x="24"  y="96" width="196" height="34" rx="5"/><text id="f9t0" class="val" x="122" y="118" text-anchor="middle">p0 · unique enforced</text>
           <rect id="f9r1" class="box" x="242" y="96" width="196" height="34" rx="5"/><text id="f9t1" class="val" x="340" y="118" text-anchor="middle">p1 · unique enforced</text>
@@ -770,8 +548,8 @@
 
 <div class="divider"></div>
 
-<!-- CH 10 -->
-<section id="ch10" data-ch="10" data-defines="" data-uses="range, list, hash, partition key, partition, DEFAULT partition, retention, locality">
+
+<section id="ch10" data-ch="10">
   <div class="col reveal">
     <p class="eyebrow"><span class="n">10</span> When to reach for it</p>
     <h2 class="big">Partition for a slice that grows huge or needs cheap removal. Not before.</h2>
@@ -794,14 +572,14 @@
         <rect id="f10list"  class="box" x="380" y="60" width="276" height="34" rx="5"/><text class="val" x="394" y="82">LIST &#183; categories, isolate one</text>
         <rect id="f10hash"  class="box" x="380" y="104" width="276" height="34" rx="5"/><text class="val" x="394" y="126">HASH &#183; even spread, locality</text>
         <text class="val" id="f10note" x="24" y="156">click a key shape to see which type fits</text>
-        <defs><marker id="a10" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--ink-faint)"/></marker></defs>
+        <defs><marker id="a10" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="var(--v2)"/></marker></defs>
       </svg>
       <figcaption><b>Figure 10</b>The decision is mechanical once you name the key's shape. Ordered wants RANGE, a small set of values wants LIST, no natural grouping wants HASH. No pressing slice at all wants a plain heap.</figcaption>
     </figure>
   </div>
 </section>
 
-<!-- CLOSE -->
+
 <div class="close reveal">
   <h2>The slice was always there. Partitioning just tells the storage where it is.</h2>
   <p>Your data already had a natural boundary, one project, one month. A plain heap ignores it, so every operation pays for the whole table. Name that boundary as the partition key and the planner prunes to it, and retiring it costs a catalog change instead of a scan.</p>
@@ -814,301 +592,7 @@
   Built as a single self-contained page · 2026
 </footer>
 
-<script>
-(function(){
-  "use strict";
-
-  /* ---------- chapter rail (scroll-position based) ---------- */
-  var railLinks=[].slice.call(document.querySelectorAll('#rail a'));
-  var chSections=[].slice.call(document.querySelectorAll('[data-ch]'));
-  function updateRail(){
-    var line=window.innerHeight*0.4, cur='1';
-    chSections.forEach(function(s){ if(s.getBoundingClientRect().top<=line) cur=s.getAttribute('data-ch'); });
-    railLinks.forEach(function(a){ a.classList.toggle('on', a.getAttribute('data-r')===cur); });
-  }
-  window.addEventListener('scroll',updateRail,{passive:true});
-  window.addEventListener('resize',updateRail,{passive:true});
-  updateRail();
-
-  /* ---------- reveal ---------- */
-  var ro=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
-  },{threshold:0.1,rootMargin:'0px 0px -6% 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
-
-  /* ---------- CH5: pruning visualizer ---------- */
-  var partRow=document.getElementById('partRow');
-  if(partRow){ for(var i=0;i<8;i++){
-    var b=document.createElement('div');
-    b.className='pbox'; b.setAttribute('data-p',i);
-    b.innerHTML='<div class="pn">p'+i+'</div><div class="ps">bucket '+i+'</div>';
-    partRow.appendChild(b);
-  } }
-  var pboxes=partRow?[].slice.call(partRow.querySelectorAll('.pbox')):[];
-  var OPS={
-    point:{label:`SELECT one project`, mode:`one`,
-      sql:function(id,b){return `<span class="k">SELECT</span> * <span class="k">FROM</span> claims\n<span class="k">WHERE</span> <span class="hl">project_id = `+id+`</span>;`;},
-      why:function(id,b){return `project_id is the hash key and it is in the WHERE clause, so the planner hashes `+id+`, lands on p`+b+`, and skips the other seven before reading a page.`;}},
-    antijoin:{label:`Dedup anti-join`, mode:`one`,
-      sql:function(id,b){return `<span class="k">DELETE FROM</span> claims c\n<span class="k">WHERE</span> <span class="hl">project_id = `+id+`</span>\n  <span class="k">AND EXISTS</span> (<span class="c">/* a newer claim supersedes c */</span>);`;},
-      why:function(id,b){return `Every row the anti-join compares belongs to project `+id+`, so the whole join runs inside p`+b+`. No cross-partition scan, and the deletes stay in one leaf.`;}},
-    vacuum:{label:`Vacuum this project`, mode:`one`,
-      sql:function(id,b){return `<span class="k">VACUUM</span> (<span class="k">ANALYZE</span>) claims_p`+b+`;`;},
-      why:function(id,b){return `Project `+id+`'s dead tuples and index all live in p`+b+`, so you vacuum a single leaf. The other seven partitions are never opened.`;}},
-    scan:{label:`SELECT across all projects`, mode:`all`,
-      sql:function(id,b){return `<span class="k">SELECT</span> <span class="k">count</span>(*) <span class="k">FROM</span> claims;   <span class="c">-- no project_id filter</span>`;},
-      why:function(id,b){return `Nothing restricts the partition key, so nothing can be pruned. All eight partitions are scanned. This is the query shape you keep off the hot path.`;}},
-    drop:{label:`DROP a hash bucket`, mode:`drop`,
-      sql:function(id,b){return `<span class="k">DROP TABLE</span> claims_p`+b+`;`;},
-      why:function(id,b){return `An instant metadata unlink of p`+b+`. But a hash bucket holds many projects, so this is coarse bulk removal, not single-project archival. For that, list-partition the project or range-partition by time (chapters 04 and 07).`;}}
-  };
-  var opChips=document.getElementById('opChips'),
-      pidSlider=document.getElementById('pidSlider'), pidVal=document.getElementById('pidVal'),
-      prHead=document.getElementById('prHead'), vBadge=document.getElementById('vBadge'),
-      vExtra=document.getElementById('vExtra'), opSql=document.getElementById('opSql'), vWhy=document.getElementById('vWhy'),
-      curOp='point';
-  function bucketOf(id){ return ((id%8)+8)%8; }
-  function renderPrune(){
-    var id=+pidSlider.value, b=bucketOf(id), op=OPS[curOp];
-    pidVal.textContent=id;
-    prHead.textContent=op.label;
-    pboxes.forEach(function(box,ix){
-      box.className='pbox';
-      if(op.mode==='all'){ box.classList.add('hit'); }
-      else if(op.mode==='drop'){ if(ix===b){box.classList.add('gone');} else {box.classList.add('pruned');} }
-      else { if(ix===b){box.classList.add('hit');} else {box.classList.add('pruned');} }
-    });
-    if(op.mode==='all'){ vBadge.textContent='touches 8 / 8'; vBadge.className='vbadge all'; vExtra.textContent='full scan, no pruning'; }
-    else if(op.mode==='drop'){ vBadge.textContent='drops p'+b; vBadge.className='vbadge drop'; vExtra.textContent='metadata only'; }
-    else { vBadge.textContent='touches 1 / 8'; vBadge.className='vbadge one'; vExtra.textContent='pruned to p'+b+' ✓'; }
-    opSql.innerHTML=op.sql(id,b);
-    vWhy.textContent=op.why(id,b);
-    // live Figure 6, driven by the same state
-    var f6q=document.getElementById('f6q');
-    if(f6q){
-      for(var k=0;k<8;k++){
-        var bx=document.getElementById('f6b'+k);
-        bx.setAttribute('class', op.mode==='all' ? 'accbox' : (op.mode==='drop' ? (k===b?'gonebox':'box') : (k===b?'accbox':'box')));
-        bx.style.opacity = (op.mode==='all'||k===b) ? '1' : '.3';
-      }
-      var f6h=document.getElementById('f6h'), f6r=document.getElementById('f6r'), f6note=document.getElementById('f6note');
-      if(op.mode==='all'){ f6q.textContent='SELECT count(*) FROM claims'; f6h.textContent='no key'; f6r.textContent='scan all'; f6note.textContent='reads 8 of 8 · nothing pruned'; }
-      else if(op.mode==='drop'){ f6q.textContent='DROP TABLE claims_p'+b; f6h.textContent='p'+b; f6r.textContent='unlink'; f6note.textContent='drops p'+b+' · metadata only'; }
-      else { f6q.textContent='WHERE project_id = '+id; f6h.textContent='hash → '+b; f6r.textContent='scan p'+b; f6note.textContent='reads 1 of 8 · seven pruned'; }
-    }
-  }
-  // hover inspector on the live figure's partitions (pattern O)
-  for(var hk=0;hk<8;hk++){ (function(k){
-    var bx=document.getElementById('f6b'+k);
-    if(bx){ bx.addEventListener('mouseenter',function(){ document.getElementById('f6note').textContent='p'+k+' · one hash bucket, holds ~1/8 of all projects'; });
-            bx.addEventListener('mouseleave',renderPrune); }
-  })(hk); }
-  Object.keys(OPS).forEach(function(k){
-    var c=document.createElement('button');
-    c.className='chip'+(k==='point'?' on':''); c.type='button'; c.textContent=OPS[k].label;
-    c.addEventListener('click',function(){
-      curOp=k; opChips.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');}); c.classList.add('on');
-      renderPrune();
-    });
-    opChips.appendChild(c);
-  });
-  pidSlider.addEventListener('input',renderPrune);
-  renderPrune();
-
-  /* ---------- CH6: retention scrolly ---------- */
-  (function(){
-    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
-    var boxes={};
-    document.querySelectorAll('#tlFlow .mbox').forEach(function(m){ boxes[m.getAttribute('data-m')]=m; });
-    function reset(){ Object.keys(boxes).forEach(function(k){ boxes[k].classList.remove('hot','gone'); }); }
-    function render(i){
-      reset();
-      if(i>=1) boxes.jul.classList.add('hot');
-      if(i>=2) boxes.def.classList.add('hot');
-      if(i>=3){ boxes.jan.classList.add('gone'); boxes.jul.classList.add('hot'); }
-    }
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){
-        if(e.isIntersecting){
-          steps.forEach(function(s){s.classList.toggle('on',s===e.target);});
-          render(+e.target.getAttribute('data-step'));
-        }
-      });
-    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
-    steps.forEach(function(s){io.observe(s);});
-    render(0);
-  })();
-
-  /* ---------- CH7: DROP vs DELETE ---------- */
-  var DD={
-    del:{head:`DELETE`, cls:`del`, cost:`work ∝ rows removed`,
-      steps:[
-        [`plan`, `Scan the month's rows through the table or an index.`],
-        [`mark`, `Write each matching row as dead, one WAL record apiece.`],
-        [`index`, `Leave every index entry pointing at a dead tuple.`],
-        [`vacuum`, `Wait for vacuum to reclaim space; until then the file stays the same size.`],
-        [`bloat`, `Live table carries dead weight and index bloat in the meantime.`]
-      ]},
-    drop:{head:`DROP PARTITION`, cls:`drp`, cost:`fixed catalog change`,
-      steps:[
-        [`detach`, `Remove the partition from the parent with a quick catalog update.`],
-        [`unlink`, `Drop the child table; its files are unlinked on commit.`],
-        [`done`, `No row scan, no dead tuples, no vacuum, no bloat.`]
-      ]}
-  };
-  var ddChips=document.getElementById('ddChips'), ddView=document.getElementById('ddView'),
-      ddHead=document.getElementById('ddHead'), ddMode='del';
-  function ddRender(){
-    var d=DD[ddMode];
-    ddHead.textContent=d.head;
-    var html='<div class="cmp2"><div class="cc '+d.cls+'"><div class="ch">'+d.head+'</div>';
-    d.steps.forEach(function(s){ html+='<div class="step"><span class="sd">'+s[0]+'</span><span>'+s[1]+'</span></div>'; });
-    html+='<div class="costbar"><i></i></div><div class="costlab">'+d.cost+'</div></div>';
-    var other=ddMode==='del'?DD.drop:DD.del;
-    html+='<div class="cc '+other.cls+'" style="opacity:.5"><div class="ch">'+other.head+'</div>';
-    other.steps.forEach(function(s){ html+='<div class="step"><span class="sd">'+s[0]+'</span><span>'+s[1]+'</span></div>'; });
-    html+='<div class="costbar"><i></i></div><div class="costlab">'+other.cost+'</div></div></div>';
-    ddView.innerHTML=html;
-    ddChips.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c.getAttribute('data-d')===ddMode);});
-    var h8=document.getElementById('f8hl'); if(h8){ if(ddMode==='del'){h8.setAttribute('x',34);h8.setAttribute('width',292);} else {h8.setAttribute('x',404);h8.setAttribute('width',244);} }
-  }
-  [['del','Big DELETE'],['drop','DROP the partition']].forEach(function(pair){
-    var c=document.createElement('button');
-    c.className='chip'; c.type='button'; c.setAttribute('data-d',pair[0]); c.textContent=pair[1];
-    c.addEventListener('click',function(){ddMode=pair[0];ddRender();});
-    ddChips.appendChild(c);
-  });
-  ddRender();
-
-  /* ---------- CH8: gotcha tabs ---------- */
-  var GT=[
-    {k:`primary key`,
-      sym:`ALTER TABLE ... ADD PRIMARY KEY (profile_id);\n<span class="err">ERROR:  unique constraint on partitioned table must\n        include all partitioning columns</span>`,
-      rule:`A unique or primary key on a partitioned table must contain every column of the partition key, so uniqueness can be enforced within each partition.`,
-      fix:`Fold the key in: <code>claims</code> PK is <code>(project_id, profile_id)</code>, and <code>claim_events</code> PK became <code>(id, at)</code>.`},
-    {k:`storage params`,
-      sym:`ALTER TABLE claims SET (autovacuum_vacuum_scale_factor = 0.02);\n<span class="err">ERROR:  cannot specify storage parameters for a\n        partitioned table</span>\n<span class="err">HINT:  Specify storage parameters for its leaf\n       partitions instead.</span>`,
-      rule:`The partitioned parent has no storage, so per-table knobs like autovacuum thresholds cannot live on it. They belong on each leaf.`,
-      fix:`Loop the leaves from <code>pg_inherits</code> and set the param on each: <code>SELECT inhrelid::regclass FROM pg_inherits WHERE inhparent = 'claims'::regclass</code>.`},
-    {k:`DEFAULT partition`,
-      sym:`INSERT INTO claim_events (at, ...) VALUES ('2026-09-14', ...);\n<span class="err">ERROR:  no partition of relation "claim_events"\n        found for row</span>`,
-      rule:`A range-partitioned table rejects any row whose key falls outside every defined partition. Forget to provision next month and inserts start failing.`,
-      fix:`Create a <code>DEFAULT</code> partition. Out-of-range rows land there instead of erroring, keeping writes flowing while you add month partitions ahead of time.`},
-    {k:`FKs & generated cols`,
-      sym:`-- foreign keys FROM a partitioned table,\n-- and stored generated columns on one,\n-- both work on the Postgres we run (16).`,
-      rule:`Support for constraints and generated columns on partitioned tables was filled in gradually across major versions. What works depends on your version.`,
-      fix:`Use them, then validate them, and check the release notes for your major before relying on a case. Several partition restrictions were only lifted in more recent versions.`}
-  ];
-  var gtTabs=document.getElementById('gtTabs'), gtSym=document.getElementById('gtSym'),
-      gtRule=document.getElementById('gtRule'), gtFix=document.getElementById('gtFix'),
-      gtHead=document.getElementById('gtHead');
-  function setGt(i){
-    var g=GT[i];
-    gtSym.innerHTML=g.sym; gtRule.innerHTML=g.rule; gtFix.innerHTML=g.fix; gtHead.textContent=g.k;
-    gtTabs.querySelectorAll('.chip').forEach(function(c,j){c.classList.toggle('on',j===i);});
-  }
-  GT.forEach(function(g,i){
-    var c=document.createElement('button');
-    c.className='chip'; c.type='button'; c.textContent=g.k;
-    c.addEventListener('click',function(){setGt(i);});
-    gtTabs.appendChild(c);
-  });
-  setGt(0);
-
-  /* ---------- CH4: partition-type comparison ---------- */
-  var PTSQL={
-    range:`<span class="k">CREATE TABLE</span> claim_events (<span class="c">...</span>) <span class="k">PARTITION BY RANGE</span> (at);\n<span class="k">CREATE TABLE</span> claim_events_2026_07 <span class="k">PARTITION OF</span> claim_events\n  <span class="k">FOR VALUES FROM</span> (<span class="s">'2026-07-01'</span>) <span class="k">TO</span> (<span class="s">'2026-08-01'</span>);`,
-    list:`<span class="k">CREATE TABLE</span> claims (<span class="c">...</span>) <span class="k">PARTITION BY LIST</span> (project_id);\n<span class="c">-- pin one heavy project to its own droppable partition</span>\n<span class="k">CREATE TABLE</span> claims_acme <span class="k">PARTITION OF</span> claims <span class="k">FOR VALUES IN</span> (42);\n<span class="k">CREATE TABLE</span> claims_rest <span class="k">PARTITION OF</span> claims <span class="k">DEFAULT</span>;`,
-    hash:`<span class="k">CREATE TABLE</span> claims (<span class="c">...</span>) <span class="k">PARTITION BY HASH</span> (project_id);\n<span class="k">CREATE TABLE</span> claims_p0 <span class="k">PARTITION OF</span> claims\n  <span class="k">FOR VALUES WITH</span> (MODULUS 8, REMAINDER 0);   <span class="c">-- p1 .. p7 follow</span>`
-  };
-  var ptable=document.getElementById('ptable'), ptChips=document.getElementById('ptChips'),
-      ptSql=document.getElementById('ptSql'), ptHead=document.getElementById('ptHead');
-  function setPt(t){
-    ptHead.textContent=t;
-    ptable.querySelectorAll('.ptc').forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-col')===t); });
-    ptSql.innerHTML=PTSQL[t];
-    ptChips.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c.getAttribute('data-pt')===t); });
-    var hl=document.getElementById('f4hl'); if(hl){ var pp={range:[8,214],list:[230,212],hash:[452,212]}[t]; if(pp){ hl.setAttribute('x',pp[0]); hl.setAttribute('width',pp[1]); } }
-  }
-  [['range','RANGE'],['list','LIST'],['hash','HASH']].forEach(function(p){
-    var c=document.createElement('button');
-    c.className='chip'; c.type='button'; c.setAttribute('data-pt',p[0]); c.textContent=p[1];
-    c.addEventListener('click',function(){ setPt(p[0]); });
-    ptChips.appendChild(c);
-  });
-  setPt('range');
-
-  /* ---------- interactive figures (click / drive) ---------- */
-  // Fig 1: reveal project 42's scattered rows
-  (function(){ var b=document.getElementById('f1btn'); if(!b) return; var on=false;
-    b.addEventListener('click',function(){ on=!on;
-      for(var i=0;i<5;i++){ var c=document.getElementById('f1a'+i); if(c) c.setAttribute('class',on?'accbox':'box'); }
-      document.getElementById('f1note').textContent=on?'project 42 · 5 rows at 5 offsets, a scan reads all 22 cells to collect them':'click to see where one project lives';
-      document.getElementById('f1bt').textContent=on?'■ hide':'▶ find project 42’s rows';
-    });
-  })();
-  // Fig 2: DELETE then VACUUM
-  (function(){ var b=document.getElementById('f2btn'); if(!b) return; var st=0, dead=[1,3];
-    function r(){
-      ['0','1','2','3','4'].forEach(function(i){ var el=document.getElementById('f2r'+i); el.setAttribute('class','box'); el.style.opacity='1'; });
-      var page=document.getElementById('f2page');
-      if(st===0){ page.setAttribute('width','372'); document.getElementById('f2bt').textContent='▶ run DELETE'; document.getElementById('f2n1').textContent='5 live rows'; document.getElementById('f2n2').textContent='file size: full'; }
-      else if(st===1){ dead.forEach(function(i){document.getElementById('f2r'+i).setAttribute('class','dead');}); page.setAttribute('width','372'); document.getElementById('f2bt').textContent='▶ run VACUUM'; document.getElementById('f2n1').textContent='2 rows marked dead'; document.getElementById('f2n2').textContent='file size: unchanged'; }
-      else { dead.forEach(function(i){ var el=document.getElementById('f2r'+i); el.setAttribute('class','dead'); el.style.opacity='0'; }); page.setAttribute('width','250'); document.getElementById('f2bt').textContent='↺ reset'; document.getElementById('f2n1').textContent='vacuumed: space reclaimed'; document.getElementById('f2n2').textContent='file size: smaller (only now)'; }
-    }
-    b.addEventListener('click',function(){ st=(st+1)%3; r(); }); r();
-  })();
-  // Fig 3: route a key
-  (function(){ var map={f3k42:{p:2,x:409,k:42},f3k7:{p:0,x:105,k:7},f3k99:{p:3,x:561,k:99}};
-    function set(id){ var m=map[id];
-      ['0','1','2','3'].forEach(function(i){document.getElementById('f3p'+i).setAttribute('class',(+i===m.p)?'accbox':'box');});
-      document.getElementById('f3flow').setAttribute('d','M340 88 L'+m.x+' 132');
-      document.getElementById('f3note').textContent='key '+m.k+' hashes to p'+m.p+', every row with this key lands there';
-      Object.keys(map).forEach(function(k){document.querySelector('#'+k+' rect').setAttribute('class',k===id?'accbox':'box');});
-    }
-    Object.keys(map).forEach(function(k){var g=document.getElementById(k); if(g)g.addEventListener('click',function(){set(k);});});
-  })();
-  // Fig 4: click a scheme drives the selector
-  ['range','list','hash'].forEach(function(t){ var z=document.getElementById('f4'+t); if(z) z.addEventListener('click',function(){ setPt(t); }); });
-  // Fig 5: click a project into its bucket
-  (function(){ var map={f5j42:{b:2,k:42},f5j7:{b:7,k:7},f5j88:{b:0,k:88}}, cx=[60,140,220,300,380,460,540,620];
-    function set(id){ var m=map[id];
-      for(var i=0;i<8;i++){document.getElementById('f5b'+i).setAttribute('class',i===m.b?'accbox':'box');}
-      var lbl=document.getElementById('f5in'); lbl.setAttribute('x',cx[m.b]); lbl.textContent=m.k;
-      document.getElementById('f5note').textContent='project '+m.k+' → p'+m.b+' · all its rows in one box';
-      Object.keys(map).forEach(function(k){document.querySelector('#'+k+' rect').setAttribute('class',k===id?'accbox':'box');});
-    }
-    Object.keys(map).forEach(function(k){var g=document.getElementById(k); if(g)g.addEventListener('click',function(){set(k);});});
-  })();
-  // Fig 7: click a month to DROP it
-  document.querySelectorAll('#f7svg .f7mo').forEach(function(g){ var r=g.querySelector('rect'), m=g.getAttribute('data-m'), gone=false;
-    g.addEventListener('click',function(){ gone=!gone; r.setAttribute('class',gone?'gonebox':'box');
-      document.getElementById('f7note').textContent=gone?('DROP '+m+' · file unlinked instantly, no scan, no vacuum'):(m+' · kept');
-    });
-  });
-  // Fig 8: click a side drives the DROP/DELETE toggle
-  (function(){ var d=document.getElementById('f8del'), p=document.getElementById('f8drp');
-    function chip(mode){ var c=document.querySelector('#ddChips .chip[data-d="'+mode+'"]'); if(c) c.click(); }
-    if(d) d.addEventListener('click',function(){chip('del');});
-    if(p) p.addEventListener('click',function(){chip('drop');});
-  })();
-  // Fig 9: toggle project_id in/out of the PK
-  (function(){ var g=document.getElementById('f9pk'); if(!g) return; var inpk=true;
-    function r(){ document.getElementById('f9pkr').setAttribute('class',inpk?'accbox':'gonebox');
-      document.getElementById('f9sub').textContent=inpk?'project_id is in the key':'project_id removed from the key';
-      ['0','1','2'].forEach(function(i){ document.getElementById('f9r'+i).setAttribute('class',inpk?'box':'gonebox');
-        var t=document.getElementById('f9t'+i); t.textContent=inpk?('p'+i+' · unique enforced'):('p'+i+' · ✗ cannot enforce'); t.setAttribute('fill',inpk?'var(--ink-soft)':'var(--risk)'); });
-      document.getElementById('f9note').textContent=inpk?'project_id is in the PK, uniqueness holds within every partition':'without project_id, Postgres cannot prove global uniqueness, this PK is rejected';
-    }
-    g.addEventListener('click',function(){inpk=!inpk;r();});
-  })();
-  // Fig 10: click a key shape to get the type
-  (function(){ var map={f10ordered:['range','ordered data → RANGE, drop the oldest slice whole'],f10categorical:['list','a few values → LIST, isolate one and drop it'],f10shapeless:['hash','no grouping → HASH, even spread and locality']};
-    function set(id){ var t=map[id][0]; ['range','list','hash'].forEach(function(x){document.getElementById('f10'+x).setAttribute('class',x===t?'accbox':'box');}); document.getElementById('f10note').textContent=map[id][1]; }
-    Object.keys(map).forEach(function(k){var g=document.getElementById(k); if(g)g.addEventListener('click',function(){set(k);});});
-  })();
-
-})();
+<script>!function(){"use strict";var e=[].slice.call(document.querySelectorAll("#rail a")),t=[].slice.call(document.querySelectorAll("[data-ch]"));function n(){var n=.4*window.innerHeight,a="1";t.forEach(function(e){e.getBoundingClientRect().top<=n&&(a=e.getAttribute("data-ch"))}),e.forEach(function(e){e.classList.toggle("on",e.getAttribute("data-r")===a)})}window.addEventListener("scroll",n,{passive:!0}),window.addEventListener("resize",n,{passive:!0}),n();var a=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),a.unobserve(e.target))})},{threshold:.1,rootMargin:"0px 0px -6% 0px"});document.querySelectorAll(".reveal").forEach(function(e){a.observe(e)});var o=document.getElementById("partRow");if(o)for(var s=0;s<8;s++){var c=document.createElement("div");c.className="pbox",c.setAttribute("data-p",s),c.innerHTML='<div class="pn">p'+s+'</div><div class="ps">bucket '+s+"</div>",o.appendChild(c)}var i=o?[].slice.call(o.querySelectorAll(".pbox")):[],r={point:{label:"SELECT one project",mode:"one",sql:function(e,t){return'<span class="k">SELECT</span> * <span class="k">FROM</span> claims\n<span class="k">WHERE</span> <span class="hl">project_id = '+e+"</span>;"},why:function(e,t){return"project_id is the hash key and it is in the WHERE clause, so the planner hashes "+e+", lands on p"+t+", and skips the other seven before reading a page."}},antijoin:{label:"Dedup anti-join",mode:"one",sql:function(e,t){return'<span class="k">DELETE FROM</span> claims c\n<span class="k">WHERE</span> <span class="hl">project_id = '+e+'</span>\n  <span class="k">AND EXISTS</span> (<span class="c">/* a newer claim supersedes c */</span>);'},why:function(e,t){return"Every row the anti-join compares belongs to project "+e+", so the whole join runs inside p"+t+". No cross-partition scan, and the deletes stay in one leaf."}},vacuum:{label:"Vacuum this project",mode:"one",sql:function(e,t){return'<span class="k">VACUUM</span> (<span class="k">ANALYZE</span>) claims_p'+t+";"},why:function(e,t){return"Project "+e+"'s dead tuples and index all live in p"+t+", so you vacuum a single leaf. The other seven partitions are never opened."}},scan:{label:"SELECT across all projects",mode:"all",sql:function(e,t){return'<span class="k">SELECT</span> <span class="k">count</span>(*) <span class="k">FROM</span> claims;   <span class="c">-- no project_id filter</span>'},why:function(e,t){return"Nothing restricts the partition key, so nothing can be pruned. All eight partitions are scanned. This is the query shape you keep off the hot path."}},drop:{label:"DROP a hash bucket",mode:"drop",sql:function(e,t){return'<span class="k">DROP TABLE</span> claims_p'+t+";"},why:function(e,t){return"An instant metadata unlink of p"+t+". But a hash bucket holds many projects, so this is coarse bulk removal, not single-project archival. For that, list-partition the project or range-partition by time (chapters 04 and 07)."}}},l=document.getElementById("opChips"),d=document.getElementById("pidSlider"),u=document.getElementById("pidVal"),p=document.getElementById("prHead"),m=document.getElementById("vBadge"),f=document.getElementById("vExtra"),h=document.getElementById("opSql"),E=document.getElementById("vWhy"),g="point";function v(){var e=+d.value,t=function(e){return(e%8+8)%8}(e),n=r[g];u.textContent=e,p.textContent=n.label,i.forEach(function(e,a){e.className="pbox","all"===n.mode?e.classList.add("hit"):"drop"===n.mode?a===t?e.classList.add("gone"):e.classList.add("pruned"):a===t?e.classList.add("hit"):e.classList.add("pruned")}),"all"===n.mode?(m.textContent="touches 8 / 8",m.className="vbadge all",f.textContent="full scan, no pruning"):"drop"===n.mode?(m.textContent="drops p"+t,m.className="vbadge drop",f.textContent="metadata only"):(m.textContent="touches 1 / 8",m.className="vbadge one",f.textContent="pruned to p"+t+" ✓"),h.innerHTML=n.sql(e,t),E.textContent=n.why(e,t);var a=document.getElementById("f6q");if(a){for(var o=0;o<8;o++){var s=document.getElementById("f6b"+o);s.setAttribute("class","all"===n.mode?"accbox":"drop"===n.mode?o===t?"gonebox":"box":o===t?"accbox":"box"),s.style.opacity="all"===n.mode||o===t?"1":".3"}var c=document.getElementById("f6h"),l=document.getElementById("f6r"),v=document.getElementById("f6note");"all"===n.mode?(a.textContent="SELECT count(*) FROM claims",c.textContent="no key",l.textContent="scan all",v.textContent="reads 8 of 8 · nothing pruned"):"drop"===n.mode?(a.textContent="DROP TABLE claims_p"+t,c.textContent="p"+t,l.textContent="unlink",v.textContent="drops p"+t+" · metadata only"):(a.textContent="WHERE project_id = "+e,c.textContent="hash → "+t,l.textContent="scan p"+t,v.textContent="reads 1 of 8 · seven pruned")}}for(var y=0;y<8;y++)(function(e){var t=document.getElementById("f6b"+e);t&&(t.addEventListener("mouseenter",function(){document.getElementById("f6note").textContent="p"+e+" · one hash bucket, holds ~1/8 of all projects"}),t.addEventListener("mouseleave",v))})(y);Object.keys(r).forEach(function(e){var t=document.createElement("button");t.className="chip"+("point"===e?" on":""),t.type="button",t.textContent=r[e].label,t.addEventListener("click",function(){g=e,l.querySelectorAll(".chip").forEach(function(e){e.classList.remove("on")}),t.classList.add("on"),v()}),l.appendChild(t)}),d.addEventListener("input",v),v(),function(){var e=[].slice.call(document.querySelectorAll("#sc1 .stp")),t={};function n(e){Object.keys(t).forEach(function(e){t[e].classList.remove("hot","gone")}),e>=1&&t.jul.classList.add("hot"),e>=2&&t.def.classList.add("hot"),e>=3&&(t.jan.classList.add("gone"),t.jul.classList.add("hot"))}document.querySelectorAll("#tlFlow .mbox").forEach(function(e){t[e.getAttribute("data-m")]=e});var a=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(e.forEach(function(e){e.classList.toggle("on",e===t.target)}),n(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});e.forEach(function(e){a.observe(e)}),n(0)}();var b={del:{head:"DELETE",cls:"del",cost:"work ∝ rows removed",steps:[["plan","Scan the month's rows through the table or an index."],["mark","Write each matching row as dead, one WAL record apiece."],["index","Leave every index entry pointing at a dead tuple."],["vacuum","Wait for vacuum to reclaim space; until then the file stays the same size."],["bloat","Live table carries dead weight and index bloat in the meantime."]]},drop:{head:"DROP PARTITION",cls:"drp",cost:"fixed catalog change",steps:[["detach","Remove the partition from the parent with a quick catalog update."],["unlink","Drop the child table; its files are unlinked on commit."],["done","No row scan, no dead tuples, no vacuum, no bloat."]]}},k=document.getElementById("ddChips"),x=document.getElementById("ddView"),A=document.getElementById("ddHead"),I="del";function B(){var e=b[I];A.textContent=e.head;var t='<div class="cmp2"><div class="cc '+e.cls+'"><div class="ch">'+e.head+"</div>";e.steps.forEach(function(e){t+='<div class="step"><span class="sd">'+e[0]+"</span><span>"+e[1]+"</span></div>"}),t+='<div class="costbar"><i></i></div><div class="costlab">'+e.cost+"</div></div>";var n="del"===I?b.drop:b.del;t+='<div class="cc '+n.cls+'" style="opacity:.5"><div class="ch">'+n.head+"</div>",n.steps.forEach(function(e){t+='<div class="step"><span class="sd">'+e[0]+"</span><span>"+e[1]+"</span></div>"}),t+='<div class="costbar"><i></i></div><div class="costlab">'+n.cost+"</div></div></div>",x.innerHTML=t,k.querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-d")===I)});var a=document.getElementById("f8hl");a&&("del"===I?(a.setAttribute("x",34),a.setAttribute("width",292)):(a.setAttribute("x",404),a.setAttribute("width",244)))}[["del","Big DELETE"],["drop","DROP the partition"]].forEach(function(e){var t=document.createElement("button");t.className="chip",t.type="button",t.setAttribute("data-d",e[0]),t.textContent=e[1],t.addEventListener("click",function(){I=e[0],B()}),k.appendChild(t)}),B();var L=[{k:"primary key",sym:'ALTER TABLE ... ADD PRIMARY KEY (profile_id);\n<span class="err">ERROR:  unique constraint on partitioned table must\n        include all partitioning columns</span>',rule:"A unique or primary key on a partitioned table must contain every column of the partition key, so uniqueness can be enforced within each partition.",fix:"Fold the key in: <code>claims</code> PK is <code>(project_id, profile_id)</code>, and <code>claim_events</code> PK became <code>(id, at)</code>."},{k:"storage params",sym:'ALTER TABLE claims SET (autovacuum_vacuum_scale_factor = 0.02);\n<span class="err">ERROR:  cannot specify storage parameters for a\n        partitioned table</span>\n<span class="err">HINT:  Specify storage parameters for its leaf\n       partitions instead.</span>',rule:"The partitioned parent has no storage, so per-table knobs like autovacuum thresholds cannot live on it. They belong on each leaf.",fix:"Loop the leaves from <code>pg_inherits</code> and set the param on each: <code>SELECT inhrelid::regclass FROM pg_inherits WHERE inhparent = 'claims'::regclass</code>."},{k:"DEFAULT partition",sym:'INSERT INTO claim_events (at, ...) VALUES (\'2026-09-14\', ...);\n<span class="err">ERROR:  no partition of relation "claim_events"\n        found for row</span>',rule:"A range-partitioned table rejects any row whose key falls outside every defined partition. Forget to provision next month and inserts start failing.",fix:"Create a <code>DEFAULT</code> partition. Out-of-range rows land there instead of erroring, keeping writes flowing while you add month partitions ahead of time."},{k:"FKs & generated cols",sym:"-- foreign keys FROM a partitioned table,\n-- and stored generated columns on one,\n-- both work on the Postgres we run (16).",rule:"Support for constraints and generated columns on partitioned tables was filled in gradually across major versions. What works depends on your version.",fix:"Use them, then validate them, and check the release notes for your major before relying on a case. Several partition restrictions were only lifted in more recent versions."}],C=document.getElementById("gtTabs"),T=document.getElementById("gtSym"),w=document.getElementById("gtRule"),R=document.getElementById("gtFix"),j=document.getElementById("gtHead");function S(e){var t=L[e];T.innerHTML=t.sym,w.innerHTML=t.rule,R.innerHTML=t.fix,j.textContent=t.k,C.querySelectorAll(".chip").forEach(function(t,n){t.classList.toggle("on",n===e)})}L.forEach(function(e,t){var n=document.createElement("button");n.className="chip",n.type="button",n.textContent=e.k,n.addEventListener("click",function(){S(t)}),C.appendChild(n)}),S(0);var O,q={range:'<span class="k">CREATE TABLE</span> claim_events (<span class="c">...</span>) <span class="k">PARTITION BY RANGE</span> (at);\n<span class="k">CREATE TABLE</span> claim_events_2026_07 <span class="k">PARTITION OF</span> claim_events\n  <span class="k">FOR VALUES FROM</span> (<span class="s">\'2026-07-01\'</span>) <span class="k">TO</span> (<span class="s">\'2026-08-01\'</span>);',list:'<span class="k">CREATE TABLE</span> claims (<span class="c">...</span>) <span class="k">PARTITION BY LIST</span> (project_id);\n<span class="c">-- pin one heavy project to its own droppable partition</span>\n<span class="k">CREATE TABLE</span> claims_acme <span class="k">PARTITION OF</span> claims <span class="k">FOR VALUES IN</span> (42);\n<span class="k">CREATE TABLE</span> claims_rest <span class="k">PARTITION OF</span> claims <span class="k">DEFAULT</span>;',hash:'<span class="k">CREATE TABLE</span> claims (<span class="c">...</span>) <span class="k">PARTITION BY HASH</span> (project_id);\n<span class="k">CREATE TABLE</span> claims_p0 <span class="k">PARTITION OF</span> claims\n  <span class="k">FOR VALUES WITH</span> (MODULUS 8, REMAINDER 0);   <span class="c">-- p1 .. p7 follow</span>'},_=document.getElementById("ptable"),N=document.getElementById("ptChips"),H=document.getElementById("ptSql"),F=document.getElementById("ptHead");function M(e){F.textContent=e,_.querySelectorAll(".ptc").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-col")===e)}),H.innerHTML=q[e],N.querySelectorAll(".chip").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-pt")===e)});var t=document.getElementById("f4hl");if(t){var n={range:[8,214],list:[230,212],hash:[452,212]}[e];n&&(t.setAttribute("x",n[0]),t.setAttribute("width",n[1]))}}[["range","RANGE"],["list","LIST"],["hash","HASH"]].forEach(function(e){var t=document.createElement("button");t.className="chip",t.type="button",t.setAttribute("data-pt",e[0]),t.textContent=e[1],t.addEventListener("click",function(){M(e[0])}),N.appendChild(t)}),M("range"),function(){var e=document.getElementById("f1btn");if(e){var t=!1;e.addEventListener("click",function(){t=!t;for(var e=0;e<5;e++){var n=document.getElementById("f1a"+e);n&&n.setAttribute("class",t?"accbox":"box")}document.getElementById("f1note").textContent=t?"project 42 · 5 rows at 5 offsets, a scan reads all 22 cells to collect them":"click to see where one project lives",document.getElementById("f1bt").textContent=t?"■ hide":"▶ find project 42’s rows"})}}(),function(){var e=document.getElementById("f2btn");if(e){var t=0,n=[1,3];e.addEventListener("click",function(){t=(t+1)%3,a()}),a()}function a(){["0","1","2","3","4"].forEach(function(e){var t=document.getElementById("f2r"+e);t.setAttribute("class","box"),t.style.opacity="1"});var e=document.getElementById("f2page");0===t?(e.setAttribute("width","372"),document.getElementById("f2bt").textContent="▶ run DELETE",document.getElementById("f2n1").textContent="5 live rows",document.getElementById("f2n2").textContent="file size: full"):1===t?(n.forEach(function(e){document.getElementById("f2r"+e).setAttribute("class","dead")}),e.setAttribute("width","372"),document.getElementById("f2bt").textContent="▶ run VACUUM",document.getElementById("f2n1").textContent="2 rows marked dead",document.getElementById("f2n2").textContent="file size: unchanged"):(n.forEach(function(e){var t=document.getElementById("f2r"+e);t.setAttribute("class","dead"),t.style.opacity="0"}),e.setAttribute("width","250"),document.getElementById("f2bt").textContent="↺ reset",document.getElementById("f2n1").textContent="vacuumed: space reclaimed",document.getElementById("f2n2").textContent="file size: smaller (only now)")}}(),O={f3k42:{p:2,x:409,k:42},f3k7:{p:0,x:105,k:7},f3k99:{p:3,x:561,k:99}},Object.keys(O).forEach(function(e){var t=document.getElementById(e);t&&t.addEventListener("click",function(){var t,n;n=O[t=e],["0","1","2","3"].forEach(function(e){document.getElementById("f3p"+e).setAttribute("class",+e===n.p?"accbox":"box")}),document.getElementById("f3flow").setAttribute("d","M340 88 L"+n.x+" 132"),document.getElementById("f3note").textContent="key "+n.k+" hashes to p"+n.p+", every row with this key lands there",Object.keys(O).forEach(function(e){document.querySelector("#"+e+" rect").setAttribute("class",e===t?"accbox":"box")})})}),["range","list","hash"].forEach(function(e){var t=document.getElementById("f4"+e);t&&t.addEventListener("click",function(){M(e)})}),function(){var e={f5j42:{b:2,k:42},f5j7:{b:7,k:7},f5j88:{b:0,k:88}},t=[60,140,220,300,380,460,540,620];Object.keys(e).forEach(function(n){var a=document.getElementById(n);a&&a.addEventListener("click",function(){!function(n){for(var a=e[n],o=0;o<8;o++)document.getElementById("f5b"+o).setAttribute("class",o===a.b?"accbox":"box");var s=document.getElementById("f5in");s.setAttribute("x",t[a.b]),s.textContent=a.k,document.getElementById("f5note").textContent="project "+a.k+" → p"+a.b+" · all its rows in one box",Object.keys(e).forEach(function(e){document.querySelector("#"+e+" rect").setAttribute("class",e===n?"accbox":"box")})}(n)})})}(),document.querySelectorAll("#f7svg .f7mo").forEach(function(e){var t=e.querySelector("rect"),n=e.getAttribute("data-m"),a=!1;e.addEventListener("click",function(){a=!a,t.setAttribute("class",a?"gonebox":"box"),document.getElementById("f7note").textContent=a?"DROP "+n+" · file unlinked instantly, no scan, no vacuum":n+" · kept"})}),function(){var e=document.getElementById("f8del"),t=document.getElementById("f8drp");function n(e){var t=document.querySelector('#ddChips .chip[data-d="'+e+'"]');t&&t.click()}e&&e.addEventListener("click",function(){n("del")}),t&&t.addEventListener("click",function(){n("drop")})}(),function(){var e=document.getElementById("f9pk");if(e){var t=!0;e.addEventListener("click",function(){t=!t,document.getElementById("f9pkr").setAttribute("class",t?"accbox":"gonebox"),document.getElementById("f9sub").textContent=t?"project_id is in the key":"project_id removed from the key",["0","1","2"].forEach(function(e){document.getElementById("f9r"+e).setAttribute("class",t?"box":"gonebox");var n=document.getElementById("f9t"+e);n.textContent=t?"p"+e+" · unique enforced":"p"+e+" · ✗ cannot enforce",n.setAttribute("fill",t?"var(--v3)":"var(--v13)")}),document.getElementById("f9note").textContent=t?"project_id is in the PK, uniqueness holds within every partition":"without project_id, Postgres cannot prove global uniqueness, this PK is rejected"})}}(),function(){var e={f10ordered:["range","ordered data → RANGE, drop the oldest slice whole"],f10categorical:["list","a few values → LIST, isolate one and drop it"],f10shapeless:["hash","no grouping → HASH, even spread and locality"]};Object.keys(e).forEach(function(t){var n=document.getElementById(t);n&&n.addEventListener("click",function(){var n,a;a=e[n=t][0],["range","list","hash"].forEach(function(e){document.getElementById("f10"+e).setAttribute("class",e===a?"accbox":"box")}),document.getElementById("f10note").textContent=e[n][1]})})}()}();
 </script>
 </body>
 </html>

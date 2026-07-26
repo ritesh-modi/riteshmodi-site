@@ -1,0 +1,400 @@
+<style>
+  /* ============================================================
+     THE OPERATING REGISTERS — the internal GRC data explained
+     (policies · controls · risks · mitigations · findings · mappings)
+     Identity: "ledger / control room" — slate-indigo + rust
+     ============================================================ */
+  :root{
+    --paper:#F1F3F5; --surface:#F9FAFB; --raised:#FFFFFF;
+    --ink:#1A1F27; --ink-soft:#333B47; --slate:#586274; --slate-2:#7B8595;
+    --indigo:#3A5680; --indigo-deep:#2C4468; --rust:#A9573A; --rust-deep:#8A4229;
+    --hair:#DBDFE5; --hair-2:#E8EBEF;
+    --good:#3F7A57; --good-bg:#E4EEE8; --warn:#B5872F; --warn-bg:#F2ECD9; --crit:#A8443B; --crit-bg:#F2E1DE; --mut-bg:#E7EAEF;
+    --shadow:0 1px 2px rgba(26,31,39,.05),0 10px 26px -14px rgba(26,31,39,.18);
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+    --read:44rem;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#101319; --surface:#161A21; --raised:#1B2028; --ink:#E8EBF0; --ink-soft:#C7CDD7; --slate:#96A0B0; --slate-2:#77828F;
+      --indigo:#7C9AD0; --indigo-deep:#95B0DE; --rust:#D08560; --rust-deep:#E0997A;
+      --hair:#2A303A; --hair-2:#222831;
+      --good:#6FB389; --good-bg:#1D2C23; --warn:#D6A954; --warn-bg:#2C2716; --crit:#D57C70; --crit-bg:#2E1D1A; --mut-bg:#232A34;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{--paper:#F1F3F5;--surface:#F9FAFB;--raised:#FFFFFF;--ink:#1A1F27;--ink-soft:#333B47;--slate:#586274;--slate-2:#7B8595;--indigo:#3A5680;--indigo-deep:#2C4468;--rust:#A9573A;--rust-deep:#8A4229;--hair:#DBDFE5;--hair-2:#E8EBEF;--good:#3F7A57;--good-bg:#E4EEE8;--warn:#B5872F;--warn-bg:#F2ECD9;--crit:#A8443B;--crit-bg:#F2E1DE;--mut-bg:#E7EAEF;--shadow:0 1px 2px rgba(26,31,39,.05),0 10px 26px -14px rgba(26,31,39,.18);}
+  :root[data-theme="dark"]{--paper:#101319;--surface:#161A21;--raised:#1B2028;--ink:#E8EBF0;--ink-soft:#C7CDD7;--slate:#96A0B0;--slate-2:#77828F;--indigo:#7C9AD0;--indigo-deep:#95B0DE;--rust:#D08560;--rust-deep:#E0997A;--hair:#2A303A;--hair-2:#222831;--good:#6FB389;--good-bg:#1D2C23;--warn:#D6A954;--warn-bg:#2C2716;--crit:#D57C70;--crit-bg:#2E1D1A;--mut-bg:#232A34;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);}
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  ::selection{background:var(--indigo);color:#fff;}
+  a{color:var(--indigo-deep);text-underline-offset:2px;}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--indigo);outline-offset:2px;border-radius:2px;}
+  .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.6rem 1rem;z-index:100;}
+  .skip:focus{left:.5rem;top:.5rem;}
+
+  .wrap{max-width:56rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem) 6rem;}
+  .reading{max-width:var(--read);}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;text-wrap:balance;color:var(--ink);}
+  h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;margin:.1rem 0;}
+  h3{font-size:1.12rem;margin:1.5rem 0 .3rem;}
+  p{margin:.65rem 0;color:var(--ink-soft);}
+  strong{color:var(--ink);font-weight:650;}
+  ul{color:var(--ink-soft);padding-left:1.15rem;margin:.4rem 0;} li{margin:.25rem 0;} li::marker{color:var(--indigo);}
+  code{font-family:var(--mono);font-size:.85em;background:var(--hair-2);padding:.08em .38em;border-radius:4px;}
+
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--indigo-deep);display:flex;align-items:center;gap:.6rem;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair);}
+  .toggle{position:fixed;top:1rem;right:1rem;z-index:60;background:var(--raised);border:1px solid var(--hair);color:var(--ink-soft);width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+  .toggle:hover{color:var(--indigo-deep);border-color:var(--indigo);}
+
+  .cover{padding:3.2rem 0 1rem;}
+  .cover .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--indigo-deep);}
+  .cover h1{font-size:clamp(2.2rem,5.5vw,3.6rem);line-height:1.03;letter-spacing:-.02em;margin:.9rem 0 .5rem;max-width:17ch;}
+  .cover .lede{font-size:1.14rem;color:var(--slate);max-width:50ch;}
+
+  /* chain overview */
+  .chain{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:1.8rem 0;}
+  .chain .node{flex:1;min-width:8rem;background:var(--raised);border:1px solid var(--hair);border-radius:10px;padding:.7rem .8rem;box-shadow:var(--shadow);text-decoration:none;}
+  .chain .node .n{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;color:var(--indigo-deep);text-transform:uppercase;}
+  .chain .node b{display:block;color:var(--ink);font-size:.92rem;margin:.15rem 0 .1rem;}
+  .chain .node span{font-size:.72rem;color:var(--slate);}
+  .chain .node:hover{border-color:var(--indigo);}
+
+  .mininav{position:sticky;top:0;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);padding:.55rem 0;margin-top:1rem;z-index:40;display:flex;gap:.2rem;flex-wrap:wrap;font-family:var(--mono);font-size:.66rem;}
+  .mininav a{text-decoration:none;color:var(--slate);padding:.2rem .5rem;border-radius:5px;}
+  .mininav a:hover{background:var(--hair-2);color:var(--ink);}
+
+  .reg{margin:2.6rem 0;padding-top:1.5rem;border-top:2px solid var(--ink);scroll-margin-top:1rem;}
+  .reg-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;}
+  .reg-num{font-family:var(--serif);font-size:2.2rem;color:var(--indigo);line-height:1;font-weight:600;}
+  .reg-head .k{font-family:var(--mono);font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--slate-2);}
+  .oneline{font-family:var(--serif);font-style:italic;font-size:1.1rem;color:var(--ink);margin:.8rem 0 .2rem;}
+
+  /* pills */
+  .pill{font-family:var(--mono);font-size:.66rem;padding:.1em .5em;border-radius:20px;border:1px solid transparent;white-space:nowrap;display:inline-block;}
+  .pill.good{background:var(--good-bg);color:var(--good);border-color:color-mix(in srgb,var(--good) 30%,transparent);}
+  .pill.warn{background:var(--warn-bg);color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent);}
+  .pill.crit{background:var(--crit-bg);color:var(--crit);border-color:color-mix(in srgb,var(--crit) 35%,transparent);}
+  .pill.mut{background:var(--mut-bg);color:var(--slate);border-color:var(--hair);}
+
+  /* policy cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.7rem;margin:1.2rem 0;}
+  .card{background:var(--raised);border:1px solid var(--hair);border-radius:10px;padding:.85rem .95rem;box-shadow:var(--shadow);position:relative;}
+  .card.flag{border-color:color-mix(in srgb,var(--rust) 45%,transparent);}
+  .card .cn{font-family:var(--mono);font-size:.58rem;color:var(--slate-2);}
+  .card h4{font-size:.98rem;margin:.15rem 0 .3rem;}
+  .card p{font-size:.8rem;margin:.2rem 0;color:var(--slate);}
+  .card .meta{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem;align-items:center;}
+  .card .own{font-family:var(--mono);font-size:.64rem;color:var(--indigo-deep);}
+
+  /* control catalog groups */
+  .cgroup{border:1px solid var(--hair);border-radius:10px;overflow:hidden;margin:.8rem 0;background:var(--raised);}
+  .cgroup>summary{list-style:none;cursor:pointer;padding:.7rem .95rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--surface);}
+  .cgroup>summary::-webkit-details-marker{display:none;}
+  .cgroup>summary .t{font-weight:650;color:var(--ink);font-size:.94rem;}
+  .cgroup>summary .t small{font-family:var(--mono);font-weight:400;color:var(--slate-2);font-size:.66rem;margin-left:.4rem;}
+  .cgroup>summary .chev{color:var(--indigo);font-size:.8rem;}
+  .cgroup[open]>summary .chev{transform:rotate(90deg);}
+  .crow{display:grid;grid-template-columns:1.6rem 1fr auto;gap:.6rem;padding:.55rem .95rem;border-top:1px solid var(--hair-2);align-items:baseline;font-size:.85rem;}
+  .crow .id{font-family:var(--mono);font-size:.66rem;color:var(--slate-2);}
+  .crow .nm b{color:var(--ink);} .crow .nm span{color:var(--slate);font-size:.8rem;}
+  .crow .st{display:flex;gap:.3rem;flex-wrap:wrap;justify-content:flex-end;}
+  .flagbar{background:var(--crit-bg);color:var(--crit);font-family:var(--mono);font-size:.66rem;padding:.4rem .95rem;border-top:1px solid var(--hair-2);}
+
+  /* tables */
+  .tbl-wrap{overflow-x:auto;margin:1.1rem 0;border:1px solid var(--hair);border-radius:10px;}
+  table{border-collapse:collapse;width:100%;font-size:.8rem;}
+  thead th{background:var(--surface);text-align:left;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);padding:.55rem .65rem;border-bottom:1px solid var(--hair);}
+  tbody td{padding:.5rem .65rem;border-bottom:1px solid var(--hair-2);color:var(--ink-soft);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td b{color:var(--ink);}
+  table.num td{font-variant-numeric:tabular-nums;}
+  tr.ai td{background:color-mix(in srgb,var(--rust) 7%,transparent);}
+
+  .why{border-left:3px solid var(--rust);background:color-mix(in srgb,var(--rust) 6%,transparent);border-radius:0 9px 9px 0;padding:.7rem 1rem;margin:1rem 0;}
+  .why .h{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--rust-deep);margin-bottom:.25rem;}
+  .why p{margin:.1rem 0;font-size:.9rem;}
+
+  .keynote{border:1px dashed var(--hair);border-radius:10px;padding:.9rem 1.1rem;margin:1.4rem 0;background:var(--surface);}
+  .keynote .h{font-family:var(--mono);font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--indigo-deep);margin-bottom:.3rem;}
+  .foot{margin-top:3.4rem;padding-top:1.3rem;border-top:2px solid var(--ink);font-size:.8rem;color:var(--slate);}
+  hr.rule{border:none;border-top:1px solid var(--hair);margin:2rem 0;}
+</style>
+
+<a href="#r1" class="skip">Skip to the registers</a>
+<button class="toggle" id="themeBtn" aria-label="Toggle light and dark theme" title="Toggle theme">◐</button>
+
+<div class="wrap">
+  <header class="cover">
+    <div class="kicker">The Operating Registers · Companion to the Atlas</div>
+    <h1>The GRC data an organization keeps on itself</h1>
+    <p class="lede">The Atlas covered the external <em>laws</em>. This guide covers the six internal records a firm uses to actually govern: its policies, controls, risks, mitigations, audit findings, and compliance mappings — with every real entry from the database explained.</p>
+  </header>
+
+  <section class="reading">
+    <p class="eyebrow">The one idea to hold onto</p>
+    <h2>These six records form a single chain of accountability</h2>
+    <p>The external frameworks tell you what's required. Everything below is how the organization <em>responds</em> — and each record links to the next, so you can trace any single safeguard from the rule that demands it all the way to the proof it works. Read the chain left to right:</p>
+  </section>
+
+  <div class="chain">
+    <a class="node" href="#r1"><div class="n">01</div><b>Policies</b><span>What we require of ourselves</span></a>
+    <a class="node" href="#r2"><div class="n">02</div><b>Controls</b><span>The mechanisms that deliver it</span></a>
+    <a class="node" href="#r3"><div class="n">03</div><b>Risks</b><span>What we're worried about</span></a>
+    <a class="node" href="#r4"><div class="n">04</div><b>Mitigations</b><span>Our dated plan to reduce them</span></a>
+    <a class="node" href="#r5"><div class="n">05</div><b>Audit findings</b><span>Independent proof it works</span></a>
+    <a class="node" href="#r6"><div class="n">06</div><b>Compliance mappings</b><span>Evidence tied to each rule</span></a>
+  </div>
+
+  <nav class="mininav" aria-label="Jump to a register">
+    <a href="#r1">1 · Policies (12)</a><a href="#r2">2 · Controls (35)</a><a href="#r3">3 · Risks (22)</a><a href="#r4">4 · Mitigations (28)</a><a href="#r5">5 · Findings (18)</a><a href="#r6">6 · Mappings (48)</a>
+  </nav>
+
+  <!-- ===================== 1 POLICIES ===================== -->
+  <section class="reg" id="r1">
+    <div class="reg-head"><span class="reg-num">1</span><div><div class="k">The register of intent · 12 entries</div><h2>Policies</h2></div></div>
+    <p class="oneline reading">The rules the organization writes for itself — each owned by a named executive.</p>
+    <p class="reading">A policy sets a requirement but doesn't enforce it; that's the controls' job. What to read on each: its <b>owner</b> (who's accountable) and its <b>status</b> — only an <span class="pill good">Active</span> policy has real authority. Watch for the two that aren't active.</p>
+    <div class="cards">
+      <div class="card"><div class="cn">P01 · Data Privacy</div><h4>Data Protection &amp; Privacy</h4><p>How personal data is collected, processed, and stored.</p><div class="meta"><span class="own">Chief Privacy Officer</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P02 · Security</div><h4>Information Security</h4><p>The master framework for protecting information assets.</p><div class="meta"><span class="own">CISO</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P03 · Security</div><h4>Access Control</h4><p>Who can reach which systems — least privilege.</p><div class="meta"><span class="own">CISO</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P04 · Security</div><h4>Incident Response</h4><p>Detecting, responding to, and recovering from incidents.</p><div class="meta"><span class="own">CISO</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P05 · Vendor</div><h4>Third-Party Risk Management</h4><p>Assessing and managing risk from outside vendors.</p><div class="meta"><span class="own">VP Procurement</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P06 · Operations</div><h4>Business Continuity</h4><p>Keeping critical functions running through a disaster.</p><div class="meta"><span class="own">COO</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P07 · Data Mgmt</div><h4>Data Retention &amp; Disposal</h4><p>How long data is kept and how it's destroyed.</p><div class="meta"><span class="own">Chief Data Officer</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P08 · HR</div><h4>Acceptable Use</h4><p>How employees may use company IT resources.</p><div class="meta"><span class="own">VP of HR</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P09 · Operations</div><h4>Change Management</h4><p>How changes to IT systems are approved and made.</p><div class="meta"><span class="own">VP of Engineering</span><span class="pill good">Active</span></div></div>
+      <div class="card"><div class="cn">P10 · Finance</div><h4>Financial Reporting Controls</h4><p>Internal controls ensuring accurate financial reports (SOX).</p><div class="meta"><span class="own">CFO</span><span class="pill good">Active</span></div></div>
+      <div class="card flag"><div class="cn">P11 · Security</div><h4>Cloud Security</h4><p>Security requirements for cloud infrastructure.</p><div class="meta"><span class="own">CISO</span><span class="pill warn">Draft</span></div></div>
+      <div class="card flag"><div class="cn">P12 · Technology</div><h4>AI Governance</h4><p>Ethical development &amp; deployment of AI — parent of all 12 AI controls.</p><div class="meta"><span class="own">CTO</span><span class="pill warn">Under Review</span></div></div>
+    </div>
+    <div class="why"><div class="h">Why this register matters</div><p>Ten policies are <b>Active</b>; two aren't. The <b>AI Governance Policy</b> (P12) is only <em>Under Review</em> — yet it's the parent of every AI control. An un-ratified policy can't compel a control, so this single un-approved status is the root cause of the AI failures you'll see in every register below. <b>Teaching point:</b> governance maturity is visible in the <em>status</em> column before you read anything else.</p></div>
+  </section>
+
+  <!-- ===================== 2 CONTROLS ===================== -->
+  <section class="reg" id="r2">
+    <div class="reg-head"><span class="reg-num">2</span><div><div class="k">The register of mechanisms · 35 entries</div><h2>Controls</h2></div></div>
+    <p class="oneline reading">The actual safeguards — grouped under the policy that authorizes each.</p>
+    <p class="reading">Each control has a <b>type</b> (Preventive / Detective / Corrective) and <em>two</em> health checks: does it <b>exist</b> (implementation) and does it <b>work</b> (effectiveness)? Expand each policy to see its controls. The contrast between the mature groups and the AI group is the whole story.</p>
+
+    <details class="cgroup" open><summary><span class="t">Data Protection &amp; Privacy <small>controls 1–5 · policy P01</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C1</span><span class="nm"><b>Data Classification</b> <span>· label data by sensitivity</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C2</span><span class="nm"><b>Data Encryption at Rest</b> <span>· AES-256</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C3</span><span class="nm"><b>Data Encryption in Transit</b> <span>· TLS 1.2+</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C4</span><span class="nm"><b>Consent Management</b> <span>· track consent for processing</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially Effective</span></span></div>
+      <div class="crow"><span class="id">C5</span><span class="nm"><b>DSAR Process</b> <span>· handle data-subject requests in 30 days</span></span><span class="st"><span class="pill mut">Corrective</span><span class="pill good">Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Access Control <small>controls 6–9 · policy P03</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C6</span><span class="nm"><b>Multi-Factor Authentication</b> <span>· MFA on production</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C7</span><span class="nm"><b>Role-Based Access Control</b> <span>· least privilege</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially Effective</span></span></div>
+      <div class="crow"><span class="id">C8</span><span class="nm"><b>Quarterly Access Reviews</b> <span>· managers re-certify access</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C9</span><span class="nm"><b>Privileged Access Management</b> <span>· PAM + session recording</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Incident Response <small>controls 10–12 · policy P04</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C10</span><span class="nm"><b>Security Event Monitoring</b> <span>· 24/7 SIEM</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C11</span><span class="nm"><b>Incident Response Playbooks</b> <span>· top-10 incident types</span></span><span class="st"><span class="pill mut">Corrective</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C12</span><span class="nm"><b>Post-Mortem Process</b> <span>· within 5 days of closure</span></span><span class="st"><span class="pill mut">Corrective</span><span class="pill warn">Partially Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Third-Party Risk <small>controls 13–15 · policy P05</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C13</span><span class="nm"><b>Vendor Security Assessment</b> <span>· pre-onboarding review</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C14</span><span class="nm"><b>Vendor Continuous Monitoring</b> <span>· ongoing scanning</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill mut">Not Assessed · Planned</span></span></div>
+      <div class="crow"><span class="id">C15</span><span class="nm"><b>Contractual Security Requirements</b> <span>· clauses in contracts</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Business Continuity <small>controls 16–18 · policy P06</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C16</span><span class="nm"><b>Disaster Recovery Plan</b> <span>· RPO&lt;4h, RTO&lt;8h</span></span><span class="st"><span class="pill mut">Corrective</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C17</span><span class="nm"><b>Annual DR Testing</b> <span>· full failover test</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill warn">Partially Effective</span></span></div>
+      <div class="crow"><span class="id">C18</span><span class="nm"><b>Backup Verification</b> <span>· weekly restore checks</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill good">Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Change Management <small>controls 19–20 · policy P09</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C19</span><span class="nm"><b>Change Advisory Board</b> <span>· reviews significant changes</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C20</span><span class="nm"><b>Automated Deployment Pipeline</b> <span>· CI/CD with test gates</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+    </details>
+
+    <details class="cgroup"><summary><span class="t">Financial Reporting <small>controls 21–23 · policy P10</small></span><span class="chev">▸</span></summary>
+      <div class="crow"><span class="id">C21</span><span class="nm"><b>Segregation of Duties</b> <span>· no single-person transactions</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C22</span><span class="nm"><b>Financial Close Reconciliation</b> <span>· within 5 days</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill good">Effective</span></span></div>
+      <div class="crow"><span class="id">C23</span><span class="nm"><b>Journal Entry Approval</b> <span>· manager sign-off</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill good">Effective</span></span></div>
+    </details>
+
+    <details class="cgroup" open><summary><span class="t">AI Governance <small>controls 24–35 · policy P12 — the immature group</small></span><span class="chev">▸</span></summary>
+      <div class="flagbar">Not one of these 12 is Implemented &amp; Effective. This is the entire risk story in one group.</div>
+      <div class="crow ai"><span class="id">C24</span><span class="nm"><b>AI Model Risk Assessment</b> <span>· classify risk tier before deploy</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Planned</span></span></div>
+      <div class="crow"><span class="id">C25</span><span class="nm"><b>AI Bias Testing</b> <span>· fairness testing</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill warn">Planned</span></span></div>
+      <div class="crow"><span class="id">C26</span><span class="nm"><b>AI System Registration</b> <span>· EU database (Art. 71)</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill crit">Not Implemented</span></span></div>
+      <div class="crow"><span class="id">C27</span><span class="nm"><b>AI Transparency &amp; Explainability</b> <span>· explain decisions</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially</span></span></div>
+      <div class="crow"><span class="id">C28</span><span class="nm"><b>AI Human Oversight Mechanism</b> <span>· override / interrupt (Art. 14)</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially</span></span></div>
+      <div class="crow"><span class="id">C29</span><span class="nm"><b>AI Data Governance</b> <span>· training-data quality (Art. 10)</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Planned</span></span></div>
+      <div class="crow"><span class="id">C30</span><span class="nm"><b>AI Conformity Assessment</b> <span>· pre-market verification (Art. 43)</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill crit">Not Implemented</span></span></div>
+      <div class="crow"><span class="id">C31</span><span class="nm"><b>AI Incident Reporting</b> <span>· report within 15 days (Art. 73)</span></span><span class="st"><span class="pill mut">Corrective</span><span class="pill crit">Not Implemented</span></span></div>
+      <div class="crow"><span class="id">C32</span><span class="nm"><b>AI Technical Documentation</b> <span>· Annex IV dossier</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill warn">Partially</span></span></div>
+      <div class="crow"><span class="id">C33</span><span class="nm"><b>AI Fundamental Rights Impact Assessment</b> <span>· FRIA (Art. 27)</span></span><span class="st"><span class="pill mut">Preventive</span><span class="pill crit">Not Implemented</span></span></div>
+      <div class="crow"><span class="id">C34</span><span class="nm"><b>AI Post-Market Monitoring</b> <span>· watch drift &amp; performance</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill warn">Planned</span></span></div>
+      <div class="crow"><span class="id">C35</span><span class="nm"><b>AI Lifecycle Compliance Tracking</b> <span>· cradle-to-grave</span></span><span class="st"><span class="pill mut">Detective</span><span class="pill crit">Not Implemented</span></span></div>
+    </details>
+
+    <div class="why"><div class="h">Why this register matters</div><p>Read the pattern, not the rows: the seven traditional groups are dominated by <span class="pill good">Effective</span>; the AI group has <b>zero</b>. Same company, same skill — simply never turned on AI. Also note P02 (Information Security), P07, P08, and P11 have <em>no controls attached at all</em> — a policy with no controls is unenforced intent, a coverage gap worth teaching.</p></div>
+  </section>
+
+  <!-- ===================== 3 RISKS ===================== -->
+  <section class="reg" id="r3">
+    <div class="reg-head"><span class="reg-num">3</span><div><div class="k">The register of worry · 22 entries</div><h2>Risks</h2></div></div>
+    <p class="oneline reading">What could go wrong — each scored Likelihood × Impact so it can be ranked.</p>
+    <p class="reading">Score bands: <span class="pill mut">Low 1–5</span> <span class="pill mut">Medium 6–11</span> <span class="pill warn">High 12–19</span> <span class="pill crit">Critical 20–25</span>. AI-related rows are tinted. Notice how they crowd the top.</p>
+    <div class="tbl-wrap">
+      <table class="num">
+        <thead><tr><th>#</th><th>Risk</th><th>Category</th><th>L×I</th><th>Score</th><th>Status</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr class="ai"><td>16</td><td><b>AI Act non-compliance — high-risk system</b> · deploying without conformity assessment</td><td>AI Regulatory</td><td>4×5</td><td><span class="pill crit">20 Critical</span></td><td>Open</td><td>CTO</td></tr>
+          <tr class="ai"><td>18</td><td><b>AI training-data bias &amp; quality</b> · discriminatory outcomes</td><td>AI Governance</td><td>4×4</td><td><span class="pill warn">16 High</span></td><td>Open</td><td>ML Eng</td></tr>
+          <tr class="ai"><td>20</td><td><b>AI lifecycle compliance gap</b> · no cradle-to-grave tracking</td><td>AI Regulatory</td><td>4×4</td><td><span class="pill warn">16 High</span></td><td>Open</td><td>AI Ethics Board</td></tr>
+          <tr><td>7</td><td>Phishing campaign targeting executives</td><td>Cybersecurity</td><td>4×4</td><td><span class="pill warn">16 High</span></td><td>Open</td><td>CISO</td></tr>
+          <tr class="ai"><td>11</td><td><b>AI model bias in lending decisions</b> · harms protected groups</td><td>Technology</td><td>3×5</td><td><span class="pill warn">15 High</span></td><td>Open</td><td>CTO</td></tr>
+          <tr class="ai"><td>17</td><td><b>AI lack of human oversight</b> · consequential decisions unchecked</td><td>AI Governance</td><td>3×5</td><td><span class="pill warn">15 High</span></td><td>Open</td><td>AI Ethics Board</td></tr>
+          <tr class="ai"><td>22</td><td><b>AI fundamental-rights violation</b> · no impact assessment</td><td>AI Governance</td><td>3×5</td><td><span class="pill warn">15 High</span></td><td>Open</td><td>CPO</td></tr>
+          <tr><td>1</td><td>Data breach via third-party vendor</td><td>Third-Party</td><td>3×5</td><td><span class="pill warn">15 High</span></td><td>Open</td><td>CISO</td></tr>
+          <tr><td>2</td><td>Ransomware attack</td><td>Cybersecurity</td><td>3×5</td><td><span class="pill warn">15 High</span></td><td>Mitigated</td><td>CISO</td></tr>
+          <tr class="ai"><td>19</td><td><b>AI transparency failure</b> · can't explain decisions</td><td>AI Governance</td><td>3×4</td><td><span class="pill warn">12 High</span></td><td>Open</td><td>ML Eng</td></tr>
+          <tr class="ai"><td>21</td><td><b>Unregistered high-risk AI system</b> · not in EU database</td><td>AI Regulatory</td><td>3×4</td><td><span class="pill warn">12 High</span></td><td>Open</td><td>AI Ethics Board</td></tr>
+          <tr><td>5</td><td>Insider threat — data exfiltration</td><td>Cybersecurity</td><td>3×4</td><td><span class="pill warn">12 High</span></td><td>Open</td><td>CISO</td></tr>
+          <tr><td>12</td><td>Supply-chain software vulnerability</td><td>Cybersecurity</td><td>4×3</td><td><span class="pill warn">12 High</span></td><td>Open</td><td>VP Eng</td></tr>
+          <tr><td>15</td><td>Third-party API data leakage</td><td>Third-Party</td><td>3×4</td><td><span class="pill warn">12 High</span></td><td>Open</td><td>VP Eng</td></tr>
+          <tr><td>3</td><td>GDPR non-compliance fine</td><td>Regulatory</td><td>2×5</td><td><span class="pill mut">10 Med</span></td><td>Open</td><td>CPO</td></tr>
+          <tr><td>9</td><td>Privileged access abuse</td><td>Cybersecurity</td><td>2×5</td><td><span class="pill mut">10 Med</span></td><td>Open</td><td>CISO</td></tr>
+          <tr><td>10</td><td>Business continuity plan failure</td><td>Operations</td><td>2×5</td><td><span class="pill mut">10 Med</span></td><td>Open</td><td>COO</td></tr>
+          <tr><td>8</td><td>Regulatory change impact</td><td>Regulatory</td><td>3×3</td><td><span class="pill mut">9 Med</span></td><td>Accepted</td><td>CPO</td></tr>
+          <tr><td>14</td><td>Incomplete audit trail</td><td>Compliance</td><td>3×3</td><td><span class="pill mut">9 Med</span></td><td>Open</td><td>CISO</td></tr>
+          <tr><td>4</td><td>SOX material weakness</td><td>Financial</td><td>2×4</td><td><span class="pill mut">8 Med</span></td><td>Open</td><td>CFO</td></tr>
+          <tr><td>6</td><td>Cloud service provider outage</td><td>Operations</td><td>2×4</td><td><span class="pill mut">8 Med</span></td><td>Mitigated</td><td>CTO</td></tr>
+          <tr><td>13</td><td>Employee data privacy violation</td><td>Data Privacy</td><td>2×3</td><td><span class="pill mut">6 Med</span></td><td>Mitigated</td><td>VP HR</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why"><div class="h">Why this register matters</div><p>Eight AI risks; every one lands <b>High</b> or <b>Critical</b>, and the single <span class="pill crit">Critical</span> (#16, score 20) is an AI risk. The <b>status</b> column tells the treatment story: most are still <em>Open</em>, only a few <em>Mitigated</em>, and #8 is consciously <em>Accepted</em> — a deliberate governance decision, not neglect. <b>Teaching point:</b> the score decides <em>priority</em>; the status decides <em>what you did about it</em>.</p></div>
+  </section>
+
+  <!-- ===================== 4 MITIGATIONS ===================== -->
+  <section class="reg" id="r4">
+    <div class="reg-head"><span class="reg-num">4</span><div><div class="k">The register of plans · 28 entries</div><h2>Risk Mitigations</h2></div></div>
+    <p class="oneline reading">The dated actions that reduce each risk — usually by building a control.</p>
+    <p class="reading">A mitigation links a <b>risk</b> to an <b>action or control</b>, picks a <b>strategy</b> (Avoid / Mitigate / Transfer / Accept), and carries a <b>due date</b> and <b>status</b>. The gap between “planned” and “completed” is where programs live or die. A few representative examples:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Risk</th><th>Mitigation action</th><th>Via control</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>R1 · Vendor breach</td><td>Vendor security assessment program</td><td>C13</td><td><span class="pill good">Completed</span></td></tr>
+          <tr><td>R2 · Ransomware</td><td>Immutable backups + DR plan</td><td>C16</td><td><span class="pill good">Completed</span></td></tr>
+          <tr><td>R5 · Insider threat</td><td>MFA + user-behavior analytics</td><td>C6</td><td><span class="pill warn">In Progress</span></td></tr>
+          <tr class="ai"><td>R16 · AI Act non-compliance</td><td>Conformity-assessment procedures for high-risk AI</td><td>C30</td><td><span class="pill warn">Planned</span></td></tr>
+          <tr class="ai"><td>R16 · AI Act non-compliance</td><td>Register AI systems in EU database</td><td>C26</td><td><span class="pill warn">Planned</span></td></tr>
+          <tr class="ai"><td>R17 · No human oversight</td><td>Deploy human-oversight mechanisms</td><td>C28</td><td><span class="pill warn">In Progress</span></td></tr>
+          <tr class="ai"><td>R18 · Training-data bias</td><td>AI data-governance framework + bias testing</td><td>C29 · C25</td><td><span class="pill warn">Planned</span></td></tr>
+          <tr class="ai"><td>R19 · Transparency failure</td><td>Explainability layer + Annex IV docs</td><td>C27 · C32</td><td><span class="pill warn">In Progress</span></td></tr>
+          <tr class="ai"><td>R22 · Fundamental rights</td><td>Conduct FRIA for all AI systems</td><td>C33</td><td><span class="pill warn">Planned</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why"><div class="h">Why this register matters</div><p>Of the 28 mitigations, the ones tied to <em>traditional</em> risks are frequently <span class="pill good">Completed</span>; every mitigation tied to an <em>AI</em> risk is <span class="pill warn">Planned</span> or <span class="pill warn">In Progress</span> — <b>never Completed</b>. The intent is documented; the delivery is entirely outstanding. That plan-vs-done gap is the earliest, clearest signal of a program that's behind.</p></div>
+  </section>
+
+  <!-- ===================== 5 AUDIT FINDINGS ===================== -->
+  <section class="reg" id="r5">
+    <div class="reg-head"><span class="reg-num">5</span><div><div class="k">The register of proof · 18 entries</div><h2>Audit Findings</h2></div></div>
+    <p class="oneline reading">Gaps an independent examiner found in a specific control — each owned and dated.</p>
+    <p class="reading">Every finding points at a <b>control</b> and carries a <b>severity</b>, a <b>remediation owner</b>, and a <b>due date</b>. Grouped by severity — the Criticals are the worklist that comes first.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Sev.</th><th>Finding</th><th>Control</th><th>Owner</th><th>Due</th></tr></thead>
+        <tbody>
+          <tr class="ai"><td><span class="pill crit">Critical</span></td><td><b>No conformity assessment completed for any AI system</b> despite AI Act enforcement</td><td>C30</td><td>AI Ethics Board</td><td>2025-09-01</td></tr>
+          <tr class="ai"><td><span class="pill crit">Critical</span></td><td><b>No AI system registration process</b> for EU AI Act compliance</td><td>C26</td><td>AI Ethics Board</td><td>2025-06-01</td></tr>
+          <tr class="ai"><td><span class="pill crit">Critical</span></td><td><b>Human override not available</b> for AI credit-scoring</td><td>C28</td><td>AI Ethics Board</td><td>2025-05-01</td></tr>
+          <tr><td><span class="pill crit">Critical</span></td><td>PAM not covering 3 legacy DB admin accounts</td><td>C9</td><td>Identity Team</td><td>2025-01-31</td></tr>
+          <tr><td><span class="pill crit">Critical</span></td><td>Same person initiating &amp; approving journal entries</td><td>C21</td><td>Finance Ops</td><td>2025-01-31</td></tr>
+          <tr class="ai"><td><span class="pill warn">High</span></td><td>No AI model risk-assessment framework (3 models live)</td><td>C24</td><td>AI Ethics Board</td><td>2025-06-01</td></tr>
+          <tr class="ai"><td><span class="pill warn">High</span></td><td>Chatbot gives no explanation for escalation</td><td>C27</td><td>ML Engineering</td><td>2025-06-01</td></tr>
+          <tr class="ai"><td><span class="pill warn">High</span></td><td>Fraud-AI training data not assessed for bias</td><td>C29</td><td>Data Governance</td><td>2025-07-01</td></tr>
+          <tr class="ai"><td><span class="pill warn">High</span></td><td>No fundamental-rights assessment for AI hiring tool</td><td>C33</td><td>AI Ethics Board</td><td>2025-07-01</td></tr>
+          <tr class="ai"><td><span class="pill warn">High</span></td><td>No lifecycle compliance tracking for 5 AI systems</td><td>C35</td><td>AI Ethics Board</td><td>2025-09-01</td></tr>
+          <tr><td><span class="pill warn">High</span></td><td>Consent records missing for 12% of EU accounts</td><td>C4</td><td>Privacy Team</td><td>2025-02-01</td></tr>
+          <tr><td><span class="pill warn">High</span></td><td>15 dormant accounts with elevated privileges</td><td>C7</td><td>Identity Team</td><td>2025-02-15</td></tr>
+          <tr><td><span class="pill warn">High</span></td><td>No continuous monitoring for 8 critical SaaS vendors</td><td>C14</td><td>Vendor Risk</td><td>2025-03-01</td></tr>
+          <tr><td><span class="pill warn">High</span></td><td>DR failover test excluded payment systems</td><td>C17</td><td>Infrastructure</td><td>2025-03-15</td></tr>
+          <tr><td><span class="pill mut">Medium</span></td><td>Post-mortems done for only 60% of P1 incidents</td><td>C12</td><td>SOC Team</td><td>2025-03-01</td></tr>
+          <tr><td><span class="pill mut">Medium</span></td><td>Emergency changes bypassing CI/CD up 40%</td><td>C20</td><td>DevOps</td><td>2025-03-01</td></tr>
+          <tr><td><span class="pill mut">Medium</span></td><td>23 data assets not yet classified per policy</td><td>C1</td><td>Data Governance</td><td>2025-02-01</td></tr>
+          <tr><td><span class="pill mut">Medium</span></td><td>Quarterly finance access review completed 2 weeks late</td><td>C8</td><td>Identity Team</td><td>Closed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="why"><div class="h">Why this register matters</div><p>Three of the five <span class="pill crit">Critical</span> findings are AI, and all point at controls that block deployment legality (conformity, registration, human override). Every AI finding is still <b>Open</b>. <b>Teaching point:</b> a finding's worth is the <em>owned, dated commitment</em> to fix it — the paperwork here is sound; the execution is late.</p></div>
+  </section>
+
+  <!-- ===================== 6 COMPLIANCE MAPPINGS ===================== -->
+  <section class="reg" id="r6">
+    <div class="reg-head"><span class="reg-num">6</span><div><div class="k">The register of evidence · 48 entries</div><h2>Compliance Mappings</h2></div></div>
+    <p class="oneline reading">The crosswalk proving a control satisfies a specific legal requirement — with the evidence.</p>
+    <p class="reading">A mapping is a four-part link: a <b>control</b>, a <b>framework requirement</b> (e.g. “Art. 14”), a <b>status</b>, and — the field that decides everything — an <b>evidence location</b>. With 48 of them, don't read each; read the <em>pattern</em>. Compare a healthy mapping to a failing one:</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Control</th><th>Framework · requirement</th><th>Status</th><th>Evidence</th></tr></thead>
+        <tbody>
+          <tr><td>C2 Encryption at Rest</td><td>GDPR · Art. 32 (Security)</td><td><span class="pill good">Compliant</span></td><td>SharePoint/GRC/GDPR/Art32</td></tr>
+          <tr><td>C21 Segregation of Duties</td><td>SOX · §302</td><td><span class="pill good">Compliant</span></td><td>SharePoint/GRC/SOX/Sec302</td></tr>
+          <tr><td>C6 MFA</td><td>PCI DSS · Req 8.3</td><td><span class="pill good">Compliant</span></td><td>SharePoint/GRC/PCI/Req8</td></tr>
+          <tr class="ai"><td>C30 Conformity Assessment</td><td>AI Act · Art. 43</td><td><span class="pill crit">Non-Compliant</span></td><td><b style="color:var(--crit)">(null)</b></td></tr>
+          <tr class="ai"><td>C29 AI Data Governance</td><td>AI Act · Art. 10</td><td><span class="pill crit">Non-Compliant</span></td><td><b style="color:var(--crit)">(null)</b></td></tr>
+          <tr class="ai"><td>C24 AI Risk Classification</td><td>AICM · RM-01</td><td><span class="pill crit">Non-Compliant</span></td><td><b style="color:var(--crit)">(null)</b></td></tr>
+          <tr class="ai"><td>C25 AI Bias Testing</td><td>AIEU · FA-01 (Fairness)</td><td><span class="pill crit">Non-Compliant</span></td><td><b style="color:var(--crit)">(null)</b></td></tr>
+          <tr class="ai"><td>C27 Transparency</td><td>AI Act · Art. 13</td><td><span class="pill warn">Partially</span></td><td>SharePoint/GRC/AIAct/Art13</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="reading">Across all 48: the <b>6 traditional frameworks</b> (GDPR, SOX, HIPAA, ISO 27001, PCI, NIST) are almost entirely <span class="pill good">Compliant</span> with real evidence paths. The <b>22 mappings to AI frameworks</b> (AI Act, AICM, AIEU) are all <span class="pill warn">Partial</span> or <span class="pill crit">Non-Compliant</span> — and <em>every Non-Compliant one has a null evidence field</em>.</p>
+    <div class="why"><div class="h">Why this register matters</div><p>This is where the hardest truth in GRC becomes a single column: <b>compliance is what you can prove.</b> A control that works but has no evidence attached counts, to an auditor, as non-compliant. The traditional rows point at documents and read green; the AI rows point at nothing and read red. Same firm — the difference is entirely whether a proof exists.</p></div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="reading">
+    <hr class="rule">
+    <p class="eyebrow">The chain, in one breath</p>
+    <h2>How the six registers tell one story</h2>
+    <p>Follow a single thread through all six for this firm's AI problem:</p>
+    <p style="font-size:1.02rem;border-left:3px solid var(--indigo);padding-left:1rem;color:var(--ink)">The <b>AI Governance Policy</b> is only <em>Under Review</em> (Register 1), so its <b>AI controls</b> were never built (Register 2), which is exactly why the <b>AI risks</b> score High and Critical (Register 3), whose <b>mitigations</b> are all still <em>Planned</em> (Register 4); an <b>auditor</b> independently flagged the same gaps as Critical and Open (Register 5), and the <b>compliance mappings</b> confirm it with a wall of <em>Non-Compliant, evidence: null</em> (Register 6).</p>
+    <p>One un-ratified policy, traced through six records, into a wall of red. That traceability — from intent to proof — is the entire value of keeping these registers. Fix the root (ratify the policy, fund the board) and the whole chain can turn green.</p>
+    <div class="keynote"><div class="h">The five columns that carry the most meaning</div>
+      <ul>
+        <li><b>Policy status</b> — <em>Active</em> or not decides whether anything below it has authority.</li>
+        <li><b>Control effectiveness</b> — <em>Effective</em> (tested) is a different fact from <em>Implemented</em> (exists).</li>
+        <li><b>Risk score &amp; status</b> — the number sets priority; the status shows the treatment decision.</li>
+        <li><b>Finding due-date + owner</b> — turns a discovered gap into a tracked commitment.</li>
+        <li><b>Mapping evidence location</b> — null means non-compliant, however good the intent.</li>
+      </ul>
+    </div>
+    <div class="foot">
+      <p><strong>The Operating Registers</strong> — a teaching guide to the six internal GRC records (policies, controls, risks, mitigations, audit findings, compliance mappings) in the project database. Companion to <em>“The Regulatory Atlas,” “The Seven Building Blocks of GRC,”</em> and the practitioner course <em>“GRC for Generative AI.”</em> All data is synthetic teaching material; examples are illustrative, not legal advice.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var root=document.documentElement, btn=document.getElementById('themeBtn');
+    function cur(){var s=root.getAttribute('data-theme');return s?s:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+    function paint(){btn.textContent=cur()==='dark'?'☀':'☾';}
+    paint();
+    btn.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');paint();});
+  })();
+</script>

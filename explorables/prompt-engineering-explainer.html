@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The words are the program: a field guide to prompting, from zero-shot to ReAct</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v13:#F1F1F7;--v14:#E5E6EF;--v6:#1B1930;--v8:#484667;--v7:#7A7894;--v17:#D6D7E2;--v0:#4F3FD6;--v11:#181528;--v12:#E7E4F2;--v16:#F0688B;--v20:#E7B24E;--v18:#4FC7A9;--v2:#B39DFF;--v3:#E5B84B;--v1:#5BC8C0;--v4:#F27DA5;--v5:#C0435F;--v9:680px;--v21:1120px;--v10:26px;--v19:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v19:0s}}body{margin:0;background:var(--v13);color:var(--v6);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#4F3FD6}.pII{--v0:#0F766E}.pIII{--v0:#BE185D}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v14);box-shadow:0 6px 22px rgba(0,0,0,.45)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v17);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:"JetBrains Mono",monospace;font-size:15px;font-weight:500;color:var(--v6);letter-spacing:.02em}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:13px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v17);transition:background .3s,transform .3s}.rail a.on{background:var(--v15,#4F3FD6);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v6);outline-offset:3px}.col{max-width:var(--v9);margin:0 auto;padding:0 var(--v10);position:relative}.wide{max-width:var(--v21);margin:0 auto;padding:0 var(--v10)}.bleed{width:100%;margin:0}section{padding:100px 0}.divider{max-width:var(--v9);margin:0 auto;height:1px;background:var(--v17)}h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:400;line-height:1.08;margin:0}h1.hero-h{font-size:clamp(38px,6.4vw,62px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Newsreader",serif;font-size:clamp(22px,3vw,30px);line-height:1.38;color:var(--v8)}.part-banner{padding:92px 0 20px;text-align:center}.part-banner .pk{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,42px);font-style:italic}.eyebrow{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v14);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.pull{font-family:"Newsreader",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.3;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v14);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v8)}.intu{border:1px solid var(--v17);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v14);font-size:17.5px;line-height:1.64}.intu .il{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v6)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v7)}.mnote b{color:var(--v8);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v14);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v14)}.demo{border:1px solid var(--v17);background:var(--v11);color:var(--v12);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #2a2440;font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#8a82a6;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v7);margin:12px 2px 0}.figcap b{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:9px 16px;border:1px solid #8a6fd6;border-radius:3px;background:transparent;color:#b39dff;cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:#8a6fd6;color:#fff}.chip{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:8px 13px;border:1px solid #3a3356;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#b3abc9}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}select{font-family:"JetBrains Mono",monospace;font-size:13px;background:#221c38;color:#E3DFEC;border:1px solid #3a3356;border-radius:3px;padding:7px 10px}code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--v14);padding:1px 6px;border-radius:3px}.demo code, pre code{background:none;padding:0}pre{background:var(--v11);border:1px solid var(--v17);border-radius:4px;padding:20px 22px;font-size:13px;line-height:1.7;overflow-x:auto;color:var(--v12);margin:26px 0}.cm{color:#8a82a6}.kw{color:#b39dff}.st{color:#5BC8C0}.trace{font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.7}.trace .u{color:#b39dff}.trace .t{color:#E5B84B}.trace .a{color:#F27DA5}.trace .o{color:#9a93b5}.trace .ans{color:#5BC8C0}.trace .bad{color:#e0607f}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:"JetBrains Mono",monospace;font-size:11px;fill:#b3abc9}.fig .elab{font-family:"JetBrains Mono",monospace;font-size:10px;fill:#8a82a6}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.2}.fig .sel circle,.fig .sel rect{stroke-width:4}.inspector{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.8;border-top:1px solid #2a2440;margin-top:16px;padding-top:14px;min-height:82px;color:#b3abc9}.inspector b{color:#E3DFEC;font-weight:500}.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:"JetBrains Mono",monospace;font-size:11px;color:#8a82a6;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.votes{display:flex;align-items:flex-end;gap:16px;height:150px;margin:8px 0 6px}.vcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}.vcol .bar{width:100%;border-radius:5px 5px 0 0;transition:height .25s ease}.vcol .vn{font-family:"JetBrains Mono",monospace;font-size:12px;color:#E3DFEC;margin-bottom:6px}.vcol .vl{font-family:"JetBrains Mono",monospace;font-size:12px;color:#8a82a6;margin-top:8px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}@media(max-width:640px){.cards{grid-template-columns:1fr}}.face,.layer{font-family:"JetBrains Mono",monospace;font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #3a3356;border-radius:4px;background:transparent;color:#b3abc9;cursor:pointer;transition:all .18s;line-height:1.5}.face.on,.layer.on{border-color:var(--v0);color:#fff;background:#221c38}.face b,.layer b{display:block;color:#E3DFEC;font-size:13px;margin-bottom:3px}.face-out{font-size:15px;line-height:1.65;color:#E3DFEC;border-top:1px solid #2a2440;padding-top:16px;min-height:96px}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v10);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v11);color:var(--v12);border:1px solid var(--v17);border-radius:6px;padding:22px 24px}.gline{opacity:.12;transition:opacity .45s ease,color .3s}.gline.show{opacity:1}@media (prefers-reduced-motion:reduce){.gline{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v13);border-bottom:1px solid var(--v17);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a82a6;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.mlab{font-family:"JetBrains Mono",monospace;font-size:12px;color:#8a82a6;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#E3DFEC}.meter{height:12px;background:#221c38;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:"JetBrains Mono",monospace;font-size:12px;padding:7px 12px;border:1px solid #3a3356;border-radius:4px;background:transparent;color:#b3abc9;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.weeds details{border:1px solid var(--v17);border-radius:4px;margin-bottom:10px;background:var(--v13)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v14)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v8)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.4;margin:0}footer{border-top:1px solid var(--v17);padding:34px 0 60px;font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--v7);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:72px 0}}</style></style>
+</head>
+<body>
+
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#4F3FD6" title="Part I"></a>
+  <a href="#p2" data-c="#0F766E" title="Part II"></a>
+  <a href="#p3" data-c="#BE185D" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · prompting · llms</div>
+    <h1 class="hero-h">The words are the program.</h1>
+    <p class="lede">A prompt is the only code an LLM runs. This guide climbs from the plainest question to ReAct agents, testing every technique on one stubborn little problem, and shows you exactly when a change of wording turns a wrong answer right. There is a live reasoning-vote you can drag, two agent loops you scroll through, and a lab at the end.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#4F3FD6">
+<div class="part-banner"><div class="pk">Part I · chapters 01 to 04</div><h2>Asking</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the problem</div>
+    <h2 class="big">Confident, fluent, and wrong</h2>
+    <div class="try">Solve this in your head first. A shelf holds 20 apples. In the morning the shop sells 40% of them. In the afternoon it sells 25% of what is left. How many apples remain? Hold your answer.</div>
+    <p>Here is the same question handed to a capable model as a bare instruction, the way most people prompt on their first day. Read what comes back.</p>
+    <div class="demo">
+      <div class="demo-head"><span>prompt → completion · zero-shot, no scaffolding</span></div>
+      <div class="demo-body">
+        <div class="trace">
+          <div><span class="u">you ▸</span> A shelf holds 20 apples. Morning sells 40%, afternoon sells 25% of what's left. How many remain?</div>
+          <div style="margin-top:12px"><span class="ans">model ▸</span> <span class="bad">The shop sells 40% + 25% = 65%, so 35% remain. 35% of 20 is <b>7 apples</b>.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>The confident wrong answer. It added the percentages instead of applying the second to the remainder.</div>
+    <p style="margin-top:26px">The real answer is <strong>9</strong>. Morning removes 8 and leaves 12; afternoon removes a quarter of twelve, which is 3; nine remain. The model did not reason toward 7. It produced the <em>most probable-looking</em> sentence, and adding two percentages looks probable. Nothing about the output signals doubt, which is the whole danger.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Imagine a street musician who has heard every song ever recorded. Hand them the first half of a melody and they will finish it, fluently, with the notes that usually come next. That is the model. It is not looking up the answer to your question; it is playing the most likely continuation of your words. When enough sentences in its training ended a certain way, that ending <em>feels</em> right even when your particular question needed a different tune. The apples got a confident "7" because <b>adding two percentages is a very common riff.</b></div>
+    <p>This is the ground everything else stands on. The model is a next-token predictor: it reads your text and guesses the next word, then the next, each guess shaped by the mountain of writing it learned from. It has no separate place where facts live and reasoning happens. The guessing <em>is</em> the thinking. The prompt is your only lever on what it guesses. Every technique in this guide is a different way to pull that lever, and we will test each one on these same 20 apples so you can see exactly what each is worth.</p>
+    <div class="pull">You are not asking a mind a question. You are steering a distribution toward the answer you want.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the instruction</div>
+    <h2 class="big">Say exactly what you want</h2>
+    <p>The cheapest upgrade costs no new technique, only precision. A <strong>zero-shot</strong> prompt gives no examples; it leans entirely on the instruction, so the instruction has to carry the load. Vague asks get vague, average completions. Hover each part of the prompt below to see what job it does.</p>
+    <div class="demo">
+      <div class="demo-head"><span>anatomy of a good instruction</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig2"></div>
+        <div class="legend"><span><i style="background:var(--v2)"></i>instruction parts</span></div>
+        <div class="inspector" id="fig2Out">hover a part of the prompt</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 2</b>Hover each block. A prompt is not one string; it is several jobs stacked. Naming them is the first skill.</div>
+    <aside class="mnote"><b>Order matters.</b> Models weight the start and end of a prompt most. Put the task up top and the format constraint last, where it is freshest when generation begins.</aside>
+    <p style="margin-top:26px">Precision alone will not fix the apples yet, because the failure is in the reasoning, not the phrasing. But clarity removes an entire class of failure: the model answering a question you did not mean to ask. Most bad outputs are bad inputs wearing a disguise.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · role and system</div>
+    <h2 class="big">Tell it who is speaking</h2>
+    <p>Chat models read two channels. The <strong>system prompt</strong> sets standing rules, persona, and boundaries for the whole conversation; the <strong>user prompt</strong> carries the turn-by-turn request. Assigning a role in the system channel shifts the whole distribution of the reply: vocabulary, caution, format, what it assumes you know.</p>
+    <div class="demo">
+      <div class="demo-head"><span>same question, three system prompts</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="chip on" data-r="none">no system prompt</button>
+          <button class="chip" data-r="teacher">patient teacher</button>
+          <button class="chip" data-r="checker">careful math checker</button>
+        </div>
+        <div id="roleOut" class="trace" style="min-height:150px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Switch the system prompt. Notice the careful-checker role starts reaching for the right method on its own, before we teach any technique.</div>
+    <div class="intu"><span class="il">picture it</span>
+      Ask a doctor and a poet to describe rain and you get two different paragraphs, though the rain is the same. The system prompt is the hat the model puts on before it speaks. "You are a careful math checker who works step by step" adds no new knowledge; it <b>selects the version of the model that already double-checks its work,</b> the way the hat selects the doctor's voice over the poet's.</div>
+    <p style="margin-top:26px">The role is not decoration. "You are a careful math checker who works step by step" quietly imports a behavior we are about to make explicit. A good persona is a compressed instruction. A costume with no instructions inside it ("you are a world-class genius") buys nothing.</p>
+    <aside class="mnote"><b>Guardrails live here.</b> Refusals, tone, and safety rules belong in the system channel, above anything a user can type. The weeds cover why that ordering resists prompt injection.</aside>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · format</div>
+    <h2 class="big">Constrain the shape and you constrain the content</h2>
+    <p>Ask for prose and you get prose-shaped thinking. Ask for a table, a JSON object, or numbered steps, and the required shape drags the reasoning with it. Forcing a field called <code>"steps"</code> before a field called <code>"answer"</code> is a back-door way to make the model reason before it commits, which is the whole idea of the next part. Click through three output contracts for the apples task.</p>
+    <div class="demo">
+      <div class="demo-head"><span>output contracts</span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="chip on" data-fmt="loose">free text</button>
+          <button class="chip" data-fmt="json">strict json</button>
+          <button class="chip" data-fmt="steps">steps-then-answer</button>
+        </div>
+        <div id="fmtOut" class="trace" style="min-height:170px"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 4</b>Click each contract. The steps-then-answer shape is doing real work: it forbids the model from blurting the number first.</div>
+    <div class="intu"><span class="il">picture it</span>
+      A teacher who makes you show your working is not being fussy. Writing the steps is where you catch the slip before you commit to a final number. Forcing a <code>"steps"</code> field before an <code>"answer"</code> field does the same thing to the model: <b>the shape of the answer makes it think before it lands.</b> The container you ask for changes what gets poured into it.</div>
+    <div class="note">Structured output has teeth beyond neatness. A JSON schema your code can parse turns a chatty model into a reliable component, and the weeds cover the two ways to enforce it: prompt-only, and constrained decoding that makes invalid tokens impossible.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#0F766E">
+<div class="part-banner"><div class="pk">Part II · chapters 05 to 07</div><h2>Showing and reasoning</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · few-shot</div>
+    <h2 class="big">Show, do not tell</h2>
+    <p>Instead of describing the behavior you want, demonstrate it. <strong>Few-shot</strong> prompting puts a handful of worked examples in the context before the real question. The model reads the pattern and continues it. Each example teaches something specific: the format, the tone, the edge case, the method. Hover the examples below to see what each one is actually buying.</p>
+    <div class="demo">
+      <div class="demo-head"><span>a few-shot prompt · hover each shot</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig5"></div>
+        <div class="inspector" id="fig5Out">hover an example, or the final question</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 5</b>Hover each shot. Two well-chosen examples that both show the remainder method fix the apples where zero-shot could not.</div>
+    <div class="intu"><span class="il">picture it</span>
+      There are two ways to teach a task: describe the rule, or show two worked examples and say "like this." Beginners and models both learn faster from the examples. The model is an eager imitator; it reads the pattern in your examples and continues it. So few-shot is really you <b>choosing, with care, the exact thing you want the model to copy,</b> including the trap you want it to avoid.</div>
+    <aside class="mnote"><b>Curate, don't dump.</b> Three sharp examples beat ten random ones. Examples that share the trap you are trying to avoid teach more than easy ones.</aside>
+    <p style="margin-top:26px">Few-shot is powerful and quietly expensive. Every example rides in the context on every single call, costing tokens and latency forever. It also caps out: showing the method is not the same as making the model perform the method on a genuinely new shape. For that, you stop showing answers and start demanding the work.</p>
+  </div>
+</section>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">06 · chain of thought</div>
+    <h2 class="big">Make it show its work</h2>
+    <p>Four words changed prompting more than any prompt library: <em>let's think step by step</em>. Chain-of-thought asks the model to write its reasoning before its answer. Because each token it writes becomes context for the next, the written steps literally give it more room to compute before it commits. Scroll, and watch the scratchpad fill.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Multiply 47 by 28 in your head, then do it again on paper. Same brain, but the paper wins, because every digit you write down is one you can look back at instead of hold in mind. The model lives with that same limit, only sharper: between one word and the next it remembers almost nothing except the words already on the page. So chain-of-thought is not the model performing thoughtfulness for you. <b>The written steps are its scratch paper, its working memory, built one line at a time,</b> and the answer is just the last line of an argument it can finally see.</div>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scCoT">
+    <div class="sg">
+      <div class="scard">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8a82a6;margin-bottom:14px">the model's scratchpad</div>
+        <div class="trace" id="cotPad" style="min-height:230px"></div>
+        <div id="cotAns" style="margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:15px"></div>
+      </div>
+    </div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 0 · the trigger</div><p>We append one line to the prompt: <code>Let's think step by step.</code> That is the entire technique. No examples, no tools.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 1 · the start count</div><p>The model now narrates. It writes down the starting amount before doing anything to it. A number on the page is a number it will not misremember.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 2 · the morning</div><p>It computes the morning sale <em>and the remainder</em> as a separate written fact: 8 sold, 12 left. This is the exact step the blurted answer skipped.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 3 · the afternoon</div><p>Now the move that decides everything. The afternoon percentage is applied to the 12 it just wrote, not to the original 20. Twenty-five percent of twelve is three.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 4 · the answer falls out</div><p>Twelve minus three. The answer is not guessed; it is the last line of an argument the model can see. Nine.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 6</b>Scroll-driven. The same model that blurted 7 in Figure 1 reaches 9, only because it was made to write the intermediate remainder instead of leaping to a number.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <p>Nothing was added to the model. The reasoning was always latent; the prompt gave it room to run before committing. That is the recurring lesson: the words do not describe the computation, they <em>are</em> the computation.</p>
+    <div class="pull">A blurted answer is one sample. A reasoned answer is many small samples, each conditioned on the last.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the knob · self-consistency</div>
+    <h2 class="big">Ask the same question many times and vote</h2>
+    <p>Chain-of-thought helps, but a single reasoning path can still slip. <strong>Self-consistency</strong> runs the reasoning several times at nonzero temperature, so each run wanders a little, then takes the majority answer. Wrong paths tend to fail in scattered, different ways; the right path keeps landing on the same number. The vote finds it.</p>
+    <p>This is the one control that carries the whole guide, so it is real. Every time you move the slider the page samples that many independent reasoning attempts and tallies them live. Set the reasoning quality with the chips, then drag the number of samples and watch the majority sharpen.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Ask one person a hard question and they might slip. Ask twelve and go with the answer most of them give, and the slips tend to cancel while the truth stacks up. That is the whole idea. Wrong reasoning fails in scattered, different ways, so wrong answers spread themselves thin across many values. <b>The right answer keeps arriving at the same number,</b> so as the votes pile up it rises to the top on its own.</div>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>self-consistency · live sampling</span><span id="scVerdict" class="mval"></span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+          <button class="chip" data-q="blurt">reasoning: blurt (no CoT)</button>
+          <button class="chip on" data-q="cot">reasoning: chain-of-thought</button>
+          <button class="btn" id="scReroll" style="margin-left:auto">↻ resample</button>
+        </div>
+        <label for="scSlider" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#b3abc9;display:block;margin-bottom:8px">
+          samples drawn: <span class="mval" id="scN">9</span></label>
+        <input type="range" id="scSlider" min="1" max="41" step="2" value="9" aria-label="Number of reasoning samples">
+        <div class="votes" id="scVotes" style="margin-top:22px"></div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:12px;color:#8a82a6;margin-top:6px">
+          <span>each bar is one candidate answer · height is its share of the vote</span>
+          <span id="scAcc"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 7</b>Live majority vote over sampled reasoning paths. With blurt-quality reasoning the vote can settle on the wrong number; with chain-of-thought, more samples make 9 win more surely. Try one sample versus forty-one.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <p>Two lessons hide in that slider. Reasoning quality sets <em>where</em> the vote tends to land, and sample count sets <em>how reliably</em> it lands there. Self-consistency buys reliability with compute: five to forty times the cost for one answer. You spend it only where being wrong is expensive.</p>
+    <div class="pull">Sampling once asks the model what it thinks. Sampling forty times and voting asks what it usually thinks.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#BE185D">
+<div class="part-banner"><div class="pk">Part III · chapters 08 to 11</div><h2>Acting and searching</h2></div>
+
+
+<section style="padding-top:70px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">08 · react</div>
+    <h2 class="big">Let it think, then act, then look</h2>
+    <p>All of Part II reasons inside the model's own head, which fails the moment the answer lives in the world: today's price, a database row, a fact past the training cutoff. <strong>ReAct</strong> interleaves reasoning with actions. The model writes a <span style="color:#a97b12;font-weight:600">Thought</span>, chooses an <span style="color:#b83a63;font-weight:600">Action</span> (a tool call), reads the <span style="color:#6d6688;font-weight:600">Observation</span> that comes back, and loops until it can answer. Scroll the loop.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Two students sit the same exam. One answers everything from memory and bluffs the parts they forgot. The other is allowed to open the textbook and use a calculator, so when they hit a fact they do not hold, they stop, look it up, and come back with it in hand. Everything in Part II was the first student, confident and sometimes making things up. <b>ReAct is the second student:</b> think, then look, then answer, so the numbers in the conclusion are fetched from the world, not invented in the head.</div>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scReact">
+    <div class="sg">
+      <div class="scard">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8a82a6;margin-bottom:14px">agent trace · new question: "is it cheaper to buy 20 apples here or at the market?"</div>
+        <div class="trace" id="reactPad" style="min-height:250px"></div>
+      </div>
+    </div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">the setup</div><p>A question the model cannot answer from memory: it needs two live prices. Pure reasoning would hallucinate them. ReAct refuses to guess.</p></div>
+      <div class="stp" data-step="1"><div class="sk">thought</div><p>It reasons about what it is missing and what to do about it: it needs this shop's price, and there is a tool for that.</p></div>
+      <div class="stp" data-step="2"><div class="sk">action → observation</div><p>It emits a structured tool call. The runtime executes it and feeds the real result back in as an Observation. This line is not the model's imagination; it is data.</p></div>
+      <div class="stp" data-step="3"><div class="sk">loop again</div><p>One price is not enough. The model thinks again, calls the market tool, and reads the second real number. Grounding accumulates.</p></div>
+      <div class="stp" data-step="4"><div class="sk">answer, grounded</div><p>Only now, holding two observed facts, does it compute and answer. Every number in the conclusion traces to a tool result, not a guess.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 8</b>Scroll-driven, and note the pinned trace sits on the right this time. Thought, Action, Observation, repeat. The loop is the entire agent.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <p>Strip the jargon and an agent is this loop plus tools plus a stopping rule. Frameworks dress it up, but underneath, every one of them is prompting the model to produce a Thought and an Action, running the Action themselves, and pasting the Observation back into the prompt.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">09 · tool use</div>
+    <h2 class="big">The action is a contract, not a hope</h2>
+    <p>ReAct only works because the Action is machine-readable. Modern models are trained for <strong>tool calling</strong>: you describe each tool as a name, a description, and a typed parameter schema, and the model replies with a structured call your code can execute. Click each layer of one tool round-trip.</p>
+    <div class="demo">
+      <div class="demo-head"><span>one tool call, end to end · click a stage</span></div>
+      <div class="demo-body">
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+          <button class="layer on" data-l="0"><b>1 · you declare the tool</b>name, description, typed parameters</button>
+          <button class="layer" data-l="1"><b>2 · model emits a call</b>picks the tool, fills the arguments</button>
+          <button class="layer" data-l="2"><b>3 · your code runs it</b>the model never touches your database</button>
+          <button class="layer" data-l="3"><b>4 · observation returns</b>the result re-enters the prompt as context</button>
+        </div>
+        <div class="face-out" id="toolOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 9</b>Click each stage. The model chooses and fills the call; your code, not the model, executes it. That boundary is the whole safety story.</div>
+    <div class="intu"><span class="il">picture it</span>
+      The model can think but it cannot touch. Tools are its hands. And you do not hand it the keys to your database; it fills out a request slip ("look up the market price of apples"), you read the slip, and your code decides whether to go and fetch what it asked for. <b>The model proposes, your code disposes.</b> That one rule is why a tool-using agent is powerful without being a loaded gun pointed at your systems.</div>
+    <aside class="mnote"><b>The model proposes, you dispose.</b> Never wire a tool call straight to a destructive action. Treat every argument the model produces as untrusted input, because sometimes it is exactly that.</aside>
+    <p style="margin-top:26px">Retrieval is just a tool. Point the search action at your own documents and you have the backbone of retrieval-augmented generation: the model asks for what it needs, your code fetches the real passage, and the answer is grounded in your data instead of the model's memory.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">10 · searching and decomposing</div>
+    <h2 class="big">When one chain is not enough</h2>
+    <p>Chain-of-thought walks a single path. Some problems need search. <strong>Tree-of-thought</strong> lets the model branch: generate several candidate next steps, evaluate them, keep the promising branches, prune the rest. It trades a lot of compute for the ability to back out of a dead end that a single chain would ride to a wrong answer.</p>
+    <div class="demo">
+      <div class="demo-head"><span>one chain vs a tree · hover a node</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig10"></div>
+        <div class="legend">
+          <span><i style="background:var(--v3)"></i>a thought / branch</span>
+          <span><i style="background:var(--v1)"></i>kept path</span>
+          <span><i style="background:var(--v5)"></i>pruned dead end</span>
+        </div>
+        <div class="inspector" id="fig10Out">hover a node to read the thought at it</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 10</b>Hover any node. The chain (top) commits to one line. The tree (below) explores, scores, and prunes, reaching the answer the chain missed.</div>
+    <div class="intu"><span class="il">picture it</span>
+      A single chain of thought is walking one corridor of a maze and hoping it ends at the exit. A tree is what a chess player does: look a few moves ahead down several branches, notice which ones lead to trouble, and quietly abandon them before committing. Decomposition is humbler still. <b>You would never ask one worker to build a whole car alone;</b> you build a line where each station does one job it can do reliably. Prompt chaining is that line, one dependable prompt per station.</div>
+    <p style="margin-top:26px">The humbler cousin of search is <strong>decomposition</strong>: break a hard task into ordered sub-tasks and prompt each one separately, feeding results forward. This is <strong>prompt chaining</strong>, and it is how most real systems are built. One reliable prompt per step beats one heroic prompt attempting everything, because you can test, cache, and fix each link alone.</p>
+    <div class="note">A rough ladder of cost and power: zero-shot, then few-shot, then chain-of-thought, then self-consistency, then tool-using ReAct, then tree search. Climb only as far as the problem forces you. Every rung up costs tokens, latency, and complexity, and the lab below lets you feel that trade.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · limitations</div>
+    <h2 class="big">The prompt is powerful, not magic</h2>
+    <p>Everything here bends the model's output without changing the model. That power has hard edges, and pretending otherwise is how prompt-engineered systems break in production.</p>
+    <div class="intu"><span class="il">picture it</span>
+      The reasoning the model writes is a story about how it might have reached the answer, not a security-camera recording of how it actually did. Often the story is faithful and useful. Sometimes the steps read perfectly and the answer is still wrong, or the steps wander and the answer is right anyway. So <b>trust a technique because it scores better on your own tests,</b> never because its explanation sounds convincing. A convincing story is exactly what a next-token predictor is best at producing.</div>
+    <p><strong>It is sampling, not thinking.</strong> Chain-of-thought text is a useful artifact, but it is not a faithful log of a hidden reasoning process. A model can write correct steps and a wrong answer, or the reverse. Trust the method because it raises accuracy on your evals, not because the steps look convincing.</p>
+    <p><strong>Prompts are brittle.</strong> Reordering examples, renaming a field, or a model version bump can move results more than you expect. A prompt is code with no type system. The only defense is an evaluation set you run on every change.</p>
+    <p><strong>Prompt injection is unsolved.</strong> The moment your prompt includes untrusted text, a web page, a user document, an email, that text can try to hijack the instructions. Tool-using agents raise the stakes, because a hijacked instruction can now act. The weeds cover the partial defenses; none are complete.</p>
+    <p><strong>More scaffolding costs more.</strong> Self-consistency multiplies calls, ReAct adds round-trips, tree search fans out. Reliability is bought with latency and money, and past a point a smaller, cheaper technique with a good eval beats an elaborate one you cannot afford to run.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>Zero-shot asks.<br>
+    Chain-of-thought reasons.<br>
+    ReAct goes and finds out.<br>
+    Pick the smallest one that gets you to nine.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div class="col" style="padding-left:0;padding-right:0;margin-bottom:0"><div style="max-width:var(--v9);margin:0 auto">
+      <div class="eyebrow">the prompt lab</div>
+      <h2 class="big">Stack the techniques, read the trade</h2>
+      <p>The guide moved one variable at a time. Here they compose. Build a prompt stack for a task, and watch estimated reliability climb while cost and latency climb with it. The presets rebuild the setups this guide argued about. There is no single right answer; there is a right answer for your budget.</p>
+    </div></div>
+    <div class="demo">
+      <div class="demo-head"><span>prompt stack · illustrative model</span><span id="labGrade" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="quick">preset: quick and cheap</button>
+          <button class="btn" data-pre="reliable">preset: reliable reasoning</button>
+          <button class="btn" data-pre="agent">preset: grounded agent</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>reasoning</label>
+            <div class="toggle" id="labReason">
+              <button data-v="zero" class="on">zero-shot</button>
+              <button data-v="few">few-shot</button>
+              <button data-v="cot">chain-of-thought</button>
+            </div></div>
+          <div><label>self-consistency samples</label>
+            <input type="range" id="labSamples" min="1" max="41" step="2" value="1" aria-label="Self-consistency samples"></div>
+          <div><label>tools / react</label>
+            <div class="toggle" id="labTools">
+              <button data-v="off" class="on">off</button>
+              <button data-v="on">on (grounded)</button>
+            </div></div>
+          <div><label>tree search</label>
+            <div class="toggle" id="labTree">
+              <button data-v="off" class="on">off</button>
+              <button data-v="on">on</button>
+            </div></div>
+        </div>
+        <div class="mlab"><span>estimated reliability on hard tasks</span><span class="mval" id="labRel"></span></div>
+        <div class="meter"><i id="labRelBar"></i></div>
+        <div class="mlab"><span>relative cost per answer</span><span class="mval" id="labCost"></span></div>
+        <div class="meter"><i id="labCostBar"></i></div>
+        <div class="mlab"><span>relative latency</span><span class="mval" id="labLat"></span></div>
+        <div class="meter"><i id="labLatBar"></i></div>
+        <div id="labOut" style="font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;color:#b3abc9;margin-top:16px;border-top:1px solid #2a2440;padding-top:14px"></div>
+      </div>
+    </div>
+    <div class="col" style="padding-left:0;padding-right:0"><div style="max-width:var(--v9);margin:0 auto">
+      <div class="figcap"><b>Figure 11</b>Compose a stack. Turn everything on and watch cost explode for a last few points of reliability. The quick preset is the honest default for easy tasks.</div>
+    </div></div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>Temperature, top-p, and why sampling settings matter</summary><div class="wbody">Temperature scales how sharply the model favors its top guesses. At 0 it is nearly deterministic and picks the single most likely token, which is why self-consistency needs temperature above 0: identical samples cannot vote. Top-p (nucleus sampling) instead keeps the smallest set of tokens whose probability sums past p and samples among them. For reasoning you want enough randomness to explore different paths, not so much that arithmetic drifts. Around 0.7 is a common starting point.</div></details>
+    <details><summary>Two ways to force valid JSON</summary><div class="wbody">Prompt-only: you ask for JSON and hope, then validate and retry on failure. Simple, and it fails a small fraction of the time. Constrained decoding: the serving layer masks any token that would break the schema, so the output is valid by construction. Most providers now expose this as a structured-output or JSON-schema mode. Prefer it when a downstream parser must never choke.</div></details>
+    <details><summary>Zero-shot CoT vs few-shot CoT</summary><div class="wbody">Two flavors of chain-of-thought. Zero-shot is the bare trigger, "let's think step by step," which needs no examples. Few-shot CoT instead shows the model two or three fully worked examples that include their reasoning, then asks the new question. Few-shot CoT is usually stronger because it demonstrates the reasoning style you want, but it costs the example tokens on every call. Reach for zero-shot first; it is free.</div></details>
+    <details><summary>ReAct is not the only agent loop</summary><div class="wbody">ReAct interleaves reasoning and acting in one stream. Alternatives split them: Plan-and-Execute writes a full plan first, then executes each step, which is cheaper and more predictable but less able to adapt mid-task. Reflexion adds a self-critique pass that feeds failures back as memory for the next attempt. All three are prompt patterns over the same tool-calling primitive.</div></details>
+    <details><summary>Prompt injection, and the partial defenses</summary><div class="wbody">When untrusted text enters the prompt it can carry instructions that hijack yours. No defense is complete. The practical stack: keep system instructions above and separate from untrusted content, mark untrusted spans clearly, give tools the least privilege they need, require human confirmation before any irreversible action, and run adversarial evals. Treat an agent with powerful tools and untrusted input as a security boundary, not a feature.</div></details>
+    <details><summary>RAG vs a very long context window</summary><div class="wbody">Two ways to get external knowledge into an answer. Retrieval fetches only the relevant passages and injects them, keeping prompts small and cheap and letting the corpus be huge. Long context pastes everything in and lets the model sort it out, which is simpler but costs tokens on every call and can bury the key fact in the middle, where models attend least. Most production systems retrieve; long context is the convenient default for small, static references.</div></details>
+    <details><summary>Why the numbers in this page are illustrative</summary><div class="wbody">The self-consistency vote in Figure 7 is real: the page samples reasoning paths with genuine randomness and tallies them, so the majority genuinely sharpens as you add samples. The reasoning traces and the lab's reliability estimates are scripted from the documented behavior of these techniques, not run against a live model, because a single self-contained file cannot host one. They are honest about the mechanism and the direction of every trade; they are not a benchmark. Treat them as a teaching instrument, and trust your own evals for real numbers.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    the apples task, the reasoning traces, and the lab estimates are illustrative teaching aids; the self-consistency vote in Figure 7 is genuinely sampled and counted in your browser · techniques current as of July 2026<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page, which is exactly why its traces are labeled, not measured
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function e(e){return document.getElementById(e)}function t(e,t){var a=document.createElementNS("http://www.w3.org/2000/svg",e);for(var n in t)a.setAttribute(n,t[n]);return a}var a=e("pdialFill"),n=e("pdialTxt"),s=2*Math.PI*23;a.style.strokeDasharray=s,a.style.strokeDashoffset=s,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);a.style.strokeDashoffset=s*(1-Math.min(1,Math.max(0,t||0)))},{passive:!0});var o=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),o.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){o.observe(e)});var r=document.querySelectorAll("#rail a"),i={p1:"I",p2:"II",p3:"III"},l=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-c");a.style.stroke=t,i[e.target.id]&&(n.textContent=i[e.target.id],n.style.color=t),r.forEach(function(a){var n=a.getAttribute("href")==="#"+e.target.id;a.classList.toggle("on",n),n&&a.style.setProperty("--v15",t)})}})},{rootMargin:"-40% 0px -40% 0px"});function c(t,a,n,s){var o=e(n);function r(e){o.innerHTML=a[e],document.querySelectorAll("["+t+"]").forEach(function(a){a.classList.toggle("on",a.getAttribute(t)===e)})}document.querySelectorAll("["+t+"]").forEach(function(e){e.addEventListener("click",function(){r(e.getAttribute(t))})}),r(document.querySelector("["+t+"].on")?document.querySelector("["+t+"].on").getAttribute(t):document.querySelector("["+t+"]").getAttribute(t))}function d(e,t,a,n,s,o){function r(){e.classList.add("dimmed"),t.classList.add("hot"),t.classList.add("sel"),n.innerHTML=s}a.addEventListener("mouseenter",r),a.addEventListener("mouseleave",function(){e.classList.remove("dimmed"),t.classList.remove("hot"),t.classList.remove("sel"),n.innerHTML=o}),a.addEventListener("click",r)}function p(e,t){var a=[].slice.call(document.querySelectorAll("#"+e+" .stp")),n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(a.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});a.forEach(function(e){n.observe(e)}),t(0)}["p1","p2","p3"].forEach(function(t){l.observe(e(t))}),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),a=e.closest("section");function n(n){e.classList.toggle("hot",n),a.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",n)}),a.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",n)})}e.addEventListener("mouseenter",function(){n(!0)}),e.addEventListener("mouseleave",function(){n(!1)}),e.addEventListener("click",function(){n(!e.classList.contains("hot"))})}),function(){var a=[{label:"TASK",color:"var(--v2)",html:'<b>the task</b> · the verb and object. "Compute how many apples remain." Specific verb, concrete object. Vague verbs ("analyze", "handle") get vague output.'},{label:"CONTEXT",color:"var(--v2)",html:'<b>context</b> · the facts it needs. "20 apples; morning 40%; afternoon 25% of remainder." Everything required, nothing decorative.'},{label:"CONSTRAINTS",color:"var(--v2)",html:'<b>constraints</b> · the rules. "Apply the afternoon rate to what is left, not the original." A constraint pre-empts the exact mistake you fear.'},{label:"FORMAT",color:"var(--v2)",html:'<b>format</b> · the shape of the reply. "Answer as: steps, then a single integer." Placed last, it is freshest when generation starts.'}],n=t("svg",{viewBox:"0 0 560 250"}),s=t("g",{});n.appendChild(s);var o=e("fig2Out"),r=[],i=18;a.forEach(function(e,a){var l=t("g",{"data-part":"p"+a});l.appendChild(t("rect",{x:60,y:i,width:440,height:48,rx:6,fill:"#221c38",stroke:e.color,"stroke-width":1.6}));var c=t("text",{x:78,y:i+24+4,class:"nlab"});c.textContent=e.label,l.appendChild(c),s.appendChild(l);var p=t("rect",{x:60,y:i,width:440,height:48,fill:"rgba(0,0,0,0)"});r.push(p),d(n,l,p,o,e.html,"hover a part of the prompt"),i+=58}),r.forEach(function(e){s.appendChild(e)}),e("fig2").appendChild(n)}(),c("data-r",{none:'<div><span class="u">user ▸</span> A shelf holds 20 apples. Morning 40%, afternoon 25% of the rest. How many remain?</div><div style="margin-top:10px"><span class="ans">model ▸</span> <span class="bad">65% sold, so 7 remain.</span></div>',teacher:'<div><span class="o">system ▸ you are a patient teacher.</span></div><div style="margin-top:10px"><span class="u">user ▸</span> …how many remain?</div><div style="margin-top:10px"><span class="ans">model ▸</span> Great question! Let\'s take it slowly. First, what is 40% of 20? <span class="o">(warmer, but still may slip on the remainder)</span></div>',checker:'<div><span class="o">system ▸ you are a careful math checker. work one step at a time and recheck.</span></div><div style="margin-top:10px"><span class="u">user ▸</span> …how many remain?</div><div style="margin-top:10px"><span class="ans">model ▸</span> <span class="t">Morning: 40% of 20 = 8, leaving 12. Afternoon: 25% of 12 = 3, leaving 9.</span> Answer: <span class="ans">9</span>. <span class="o">(the role imported the method)</span></div>'},"roleOut"),c("data-fmt",{loose:'<div><span class="u">prompt ▸</span> How many apples remain?</div><div style="margin-top:10px"><span class="ans">out ▸</span> <span class="bad">Around 7 I think, roughly a third.</span> <span class="o">(prose invites a blurt)</span></div>',json:'<div><span class="u">prompt ▸</span> Reply as {"answer": &lt;integer&gt;}</div><div style="margin-top:10px"><span class="ans">out ▸</span> {"answer": <span class="bad">7</span>} <span class="o">(parseable, still wrong: shape without steps fixes format, not reasoning)</span></div>',steps:'<div><span class="u">prompt ▸</span> Reply as {"steps": [ ... ], "answer": &lt;integer&gt;}</div><div style="margin-top:10px"><span class="ans">out ▸</span> {"steps": [<span class="t">"40% of 20 = 8, left 12"</span>, <span class="t">"25% of 12 = 3, left 9"</span>], "answer": <span class="ans">9</span>} <span class="o">(steps field forces the work first)</span></div>'},"fmtOut"),function(){var a=[{label:"shot 1",color:"var(--v3)",html:'<b>example 1</b> · "12 sweets, eat 50%, then 50% of the rest. → 6 left, then 3 left. Answer 3." Teaches the remainder method on a clean case.'},{label:"shot 2",color:"var(--v3)",html:'<b>example 2</b> · "80 seats, fill 25%, then 20% of remaining. → 20 filled, 60 left; 12 more; 48 left." Same method, different numbers: it is the pattern, not the values, that transfers.'},{label:"the question",color:"var(--v1)",html:'<b>the real task</b> · "20 apples, 40%, then 25% of the rest." The model continues the demonstrated pattern and lands on 9.'}],n=t("svg",{viewBox:"0 0 560 250"}),s=t("g",{});n.appendChild(s);var o=e("fig5Out"),r=[],i=22;a.forEach(function(e,a){var l=a<2?62:58,c=t("g",{"data-part":"s"+a});c.appendChild(t("rect",{x:50,y:i,width:460,height:l,rx:6,fill:"#221c38",stroke:e.color,"stroke-width":1.6,"stroke-dasharray":"0"}));var p=t("text",{x:68,y:i+22,class:"nlab"});p.textContent=e.label,c.appendChild(p);var h=t("text",{x:68,y:i+42,class:"elab"});h.textContent=a<2?"input → worked answer":"input → (model continues)",c.appendChild(h),s.appendChild(c);var v=t("rect",{x:50,y:i,width:460,height:l,fill:"rgba(0,0,0,0)"});r.push(v),d(n,c,v,o,e.html,"hover an example, or the final question"),i+=l+12}),r.forEach(function(e){s.appendChild(e)}),e("fig5").appendChild(n)}();var h=['<div class="u">prompt ▸ …how many remain? <b>Let\'s think step by step.</b></div>','<div class="t">1. Start: 20 apples.</div>','<div class="t">2. Morning sells 40% of 20 = 8. Remaining: 12.</div>','<div class="t">3. Afternoon sells 25% of 12 = 3. Remaining: 9.</div>','<div class="t">4. Nothing more happens.</div>'],v=e("cotPad"),u=e("cotAns");p("scCoT",function(e){v.innerHTML=h.slice(0,e+1).map(function(e){return'<div class="gline show">'+e+"</div>"}).join(""),u.innerHTML=e>=4?'<span class="ans">answer ▸ 9 apples ✓</span>':0===e?'<span class="o">…the trigger is set. Scroll.</span>':'<span class="o">…still reasoning</span>'});var f=['<div class="o">Q ▸ Is 20 apples cheaper here or at the market?</div>','<div class="t">Thought: I need this shop\'s apple price. I have a price_lookup tool.</div>','<div class="a">Action: price_lookup(store="here", item="apple")</div><div class="o">Observation: $0.40 each → 20 × $0.40 = $8.00</div>','<div class="t">Thought: now the market price for the same.</div><div class="a">Action: price_lookup(store="market", item="apple")</div><div class="o">Observation: $0.55 each → 20 × $0.55 = $11.00</div>','<div class="ans">Answer: Here. $8.00 vs $11.00, a saving of $3.00. (every figure came from a tool)</div>'],m=e("reactPad");p("scReact",function(e){m.innerHTML=f.slice(0,e+1).map(function(e){return'<div class="gline show" style="margin-bottom:10px">'+e+"</div>"}).join("")});var g="cot";function b(){var e="cot"===g?.24:.58,t=Math.random();return t<e?7:t<e+.06?8:9}function y(){for(var t=+e("scSlider").value,a={7:0,8:0,9:0},n=0;n<t;n++)a[b()]++;var s=Math.max(a[7],a[8],a[9],1),o=9;a[7]>a[o]&&(o=7),a[8]>a[o]&&(o=8);var r={9:"var(--v1)",7:"var(--v5)",8:"var(--v20)"};e("scVotes").innerHTML=[9,7,8].map(function(e){var n=Math.round(a[e]/t*100),i=e===o;return'<div class="vcol"><div class="vn">'+a[e]+" ("+n+'%)</div><div class="bar" style="height:'+a[e]/s*100+"%;background:"+r[e]+";"+(i?"box-shadow:0 0 0 2px #fff inset":"opacity:.7")+'"></div><div class="vl">"'+e+'"'+(9===e?" ✓":"")+"</div></div>"}).join(""),e("scN").textContent=t;var i=9===o;e("scVerdict").innerHTML=i?'<span style="color:var(--v1)">majority correct: 9</span>':'<span style="color:var(--v5)">majority WRONG: '+o+"</span>",e("scAcc").textContent="majority = "+o+(i?"  ✓":"  ✗")}document.querySelectorAll("[data-q]").forEach(function(e){e.addEventListener("click",function(){g=e.getAttribute("data-q"),document.querySelectorAll("[data-q]").forEach(function(t){t.classList.toggle("on",t===e)}),y()})}),e("scSlider").addEventListener("input",y),e("scReroll").addEventListener("click",y),y();var x=['<b>1 · declare.</b> You hand the model a tool spec: <code style="background:none;color:#5BC8C0">price_lookup(store, item) → number</code>, with a plain description. The model now knows the tool exists and what it takes.','<b>2 · the model emits a call.</b> Instead of prose, it returns a structured request: <code style="background:none;color:#F27DA5">{"tool":"price_lookup","args":{"store":"market","item":"apple"}}</code>. It chose the tool and filled the arguments; it did not run anything.',"<b>3 · your code executes.</b> Your runtime, not the model, calls the real function or API, hits the real database, and gets a real number. This boundary is why a hijacked argument cannot itself touch your systems unless you let it.","<b>4 · observation returns.</b> The result is pasted back into the prompt as an Observation, and the model continues with a fact it did not have a moment ago. The loop from Figure 8 turns once."],w=e("toolOut");function k(e){w.innerHTML=x[e],document.querySelectorAll("#p3 [data-l]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-l")===String(e))})}document.querySelectorAll("#p3 [data-l]").forEach(function(e){e.addEventListener("click",function(){k(+e.getAttribute("data-l"))})}),k(0),function(){var a=t("svg",{viewBox:"0 0 560 280"}),n=t("g",{});a.appendChild(n);var s=e("fig10Out"),o=[];function r(e,r,i,l,c,p){var h=t("g",{"data-part":l});h.appendChild(t("circle",{cx:e,cy:r,r:p||11,fill:"#221c38",stroke:i,"stroke-width":2.5})),n.appendChild(h);var v=t("circle",{cx:e,cy:r,r:20,fill:"rgba(0,0,0,0)"});return o.push(v),d(a,h,v,s,c,"hover a node to read the thought at it"),{x:e,y:r}}function i(e,a,s){n.appendChild(t("line",{x1:e.x,y1:e.y,x2:a.x,y2:a.y,stroke:s||"#3a3356","stroke-width":1.6}))}n.appendChild(t("text",{x:20,y:30,class:"elab"})).textContent="one chain";for(var l=[],c=0;c<4;c++)l.push({x:120+110*c,y:44});for(c=0;c<3;c++)i(l[c],l[c+1],2===c?"var(--v5)":"var(--v3)");r(l[0].x,l[0].y,"var(--v3)","c0","<b>chain, step 1</b> · commits to one interpretation and never revisits it."),r(l[1].x,l[1].y,"var(--v3)","c1","<b>chain, step 2</b> · builds on the first commitment."),r(l[2].x,l[2].y,"var(--v3)","c2","<b>chain, step 3</b> · a subtle wrong turn here has no escape."),r(l[3].x,l[3].y,"var(--v5)","c3","<b>chain, end</b> · rides the single path to a wrong answer. No second opinion."),n.appendChild(t("text",{x:20,y:118,class:"elab"})).textContent="a tree";var p={x:80,y:150},h={x:220,y:110},v={x:220,y:150},u={x:220,y:200},f={x:360,y:96},m={x:360,y:140},g={x:500,y:118};i(p,h,"var(--v3)"),i(p,v,"var(--v5)"),i(p,u,"var(--v5)"),i(h,f,"var(--v1)"),i(h,m,"var(--v5)"),i(f,g,"var(--v1)"),r(p.x,p.y,"var(--v3)","t-root","<b>root</b> · the problem. The tree will fan out several first moves instead of one."),r(h.x,h.y,"var(--v1)","t-b1","<b>promising branch</b> · scored high, kept and expanded."),r(v.x,v.y,"var(--v5)","t-b2","<b>pruned</b> · a candidate step scored as a dead end and dropped before wasting compute on it."),r(u.x,u.y,"var(--v5)","t-b3","<b>pruned</b> · another discarded first move. Pruning is where the tree earns its cost."),r(f.x,f.y,"var(--v1)","t-b1a","<b>kept</b> · the surviving line of reasoning, still scoring well."),r(m.x,m.y,"var(--v5)","t-b1b","<b>pruned</b> · a sibling that looked fine but scored worse. Backtracking a chain cannot do."),r(g.x,g.y,"var(--v1)","t-ans","<b>answer</b> · reached by the branch that survived scoring. The tree found what the chain missed, at several times the compute.",13),o.forEach(function(e){n.appendChild(e)}),e("fig10").appendChild(a)}();var A={reason:"zero",samples:1,tools:"off",tree:"off"};function L(e,t){document.querySelectorAll("#"+e+" button").forEach(function(a){a.addEventListener("click",function(){A[t]=a.getAttribute("data-v"),document.querySelectorAll("#"+e+" button").forEach(function(e){e.classList.toggle("on",e===a)}),E()})})}function E(){var t,a={zero:22,few:44,cot:63}[A.reason],n=1,s=1;"few"===A.reason&&(n+=1.5),"cot"===A.reason&&(n+=1.2,s+=.8),a+=(("cot"===A.reason?92:"few"===A.reason?74:52)-a)*(1-Math.pow(.62,(A.samples-1)/4)),n*=A.samples,s*=1+.5*Math.log2(A.samples),"on"===A.tools&&(a=Math.min(97,a+14),n+=3,s+=2.5),"on"===A.tree&&(a=Math.min(98,a+7),n*=3,s*=2),t=a;var o,r=a=Math.max(2,Math.min(99,Math.round(t))),i=Math.round(10*n)/10,l=Math.round(10*s)/10;e("labRel").textContent=r+"%",e("labRelBar").style.width=r+"%",e("labRelBar").style.background=r>80?"var(--v18)":r>55?"var(--v20)":"var(--v16)",e("labCost").textContent=i+"×",e("labCostBar").style.width=Math.min(100,i/40*100)+"%",e("labCostBar").style.background=i>15?"var(--v16)":i>5?"var(--v20)":"var(--v18)",e("labLat").textContent=l+"×",e("labLatBar").style.width=Math.min(100,l/12*100)+"%",e("labLatBar").style.background=l>6?"var(--v16)":l>3?"var(--v20)":"var(--v18)",e("labGrade").innerHTML="reliability "+r+"% · cost "+i+"×",o=r<45?"Cheap and fast, and it will miss hard cases. Right for easy, high-volume tasks where an occasional miss is fine.":i>20?"Near the reliability ceiling, and paying dearly for the last few points. Justified only when a wrong answer is very expensive.":"on"===A.tools?"Grounded in tool results, so answers about the live world stop being guesses. The cost buys correctness you cannot get from reasoning alone.":"A balanced stack: reasoning plus a little voting. This is where most production tasks should sit before reaching for agents.",e("labOut").textContent=o}L("labReason","reason"),L("labTools","tools"),L("labTree","tree"),e("labSamples").addEventListener("input",function(){A.samples=+this.value,E()});var C={quick:{reason:"zero",samples:1,tools:"off",tree:"off"},reliable:{reason:"cot",samples:9,tools:"off",tree:"off"},agent:{reason:"cot",samples:1,tools:"on",tree:"off"}};document.querySelectorAll("[data-pre]").forEach(function(t){t.addEventListener("click",function(){var a=C[t.getAttribute("data-pre")];A.reason=a.reason,A.samples=a.samples,A.tools=a.tools,A.tree=a.tree,e("labSamples").value=a.samples,[["labReason","reason"],["labTools","tools"],["labTree","tree"]].forEach(function(e){document.querySelectorAll("#"+e[0]+" button").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===A[e[1]])})}),E()})}),E()}();
+</script>
+</body>
+</html>

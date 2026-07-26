@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nothing reaches the model as text</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E7EBE4; --paper-2:#DCE2D8; --ink:#161C17; --ink-soft:#3F4A41;
+    --ink-faint:#5F6B61; --rule:#C6CFC2; --accent:#0E6A66;
+    --panel:#121A18; --panel-ink:#DDE6DF;
+    --risk:#A8442E; --warn:#8A6A16; --safe:#37704F;
+    --maxw:680px; --wide:1080px; --pad:26px;
+    --disp:"Zilla Slab",Georgia,serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+    --f-lab:12px; --f-sm:15px; --f-bod:19px; --f-mid:24px; --f-h3:34px; --f-h2:46px; --f-hero:74px;
+    --t:.5s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+    font-size:var(--f-bod);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+  .bleed{width:100%;margin:0}
+  section{padding:clamp(72px,9vw,128px) 0}
+  section + section{border-top:1px solid var(--rule)}
+
+  h1,h2{font-family:var(--disp);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}
+  h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px}
+  h3{font-family:var(--disp);font-weight:600;font-size:clamp(23px,2.6vw,34px);
+     line-height:1.16;letter-spacing:-.015em;margin:0 0 16px}
+  p{margin:0 0 22px}
+  b,strong{font-weight:600}
+  code{font-family:var(--mono);font-size:var(--f-sm);background:var(--paper-2);
+       padding:2px 6px;border-radius:3px;color:var(--ink)}
+  a{color:var(--accent)}
+
+  .lede{font-family:var(--disp);font-weight:500;font-size:clamp(20px,2.2vw,24px);
+        line-height:1.42;letter-spacing:-.01em;color:var(--ink-soft)}
+
+  .eyebrow{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.17em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 30px;
+    display:flex;align-items:center;gap:11px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--accent)}
+
+  /* ---- HERO: the headline is built from the atom ---- */
+  header{padding:clamp(58px,9vw,116px) 0 clamp(56px,7vw,96px)}
+  h1{font-size:clamp(34px,6.2vw,74px);display:flex;flex-wrap:wrap;gap:10px 12px;max-width:15em}
+  h1 .sort{border:1.5px solid var(--rule);background:var(--paper-2);border-radius:5px;
+    padding:2px 16px 6px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+  h1 .sort:hover{border-color:var(--accent);color:var(--accent)}
+  h1 .sort.on{background:var(--accent);border-color:var(--accent);color:var(--paper);
+    font-family:var(--mono);font-weight:400;letter-spacing:0}
+  .hero-lede{margin:34px 0 0;max-width:26em}
+  @media(max-width:640px){h1 .sort{padding:1px 10px 4px}}
+
+  /* ---- the only figure container ---- */
+  .fig{border:1px solid var(--rule);background:var(--paper-2);border-radius:6px;
+    margin:34px 0 0;overflow:hidden}
+  .fig-head{padding:14px 20px;border-bottom:1px solid var(--rule);
+    font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-faint);
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .fig-head b{color:var(--accent);font-weight:500}
+  .fig-body{padding:32px 30px;background:var(--paper)}
+  .fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;
+    padding:16px 20px;border-top:1px solid var(--rule);background:var(--paper-2)}
+  .fig-ctl label{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .fig-cap{font-family:var(--mono);font-size:var(--f-lab);line-height:1.62;color:var(--ink-faint);
+    padding:14px 20px;border-top:1px solid var(--rule)}
+  .fig-cap b{color:var(--accent);font-weight:500}
+  .fig svg{display:block;width:100%;height:auto}
+  .fig-read{font-family:var(--mono);font-size:var(--f-sm);color:var(--ink-soft);
+    margin:20px 0 0;line-height:1.8}
+  .fig-read b{color:var(--ink);font-weight:500}
+  .fig-slider{flex:1;min-width:180px}
+  @media(max-width:640px){.fig-body{padding:22px 16px}}
+
+  /* ---- callouts ---- */
+  .intu{border-left:3px solid var(--accent);background:var(--paper-2);
+    border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.62}
+  .intu i{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.17em;
+    text-transform:uppercase;color:var(--accent);font-style:normal;display:block;margin-bottom:11px}
+  .intu p{margin:0}
+  .try{background:var(--panel);color:var(--panel-ink);border-radius:6px;
+    padding:22px 26px;margin:32px 0;font-size:var(--f-sm);line-height:1.75}
+  .try b{color:#6FC9B4;font-weight:500}
+  .note{background:var(--paper-2);border-radius:5px;padding:20px 24px;margin:30px 0 0;
+    font-size:var(--f-sm);line-height:1.72;color:var(--ink-soft)}
+  .note b{color:var(--ink);font-weight:600}
+  .note.hint{background:none;text-align:center;color:var(--ink-faint);font-family:var(--mono);
+    font-size:var(--f-lab);letter-spacing:.09em;cursor:pointer;padding:40px 0;margin:0}
+  .note.hint kbd{font-family:var(--mono);border:1px solid var(--rule);border-radius:3px;
+    padding:2px 7px;color:var(--ink-soft);background:var(--paper-2)}
+  .note.hint:hover,.note.hint:focus-visible{color:var(--accent)}
+  .pull{font-family:var(--disp);font-weight:600;font-size:clamp(23px,2.6vw,34px);
+    line-height:1.26;letter-spacing:-.015em;color:var(--accent);
+    border-left:3px solid var(--accent);padding-left:28px;margin:44px 0}
+
+  /* ---- controls ---- */
+  .chip{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.04em;
+    padding:9px 15px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
+    color:var(--ink-soft);cursor:pointer;transition:all .16s}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0;display:block}
+
+  /* ---- dark panel ---- */
+  .panel{background:var(--panel);color:var(--panel-ink);border-radius:6px;padding:26px 30px;
+    margin:32px 0 0;font-family:var(--mono);font-size:var(--f-sm);line-height:1.85;overflow-x:auto}
+  .panel b{color:#6FC9B4;font-weight:500}
+  .panel i{color:#8A9790;font-style:normal}
+  .panel.weeds{background:none;color:var(--ink);padding:0;margin:0;
+    font-family:var(--body);font-size:var(--f-bod);overflow:visible}
+  .panel.weeds[hidden]{display:none}
+  .panel.weeds details{border-top:1px solid var(--rule);padding:20px 0}
+  .panel.weeds summary{font-family:var(--disp);font-weight:600;font-size:var(--f-bod);
+    cursor:pointer;letter-spacing:-.01em}
+  .panel.weeds summary::marker{color:var(--accent)}
+  .panel.weeds p{margin:14px 0 0;font-size:var(--f-sm);line-height:1.75;color:var(--ink-soft)}
+
+  /* ---- progress: corner dial ---- */
+  .rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;
+    display:flex;align-items:center;justify-content:center;border-radius:50%;
+    background:var(--paper-2);border:1px solid var(--rule)}
+  .rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .rail circle{fill:none;stroke-width:2.5}
+  .rail .tk{stroke:var(--rule)}
+  .rail .fl{stroke:var(--accent);stroke-linecap:round}
+  .rail span{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-soft)}
+  @media(max-width:640px){.rail{display:none}}
+
+  /* ---- scrollytelling ---- */
+  .scrolly{position:relative;display:grid;gap:5vw;
+    grid-template-columns:minmax(0,1fr) minmax(0,430px);
+    max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+  .sg > *{width:100%;max-width:560px}
+  .ss{padding:38vh 0 42vh}
+  .stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;
+    opacity:.26;transition:opacity .35s;cursor:pointer}
+  .stp.on{opacity:1}
+  .stp p{font-size:var(--f-mid);line-height:1.44;margin:0;color:var(--ink-soft)}
+  .stp.on p{color:var(--ink)}
+  [data-gel]{opacity:.1;transition:opacity var(--t)}
+  [data-gel].show{opacity:1}
+  @media (prefers-reduced-motion:reduce){[data-gel],.stp{transition:none}}
+  @media(max-width:900px){
+    .scrolly{grid-template-columns:1fr;gap:0}
+    .sg{order:-1;position:sticky;height:44vh;background:var(--paper);
+      border-bottom:1px solid var(--rule);z-index:5}
+    .ss{padding:4vh 0 12vh}
+    .stp{min-height:auto;padding:26px 0}
+    .stp p{font-size:var(--f-bod)}
+  }
+
+  /* ---- prose to figure coupling ---- */
+  .ref{text-decoration:underline dotted var(--accent);text-underline-offset:4px;cursor:help}
+  .ref.hot{color:var(--accent)}
+  .fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  ::selection{background:var(--accent);color:var(--paper)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="tk" cx="27" cy="27" r="23"/><circle class="fl" id="pfill" cx="27" cy="27" r="23"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+<!-- ============ HERO: headline built from the atom ============ -->
+<header class="hero" data-hero="atom">
+  <div class="col">
+    <p class="eyebrow">byte pair encoding &middot; a 137 character corpus</p>
+    <h1 id="heroH1"></h1>
+    <p class="lede hero-lede">Every sentence you send a language model is cut into pieces and swapped for integers before a single calculation happens. This page builds that cutter from scratch, out of a corpus small enough to check by hand.</p>
+  </div>
+</header>
+
+<!-- ============ 01 ============ -->
+<section data-ch="01" data-defines="token,token id" class="reveal">
+  <div class="col">
+    <h2>The model never sees your letters</h2>
+    <p>Type <code>the cat sat on the mat</code> into a chat box. You are looking at twenty two characters. The model is not.</p>
+    <p>By the time anything reaches the part of the system that does arithmetic, that sentence has become a short list of whole numbers. Something like six of them. Not letters, not words, not strings. Integers.</p>
+    <p>The pieces that get numbered are called <span class="ref" data-ref="tok">tokens</span>, and the number each one gets is its <span class="ref" data-ref="id">token ID</span>. Every piece of text you have ever sent a model went through this swap first.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>Figure 1 &middot; what actually goes in</span><span id="f1Read">6 tokens</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 210" role="img" aria-label="A sentence shown as text pieces and as the integers that replace them"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f1All">swap every piece for its number</button>
+        <button class="chip" id="f1Reset">show the text again</button>
+      </div>
+      <div class="fig-cap"><b>Click any single piece to flip just that one.</b> The numbers come from the small numbered list this page builds later, not from a production model.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A printer's type case: a shallow drawer of compartments, each holding one metal sort. To set a line you do not write it, you fetch compartment 14, then 3, then 91. <b>The compartment number is the only thing the press understands.</b> Which pieces get their own compartment is a decision somebody made in advance, and it is the whole subject of this page.</p></div>
+    <p>So the real question is not whether text gets numbered. It is where the cuts fall. Cut in one place and the list is short but the drawer needs millions of compartments. Cut in another and the drawer is tiny but the list runs forever.</p>
+    <p>Start with the two obvious places to cut, because both of them fail in a way worth feeling.</p>
+  </div>
+</section>
+
+<!-- ============ 02 ============ -->
+<section data-ch="02" data-uses="token,token id" data-defines="vocabulary,unknown word" class="reveal">
+  <div class="col">
+    <h2>Letters are too small and words are too many</h2>
+    <p>Answer fast, gut reaction: if you had to give every piece of English its own number, what would you number? Individual letters, or whole words?</p>
+    <p>Both answers are defensible and both are wrong, in opposite directions. The drawer of compartments is called the <span class="ref" data-ref="voc">vocabulary</span>, and the two choices trade its size against the length of the list.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>Figure 2 &middot; the same sentence, two ways to cut it</span><span id="f2Read">one number per letter</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 260" role="img" aria-label="A sentence cut into letters, then into words, with vocabulary size and list length"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f2="char">one number per letter</button>
+        <button class="chip" data-f2="word">one number per word</button>
+      </div>
+      <div class="fig-cap"><b>Switch between the two.</b> Watch the two bars move in opposite directions. That opposition is the entire problem.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Letters give you a drawer of about thirty compartments and a list twenty two items long. Nothing is ever missing, because every English sentence is made of the same few letters. But the model now has to learn that <code>c</code>, <code>a</code>, <code>t</code> in that order means a small animal, and it has to relearn that from scratch for every word.</p>
+    <p>Words flip it. The list drops to six. The drawer needs a compartment for every word in the language, and English has a few hundred thousand of them before you count names, typos and slang. Worse, the day someone types a word that was not in your drawer, you have nothing to give them. That is an <span class="ref" data-ref="oov">unknown word</span>, and it is not a rare edge case: new words appear constantly.</p>
+    <div class="intu"><i>picture it</i><p>Two ways to stock a hardware shop. Sell only raw steel and every customer can build anything, but they leave with a bar and a week of filing ahead of them. Sell only finished machines and one customer walks out happy while the next asks for something you have never made. <b>What you want is a shelf of common parts.</b></p></div>
+    <p>The word <code>walking</code> shows the whole argument in seven letters. As letters it is seven separate things with no visible relationship to <code>walked</code>. As a word it is one thing with no visible relationship to <code>walked</code> either. Both cuts hide the same fact.</p>
+  </div>
+</section>
+
+<!-- ============ 03 ============ -->
+<section data-ch="03" data-uses="vocabulary,unknown word" data-defines="subword" class="reveal">
+  <div class="col">
+    <h2>The useful pieces sit between the two</h2>
+    <div class="try">Say these out loud, slowly, and listen for the seam.<br><b>walk &nbsp; walked &nbsp; walking &nbsp; walkable</b></div>
+    <p>You heard <code>walk</code> four times. Three suffixes rode on top of it. Nobody taught you to hear that seam, and no dictionary of whole words would show it to you, because in a dictionary those are four unrelated entries.</p>
+    <p>A piece that is bigger than a letter and smaller than a word is called a <span class="ref" data-ref="sub">subword</span>. Give <code>walk</code> its own compartment and <code>ing</code> its own compartment, and suddenly <code>walking</code> costs two items instead of seven, while the drawer grew by two rather than by one entry per word form.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span>Figure 3 &middot; one word, three cutting rules</span><span id="f3Read">letters</span></div>
+      <div class="fig-body"><svg id="f3" viewBox="0 0 900 250" role="img" aria-label="The word walking cut into letters, subwords and one whole word, with an unseen word tested against each"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f3="char">letters</button>
+        <button class="chip" data-f3="sub">subwords</button>
+        <button class="chip" data-f3="word">whole words</button>
+      </div>
+      <div class="fig-cap"><b>Pick a rule, then look at the bottom row.</b> That row is a word the cutter has never seen. Only the middle rule handles it without either spelling it out or giving up.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Lego against a model kit. A kit builds one castle beautifully and builds nothing else. Loose bricks build anything but you are placing them one at a time. <b>Subwords are pre-assembled sections: a wall, a turret, a gate.</b> New castle, same sections, and if a shape is genuinely new you can still fall back to single bricks.</p></div>
+    <p>Which leaves one question, and it is the hard one. Who decides that <code>walk</code> and <code>ing</code> deserve compartments and <code>alki</code> does not?</p>
+    <p>Not a linguist. Nobody sat down with a grammar of English and enumerated its suffixes. The pieces are found by counting, and the counting procedure is simple enough to run in your head.</p>
+  </div>
+</section>
+
+<!-- ============ 04 ============ -->
+<section data-ch="04" data-uses="subword" data-defines="pair count" class="reveal">
+  <div class="col">
+    <h2>Count every neighbouring pair, then fuse the winner</h2>
+    <p>Here is the corpus this page trains on. Seven words, repeated the number of times shown, 137 characters in total. Small enough that you can check every number below by hand.</p>
+    <div class="panel">walk <b>&times;5</b> &nbsp; walked <b>&times;4</b> &nbsp; walking <b>&times;4</b> &nbsp; talked <b>&times;3</b><br>talking <b>&times;3</b> &nbsp; jumped <b>&times;2</b> &nbsp; jumping <b>&times;2</b><br><i>137 characters, 14 distinct letters</i></div>
+    <p>Everything starts as single letters. Now look at every adjacent pair in the whole corpus and count how often each one occurs, remembering that a word repeated five times contributes its pairs five times. That number is the <span class="ref" data-ref="pc">pair count</span>.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span>Figure 4 &middot; counting adjacent pairs</span><span id="f4Read">click a pair</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 300" role="img" aria-label="The seven corpus words as rows of letters, with adjacent pairs highlighted and counted"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f4Rank">rank the top five</button>
+        <button class="chip" id="f4Clear">clear</button>
+      </div>
+      <div class="fig-cap"><b>Click the gap between any two letters.</b> Every other occurrence of that pair lights up across all seven words, and the count is weighted by how often each word appears.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Try the gap between <code>a</code> and <code>l</code>. It appears in walk, walked, walking, talked and talking, which with their repeats comes to nineteen. No other pair beats it.</p>
+    <p>So <code>al</code> wins. Glue it together everywhere it occurs, and treat the result as a single piece from now on. The corpus just got shorter and the drawer just gained one compartment.</p>
+    <div class="intu"><i>picture it</i><p>A typesetter who notices she keeps reaching for <code>t</code> and <code>h</code> together, hundreds of times an hour. So she casts a single piece of metal with <code>th</code> on it and drops it in the case. <b>She did not consult a grammar, she watched her own hands.</b> That is the entire selection rule: whatever you reach for most, make it one piece.</p></div>
+    <p>One merge is not interesting. What makes this work is that you do it again on the result, and again, and the pairs that win the later rounds are made of pieces that won the earlier ones.</p>
+  </div>
+</section>
+
+<!-- ============ 05 : SCROLLY ============ -->
+<section data-ch="05" data-uses="pair count" data-defines="merge,merge rule" class="reveal">
+  <div class="col">
+    <h2>Run it six times and English grammar falls out</h2>
+    <p>The loop is four lines long: count the pairs, take the most frequent, fuse it everywhere, write down what you did. Each fusion is a <span class="ref" data-ref="mg">merge</span>, and the record of it is a <span class="ref" data-ref="mr">merge rule</span>. Scroll through the first six.</p>
+  </div>
+  <div class="bleed">
+    <div class="scrolly" id="sc1">
+      <div class="sg">
+        <div class="fig" style="margin:0">
+          <div class="fig-head"><span>Figure 5 &middot; the merge loop</span><span id="sc1Read">0 merges &middot; 137 tokens</span></div>
+          <div class="fig-body"><svg id="sc1fig" viewBox="0 0 520 330" role="img" aria-label="The corpus words fusing letter by letter as merges are applied"></svg></div>
+          <div class="fig-cap"><b>Click any step to jump to it.</b> Faint pieces have not been fused yet.</div>
+        </div>
+      </div>
+      <div class="ss">
+        <div class="stp" data-step="0"><h3>Everything is letters</h3><p>Fourteen distinct letters, 137 tokens across the corpus. No piece is bigger than one character, and nothing yet connects walk to walked.</p></div>
+        <div class="stp" data-step="1"><h3>al wins, nineteen times</h3><p>The first merge is not a word or a syllable. It is the fragment shared by walk and talk, and it wins on raw frequency alone.</p></div>
+        <div class="stp" data-step="2"><h3>alk, then walk</h3><p>The second round counts pairs again, and now al plus k is available because al exists. Two rounds later the whole stem walk is one piece.</p></div>
+        <div class="stp" data-step="3"><h3>ed appears on its own</h3><p>Round four fuses e and d, nine occurrences. Nobody told this procedure that English marks the past tense with ed. It counted.</p></div>
+        <div class="stp" data-step="4"><h3>in, then ing</h3><p>Rounds five and six do the same thing to the present participle. The suffix arrives as a single piece, built from a piece that arrived one round earlier.</p></div>
+        <div class="stp" data-step="5"><h3>Six merges, 59 tokens</h3><p>The corpus has shrunk from 137 pieces to 59, and the drawer holds twenty compartments instead of fourteen. Walk, talk, ed and ing are now things.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Water finding a channel. No engineer chose where the stream runs, but repeat the flow enough times and a groove appears exactly where the most water passed. <b>The merge rules are that groove, and the corpus is the water.</b> Change the corpus and the grooves land somewhere else, which is why a tokenizer trained on English does badly on code.</p></div>
+    <p>Notice what did not happen. There was no dictionary, no list of suffixes, no rule saying past tense is special. The procedure discovered <code>ed</code> and <code>ing</code> because they are genuinely frequent, and frequency in real text is not random.</p>
+    <p>Six merges was an arbitrary stopping point. Stopping is the one decision left, and it turns out to be the only dial anybody actually turns.</p>
+  </div>
+</section>
+
+<!-- ============ 06 : THE KNOB ============ -->
+<section data-ch="06" data-uses="merge,merge rule" data-defines="vocabulary size" class="reveal">
+  <div class="col">
+    <h2>Vocabulary size is the dial, and it cuts both ways</h2>
+    <p>The loop will happily run forever. Every extra turn adds one compartment to the drawer and removes some pieces from the list. When you stop, the number of compartments you have is the <span class="ref" data-ref="vs">vocabulary size</span>, and it is very nearly the only tokenizer setting anyone chooses.</p>
+    <p>Drag it. Everything else about the corpus is held still.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span>Figure 6 &middot; merges against sequence length</span><span id="f6Read">0 merges</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 330" role="img" aria-label="The corpus words fusing as the merge count rises, with vocabulary size and token count"></svg></div>
+      <div class="fig-ctl">
+        <label for="f6Slider">merges</label>
+        <span class="fig-slider"><input type="range" id="f6Slider" min="0" max="14" value="0" step="1" aria-label="number of merges"></span>
+      </div>
+      <div class="fig-cap"><b>Drag from 0 to 14.</b> Vocabulary climbs by exactly one per merge. Token count falls from 137 to 27. Watch what happens to walked around merge eight.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The two numbers move in opposite directions and neither is free. A big vocabulary means short sequences, which is what you want, because the work a model does grows with the square of sequence length. It also means a bigger table of learned vectors to store, and every rare compartment gets seen less often during training, so the model learns it worse.</p>
+    <div class="intu"><i>picture it</i><p>Buying kitchen jars. Few jars means everything is loose in bags and finding the cumin takes a while. A jar per ingredient means instant cumin and a wall of jars, most of them touched twice a year and taking up shelf you needed. <b>The right number is neither extreme, and it depends entirely on what you cook.</b></p></div>
+    <p>Now find merge eight on the slider. It fuses <code>walk</code> with <code>ed</code>, so <code>walked</code> becomes a single indivisible piece. Sequence length drops, which looks like a win. But the model can no longer see that <code>walked</code> and <code>walking</code> share a stem, because at that vocabulary size they no longer do share anything visible. The information was there at merge seven and gone at merge eight.</p>
+    <p class="pull">Every merge buys you a shorter sequence and sells a little bit of structure.</p>
+    <p>Real tokenizers stop somewhere between about fifty thousand and two hundred thousand merges, which is a judgement call, not a derivation. And once you have stopped, the merge rules are frozen. Which raises the practical question: what happens to a word the corpus never contained?</p>
+  </div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section data-ch="07" data-uses="vocabulary size,merge rule" data-defines="encoding" class="reveal">
+  <div class="col">
+    <h2>New text replays the old merges, in order</h2>
+    <p>The corpus never contained <code>walkable</code>. The tokenizer has no compartment for it and never will. It still handles it, and the way it does so is the reason this whole approach won.</p>
+    <p>Split the new word into letters. Then walk the merge rules from first to last, and wherever a rule matches, apply it. That replay is called <span class="ref" data-ref="enc">encoding</span>, and it is what runs every time you press send.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>Figure 7 &middot; encoding a word the cutter has never seen</span><span id="f7Read">rule 0 of 14</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 240" role="img" aria-label="An unseen word being encoded by applying learned merge rules in order"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7w="walkable">walkable</button>
+        <button class="chip" data-f7w="jumper">jumper</button>
+        <button class="chip" data-f7w="stalking">stalking</button>
+        <button class="chip" id="f7Step">apply the next rule</button>
+        <button class="chip" id="f7Run">run all 14</button>
+      </div>
+      <div class="fig-cap"><b>Pick a word, then step through.</b> Most rules do nothing. The ones that fire are the ones whose pieces happen to be sitting next to each other.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p><code>walkable</code> comes out as <code>walk</code> + <code>a</code> + <code>b</code> + <code>l</code> + <code>e</code>. Five pieces. The stem was recognised, the ending was not, so the ending fell back to letters. Nothing was dropped and nothing was marked unknown.</p>
+    <div class="intu"><i>picture it</i><p>Setting a word in metal type with the case you already own. You reach for the <code>walk</code> sort because you cast one last year, then you spell out the rest letter by letter because nobody ever cast <code>able</code>. <b>The line still gets set.</b> It just takes five pieces instead of two.</p></div>
+    <p>That fallback is why this survives contact with real input. Names, typos, chemical formulas, a language the corpus barely contained: all of them get pieced together from whatever fragments exist, down to single characters in the worst case. There is no failure mode where the tokenizer refuses.</p>
+    <p>Try <code>stalking</code> in the figure and watch something less comfortable happen. Now the pieces are numbered, and it is worth being precise about what the model does with those numbers, because it is not what most people assume.</p>
+  </div>
+</section>
+
+<!-- ============ 08 ============ -->
+<section data-ch="08" data-uses="encoding,token id" data-defines="embedding row" class="reveal">
+  <div class="col">
+    <h2>The integer is an address, not a meaning</h2>
+    <p>Token 4,102 is not larger than token 17. It is not more positive, more recent, or more anything. The number is a row index, nothing else.</p>
+    <p>Behind it sits a table with one row per compartment. Each row is a list of numbers that the model learned during training, and that row is the <span class="ref" data-ref="emb">embedding row</span> for that token. The ID's only job is to say which row to fetch.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span>Figure 8 &middot; text to pieces to rows</span><span id="f8Read">click a stage</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 300" role="img" aria-label="Text becoming pieces, then integers, then rows of learned numbers"></svg></div>
+      <div class="fig-cap"><b>Click each of the four stages.</b> The rows shown carry four numbers so you can read them; production models use hundreds or thousands per row.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A cloakroom ticket. Number 62 tells you nothing about the coat, and ticket 63 is not a slightly larger coat. <b>The ticket is worthless without the rail it points at, and everything you care about is hanging on the rail.</b> Tokenization hands out tickets. Training is what fills the rail.</p></div>
+    <p>Two consequences follow, and both surprise people. The first is that changing the tokenizer invalidates the model. Swap in a cutter that assigns different IDs and every row is now the wrong row, so the model is not degraded, it is scrambled.</p>
+    <p>The second is billing and limits. A context window measured in tokens is a limit on pieces, not characters or words. The same paragraph can cost noticeably different amounts depending on which cutter is running, and the difference is not evenly distributed across the world's languages.</p>
+    <p>Which is where the honest part of this starts.</p>
+  </div>
+</section>
+
+<!-- ============ 09 ============ -->
+<section data-ch="09" data-uses="encoding,vocabulary size,embedding row" class="reveal">
+  <div class="col">
+    <h2>Spaces, digits and Devanagari are where it goes wrong</h2>
+    <p>Ask a model how many r's are in <code>strawberry</code> and it has a decent chance of getting it wrong. This is usually reported as a reasoning failure. It is mostly a tokenization failure, and once you have built the cutter you can see exactly why.</p>
+    <p>The model was never given the letters. It was given two or three pieces, each an opaque address, and asked a question about characters it cannot see inside those pieces. Counting the letters in a token is like counting the buttons on a coat from the cloakroom ticket.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>Figure 9 &middot; four things that split badly</span><span id="f9Read">select a case</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 250" role="img" aria-label="Four strings that production tokenizers split in awkward ways"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f9="letters">counting letters</button>
+        <button class="chip" data-f9="space">a leading space</button>
+        <button class="chip" data-f9="number">a long number</button>
+        <button class="chip" data-f9="script">a non Latin script</button>
+      </div>
+      <div class="fig-cap"><b>Click each case.</b> Splits are illustrative of how production tokenizers behave, drawn to shape rather than to exact IDs.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The leading space one catches nearly everybody. In most modern tokenizers, <code>walk</code> at the start of a line and <code>&nbsp;walk</code> after a space are different compartments with different IDs and separately learned rows. Trailing whitespace in a prompt can therefore change the split of the word that follows it.</p>
+    <p>Digits are worse. A long number gets carved into chunks by frequency, so <code>1,024</code> and <code>1,025</code> may not even share a boundary. Arithmetic asks the model to line up place values it was handed in ragged pieces.</p>
+    <div class="intu"><i>picture it</i><p>A shop that stocks parts for the cars people in one town actually drive. Bring in a common local model and everything is in stock. Bring in something from elsewhere and the mechanic builds it from raw stock, slowly and expensively. <b>The shop is not biased against your car, it is stocked from a sample that did not contain many of them.</b></p></div>
+    <p>That last one is a real cost, not a curiosity. Because merges are learned from a corpus that is mostly English, text in scripts like Devanagari or Thai commonly needs several times more tokens to say the same thing. More tokens means more of the context window spent, more compute per sentence, and a larger bill for the same paragraph.</p>
+    <p>None of this is fixed by a smarter model. It is decided before the model runs, by a counting procedure over somebody else's corpus, frozen months earlier.</p>
+  </div>
+</section>
+
+<!-- ============ CLOSE ============ -->
+<section class="reveal">
+  <div class="col">
+    <p class="lede" style="text-align:center;max-width:22em;margin:0 auto">A tokenizer is a frozen record of what was frequent in one pile of text, and every prompt you write is priced and cut by it.</p>
+  </div>
+  <p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+  <div class="col">
+    <section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+      <h3>Into the weeds</h3>
+      <details><summary>Why is it called byte pair encoding?</summary><p>The procedure was published in 1994 as a data compression method by Philip Gage, working on bytes rather than characters. Sennrich, Haddow and Birch repurposed it for machine translation in 2016. The name stuck even though the compression use case did not, and modern implementations really do run over bytes, which is how they handle any Unicode input without an unknown token.</p></details>
+      <details><summary>What happens to a character the corpus never contained?</summary><p>If the tokenizer works over raw bytes, nothing can be truly unseen, because every possible byte value is in the base vocabulary. An unusual emoji simply costs several tokens, one per byte of its encoding, rather than failing. This is the main practical reason byte level BPE displaced character level.</p></details>
+      <details><summary>Is greedy pair selection actually optimal?</summary><p>No. Taking the most frequent pair at each step is a greedy heuristic and there is no guarantee it produces the shortest possible encoding for a given vocabulary size. It is used because it is cheap, deterministic and good enough. WordPiece, used by BERT, picks the pair that most increases corpus likelihood instead, which often gives slightly different splits.</p></details>
+      <details><summary>Why do merge rules have to be applied in learned order?</summary><p>Because later rules are built from the products of earlier ones. Rule six fuses <code>in</code> and <code>g</code>, which only exists if rule five already made <code>in</code>. Apply them out of order and the later rules find nothing to match. This is also why the merge list, not just the vocabulary, has to ship with the model.</p></details>
+      <details><summary>What is the pretokenizer?</summary><p>Production tokenizers do not run BPE over an entire document. They first split on a regular expression that isolates whitespace, punctuation and digit runs, then run merges inside each fragment. This is what prevents merges from spanning word boundaries and producing a single token for <code>the cat</code>. It is also where the leading space behaviour comes from.</p></details>
+      <details><summary>Could a model just read raw bytes and skip all this?</summary><p>Some do. The tradeoff is sequence length: byte level sequences are roughly four to five times longer than subword sequences for English, and attention cost grows quadratically with length. Recent work on byte level and patch based models tries to recover that cost with a learned grouping layer, which is the same problem again in a different place.</p></details>
+    </section>
+  </div>
+</section>
+
+<footer class="col" style="padding:0 var(--pad) 90px;font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--ink-faint)">
+  <p>Every merge, count and split on this page is computed in your browser from the seven word corpus shown in Figure 4. Nothing is precomputed or animated from a recording. Figure 9 is drawn to shape and labelled as illustrative.<br>
+  Byte pair encoding: Gage 1994; adapted for text by Sennrich, Haddow and Birch, 2016. Vocabulary sizes quoted as approximate ranges for GPT era tokenizers. Snapshot July 2026.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     THE ATOM: a sort. One geometry, four states.
+       raw  dashed outline            a character not yet fused
+       tok  solid outline, tinted     a settled piece
+       hot  accent fill               the piece under discussion
+       id   dark fill, mono number    the piece as its integer
+     Every figure on this page is built from this one function.
+     ============================================================ */
+  var C={paper:'#E7EBE4',paper2:'#DCE2D8',ink:'#161C17',soft:'#3F4A41',faint:'#5F6B61',
+         rule:'#C6CFC2',accent:'#0E6A66',panel:'#121A18',pink:'#DDE6DF',
+         risk:'#A8442E',warn:'#8A6A16',safe:'#37704F'};
+  var R=Math.round;
+
+  function sort(x,y,w,h,state,label){
+    x=R(x);y=R(y);w=R(w);h=R(h);
+    var fill=C.paper, stroke=C.rule, dash='4 3', sw=1.5, tx=C.soft;
+    if(state==='tok'){fill=C.paper2;dash='none';}
+    else if(state==='hot'){fill=C.accent;stroke=C.accent;dash='none';sw=3;tx=C.paper;}
+    else if(state==='id'){fill=C.panel;stroke=C.panel;dash='none';tx=C.pink;}
+    else if(state==='ghost'){fill='none';stroke=C.rule;tx=C.faint;}
+    var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="4" fill="'+fill+
+          '" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-dasharray="'+dash+
+          '" shape-rendering="crispEdges"/>';
+    if(label!==undefined&&label!==null&&w>13)
+      s+='<text x="'+R(x+w/2)+'" y="'+R(y+h/2+5)+'" text-anchor="middle" fill="'+tx+
+         '" font-family="IBM Plex Mono,monospace" font-size="15">'+label+'</text>';
+    return s;
+  }
+  function lab(x,y,t,col,anchor){
+    return '<text x="'+R(x)+'" y="'+R(y)+'" text-anchor="'+(anchor||'start')+'" fill="'+(col||C.faint)+
+           '" font-family="IBM Plex Mono,monospace" font-size="12" letter-spacing=".02em">'+t+'</text>';
+  }
+  function bar(x,y,w,h,frac,col){
+    frac=Math.max(0,Math.min(1,frac));
+    return '<rect x="'+R(x)+'" y="'+R(y)+'" width="'+R(w)+'" height="'+R(h)+'" fill="'+C.paper2+
+           '" shape-rendering="crispEdges"/><rect x="'+R(x)+'" y="'+R(y)+'" width="'+R(w*frac)+
+           '" height="'+R(h)+'" fill="'+(col||C.accent)+'" shape-rendering="crispEdges"/>';
+  }
+  function put(id,inner){var e=document.getElementById(id); if(e) e.innerHTML=inner;}
+  function set(id,t){var e=document.getElementById(id); if(e) e.textContent=t;}
+  function ch(w){return String(w).split('');}
+
+  /* ---------------- the real BPE, trained live ---------------- */
+  var CORPUS=[['walk',5],['walked',4],['walking',4],['talked',3],['talking',3],['jumped',2],['jumping',2]];
+  var BASE=[]; CORPUS.forEach(function(r){ch(r[0]).forEach(function(c){if(BASE.indexOf(c)<0)BASE.push(c);});});
+
+  function fuse(sy,a,b){
+    var o=[],i=0;
+    while(i<sy.length){
+      if(i<sy.length-1&&sy[i]===a&&sy[i+1]===b){o.push(a+b);i+=2;} else {o.push(sy[i]);i++;}
+    }
+    return o;
+  }
+  function countPairs(state){
+    var m={},order=[];
+    state.forEach(function(r){
+      for(var i=0;i<r.sy.length-1;i++){
+        var k=r.sy[i]+'\u0000'+r.sy[i+1];
+        if(!(k in m)){m[k]=0;order.push(k);}
+        m[k]+=r.n;
+      }
+    });
+    return {map:m,order:order};
+  }
+  function best(state){
+    var c=countPairs(state),top=null;
+    c.order.forEach(function(k){ if(!top||c.map[k]>c.map[top]) top=k; });
+    if(!top) return null;
+    var p=top.split('\u0000');
+    return {a:p[0],b:p[1],n:c.map[top]};
+  }
+  function freshState(){
+    return CORPUS.map(function(r){return {w:r[0],n:r[1],sy:ch(r[0])};});
+  }
+  /* train: 14 merges, and record the corpus state after each one */
+  var MERGES=[], SNAP=[], TOTALS=[];
+  (function(){
+    var st=freshState();
+    SNAP.push(st.map(function(r){return r.sy.slice();}));
+    TOTALS.push(st.reduce(function(t,r){return t+r.sy.length*r.n;},0));
+    for(var k=0;k<14;k++){
+      var m=best(st); if(!m) break;
+      MERGES.push(m);
+      st.forEach(function(r){ r.sy=fuse(r.sy,m.a,m.b); });
+      SNAP.push(st.map(function(r){return r.sy.slice();}));
+      TOTALS.push(st.reduce(function(t,r){return t+r.sy.length*r.n;},0));
+    }
+  })();
+  function encode(word,upto){
+    var sy=ch(word);
+    for(var i=0;i<Math.min(upto===undefined?MERGES.length:upto,MERGES.length);i++)
+      sy=fuse(sy,MERGES[i].a,MERGES[i].b);
+    return sy;
+  }
+  /* stable id table: base letters first, then merge products in learned order */
+  var IDS={}; BASE.forEach(function(c,i){IDS[c]=i+1;});
+  MERGES.forEach(function(m,i){ IDS[m.a+m.b]=BASE.length+i+1; });
+  function idOf(t){ if(t in IDS) return IDS[t]; var h=0; for(var i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))%900; return 100+h; }
+
+  /* ---------------- row layout helper (used by 4, 5, 6) ---------------- */
+  function drawRows(rows,opt){
+    var s='',y=opt.y0,cw=opt.cw||34,gap=opt.gap||5,h=opt.h||30;
+    rows.forEach(function(r,ri){
+      s+=lab(opt.x0-14,y+h/2+4,'\u00d7'+r.n,C.faint,'end');
+      var x=opt.x0;
+      r.sy.forEach(function(t,ti){
+        var w=Math.max(cw,t.length*15+14);
+        var st=opt.state?opt.state(ri,ti,t):(t.length>1?'tok':'raw');
+        s+=sort(x,y,w,h,st,t);
+        if(opt.gapHit) s+=opt.gapHit(ri,ti,x+w,y,h);
+        x+=w+gap;
+      });
+      y+=h+(opt.vgap||9);
+    });
+    return s;
+  }
+
+  /* ---------------- progress dial ---------------- */
+  (function(){
+    var pf=document.getElementById('pfill'),pt=document.getElementById('ptxt'),CIRC=2*Math.PI*23;
+    if(!pf) return;
+    pf.style.strokeDasharray=CIRC; pf.style.strokeDashoffset=CIRC;
+    addEventListener('scroll',function(){
+      var h=document.documentElement,d=h.scrollHeight-h.clientHeight;
+      var p=d>0?h.scrollTop/d:0; p=Math.min(1,Math.max(0,p));
+      pf.style.strokeDashoffset=CIRC*(1-p);
+      pt.textContent=Math.round(p*100)+'%';
+    },{passive:true});
+  })();
+
+  /* ---------------- reveal on scroll ---------------- */
+  var ro=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+  },{threshold:.06,rootMargin:'0px 0px -4% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+  addEventListener('scroll',function(){
+    document.querySelectorAll('.reveal:not(.in)').forEach(function(el){
+      if(el.getBoundingClientRect().top<innerHeight*0.94) el.classList.add('in');
+    });
+  },{passive:true});
+
+  /* ---------------- HERO: headline made of sorts ---------------- */
+  (function(){
+    var h1=document.getElementById('heroH1'); if(!h1) return;
+    var words=['Nothing','reaches','the','model','as','text'];
+    h1.innerHTML=words.map(function(w,i){
+      return '<span class="sort" data-hw="'+i+'" role="button" tabindex="0">'+w+'</span>';
+    }).join('');
+    h1.querySelectorAll('.sort').forEach(function(el,i){
+      var word=words[i];
+      function flip(){
+        var on=el.classList.toggle('on');
+        el.textContent=on?String(1000+idOf(word.toLowerCase())):word;
+      }
+      el.addEventListener('click',flip);
+      el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();} });
+    });
+  })();
+
+  /* ---------------- FIGURE 1 ---------------- */
+  (function(){
+    var svg=document.getElementById('f1'); if(!svg) return;
+    var W=['the','cat','sat','on','the','mat'], flipped=W.map(function(){return false;});
+    function draw(){
+      var s='',x=40,y=64,h=52;
+      s+=lab(40,36,'what you typed');
+      W.forEach(function(w,i){
+        var cw=Math.max(74,w.length*20+40);
+        var f=flipped[i];
+        s+=sort(x,y,cw,h,f?'id':'tok',f?String(1000+idOf(w)):w);
+        s+='<rect x="'+x+'" y="'+y+'" width="'+cw+'" height="'+h+'" fill="rgba(0,0,0,0)" '+
+           'data-f1="'+i+'" style="cursor:pointer"/>';
+        x+=cw+10;
+      });
+      s+=lab(40,y+h+34,'what the model receives',C.accent);
+      var n=flipped.filter(Boolean).length;
+      s+=lab(40,y+h+62,n===0?'still text: nothing here is a number yet'
+        :n<W.length?(n+' of 6 pieces swapped')
+        :'6 integers, in that order. the letters are gone.',n===W.length?C.accent:C.faint);
+      svg.innerHTML=s;
+      set('f1Read',W.length+' tokens');
+    }
+    svg.addEventListener('click',function(e){
+      var t=e.target.getAttribute&&e.target.getAttribute('data-f1');
+      if(t!==null&&t!==undefined){ flipped[+t]=!flipped[+t]; draw(); }
+    });
+    document.getElementById('f1All').addEventListener('click',function(){
+      flipped=W.map(function(){return true;}); draw();
+    });
+    document.getElementById('f1Reset').addEventListener('click',function(){
+      flipped=W.map(function(){return false;}); draw();
+    });
+    draw();
+  })();
+
+  /* ---------------- FIGURE 2 ---------------- */
+  (function(){
+    var svg=document.getElementById('f2'); if(!svg) return;
+    var mode='char', S='the cat sat on the mat';
+    function draw(){
+      var s='',x=40,y=52,h=34,units,vocab,vocabTxt;
+      if(mode==='char'){ units=ch(S); vocab=27; vocabTxt='27 compartments'; }
+      else { units=S.split(' '); vocab=170000; vocabTxt='about 170,000 compartments'; }
+      units.forEach(function(u){
+        var w=mode==='char'?26:Math.max(52,u.length*15+22);
+        s+=sort(x,y,w,h,'tok',u===' '?'\u2423':u);
+        x+=w+5;
+      });
+      s+=lab(40,38,mode==='char'?'22 pieces':'6 pieces',C.accent);
+      var by=y+h+52;
+      s+=lab(40,by-10,'list length');
+      s+=bar(40,by,760,16,units.length/22,C.accent);
+      s+=lab(806,by+13,String(units.length),C.soft);
+      s+=lab(40,by+50,'drawer size');
+      s+=bar(40,by+60,760,16,Math.min(1,vocab/170000),mode==='char'?C.safe:C.risk);
+      s+=lab(40,by+98,vocabTxt,mode==='char'?C.safe:C.risk);
+      if(mode==='word') s+=lab(806,by+98,'and any new word has none',C.risk,'end');
+      else s+=lab(806,by+98,'never missing a piece',C.safe,'end');
+      svg.innerHTML=s;
+      set('f2Read',mode==='char'?'one number per letter':'one number per word');
+    }
+    document.querySelectorAll('[data-f2]').forEach(function(b){
+      b.addEventListener('click',function(){
+        mode=b.getAttribute('data-f2');
+        document.querySelectorAll('[data-f2]').forEach(function(o){o.classList.toggle('on',o===b);});
+        draw();
+      });
+    });
+    draw();
+  })();
+
+  /* ---------------- FIGURE 3 ---------------- */
+  (function(){
+    var svg=document.getElementById('f3'); if(!svg) return;
+    var mode='char';
+    var SPLITS={char:{seen:ch('walking'),unseen:ch('walkable'),note:'every word is spellable, nothing is shared'},
+                sub:{seen:['walk','ing'],unseen:['walk','a','b','l','e'],note:'the stem is reused, the rest falls back to letters'},
+                word:{seen:['walking'],unseen:null,note:'no compartment exists for it, so there is nothing to send'}};
+    function row(y,items,label,st){
+      var s=lab(40,y-12,label),x=40;
+      if(items===null){
+        s+=sort(x,y,220,36,'ghost','unknown');
+        return s;
+      }
+      items.forEach(function(t){
+        var w=Math.max(34,t.length*15+22);
+        s+=sort(x,y,w,36,st,t); x+=w+6;
+      });
+      s+=lab(x+10,y+24,items.length+(items.length===1?' piece':' pieces'),C.faint);
+      return s;
+    }
+    function draw(){
+      var d=SPLITS[mode],s='';
+      s+=row(60,d.seen,'walking, which the corpus contained','tok');
+      s+='<line x1="40" y1="130" x2="860" y2="130" stroke="'+C.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
+      s+=row(160,d.unseen,'walkable, which it never contained',d.unseen?'hot':'ghost');
+      s+=lab(40,232,d.note,d.unseen?C.accent:C.risk);
+      svg.innerHTML=s;
+      set('f3Read',mode==='char'?'letters':mode==='sub'?'subwords':'whole words');
+    }
+    document.querySelectorAll('[data-f3]').forEach(function(b){
+      b.addEventListener('click',function(){
+        mode=b.getAttribute('data-f3');
+        document.querySelectorAll('[data-f3]').forEach(function(o){o.classList.toggle('on',o===b);});
+        draw();
+      });
+    });
+    draw();
+  })();
+
+  /* ---------------- FIGURE 4 ---------------- */
+  (function(){
+    var svg=document.getElementById('f4'); if(!svg) return;
+    var st=freshState(), sel=null, ranked=false;
+    function pairCount(a,b){
+      var n=0;
+      st.forEach(function(r){
+        for(var i=0;i<r.sy.length-1;i++) if(r.sy[i]===a&&r.sy[i+1]===b) n+=r.n;
+      });
+      return n;
+    }
+    function draw(){
+      var s='',y=24,h=28,cw=26,gap=4;
+      st.forEach(function(r,ri){
+        var x=64;
+        s+=lab(56,y+h/2+4,'\u00d7'+r.n,C.faint,'end');
+        r.sy.forEach(function(t,ti){
+          var isHot=sel&&ti<r.sy.length-1&&r.sy[ti]===sel.a&&r.sy[ti+1]===sel.b;
+          var isHot2=sel&&ti>0&&r.sy[ti-1]===sel.a&&r.sy[ti]===sel.b;
+          s+=sort(x,y,cw,h,(isHot||isHot2)?'hot':'raw',t);
+          if(ti<r.sy.length-1)
+            s+='<rect x="'+(x+cw-6)+'" y="'+y+'" width="'+(gap+12)+'" height="'+h+
+               '" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f4a="'+r.sy[ti]+'" data-f4b="'+r.sy[ti+1]+'"/>';
+          x+=cw+gap;
+        });
+        y+=h+7;
+      });
+      if(ranked){
+        var c=countPairs(st),arr=c.order.map(function(k){var p=k.split('\u0000');return {a:p[0],b:p[1],n:c.map[k]};});
+        arr.sort(function(p,q){return q.n-p.n;});
+        s+=lab(520,32,'top five pairs',C.accent);
+        arr.slice(0,5).forEach(function(p,i){
+          var yy=52+i*32;
+          s+=sort(520,yy,54,26,i===0?'hot':'tok',p.a+p.b);
+          s+=bar(586,yy+7,180,12,p.n/arr[0].n,i===0?C.accent:C.rule);
+          s+=lab(776,yy+18,String(p.n),C.soft);
+        });
+        s+=lab(520,232,'the winner is fused everywhere',C.faint);
+      }
+      svg.innerHTML=s;
+      set('f4Read',sel?(sel.a+sel.b+' occurs '+pairCount(sel.a,sel.b)+' times'):'click a pair');
+    }
+    svg.addEventListener('click',function(e){
+      var a=e.target.getAttribute&&e.target.getAttribute('data-f4a');
+      if(a){ sel={a:a,b:e.target.getAttribute('data-f4b')}; draw(); }
+    });
+    document.getElementById('f4Rank').addEventListener('click',function(){ranked=true;sel=null;draw();});
+    document.getElementById('f4Clear').addEventListener('click',function(){ranked=false;sel=null;draw();});
+    draw();
+  })();
+
+  /* ---------------- FIGURE 5: scrolly ---------------- */
+  (function(){
+    var svg=document.getElementById('sc1fig'); if(!svg) return;
+    function render(i){
+      i=Math.max(0,Math.min(5,i));
+      var snap=SNAP[i],s='',y=20,h=26,gap=4;
+      snap.forEach(function(sy,ri){
+        var x=52;
+        s+=lab(44,y+h/2+4,'\u00d7'+CORPUS[ri][1],C.faint,'end');
+        sy.forEach(function(t){
+          var w=Math.max(24,t.length*13+12);
+          var justMade=i>0&&t===(MERGES[i-1].a+MERGES[i-1].b);
+          s+='<g data-gel="r'+ri+'" class="show">'+sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t)+'</g>';
+          x+=w+gap;
+        });
+        y+=h+8;
+      });
+      var by=268;
+      s+=lab(44,by-12,'merge rules learned so far',C.accent);
+      for(var k=0;k<6;k++){
+        var xx=44+k*78;
+        if(k<i) s+='<g data-gel="m'+k+'" class="show">'+sort(xx,by,68,28,k===i-1?'hot':'tok',MERGES[k].a+MERGES[k].b)+'</g>';
+        else s+='<g data-gel="m'+k+'">'+sort(xx,by,68,28,'ghost','')+'</g>';
+      }
+      svg.innerHTML=s;
+      set('sc1Read',i+(i===1?' merge \u00b7 ':' merges \u00b7 ')+TOTALS[i]+' tokens');
+    }
+    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
+    function activate(i){
+      steps.forEach(function(s){s.classList.toggle('on',+s.getAttribute('data-step')===i);});
+      render(i);
+    }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting) activate(+e.target.getAttribute('data-step')); });
+    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+    steps.forEach(function(s){
+      io.observe(s);
+      s.addEventListener('click',function(){activate(+s.getAttribute('data-step'));});
+    });
+    activate(0);
+  })();
+
+  /* ---------------- FIGURE 6: THE KNOB ---------------- */
+  (function(){
+    var svg=document.getElementById('f6'),sl=document.getElementById('f6Slider'); if(!svg||!sl) return;
+    function draw(m){
+      var snap=SNAP[m],s='',y=22,h=28,gap=5;
+      snap.forEach(function(sy,ri){
+        var x=70;
+        s+=lab(62,y+h/2+4,'\u00d7'+CORPUS[ri][1],C.faint,'end');
+        sy.forEach(function(t){
+          var w=Math.max(26,t.length*14+14);
+          var justMade=m>0&&t===(MERGES[m-1].a+MERGES[m-1].b);
+          s+=sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t);
+          x+=w+gap;
+        });
+        s+=lab(x+12,y+h/2+4,String(sy.length*CORPUS[ri][1]),C.faint);
+        y+=h+8;
+      });
+      var by=278;
+      s+=lab(70,by-14,'drawer size');
+      s+=bar(70,by-4,300,14,(BASE.length+m)/28,C.warn);
+      s+=lab(382,by+8,(BASE.length+m)+' compartments',C.soft);
+      s+=lab(540,by-14,'corpus token count');
+      s+=bar(540,by-4,240,14,TOTALS[m]/TOTALS[0],C.accent);
+      s+=lab(792,by+8,TOTALS[m]+' tokens',C.soft);
+      if(m>=8) s+=lab(70,by+44,'walked and walking no longer share a visible stem',C.risk);
+      else if(m>=4) s+=lab(70,by+44,'ed and ing are now pieces in their own right',C.safe);
+      else s+=lab(70,by+44,'still mostly letters',C.faint);
+      svg.innerHTML=s;
+      set('f6Read',m+(m===1?' merge':' merges')+(m>0?' \u00b7 last was '+MERGES[m-1].a+'+'+MERGES[m-1].b:''));
+    }
+    sl.addEventListener('input',function(){draw(+sl.value);});
+    draw(0);
+  })();
+
+  /* ---------------- FIGURE 7 ---------------- */
+  (function(){
+    var svg=document.getElementById('f7'); if(!svg) return;
+    var word='walkable',applied=0;
+    function draw(){
+      var sy=encode(word,applied),s='',x=50,y=52,h=38;
+      s+=lab(50,32,'"'+word+'", after '+applied+' of 14 rules');
+      sy.forEach(function(t){
+        var w=Math.max(34,t.length*16+22);
+        var justMade=applied>0&&t===(MERGES[applied-1].a+MERGES[applied-1].b);
+        s+=sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t);
+        x+=w+7;
+      });
+      s+=lab(x+14,y+24,sy.length+' pieces',C.faint);
+      var by=136;
+      s+=lab(50,by-12,'the rule list, applied in order',C.accent);
+      for(var k=0;k<14;k++){
+        var xx=50+(k%7)*116, yy=by+Math.floor(k/7)*38;
+        var fired=k<applied&&SNAP[0]&&encode(word,k+1).length<encode(word,k).length;
+        s+=sort(xx,yy,104,28,k<applied?(fired?'hot':'tok'):'ghost',MERGES[k].a+'+'+MERGES[k].b);
+      }
+      svg.innerHTML=s;
+      set('f7Read','rule '+applied+' of 14');
+    }
+    document.querySelectorAll('[data-f7w]').forEach(function(b){
+      b.addEventListener('click',function(){
+        word=b.getAttribute('data-f7w'); applied=0;
+        document.querySelectorAll('[data-f7w]').forEach(function(o){o.classList.toggle('on',o===b);});
+        draw();
+      });
+    });
+    document.getElementById('f7Step').addEventListener('click',function(){
+      applied=applied>=14?0:applied+1; draw();
+    });
+    document.getElementById('f7Run').addEventListener('click',function(){ applied=14; draw(); });
+    draw();
+  })();
+
+  /* ---------------- FIGURE 8 ---------------- */
+  (function(){
+    var svg=document.getElementById('f8'); if(!svg) return;
+    var open=0;
+    var PIECES=['walk','ing',' home'];
+    var VEC=[[.82,.14,.61,.30],[.09,.77,.22,.68],[.44,.51,.90,.12]];
+    function draw(){
+      var s='',x=60,y=40;
+      var STAGES=['your text','pieces','integers','rows of learned numbers'];
+      STAGES.forEach(function(name,i){
+        var yy=40+i*62;
+        s+=sort(40,yy,196,44,open===i?'hot':'tok',name);
+        s+='<rect x="40" y="'+yy+'" width="196" height="44" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f8="'+i+'"/>';
+        if(i<3) s+='<line x1="138" y1="'+(yy+44)+'" x2="138" y2="'+(yy+62)+'" stroke="'+C.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
+      });
+      var px=290,py=40+open*62;
+      if(open===0){
+        s+=sort(px,py,300,44,'tok','walking home');
+        s+=lab(px,py+70,'twelve characters, one string');
+      } else if(open===1){
+        var xx=px;
+        PIECES.forEach(function(t){ var w=Math.max(48,t.length*16+22); s+=sort(xx,py,w,44,'tok',t.replace(' ','\u2423')); xx+=w+8; });
+        s+=lab(px,py+70,'three pieces. the space belongs to the piece after it.');
+      } else if(open===2){
+        var xx2=px;
+        PIECES.forEach(function(t){ s+=sort(xx2,py,86,44,'id',String(1000+idOf(t.trim()))); xx2+=94; });
+        s+=lab(px,py+70,'three addresses. nothing about them is ordered or numeric.');
+      } else {
+        VEC.forEach(function(v,vi){
+          var yy=py+vi*46-46, xx3=px;
+          if(yy<40) yy=40+vi*46;
+          s+=lab(px-8,yy+26,PIECES[vi].trim(),C.faint,'end');
+          v.forEach(function(val){
+            s+=sort(xx3,yy,58,38,'tok',val.toFixed(2)); xx3+=62;
+          });
+        });
+        s+=lab(px,py+96,'four numbers each, so you can read them. real rows hold hundreds.');
+      }
+      svg.innerHTML=s;
+      set('f8Read',STAGES[open]);
+    }
+    svg.addEventListener('click',function(e){
+      var i=e.target.getAttribute&&e.target.getAttribute('data-f8');
+      if(i!==null&&i!==undefined){ open=+i; draw(); }
+    });
+    draw();
+  })();
+
+  /* ---------------- FIGURE 9 ---------------- */
+  (function(){
+    var svg=document.getElementById('f9'); if(!svg) return;
+    var mode='letters';
+    var CASES={
+      letters:{txt:'strawberry',pieces:['str','aw','berry'],
+        note:'the model is asked to count r characters it cannot see inside three opaque pieces',col:C.risk},
+      space:{txt:'walk vs \u2423walk',pieces:['walk','|','\u2423walk'],
+        note:'same four letters, two different compartments with separately learned rows',col:C.warn},
+      number:{txt:'1024 and 1025',pieces:['10','24','|','102','5'],
+        note:'chunked by frequency, so consecutive numbers need not share a boundary',col:C.risk},
+      script:{txt:'\u0928\u092e\u0938\u094d\u0924\u0947',pieces:['\u0928','\u092e','\u0938','\u094d','\u0924','\u0947'],
+        note:'one short greeting, six pieces. the same meaning in English costs one or two.',col:C.risk}
+    };
+    function draw(){
+      var d=CASES[mode],s='',x=50,y=64;
+      s+=lab(50,40,'the string');
+      s+=sort(50,56,300,44,'tok',d.txt);
+      s+=lab(50,150,'how it splits',C.accent);
+      x=50; y=166;
+      d.pieces.forEach(function(t){
+        if(t==='|'){ s+=lab(x+8,y+28,'and',C.faint); x+=54; return; }
+        var w=Math.max(52,t.length*16+30);
+        s+=sort(x,y,w,42,'hot',t); x+=w+8;
+      });
+      s+=lab(50,236,d.note,d.col);
+      svg.innerHTML=s;
+      set('f9Read',mode);
+    }
+    document.querySelectorAll('[data-f9]').forEach(function(b){
+      b.addEventListener('click',function(){
+        mode=b.getAttribute('data-f9');
+        document.querySelectorAll('[data-f9]').forEach(function(o){o.classList.toggle('on',o===b);});
+        draw();
+      });
+    });
+    draw();
+  })();
+
+  /* ---------------- prose to figure coupling ---------------- */
+  document.querySelectorAll('.ref').forEach(function(t){
+    var k=t.getAttribute('data-ref'),sec=t.closest('section');
+    function on(v){
+      t.classList.toggle('hot',v);
+      if(!sec) return;
+      sec.querySelectorAll('.fig').forEach(function(f){f.classList.toggle('dimmed',v);});
+      sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){p.classList.toggle('hot',v);});
+    }
+    t.addEventListener('mouseenter',function(){on(true);});
+    t.addEventListener('mouseleave',function(){on(false);});
+    t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
+  });
+
+  /* ---------------- hidden appendix ---------------- */
+  (function(){
+    var weeds=document.getElementById('weeds'),hint=document.getElementById('weedsHint');
+    if(!weeds||!hint) return;
+    function toggle(){
+      var open=weeds.hidden;
+      weeds.hidden=!open;
+      hint.setAttribute('aria-expanded',String(open));
+      hint.innerHTML=open?`press <kbd>s</kbd> to hide the deeper cuts`:`press <kbd>s</kbd> for the deeper cuts`;
+      if(open){ weeds.setAttribute('tabindex','-1'); weeds.focus({preventScroll:true});
+                weeds.scrollIntoView({behavior:'smooth',block:'start'}); }
+    }
+    document.addEventListener('keydown',function(e){
+      if(e.key!=='s'&&e.key!=='S') return;
+      if(e.metaKey||e.ctrlKey||e.altKey) return;
+      var t=e.target,tag=(t.tagName||'').toLowerCase();
+      if(tag==='input'||tag==='textarea'||t.isContentEditable) return;
+      e.preventDefault(); toggle();
+    });
+    hint.addEventListener('click',toggle);
+    hint.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop feeling behind: how to discover what AI models can do and track what's next</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v12:#EFECE6;--v13:#E3DFD7;--v4:#1C1815;--v6:#4B443C;--v5:#7E766B;--v16:#D2CCC1;--v0:#7A5B21;--v10:#1B1713;--v11:#E8E2D8;--v15:#D0705E;--v20:#D6A24A;--v17:#5FA97C;--v8:"JetBrains Mono",ui-monospace,Menlo,monospace;--v1:#5FA97C;--v19:#7FB2D8;--v2:#D6A24A;--v3:#B98A8A;--v7:680px;--v21:1120px;--v9:26px;--v18:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v18:0s}}body{margin:0;background:var(--v12);color:var(--v4);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#7A5B21}.pII{--v0:#0F6E6A}.pIII{--v0:#47509E}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v13);box-shadow:0 6px 22px rgba(28,24,21,.2)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v16);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:var(--v8);font-size:15px;font-weight:500;color:var(--v4)}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:13px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v16);transition:background .3s,transform .3s}.rail a.on{background:var(--v14,#7A5B21);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v4);outline-offset:3px}.col{max-width:var(--v7);margin:0 auto;padding:0 var(--v9);position:relative}.wide{max-width:var(--v21);margin:0 auto;padding:0 var(--v9)}.bleed{width:100%;margin:0}section{padding:100px 0}.divider{max-width:var(--v7);margin:0 auto;height:1px;background:var(--v16)}h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:400;line-height:1.08;margin:0}h1.hero-h{font-size:clamp(38px,6.2vw,60px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(29px,4.8vw,44px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Fraunces",serif;font-size:clamp(21px,2.9vw,29px);line-height:1.4;color:var(--v6)}.part-banner{padding:92px 0 20px;text-align:center}.part-banner .pk{font-family:var(--v8);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,42px);font-style:italic}.eyebrow{font-family:var(--v8);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v13);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.intu{border:1px solid var(--v16);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v13);font-size:17.5px;line-height:1.64}.intu .il{font-family:var(--v8);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v4)}.pull{font-family:"Fraunces",serif;font-size:clamp(24px,3.4vw,33px);line-height:1.32;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v13);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v6)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v5)}.mnote b{color:var(--v6);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v13);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v13)}.links{list-style:none;padding:0;margin:26px 0 0}.links li{border:1px solid var(--v16);border-radius:6px;padding:14px 18px;margin-bottom:10px;background:var(--v12)}.links a{font-family:var(--v8);font-size:14px;color:var(--v0);text-decoration:none;font-weight:500;word-break:break-word}.links a:hover{text-decoration:underline}.links .how{font-size:14.5px;color:var(--v6);margin-top:5px;line-height:1.55}.links .how b{color:var(--v4)}.demo{border:1px solid var(--v16);background:var(--v10);color:var(--v11);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #342d25;font-family:var(--v8);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#94897b;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v5);margin:12px 2px 0}.figcap b{font-family:var(--v8);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:var(--v8);font-size:12.5px;padding:9px 16px;border:1px solid var(--v20);border-radius:3px;background:transparent;color:var(--v20);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v20);color:var(--v10)}.chip{font-family:var(--v8);font-size:12.5px;padding:8px 13px;border:1px solid #40382e;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#b4a998}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}code{font-family:var(--v8);font-size:.88em;background:var(--v13);padding:1px 6px;border-radius:3px}.demo code{background:none;padding:0}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:var(--v8);font-size:11px;fill:#b4a998}.fig .elab{font-family:var(--v8);font-size:10px;fill:#94897b}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.18}.fig .sel rect,.fig .sel circle{stroke-width:4}.inspector{font-family:var(--v8);font-size:12.5px;line-height:1.8;border-top:1px solid #342d25;margin-top:16px;padding-top:14px;min-height:96px;color:#b4a998}.inspector b{color:#E8E2D8;font-weight:500}.inspector a{color:var(--v20)}.legend{display:flex;gap:15px;flex-wrap:wrap;font-family:var(--v8);font-size:11px;color:#94897b;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}.card{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:600px){.card{grid-template-columns:1fr}}.field{border:1px solid #40382e;border-radius:5px;padding:11px 13px;cursor:pointer;transition:.15s}.field:hover,.field.on{border-color:var(--v0);background:#241f18}.field .k{font-family:var(--v8);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#94897b}.field .v{font-size:13.5px;color:#E8E2D8;margin-top:3px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer{font-family:var(--v8);font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #40382e;border-radius:4px;background:transparent;color:#b4a998;cursor:pointer;transition:all .18s;line-height:1.5}.layer.on{border-color:var(--v0);color:#fff;background:#241f18}.layer b{display:block;color:#E8E2D8;font-size:13px;margin-bottom:3px}.layer-out{font-size:15px;line-height:1.65;color:#E8E2D8;border-top:1px solid #342d25;padding-top:16px;min-height:96px}.layer-out a{color:var(--v20)}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v9);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:var(--v8);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v10);color:var(--v11);border:1px solid var(--v16);border-radius:6px;padding:24px}[data-gel]{opacity:.12;transition:opacity .45s ease,transform .45s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v12);border-bottom:1px solid var(--v16);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.radar-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;align-items:center}@media(max-width:760px){.radar-wrap{grid-template-columns:1fr}}.ringlab{font-family:var(--v8);font-size:9.5px;fill:#94897b;letter-spacing:.05em}.mlab{font-family:var(--v8);font-size:12px;color:#94897b;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#E8E2D8}.meter{height:12px;background:#241f18;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:var(--v8);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#94897b;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:var(--v8);font-size:12px;padding:7px 12px;border:1px solid #40382e;border-radius:4px;background:transparent;color:#b4a998;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.weeds details{border:1px solid var(--v16);border-radius:4px;margin-bottom:10px;background:var(--v12)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v13)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v6)}.weeds .wbody a{color:var(--v0)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Fraunces",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.42;margin:0}footer{border-top:1px solid var(--v16);padding:34px 0 60px;font-family:var(--v8);font-size:12.5px;color:var(--v5);line-height:2}footer a{color:var(--v5)}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:72px 0}}</style></style>
+</head>
+<body>
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#7A5B21" title="Part I"></a>
+  <a href="#p2" data-c="#0F6E6A" title="Part II"></a>
+  <a href="#p3" data-c="#47509E" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · finding + tracking ai</div>
+    <h1 class="hero-h">Stop feeling behind.</h1>
+    <p class="lede">A new model lands every week and the announcements all sound the same. This guide gives beginners two sturdy skills: how to find out what a model can actually do, and how to track what is coming next without drowning. It names the real places to look, shows you how to use each, and ends with a radar you can keep.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#7A5B21">
+<div class="part-banner"><div class="pk">Part I · chapters 01 to 04</div><h2>Discovering what a model can do</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the feeling</div>
+    <h2 class="big">Everyone else seems to already know</h2>
+    <div class="try">Think of the last time someone said "have you tried the new model, it's incredible." Notice the small jolt of being behind, and then ask yourself a harder question: incredible at what, exactly, and how would they know?</div>
+    <p>Sam keeps hearing it. A new model tops a chart, a demo goes viral, a founder posts that everything has changed. Sam tries the model, and it is fine, sometimes great, sometimes worse than the one already in use. The confusion is not Sam's fault. It comes from treating "capability" as a single thing a model either has or lacks, like horsepower.</p>
+    <p>It is not one thing. A model can be brilliant at code and clumsy at poetry, sharp in English and shaky in Hindi, dazzling in a demo and unreliable on your actual task. "Is it good?" has no answer. "Is it good at the specific thing I need?" has one, and finding it is a skill you can learn in an afternoon.</p>
+    <div class="pull">There is no "best model." There is only the best model for a task, found by looking, not by vibes.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the trap</div>
+    <h2 class="big">A leaderboard score is not a capability</h2>
+    <p>The number everyone quotes when a model launches is a benchmark score: it aced some exam by a point or two. That is real information, and it is not the same as "good for you." A benchmark measures one narrow thing under lab conditions, and the launch tweet measures nothing but excitement.</p>
+    <div class="intu"><span class="il">picture it</span>
+      A car's top speed is a real, measured number, and it tells you almost nothing about whether the car fits your life. School run, snowy driveway, three kids and a dog: top speed never comes up. <b>A benchmark score is the top speed of a model,</b> impressive on the page and silent about your commute. You learn the fit by test-driving, not by reading the spec sheet aloud.</p></div>
+    <p>So the goal of Part I is not to find the highest number. It is to build a quick, honest picture of what a model does well and badly, using three simple lenses that anyone can apply. None of them is a benchmark.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the three lenses</div>
+    <h2 class="big">Read it, check it, try it</h2>
+    <p>To size up any model, look through three lenses in order. <strong>Read what its makers claim</strong>, in the model card, including the limitations they admit. <strong>Check independent evidence</strong>, on leaderboards and human-preference rankings, while staying skeptical of both. And <strong>try it yourself</strong>, on two or three examples of your real task, because nothing else counts as much.</p>
+    <div class="intu"><span class="il">picture it</span>
+      This is exactly how you would vet a contractor. You read what they say about themselves, you check independent reviews from other customers, and then you give them one small job before betting the kitchen on them. Skip the small job and the reviews and you are hiring on a business card. <b>The three lenses are that same caution, applied to a model,</b> and the third lens, trying it, always outweighs the other two.</p></div>
+    <p>Part I finishes with the first lens up close. Part II is a tour of exactly where to point the second and third: the real websites, and how to use each one.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">04 · the first lens</div>
+    <h2 class="big">A model card, field by field</h2>
+    <p>Every serious model comes with a <strong>model card</strong>: a short document from its makers describing what it is, what it is for, and where it fails. Learning to read one is the fastest capability skill there is. Here is a real-shaped card. Click each field to see what it tells you and the trap to watch for.</p>
+    <div class="demo">
+      <div class="demo-head"><span>a model card · click a field</span></div>
+      <div class="demo-body">
+        <div class="card" id="cardFields"></div>
+        <div class="inspector" id="cardOut" style="border-top:1px solid #342d25;margin-top:16px;padding-top:14px">click a field to read it</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>Click each field. The two that beginners skip and shouldn't are Intended use and Limitations. They are where the makers quietly tell you what the model is not for.</div>
+    <aside class="mnote"><b>Where to find it.</b> On Hugging Face, the card is the front page of any model. From the makers of closed models, look for a "model card" or "system card" PDF linked from the release post.</aside>
+    <p style="margin-top:26px">A model card is a sales brochure written by the seller, so read the claims with a pinch of salt and the limitations with full attention. Honest makers list real weaknesses; the absence of any limitations section is itself a warning sign. This is lens one done. Now, where the real evidence lives.</p>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#0F6E6A">
+<div class="part-banner"><div class="pk">Part II · chapters 05 to 07</div><h2>Where to look</h2></div>
+
+
+<section style="padding-top:70px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">05 · the hub</div>
+    <h2 class="big">Hugging Face, the library of models</h2>
+    <p>If there is one place to start, it is <strong>Hugging Face</strong>. Think of it as a giant public library where nearly every open model, dataset, and demo lives, each with its card on the cover. Scroll through the four moves that turn it from an intimidating wall of names into a tool.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scHF">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v8);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#94897b;margin-bottom:16px">huggingface.co</div>
+      <div class="fig" id="hfFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 1 · filter the models</div><p>Go to the Models tab and use the filters on the left: the task (chat, summarize, image), the language, the license, the size. In seconds you go from a million models to the handful that fit your job.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 2 · read the card</div><p>Click a model and you land on its card: what it is, its license, its limitations, its scores. This is lens one from chapter 04, sitting right there on the page.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 3 · try it in a Space</div><p>Many models have a Space, a live demo you run in the browser with no setup. Type your real example in, see the answer. This is lens three, trying it, made effortless.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 4 · check a leaderboard</div><p>Hugging Face hosts leaderboards that rank models on shared tests. Useful for a shortlist, and, as the next chapter warns, never the final word.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 2</b>Scroll-driven. Four moves on one site: filter, read the card, try it in a Space, check a leaderboard. Two of the three lenses live here.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <p>Here are the exact doors, with what each is for. Open them in another tab as you read.</p>
+    <ul class="links">
+      <li><a href="https://huggingface.co/models" target="_blank" rel="noopener">huggingface.co/models</a>
+        <div class="how"><b>Find a model.</b> Use the left-hand filters (task, language, license, size). Sort by trending or downloads to see what others actually use.</div></li>
+      <li><a href="https://huggingface.co/spaces" target="_blank" rel="noopener">huggingface.co/spaces</a>
+        <div class="how"><b>Try before you commit.</b> Live browser demos. Search a model name plus "demo" and paste your own example in.</div></li>
+      <li><a href="https://huggingface.co/datasets" target="_blank" rel="noopener">huggingface.co/datasets</a>
+        <div class="how"><b>See what it learned from.</b> The public datasets models train and are tested on. Useful for judging bias and coverage.</div></li>
+      <li><a href="https://huggingface.co/papers" target="_blank" rel="noopener">huggingface.co/papers</a>
+        <div class="how"><b>The daily research feed.</b> Trending papers, curated and discussed, with links to code and models. A gentle on-ramp to Part II's firehose.</div></li>
+    </ul>
+    <div class="intu"><span class="il">picture it</span>
+      A library is not scary because it has a million books; it is easy because it has a catalogue and a "new arrivals" shelf. Hugging Face is that catalogue for models. <b>The filters are the catalogue, the Spaces are the reading room where you can open a book before borrowing it,</b> and trending is the new-arrivals shelf. You never read the whole library; you find your three books and leave.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">06 · the second lens</div>
+    <h2 class="big">Two kinds of ranking, both worth doubting</h2>
+    <p>Independent evidence comes in two flavors, and knowing the difference protects you from both. A <strong>benchmark leaderboard</strong> scores models on fixed exams. A <strong>human-preference arena</strong> shows real people two anonymous answers and asks which they like, then ranks by who wins more often. One measures exam skill, the other measures felt quality. Click each to see how to read it and where it misleads.</p>
+    <div class="demo">
+      <div class="demo-head"><span>leaderboards vs the arena · click one</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-l="0"><b>benchmark leaderboards</b>models graded on fixed tests</button>
+          <button class="layer" data-l="1"><b>human-preference arena</b>people vote on blind answers</button>
+          <button class="layer" data-l="2"><b>the skeptic's checklist</b>what to distrust in both</button>
+        </div>
+        <div class="layer-out" id="lbOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Click each. The third tab is the one to memorize: the questions to ask before you believe any ranking.</div>
+    <ul class="links">
+      <li><a href="https://lmarena.ai" target="_blank" rel="noopener">lmarena.ai</a>
+        <div class="how"><b>Human preference (the Arena).</b> Blind side-by-side votes ranked as an Elo score. The closest thing to "which feels better to real people." You can vote too.</div></li>
+      <li><a href="https://huggingface.co/open-llm-leaderboard" target="_blank" rel="noopener">Open LLM Leaderboard (on Hugging Face)</a>
+        <div class="how"><b>Open-model exam scores.</b> Ranks open models on a battery of standard tests. Search "Open LLM Leaderboard" on Hugging Face; leaderboards get renamed and refreshed often.</div></li>
+      <li><a href="https://paperswithcode.com/sota" target="_blank" rel="noopener">paperswithcode.com/sota</a>
+        <div class="how"><b>State of the art, by task.</b> The best reported score on hundreds of specific tasks, each linked to the paper and code. Good for narrow, well-defined jobs.</div></li>
+    </ul>
+    <div class="intu"><span class="il">picture it</span>
+      A benchmark is a driving test: standardized, and something people quietly learn to pass. The arena is asking a thousand passengers which driver they felt safest with. Both are useful, both can be gamed, and neither rode in your car. <b>Read them to build a shortlist, never to make the final call,</b> because a model can top the exam and still fumble your particular road.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the firehose, managed</div>
+    <h2 class="big">Staying current without drowning</h2>
+    <p>New capabilities appear faster than anyone can read. The trick is not to drink the whole firehose; it is to tap a few good pipes and let the rest flow past. Here are the source types worth one visit a week each. Hover a tile for what it is, how to use it, and the link.</p>
+    <div class="demo">
+      <div class="demo-head"><span>five kinds of source · hover one</span></div>
+      <div class="demo-body">
+        <div class="fig" id="fig7"></div>
+        <div class="inspector" id="fig7Out">hover a source type to see how to use it and where to go</div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 4</b>Hover each tile. You do not need all five. Pick two that match how you like to learn, and check them on a fixed day so it stays a habit, not a compulsion.</div>
+    <div class="intu"><span class="il">picture it</span>
+      Nobody stays informed by standing under a waterfall with their mouth open. They fill one cup, on a schedule, from a tap they trust. <b>Fear of missing out is the waterfall; a weekly fifteen minutes from two good sources is the cup,</b> and the cup keeps you better informed than the flood, because you actually remember what you drank.</p></div>
+    <ul class="links">
+      <li><a href="https://arxiv.org/list/cs.CL/recent" target="_blank" rel="noopener">arxiv.org (cs.CL / cs.AI)</a>
+        <div class="how"><b>The research, raw and free.</b> Where papers appear first. Skim titles and abstracts; read the ones that keep getting cited. Do not try to read them all.</div></li>
+      <li><a href="https://www.anthropic.com/news" target="_blank" rel="noopener">anthropic.com/news</a> · <a href="https://openai.com/news" target="_blank" rel="noopener">openai.com/news</a>
+        <div class="how"><b>Changelogs from the makers.</b> The official word on new models and their model cards. The primary source for what is actually released, versus rumored.</div></li>
+      <li><a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">reddit.com/r/LocalLLaMA</a>
+        <div class="how"><b>The open-model community.</b> Where enthusiasts test new open models the day they drop and post honest, unpolished results. Great early signal, high noise.</div></li>
+    </ul>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#47509E">
+<div class="part-banner"><div class="pk">Part III · chapters 08 to 11</div><h2>Tracking what's next</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">08 · the knob · the radar</div>
+    <h2 class="big">Put every trend on one radar</h2>
+    <p>Now you can size up a model and find the sources. The last skill is holding it all in one view that shows not just what exists, but how ready each thing is for you to rely on. Borrow a tool teams have used for years: the <strong>Tech Radar</strong>, from Thoughtworks. It sorts everything into four rings by how much you should trust it: <strong>Hold</strong> (watch, do not use), <strong>Assess</strong> (worth an experiment), <strong>Trial</strong> (use on a real but low-risk project), and <strong>Adopt</strong> (use with confidence).</p>
+    <p>The rings are not about how new or exciting a thing is. They are about how much <em>evidence</em> you have gathered. That is the whole point, and it is one dial. Below is a live radar of GenAI trends. Grab the new trend and drag its evidence from nothing to plenty, and watch it earn its way inward from Hold to Adopt.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>your genai radar · drag the evidence</span><span id="radarRing" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="radar-wrap">
+          <div class="fig" id="radarFig" style="touch-action:none"></div>
+          <div>
+            <div class="inspector" id="radarOut" style="border-top:none;margin-top:0;padding-top:0;min-height:70px">hover any blip, or drag the evidence slider below</div>
+            <label for="evSlider" style="font-family:var(--v8);font-size:12px;color:#b4a998;display:block;margin:18px 0 8px">
+              evidence for "a shiny new model": <span class="mval" id="evVal">none</span></label>
+            <input type="range" id="evSlider" min="0" max="100" step="1" value="8" aria-label="Evidence level">
+            <div class="mlab"><span>where it belongs</span><span class="mval" id="evRing"></span></div>
+            <div class="meter"><i id="evBar"></i></div>
+            <div class="legend">
+              <span><i style="background:var(--v1)"></i>Adopt</span>
+              <span><i style="background:var(--v19)"></i>Trial</span>
+              <span><i style="background:var(--v2)"></i>Assess</span>
+              <span><i style="background:var(--v3)"></i>Hold</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 5</b>Drag the evidence slider (or the gold blip). At "just a launch tweet" it sits in Hold, far out. As benchmarks, then independent reproductions, then your own tests pile up, it moves inward to Adopt. Hover the other blips for where today's trends sit.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <div class="intu"><span class="il">picture it</span>
+      A courtroom does not convict on an accusation; it moves from suspicion to charge to verdict as evidence mounts. Your radar is that same ladder for technology. A launch tweet is an accusation. A benchmark is a witness. Independent reproductions are corroboration. Your own successful test is the verdict. <b>A thing moves inward only when the evidence, not the excitement, has moved.</b></p></div>
+    <div class="pull">Hype tells you a thing is new. The radar tells you whether you should bet on it yet.</div>
+  </div>
+</section>
+
+
+<section style="padding-top:50px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">09 · the journey</div>
+    <h2 class="big">How a trend earns its way to Adopt</h2>
+    <p>Watch one real-shaped trend travel the rings as its evidence accumulates over a few months. This is what maintaining a radar actually feels like: not a single decision, but a blip you nudge inward as the proof arrives. Scroll it through.</p>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scJourney">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v8);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#94897b;margin-bottom:8px">trend: "small models you can run on a laptop"</div>
+      <div style="font-family:var(--v8);font-size:12px;color:var(--v20);margin-bottom:16px" id="journeyRing">ring: Hold</div>
+      <div class="fig" id="journeyFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">month 0 · Hold</div><p>A viral post claims a tiny model rivals the giants. Exciting, and it is one person's demo. It goes on the radar in Hold: noted, not trusted.</p></div>
+      <div class="stp" data-step="1"><div class="sk">month 1 · Assess</div><p>Benchmark scores appear and hold up on paper. Enough to move it to Assess and spend an afternoon trying it on your own examples.</p></div>
+      <div class="stp" data-step="2"><div class="sk">month 2 · Trial</div><p>Independent people reproduce the results and report the rough edges honestly. You put it on one real, low-stakes project. It works. That earns Trial.</p></div>
+      <div class="stp" data-step="3"><div class="sk">month 3 · Adopt</div><p>It has now handled real work for weeks without nasty surprises. You move it to Adopt and reach for it by default. The tweet became a tool, one ring at a time.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 6</b>Scroll-driven, pinned on the right. The same blip crossing Hold, Assess, Trial, Adopt as evidence arrives. Nothing skips a ring; each move is earned.</div></div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">10 · make it yours</div>
+    <h2 class="big">Build a radar you will actually keep</h2>
+    <p>The method only helps if you use it, so make it tiny and repeatable. Click through the five steps of a personal radar you can run in a notes app in fifteen minutes a month.</p>
+    <div class="demo">
+      <div class="demo-head"><span>your monthly radar · click a step</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-r="0"><b>1 · pick the categories you care about</b></button>
+          <button class="layer" data-r="1"><b>2 · place today's tools in rings, honestly</b></button>
+          <button class="layer" data-r="2"><b>3 · add new blips to Hold as you hear of them</b></button>
+          <button class="layer" data-r="3"><b>4 · once a month, move blips on evidence</b></button>
+          <button class="layer" data-r="4"><b>5 · demote and delete without guilt</b></button>
+        </div>
+        <div class="layer-out" id="prOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 7</b>Click each step. A radar is a living document. The monthly review, moving blips as evidence changes, is the habit that keeps you current.</div>
+    <aside class="mnote"><b>Steal the tooling.</b> Thoughtworks publishes a free "build your own radar" tool, and their own radar is a good model to copy. Links are in the weeds.</aside>
+    <div class="pull">A radar you update once a month beats a hundred bookmarks you never open.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · honest limits</div>
+    <h2 class="big">The map is not the territory</h2>
+    <p>A radar organizes your attention; it does not grant certainty. Hold it loosely.</p>
+    <p><strong>Benchmarks can be contaminated.</strong> If a test's questions leaked into a model's training data, its score is inflated and meaningless. This happens more than anyone admits, which is exactly why your own test outranks any leaderboard.</p>
+    <p><strong>Everything moves faster than your radar.</strong> A blip you placed in Trial can be made obsolete next week by something newer. The radar is a monthly snapshot, not a live feed. Re-check the things you actually depend on.</p>
+    <p><strong>Open and closed models trade differently.</strong> An open model you can run yourself buys privacy and control; a closed model behind an API often buys raw capability and no maintenance. "Better" depends on which you are optimizing, and your radar should note which is which.</p>
+    <p><strong>Recency is not quality.</strong> The newest model is not automatically the one to adopt, and the loudest trend is not the most useful. The rings exist precisely to slow your excitement down to the speed of evidence.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>Capability is task-specific: read the card, check the arena, try it yourself.<br>
+    The sources are few and namable; visit two a week.<br>
+    Trends belong on a radar that moves on evidence, not noise.<br>
+    You are not behind. You just needed a map.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div style="max-width:var(--v7);margin:0 auto">
+      <div class="eyebrow">the signal lab</div>
+      <h2 class="big">Is this signal, or noise?</h2>
+      <p>Put it together on any claim you meet. Pick what evidence actually exists for a new model or trend, and read which ring it has earned and how much to trust it. The presets are three claims you will genuinely see this month.</p>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><span>signal check · illustrative</span><span id="labGrade" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="tweet">preset: "a viral launch tweet"</button>
+          <button class="btn" data-pre="bench">preset: "tops a benchmark"</button>
+          <button class="btn" data-pre="proven">preset: "you have used it for weeks"</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>a maker's claim / launch post</label>
+            <div class="toggle" id="e0"><button data-v="on" class="on">yes</button><button data-v="off">no</button></div></div>
+          <div><label>independent benchmark scores</label>
+            <div class="toggle" id="e1"><button data-v="on">yes</button><button data-v="off" class="on">no</button></div></div>
+          <div><label>others reproduced the results</label>
+            <div class="toggle" id="e2"><button data-v="on">yes</button><button data-v="off" class="on">no</button></div></div>
+          <div><label>you tested it on your own task</label>
+            <div class="toggle" id="e3"><button data-v="on">yes</button><button data-v="off" class="on">no</button></div></div>
+        </div>
+        <div class="mlab"><span>evidence gathered</span><span class="mval" id="labEv"></span></div>
+        <div class="meter"><i id="labEvBar"></i></div>
+        <div class="mlab" style="margin-top:10px"><span>ring it has earned</span><span class="mval" id="labRing"></span></div>
+        <div id="labOut" style="font-family:var(--v8);font-size:12.5px;line-height:1.8;color:#b4a998;margin-top:14px;border-top:1px solid #342d25;padding-top:14px"></div>
+      </div>
+    </div>
+    <div style="max-width:var(--v7);margin:0 auto">
+      <div class="figcap"><b>Figure 8</b>Flip the evidence on and off. Notice you cannot reach Adopt without the last switch: your own test. No amount of other people's evidence fully substitutes for trying it.</div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>Benchmark contamination, explained</summary><div class="wbody">Models learn from huge slices of the internet, and popular benchmark questions are on the internet. If a test's answers were in the training data, the model is recalling, not reasoning, and its score is fiction. Researchers fight this with private held-out test sets and freshly written questions, but you can never be fully sure. It is the single strongest reason to trust your own small test over any public number.</div></details>
+    <details><summary>How the Arena's Elo score actually works</summary><div class="wbody">Chatbot arenas borrow the Elo system from chess. Every blind vote is a "match": the winning model's rating goes up, the loser's down, and by more when an underdog wins. Over hundreds of thousands of votes the ratings settle into a ranking of felt quality. Its blind spots: it rewards style and confidence, it is thin on niche tasks, and a model can be tuned to be likable rather than correct. See <a href="https://lmarena.ai" target="_blank" rel="noopener">lmarena.ai</a>.</div></details>
+    <details><summary>Model card versus system card</summary><div class="wbody">A model card describes the model: its data, intended use, and limitations. A system card (increasingly common for frontier models) describes the whole deployed system, including the safety testing, red-teaming, and guardrails wrapped around the model. For capability, read the model card. For risk and safe use, read the system card. Both are usually linked from the release post.</div></details>
+    <details><summary>Run the same tests yourself</summary><div class="wbody">The scores on leaderboards are produced by open tools you can run. The best known is EleutherAI's <code>lm-evaluation-harness</code>, a program that runs a model against dozens of standard benchmarks with one command. Overkill for a beginner, but worth knowing it exists: it means "the benchmark" is reproducible code, not a magic number, and you can point the same tool at your own tasks.</div></details>
+    <details><summary>The Thoughtworks Radar, and building your own</summary><div class="wbody">The radar method here comes from Thoughtworks, who publish a twice-yearly Technology Radar of tools sorted into Adopt, Trial, Assess, Hold. It is a good model to read and copy. They also publish a free "build your own radar" generator that turns a spreadsheet into a radar like the one above. See <a href="https://www.thoughtworks.com/radar" target="_blank" rel="noopener">thoughtworks.com/radar</a> and <a href="https://radar.thoughtworks.com" target="_blank" rel="noopener">radar.thoughtworks.com</a>.</div></details>
+    <details><summary>Capabilities that appear suddenly with scale</summary><div class="wbody">Some abilities seem to switch on abruptly as models get bigger, rather than improving smoothly. Researchers debate how real this "emergence" is versus an artifact of how we measure it, but the practical lesson holds: a capability a small model lacks entirely may be present in a larger one, so "models cannot do X" ages badly. Re-test old assumptions when a much bigger model arrives.</div></details>
+    <details><summary>Agents and tools need their own benchmarks</summary><div class="wbody">As models start using tools and taking multi-step actions, plain question-answer tests stop capturing what matters. A newer class of benchmark scores whether a model can complete real tasks: book a flight, fix a bug, navigate a website. These are harder to run and noisier, but they are where the frontier is being measured now. Expect them on the leaderboards you follow.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    the model card, radar, and signal-lab figures are illustrative teaching aids, not scrapes of any live product · every external link and the tools named reflect a mid-2026 snapshot and will change; verify the current URL before relying on it<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function e(e){return document.getElementById(e)}function t(e,t){var a=document.createElementNS("http://www.w3.org/2000/svg",e);for(var n in t)a.setAttribute(n,t[n]);return a}var a=e("pdialFill"),n=e("pdialTxt"),r=2*Math.PI*23;a.style.strokeDasharray=r,a.style.strokeDashoffset=r,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);a.style.strokeDashoffset=r*(1-Math.min(1,Math.max(0,t||0)))},{passive:!0});var o=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),o.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){o.observe(e)});var i,s,l,d=document.querySelectorAll("#rail a"),c={p1:"I",p2:"II",p3:"III"},h=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-c");a.style.stroke=t,c[e.target.id]&&(n.textContent=c[e.target.id],n.style.color=t),d.forEach(function(a){var n=a.getAttribute("href")==="#"+e.target.id;a.classList.toggle("on",n),n&&a.style.setProperty("--v14",t)})}})},{rootMargin:"-40% 0px -40% 0px"});function u(e,t,a,n,r,o){function i(){e.classList.add("dimmed"),t.classList.add("hot"),t.classList.add("sel"),n.innerHTML=r}a.addEventListener("mouseenter",i),a.addEventListener("mouseleave",function(){e.classList.remove("dimmed"),t.classList.remove("hot"),t.classList.remove("sel"),n.innerHTML=o}),a.addEventListener("click",i)}function f(e,t){var a=[].slice.call(document.querySelectorAll("#"+e+" .stp")),n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(a.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});a.forEach(function(e){n.observe(e)}),t(0)}function p(t,a,n){var r=e(n);function o(e){r.innerHTML=a[e],document.querySelectorAll("["+t+"]").forEach(function(a){a.classList.toggle("on",+a.getAttribute(t)===e)})}document.querySelectorAll("["+t+"]").forEach(function(e){e.addEventListener("click",function(){o(+e.getAttribute(t))})}),o(0)}["p1","p2","p3"].forEach(function(t){h.observe(e(t))}),i=[{k:"Model name & version",v:"aurora-7b-instruct-v2",note:'<b>Name and version.</b> The exact build. Note the version and date; "the model" changes under the same brand, so a review of v1 may not hold for v2.'},{k:"Intended use",v:"assistant chat, English, general Q&A",note:"<b>Intended use.</b> What the makers built it for. If your job is outside this line (say, legal advice or another language), expect weaker results. Beginners skip this and get surprised."},{k:"Training data",v:"web text to early 2026, filtered",note:"<b>Training data.</b> What it learned from, and the cutoff date. Anything after the cutoff, it simply does not know. The data mix also hints at its biases and blind spots."},{k:"License",v:"Apache-2.0 (commercial OK)",note:"<b>License.</b> Whether you may use it, and for what. Some open models forbid commercial use or have restrictions. Check this before building anything on top."},{k:"Evaluation",v:"MMLU 68.2 · coding 61.0",note:"<b>Evaluation.</b> The makers' own scores. Real, and self-reported, so treat as a claim to verify, not a verdict. Compare against independent leaderboards."},{k:"Limitations",v:"may hallucinate; weak at math",note:"<b>Limitations.</b> The most valuable field, and the most ignored. Honest makers list real failures here. An empty or missing limitations section is a red flag, not a compliment."}],s=e("cardFields"),l=e("cardOut"),i.forEach(function(e,t){var a=document.createElement("div");a.className="field",a.setAttribute("data-cf",t),a.innerHTML='<div class="k">'+e.k+'</div><div class="v">'+e.v+"</div>",a.addEventListener("click",function(){l.innerHTML=e.note,document.querySelectorAll("[data-cf]").forEach(function(e){e.classList.toggle("on",e===a)})}),a.addEventListener("mouseenter",function(){l.innerHTML=e.note}),s.appendChild(a)}),function(){var a=t("svg",{viewBox:"0 0 500 300"}),n=t("g",{});function r(e,a,r,o,i,s,l){var d=t("g",{"data-gel":l});return d.appendChild(t("rect",{x:e,y:a,width:r,height:o,rx:5,fill:"#241f18",stroke:i,"stroke-width":1.6})),d.appendChild(t("text",{x:e+12,y:a+o/2+4,class:"elab",fill:"#E8E2D8"})).textContent=s,n.appendChild(d),d}a.appendChild(n);var o=t("g",{"data-gel":"filter"});o.appendChild(t("rect",{x:14,y:20,width:120,height:260,rx:5,fill:"#241f18",stroke:"var(--pII,#0F6E6A)","stroke-width":1.4})),o.appendChild(t("text",{x:26,y:40,class:"elab",fill:"#0F9E96"})).textContent="FILTERS",["task","language","license","size"].forEach(function(e,a){o.appendChild(t("rect",{x:26,y:54+30*a,width:96,height:20,rx:3,fill:"#0F6E6A",opacity:.3})),o.appendChild(t("text",{x:34,y:68+30*a,class:"elab",fill:"#DCE3DC"})).textContent=e}),n.appendChild(o),r(150,20,336,50,"#0F6E6A","model list → a few matches","filter");r(150,84,336,90,"var(--v20)","model card: license · limits · scores","card"),r(150,188,160,50,"var(--v1)","▶ try in a Space","space"),r(326,188,160,50,"var(--v19)","leaderboard","board");e("hfFig").appendChild(a);var i={0:["filter"],1:["filter","card"],2:["card","space"],3:["card","board"]};f("scHF",function(e){var t=i[e]||[];a.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",t.indexOf(e.getAttribute("data-gel"))>=0)})})}(),p("data-l",{0:"<b>Benchmark leaderboards.</b> Models run a fixed battery of tests (knowledge, reasoning, code) and get graded. <b>How to read:</b> good for a rough shortlist and for open models you cannot vote on. <b>Where it misleads:</b> the questions can leak into training data, and a high score on a generic exam says nothing about your specific task.",1:'<b>Human-preference arena.</b> Real people are shown two anonymous answers to the same prompt and pick the one they prefer; models are ranked by an Elo score, like chess. <b>How to read:</b> the best proxy for "which feels better to humans." <b>Where it misleads:</b> it rewards confident, stylish answers, and thin data on niche tasks. Try <a href="https://lmarena.ai" target="_blank" rel="noopener">lmarena.ai</a>.',2:"<b>The skeptic's checklist.</b> Before believing any ranking, ask four things. Could the test have leaked into training? Is this measuring my task or a generic one? Who made the ranking, and do they benefit? And the decider: what happened when I tried it myself? If a ranking cannot survive those questions, it is a hint, not a verdict."},"lbOut"),function(){var a=[{label:"MODEL HUB",c:"#0F6E6A",html:'<b>Model hub (Hugging Face).</b> Find, compare, and try open models. <b>Use it:</b> filter by task and license, read the card, run a Space. Start here. <a href="https://huggingface.co/models" target="_blank" rel="noopener">huggingface.co/models</a>'},{label:"RANKINGS",c:"var(--v19)",html:'<b>Leaderboards and the arena.</b> Independent-ish evidence. <b>Use it:</b> for a shortlist only, with the skeptic\'s checklist. <a href="https://lmarena.ai" target="_blank" rel="noopener">lmarena.ai</a>'},{label:"PAPERS",c:"var(--v20)",html:'<b>Research papers.</b> Where capabilities appear first, months before products. <b>Use it:</b> skim titles on <a href="https://arxiv.org/list/cs.CL/recent" target="_blank" rel="noopener">arxiv.org</a> or the friendlier <a href="https://huggingface.co/papers" target="_blank" rel="noopener">huggingface.co/papers</a>; read the ones everyone cites.'},{label:"CHANGELOGS",c:"var(--v1)",html:'<b>Maker changelogs.</b> The official word on releases. <b>Use it:</b> follow the news pages of the makers you use, like <a href="https://www.anthropic.com/news" target="_blank" rel="noopener">anthropic.com/news</a> and <a href="https://openai.com/news" target="_blank" rel="noopener">openai.com/news</a>. Primary source, low noise.'},{label:"COMMUNITIES",c:"var(--v3)",html:'<b>Communities.</b> Enthusiasts stress-testing new models in public. <b>Use it:</b> for fast, honest early signal on open models. High noise; verify before believing. <a href="https://www.reddit.com/r/LocalLLaMA/" target="_blank" rel="noopener">r/LocalLLaMA</a>'}],n=t("svg",{viewBox:"0 0 560 170"}),r=t("g",{});n.appendChild(r);var o=e("fig7Out"),i=[];a.forEach(function(e,a){var s=14+182*(a%3),l=20+74*Math.floor(a/3),d=t("g",{"data-part":"s"+a});d.appendChild(t("rect",{x:s,y:l,width:170,height:60,rx:6,fill:"#241f18",stroke:e.c,"stroke-width":1.6})),d.appendChild(t("text",{x:s+14,y:l+27,class:"nlab",fill:"#E8E2D8"})).textContent=e.label,d.appendChild(t("text",{x:s+14,y:l+46,class:"elab"})).textContent="hover for how + link",r.appendChild(d);var c=t("rect",{x:s,y:l,width:170,height:60,fill:"rgba(0,0,0,0)"});i.push(c),u(n,d,c,o,e.html,"hover a source type to see how to use it and where to go")}),i.forEach(function(e){r.appendChild(e)}),e("fig7").appendChild(n)}();var v=170,b=170,g=[{name:"Adopt",r:46,c:"var(--v1)"},{name:"Trial",r:86,c:"var(--v19)"},{name:"Assess",r:126,c:"var(--v2)"},{name:"Hold",r:164,c:"var(--v3)"}];function m(e){return 164-e/100*136}!function(){var a=t("svg",{viewBox:"0 0 340 340"}),n=t("g",{});a.appendChild(n);for(var r=g.length-1;r>=0;r--)n.appendChild(t("circle",{cx:v,cy:b,r:g[r].r,fill:g[r].c,"fill-opacity":.07,stroke:g[r].c,"stroke-opacity":.5,"stroke-width":1})),n.appendChild(t("text",{x:v,y:b-g[r].r+13,"text-anchor":"middle",class:"ringlab",fill:g[r].c})).textContent=g[r].name;n.appendChild(t("circle",{cx:v,cy:b,r:3,fill:"#94897b"}));var o=[{label:"frontier chat models",ev:92,ang:-40,html:"<b>Big frontier chat models.</b> Adopt. Years of heavy real-world use and independent evidence. The safe default for general work."},{label:"retrieval (RAG)",ev:88,ang:20,html:"<b>Retrieval-augmented generation.</b> Adopt. A well-understood, widely used pattern for grounding answers in your own documents."},{label:"small on-device models",ev:64,ang:90,html:"<b>Small models on your laptop or phone.</b> Trial. Genuinely useful now for many tasks, improving fast, still behind the giants on the hardest work."},{label:"AI agents",ev:44,ang:150,html:"<b>Tool-using agents.</b> Assess. Promising and real, but reliability and safety are still shaky. Worth experiments, not yet your critical path."},{label:"AI video",ev:36,ang:210,html:"<b>Text-to-video.</b> Assess. Advancing quickly, expensive, and hard to control for long, consistent shots. Watch closely, adopt carefully."},{label:"fully autonomous coders",ev:15,ang:255,html:"<b>Fully autonomous coding agents.</b> Hold. Impressive demos, thin evidence of reliable unattended work. Keep on the radar; do not bet on it yet."}];var i=e("radarOut"),s=[];o.forEach(function(e){var r=function(e,t){var a=m(e),n=t*Math.PI/180;return{x:v+a*Math.cos(n),y:b+a*Math.sin(n)}}(e.ev,e.ang),o=t("g",{"data-part":"b"+e.ang});o.appendChild(t("circle",{cx:r.x,cy:r.y,r:6,fill:"#241f18",stroke:"#b4a998","stroke-width":2}));var l=t("text",{x:r.x+9,y:r.y+4,class:"elab"});l.textContent=e.label,o.appendChild(l),n.appendChild(o);var d=t("circle",{cx:r.x,cy:r.y,r:18,fill:"rgba(0,0,0,0)"});s.push(d),u(a,o,d,i,e.html,"hover any blip, or drag the evidence slider below")});var l=t("g",{}),d=t("circle",{cx:v,cy:b,r:9,fill:"var(--v20)",stroke:"#fff","stroke-width":2}),c=t("circle",{cx:v,cy:b,r:16,fill:"none",stroke:"var(--v20)","stroke-width":1.4,"stroke-dasharray":"3 3"}),h=t("text",{x:v,y:b,class:"elab",fill:"var(--v20)"});h.textContent="new model",l.appendChild(c),l.appendChild(d),l.appendChild(h),n.appendChild(l),s.forEach(function(e){n.appendChild(e)});var f=t("circle",{cx:v,cy:b,r:22,fill:"rgba(0,0,0,0)"});n.appendChild(f),e("radarFig").appendChild(a);function p(t){var a=function(e){return e<25?3:e<55?2:e<82?1:0}(t),n=m(t),r=-100*Math.PI/180,o=v+n*Math.cos(r),i=b+n*Math.sin(r);d.setAttribute("cx",o),d.setAttribute("cy",i),c.setAttribute("cx",o),c.setAttribute("cy",i),h.setAttribute("x",o+13),h.setAttribute("y",i+4),f.setAttribute("cx",o),f.setAttribute("cy",i),e("evVal").textContent=function(e){return["none (just a rumor)","a launch tweet only","a launch tweet only","one benchmark score","benchmark scores","benchmark scores","reproduced by others","reproduced by others","your own test passed","used it for real"][Math.min(9,Math.floor(e/10.5))]}(t),e("evRing").textContent=g[a].name,e("radarRing").innerHTML='<span style="color:'+g[a].c+'">'+g[a].name+"</span>",e("evBar").style.width=t+"%",e("evBar").style.background=g[a].c,e("radarOut").innerHTML="<b>new model → "+g[a].name+".</b> "+{3:"Only a rumor so far. Note it, do not use it.",2:"Some evidence exists. Worth an afternoon experiment on your own examples.",1:"Reproduced and tried. Safe for one real, low-stakes project.",0:"Proven on your own work over time. Reach for it by default."}[a]}var y=8;e("evSlider").addEventListener("input",function(){p(y=+this.value)});var w=!1;function k(t,n){var r=function(e,t){var n=a.getBoundingClientRect(),r=a.viewBox.baseVal;return{x:(e-n.left)/n.width*r.width,y:(t-n.top)/n.height*r.height}}(t,n),o=r.x-v,i=r.y-b,s=Math.min(164,Math.max(28,Math.hypot(o,i))),l=Math.round((164-s)/136*100);y=Math.max(0,Math.min(100,l)),e("evSlider").value=y,p(y)}f.style.cursor="grab",f.addEventListener("pointerdown",function(e){e.preventDefault(),w=!0}),window.addEventListener("pointermove",function(e){w&&k(e.clientX,e.clientY)}),window.addEventListener("pointerup",function(){w=!1}),p(y)}(),function(){var a=t("svg",{viewBox:"0 0 320 320"}),n=t("g",{});a.appendChild(n);for(var r=160,o=160,i=[{name:"Adopt",r:44,c:"var(--v1)"},{name:"Trial",r:82,c:"var(--v19)"},{name:"Assess",r:120,c:"var(--v2)"},{name:"Hold",r:156,c:"var(--v3)"}],s=i.length-1;s>=0;s--)n.appendChild(t("circle",{cx:r,cy:o,r:i[s].r,fill:i[s].c,"fill-opacity":.07,stroke:i[s].c,"stroke-opacity":.5,"stroke-width":1})),n.appendChild(t("text",{x:r,y:o-i[s].r+13,"text-anchor":"middle",class:"ringlab",fill:i[s].c})).textContent=i[s].name;var l=[150,110,66,30],d=t("circle",{cx:r,cy:o-l[0],r:9,fill:"var(--v20)",stroke:"#fff","stroke-width":2}),c=t("circle",{cx:r,cy:o-l[0],r:16,fill:"none",stroke:"var(--v20)","stroke-width":1.3,"stroke-dasharray":"3 3"});n.appendChild(c),n.appendChild(d),e("journeyFig").appendChild(a);var h=["Hold","Assess","Trial","Adopt"],u=["var(--v3)","var(--v2)","var(--v19)","var(--v1)"];f("scJourney",function(t){var a=l[Math.min(3,t)];d.setAttribute("cy",o-a),c.setAttribute("cy",o-a),d.setAttribute("fill",u[Math.min(3,t)]),e("journeyRing").innerHTML='ring: <span style="color:'+u[Math.min(3,t)]+'">'+h[Math.min(3,t)]+"</span>"})}(),p("data-r",{0:'<b>Pick the categories you care about.</b> Not all of AI, just your corner: maybe "writing tools", "coding assistants", "image generation". Three or four is plenty. These are your radar\'s quadrants.',1:"<b>Place today's tools in rings, honestly.</b> For each thing you already use or watch, ask how much evidence you have and drop it in Hold, Assess, Trial, or Adopt. Your current setup, mapped.",2:"<b>Add new blips to Hold as you hear of them.</b> When a launch or a community post catches your eye, it goes straight into Hold. Noted, parked, not yet trusted. This is how you capture the firehose without acting on impulse.",3:"<b>Once a month, move blips on evidence.</b> The core habit. Fifteen minutes: did anything gather enough new evidence to earn a move inward? A benchmark, a reproduction, a successful test of your own?",4:"<b>Demote and delete without guilt.</b> A tool that disappointed moves out a ring or off the board. A trend that fizzled gets deleted. A radar full of dead blips is worse than a small honest one."},"prOut");var y={e0:"on",e1:"off",e2:"off",e3:"off"};function w(e,t){document.querySelectorAll("#"+e+" button").forEach(function(a){a.addEventListener("click",function(){y[t]=a.getAttribute("data-v"),document.querySelectorAll("#"+e+" button").forEach(function(e){e.classList.toggle("on",e===a)}),k()})})}function k(){var t,a,n=("on"===y.e0?8:0)+("on"===y.e1?26:0)+("on"===y.e2?30:0)+("on"===y.e3?36:0);"on"!==y.e3?n<20?(t="Hold",a="Only a claim and maybe a score. Note it, do not use it. Anyone can top a chart; that is not evidence you can rely on."):n<50?(t="Assess",a="Some independent evidence. Worth an experiment on your own examples, which is exactly the switch still turned off."):(t="Trial",a="Strong outside evidence, reproduced by others. Good enough for a low-stakes trial, but you cannot honestly reach Adopt until you have tested it yourself."):n<60?(t="Trial",a="You tried it and it worked, but the wider evidence is thin. Solid for a real low-stakes project while you keep watching."):(t="Adopt",a="Your own successful test plus independent evidence. This is a tool you can reach for by default. The full ladder, climbed.");var r={Hold:"var(--v3)",Assess:"var(--v2)",Trial:"var(--v19)",Adopt:"var(--v1)"};e("labEv").textContent=n+" / 100",e("labEvBar").style.width=n+"%",e("labEvBar").style.background=r[t],e("labRing").innerHTML='<span style="color:'+r[t]+'">'+t+"</span>",e("labGrade").innerHTML='<span style="color:'+r[t]+'">'+t+"</span>",e("labOut").textContent=a}w("e0","e0"),w("e1","e1"),w("e2","e2"),w("e3","e3");var x={tweet:{e0:"on",e1:"off",e2:"off",e3:"off"},bench:{e0:"on",e1:"on",e2:"on",e3:"off"},proven:{e0:"on",e1:"on",e2:"on",e3:"on"}};document.querySelectorAll("[data-pre]").forEach(function(e){e.addEventListener("click",function(){var t=x[e.getAttribute("data-pre")];["e0","e1","e2","e3"].forEach(function(e){y[e]=t[e],document.querySelectorAll("#"+e+" button").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===y[e])})}),k()})}),k()}();
+</script>
+</body>
+</html>

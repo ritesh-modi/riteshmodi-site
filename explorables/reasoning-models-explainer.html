@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The pause before the answer: how reasoning models actually work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v12:#F0EDEA;--v13:#E4E0DB;--v2:#1D1719;--v4:#4C4245;--v3:#7E7376;--v18:#D4CDC9;--v0:#7E2E3E;--v10:#1E1619;--v11:#E9E2E0;--v15:#E0776A;--v22:#E0A94A;--v19:#5FA97C;--v6:"JetBrains Mono",ui-monospace,Menlo,monospace;--v21:#E0A94A;--v1:#5FC0B0;--v17:#5FA97C;--v16:#E0776A;--v7:#D9925E;--v8:#6F92D4;--v5:680px;--v23:1120px;--v9:26px;--v20:.55s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v20:0s}}body{margin:0;background:var(--v12);color:var(--v2);font-family:"Inter",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.pI{--v0:#7E2E3E}.pII{--v0:#2F5568}.pIII{--v0:#46654A}.pdial{position:fixed;right:24px;bottom:24px;width:56px;height:56px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v13);box-shadow:0 6px 22px rgba(29,23,25,.2)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .track{fill:none;stroke:var(--v18);stroke-width:3}.pdial .fill{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round;transition:stroke .45s}.pdial span{font-family:var(--v6);font-size:15px;font-weight:500;color:var(--v2)}@media (prefers-reduced-motion:reduce){.pdial .fill{transition:none}}@media(max-width:640px){.pdial{width:46px;height:46px;right:14px;bottom:14px}.pdial span{font-size:13px}}.rail{position:fixed;left:22px;top:50%;transform:translateY(-50%);z-index:90;display:none}@media(min-width:1240px){.rail{display:block}}.rail a{display:block;width:10px;height:10px;border-radius:50%;margin:16px 0;background:var(--v18);transition:background .3s,transform .3s}.rail a.on{background:var(--v14,#7E2E3E);transform:scale(1.35)}.rail a:focus-visible{outline:2px solid var(--v2);outline-offset:3px}.col{max-width:var(--v5);margin:0 auto;padding:0 var(--v9);position:relative}.wide{max-width:var(--v23);margin:0 auto;padding:0 var(--v9)}.bleed{width:100%;margin:0}section{padding:100px 0}.divider{max-width:var(--v5);margin:0 auto;height:1px;background:var(--v18)}h1,h2,h3{font-family:"Newsreader",Georgia,serif;font-weight:400;line-height:1.09;margin:0}h1.hero-h{font-size:clamp(38px,6.2vw,60px);letter-spacing:-.01em;margin:18px 0 26px}h2.big{font-size:clamp(29px,4.8vw,44px);margin:0 0 22px;letter-spacing:-.01em}p{margin:0 0 22px}.lede{font-family:"Newsreader",serif;font-size:clamp(21px,2.9vw,29px);line-height:1.4;color:var(--v4)}.part-banner{padding:92px 0 20px;text-align:center}.part-banner .pk{font-family:var(--v6);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--v0);margin-bottom:14px}.part-banner h2{font-size:clamp(28px,4.4vw,42px);font-style:italic}.eyebrow{font-family:var(--v6);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.try{background:var(--v13);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:18px}.intu{border:1px solid var(--v18);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:20px 24px;margin:28px 0;background:var(--v13);font-size:17.5px;line-height:1.64}.intu .il{font-family:var(--v6);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:10px}.intu b{color:var(--v2)}.pull{font-family:"Newsreader",serif;font-size:clamp(24px,3.4vw,33px);line-height:1.32;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:38px 0}.note{background:var(--v13);border-radius:4px;padding:20px 22px;margin-top:26px;font-size:16px;color:var(--v4)}.mnote{font-size:13.5px;line-height:1.55;color:var(--v3)}.mnote b{color:var(--v4);font-weight:600}@media(min-width:1240px){.mnote{position:absolute;left:calc(100% + 30px);width:212px;margin-top:6px}}@media(max-width:1239px){.mnote{background:var(--v13);border-radius:4px;padding:12px 16px;margin:0 0 22px}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v13)}.demo{border:1px solid var(--v18);background:var(--v10);color:var(--v11);border-radius:5px;margin-top:30px;overflow:hidden}.demo-head{padding:15px 22px;border-bottom:1px solid #33272a;font-family:var(--v6);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:#8f8085;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.demo-body{padding:26px 24px}.figcap{font-size:14px;line-height:1.6;color:var(--v3);margin:12px 2px 0}.figcap b{font-family:var(--v6);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);font-weight:500;margin-right:8px}.btn{font-family:var(--v6);font-size:12.5px;padding:9px 16px;border:1px solid var(--v21);border-radius:3px;background:transparent;color:var(--v21);cursor:pointer;transition:all .18s;letter-spacing:.04em}.btn:hover{background:var(--v21);color:var(--v10)}.chip{font-family:var(--v6);font-size:12.5px;padding:8px 13px;border:1px solid #45373a;border-radius:20px;background:transparent;cursor:pointer;transition:all .18s;color:#b8a9ad}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}code{font-family:var(--v6);font-size:.88em;background:var(--v13);padding:1px 6px;border-radius:3px}.demo code{background:none;padding:0}.trace{font-family:var(--v6);font-size:13px;line-height:1.75}.trace .th{color:var(--v21)}.trace .an{color:var(--v1)}.trace .dim{color:#8f8085}.fig svg{display:block;width:100%;height:auto}.fig .nlab{font-family:var(--v6);font-size:11px;fill:#b8a9ad}.fig .elab{font-family:var(--v6);font-size:10px;fill:#8f8085}.fig .ax{font-family:var(--v6);font-size:10px;fill:#8f8085}.fig [data-part]{transition:opacity .2s}.fig.dimmed [data-part]:not(.hot){opacity:.2}.fig .sel rect,.fig .sel circle{stroke-width:4}.inspector{font-family:var(--v6);font-size:12.5px;line-height:1.8;border-top:1px solid #33272a;margin-top:16px;padding-top:14px;min-height:96px;color:#b8a9ad}.inspector b{color:#E9E2E0;font-weight:500}.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--v6);font-size:11px;color:#8f8085;margin-top:14px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}.layers{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}.layer{font-family:var(--v6);font-size:12.5px;text-align:left;padding:13px 14px;border:1px solid #45373a;border-radius:4px;background:transparent;color:#b8a9ad;cursor:pointer;transition:all .18s;line-height:1.5}.layer.on{border-color:var(--v0);color:#fff;background:#271b1e}.layer b{display:block;color:#E9E2E0;font-size:13px;margin-bottom:3px}.layer-out{font-size:15px;line-height:1.65;color:#E9E2E0;border-top:1px solid #33272a;padding-top:16px;min-height:120px}.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-top:1px solid #33272a;padding-top:16px;min-height:130px}@media(max-width:600px){.cmp{grid-template-columns:1fr}}.cmp .side{font-size:14.5px;line-height:1.6;color:#E9E2E0}.cmp .side .h{font-family:var(--v6);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.cmp .A .h{color:var(--v7)}.cmp .B .h{color:var(--v8)}.scrolly{position:relative;display:grid;gap:5vw;max-width:1280px;margin:0 auto;padding:0 var(--v9);grid-template-columns:minmax(0,1fr) minmax(0,440px)}.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.scrolly.right .sg{order:2}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:40vh 0 44vh}.stp{min-height:78vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s}.stp.on{opacity:1}.stp .sk{font-family:var(--v6);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin-bottom:12px}.scard{background:var(--v10);color:var(--v11);border:1px solid var(--v18);border-radius:6px;padding:24px}[data-gel]{opacity:.12;transition:opacity .45s ease,transform .45s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.stp{opacity:1}}@media(max-width:900px){.scrolly,.scrolly.right{grid-template-columns:1fr;gap:0}.sg,.scrolly.right .sg{order:-1;position:sticky;height:46vh;background:var(--v12);border-bottom:1px solid var(--v18);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:28px 0}}.mlab{font-family:var(--v6);font-size:12px;color:#8f8085;display:flex;justify-content:space-between;margin-top:12px}.mval{color:#E9E2E0}.meter{height:12px;background:#271b1e;border-radius:6px;overflow:hidden;margin:6px 0 2px}.meter i{display:block;height:100%;width:0;border-radius:6px;transition:width .3s ease,background .3s ease}@media (prefers-reduced-motion:reduce){.meter i{transition:none}}.pg-controls{display:grid;grid-template-columns:repeat(2,1fr);gap:14px 22px;margin-bottom:10px}@media(max-width:640px){.pg-controls{grid-template-columns:1fr}}.pg-controls label{font-family:var(--v6);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f8085;display:block;margin-bottom:6px}.presets{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 20px}.toggle{display:flex;gap:8px;flex-wrap:wrap}.toggle button{font-family:var(--v6);font-size:12px;padding:7px 12px;border:1px solid #45373a;border-radius:4px;background:transparent;color:#b8a9ad;cursor:pointer;transition:.15s}.toggle button.on{background:var(--v0);border-color:var(--v0);color:#fff}.weeds details{border:1px solid var(--v18);border-radius:4px;margin-bottom:10px;background:var(--v12)}.weeds summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:16px}.weeds summary:hover{background:var(--v13)}.weeds .wbody{padding:0 18px 16px;font-size:16px;color:var(--v4)}.close-sec{text-align:center;padding:130px 0 90px}.close-sec p{font-family:"Newsreader",serif;font-size:clamp(24px,3.5vw,34px);line-height:1.42;margin:0}footer{border-top:1px solid var(--v18);padding:34px 0 60px;font-family:var(--v6);font-size:12.5px;color:var(--v3);line-height:2}.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media (max-width:640px){body{font-size:17.5px}section{padding:72px 0}}</style></style>
+</head>
+<body>
+<div class="pdial" id="pdial" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="track" cx="27" cy="27" r="23"/><circle class="fill" id="pdialFill" cx="27" cy="27" r="23"/></svg>
+  <span id="pdialTxt">I</span>
+</div>
+<nav class="rail" id="rail" aria-label="Parts">
+  <a href="#p1" data-c="#7E2E3E" title="Part I"></a>
+  <a href="#p2" data-c="#2F5568" title="Part II"></a>
+  <a href="#p3" data-c="#46654A" title="Part III"></a>
+</nav>
+
+
+<header class="pI" style="padding:120px 0 78px">
+  <div class="col">
+    <div class="eyebrow">interactive explainer · reasoning models</div>
+    <h1 class="hero-h">The pause<br>before the answer.</h1>
+    <p class="lede">Ask a reasoning model a hard question and it stops, "thinks" for a few seconds, then replies. This guide opens up that pause: what the model is doing in it, how it learned to do it, why it is different from a chatbot with a clever prompt or an agent in a loop, and how Claude's approach and the GPT reasoning family differ.</p>
+  </div>
+</header>
+
+
+<div class="pI" id="p1" data-c="#7E2E3E">
+<div class="part-banner"><div class="pk">Part I · chapters 01 to 04</div><h2>The pause</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">01 · the moment</div>
+    <h2 class="big">One blurts, one stops to think</h2>
+    <div class="try">Read this puzzle. A bat and ball cost 1.10 together. The bat costs 1.00 more than the ball. How much is the ball? Answer fast, on instinct, then hold your answer.</div>
+    <p>If your gut said 10 cents, you are in excellent company and you are wrong; the ball is 5 cents. The fast, fluent, confident answer is the trap. Now watch two AI models meet the same kind of question.</p>
+    <div class="demo">
+      <div class="demo-head"><span>same hard question, two models</span></div>
+      <div class="demo-body">
+        <div class="trace">
+          <div><span class="dim">standard model ▸</span> <span style="color:var(--v16)">10 cents.</span> <span class="dim">(instant, and wrong)</span></div>
+          <div style="margin-top:14px"><span class="dim">reasoning model ▸</span> <span class="th">thinking… let the ball be x. Then the bat is x + 1.00. Together: x + (x+1.00) = 1.10, so 2x = 0.10, x = 0.05.</span></div>
+          <div style="margin-top:8px"><span class="an">▸ The ball costs 5 cents.</span> <span class="dim">(after a short pause)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 1</b>The only visible difference is the pause. The standard model answered in the time it took to read; the reasoning model spent a few seconds first, and got it right.</div>
+    <p style="margin-top:26px">The pause is the whole story. In those seconds the reasoning model was not waiting or searching the web. It was writing, to itself, the working you would write on scrap paper. This guide is about what that writing is, how the model learned to produce it, and why it is a different thing from the tricks that came before it.</p>
+    <div class="pull">The difference between the two answers is not intelligence. It is whether the model thought before it spoke.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">02 · the trap</div>
+    <h2 class="big">It is not bigger. It is not smarter. It is slower on purpose.</h2>
+    <p>The tempting explanation is that the reasoning model is simply a bigger, cleverer brain. Usually it is not much bigger at all. What it does differently is spend more computation at the moment you ask, generating a long private train of thought before committing to an answer. Researchers call this <strong>test-time compute</strong>: paying with time and tokens, at the moment of the question, to buy accuracy.</p>
+    <div class="intu"><span class="il">picture it</span>
+      Two students sit the same exam. One writes the first answer that pops into their head and moves on. The other scribbles working in the margin, checks it, catches a slip, and only then writes the final line. Same student, same knowledge, wildly different scores on the hard questions. <b>The margin-scribbling is the entire trick, and a reasoning model has been trained to always scribble in the margin,</b> even when you did not ask it to.</p></div>
+    <p>You may remember the "let's think step by step" prompt, which nudged a normal model to show its working. A reasoning model is that idea taken all the way: instead of being asked to think, it was <em>trained</em> to think, deeply and by default. The difference between asking and training is the difference between the whole rest of this guide.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">03 · the concept</div>
+    <h2 class="big">A reasoning model thinks in its own words, then answers</h2>
+    <p>Here is the definition, now that the need for it is felt. A <strong>reasoning model</strong> generates a long internal chain of thought, in ordinary language, before it produces its final answer. That thinking is just more of the same token-by-token generation the model always does, except it is aimed inward, at working the problem out, rather than at you.</p>
+    <p>Two things make it more than a prompt trick. The reasoning is <strong>trained into the model</strong>, not requested at runtime, so it happens reliably and skillfully. And the amount of it can be <strong>turned up or down</strong>: more thinking for a hard proof, less for a simple question. The next chapter lets you watch a real-shaped thinking trace unfold, so the abstract "chain of thought" becomes concrete tokens on a page.</p>
+    <div class="note">A quick map of names, since they overlap. "Reasoning model," "thinking model," and "extended thinking" all point at the same idea. The generated thinking is sometimes called the reasoning trace, the scratchpad, or the chain of thought. They are the same thing seen from different angles.</div>
+  </div>
+</section>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">04 · inside the pause</div>
+    <h2 class="big">Watch the thinking, token by token</h2>
+    <p>This is what fills the pause: the model's own words, working the problem. Scroll, and read a real-shaped reasoning trace appear the way the model generates it, one thought at a time, before the short answer drops out at the end.</p>
+  </div>
+  <div class="bleed"><div class="scrolly" id="scTrace">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v6);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8f8085;margin-bottom:8px">problem: "3 friends split a bill; two chip in twice as much as the third; total is 60. How much did the third pay?"</div>
+      <div class="trace" id="traceBox" style="min-height:230px"></div>
+      <div id="traceCount" style="font-family:var(--v6);font-size:11px;color:#8f8085;margin-top:14px"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 0 · the prompt arrives</div><p>A small word problem. A standard model might blurt "20" by dividing 60 by 3. The reasoning model starts writing to itself instead.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 1 · set it up</div><p>It names the unknown and writes the relationships as it understands them. Nothing clever yet, just careful bookkeeping that a fast answer skips.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 2 · try, and catch a slip</div><p>It does the arithmetic, then pauses to check it against the total. This self-check, catching its own mistake, is the behavior training rewarded most.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 3 · converge</div><p>With the check passing, it commits. Notice how much thinking preceded a one-line answer. The thinking is most of the tokens; the answer is a sliver.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 4 · the answer, at last</div><p>Only now does it address you. Everything above was private working. In many products you see a tidy summary of it, not the raw thing.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 2</b>Scroll-driven. Amber is the model thinking to itself; teal is the answer it finally gives you. The ratio is the point: reasoning models spend most of their output on thought you were never meant to read as prose.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      A chess player does not move the instant it is their turn. They sit, and in their head they play out "if I go here, they go there, then I am stuck," discard it, try another line, and only then touch a piece. The board never sees that silent search; it only sees the move. <b>The thinking trace is that silent search made visible,</b> and a reasoning model was trained to run it every time, not just when the position is obviously hard.</p></div>
+  </div>
+</section>
+</div>
+
+
+<div class="pII" id="p2" data-c="#2F5568">
+<div class="part-banner"><div class="pk">Part II · chapters 05 to 07</div><h2>Prompt, harness, or model?</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">05 · three things people confuse</div>
+    <h2 class="big">Is it a ReAct prompt? Where is the loop?</h2>
+    <p>This is the question that trips up everyone, so here it is head-on. Three different things all involve a model "reasoning," and they are not the same. Click each to see exactly where the reasoning lives, how many model calls happen, and where the loop is, if there is one.</p>
+    <div class="demo">
+      <div class="demo-head"><span>prompted CoT vs agent harness vs reasoning model · click one</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-l="0"><b>prompted chain-of-thought</b>you ask a normal model to think</button>
+          <button class="layer" data-l="1"><b>an agent harness (ReAct)</b>your code loops thought → action → observation</button>
+          <button class="layer" data-l="2"><b>a reasoning model</b>thinking trained into the weights</button>
+        </div>
+        <div class="layer-out" id="disOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 3</b>Click each. The short answer to "is it a ReAct prompt?" is no: ReAct is a loop in your code; a reasoning model's thinking is one long generation with no external loop. The loop that made it good was during training, not when you ask.</div>
+    <div class="intu"><span class="il">picture it</span>
+      Prompted thinking is telling a colleague "please show your working." A ReAct harness is you standing over them with a checklist, handing them a calculator, reading the result, and telling them the next step, over and over. A reasoning model is a colleague who went to years of school and now shows careful working on their own, in one sitting, without being asked. <b>Only the harness has a loop you can see; the model's loop was the schooling.</b></p></div>
+    <p style="margin-top:26px">Keep the reasoning model and the external loop clearly apart in your head, because chapter 10 shows the twist: you can put a reasoning model <em>inside</em> a harness and get both at once. First, the schooling.</p>
+  </div>
+</section>
+
+
+<section style="padding-top:40px">
+  <div class="col reveal" style="margin-bottom:10px">
+    <div class="eyebrow">06 · how it learned</div>
+    <h2 class="big">The loop is in the training, and it is simple</h2>
+    <p>So where did the skill come from? Not from being told how to reason. From practice with a scorekeeper. The model attempts a problem, an automatic checker sees whether the final answer was right, and reasoning that led to right answers gets reinforced. Do that on millions of problems and good reasoning emerges. Scroll the loop.</p>
+  </div>
+  <div class="bleed"><div class="scrolly right" id="scRL">
+    <div class="sg"><div class="scard">
+      <div style="font-family:var(--v6);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8f8085;margin-bottom:16px">reinforcement learning · the training loop</div>
+      <div class="fig" id="rlFig"></div>
+    </div></div>
+    <div class="ss">
+      <div class="stp" data-step="0"><div class="sk">step 1 · a problem with a known answer</div><p>Training uses problems that can be graded automatically: math with a checkable result, code that either passes tests or does not. The right answer is known in advance.</p></div>
+      <div class="stp" data-step="1"><div class="sk">step 2 · the model attempts it, thinking freely</div><p>The model generates a full reasoning trace and an answer. Early in training this is often rambling and wrong. It tries many different lines of thought across many attempts.</p></div>
+      <div class="stp" data-step="2"><div class="sk">step 3 · a checker scores the answer</div><p>An automatic grader compares the final answer to the known one. Right or wrong, no human needed. This is why math and code lead: the reward is cheap and objective.</p></div>
+      <div class="stp" data-step="3"><div class="sk">step 4 · reinforce what worked</div><p>Traces that reached the right answer are made more likely; traces that failed, less likely. The model is not told the correct method. It is only told which of its own attempts paid off.</p></div>
+      <div class="stp" data-step="4"><div class="sk">step 5 · repeat, and reasoning emerges</div><p>Millions of rounds later, the habits that keep producing right answers, setting up, checking, backtracking, are baked in. Nobody wrote those habits. The scorekeeper grew them.</p></div>
+    </div>
+  </div></div>
+  <div class="wide"><div class="figcap"><b>Figure 4</b>Scroll-driven, pinned on the right. Attempt, grade, reinforce, repeat. This is reinforcement learning from checkable rewards, and it is the engine behind reasoning models.</div></div>
+  <div class="col reveal" style="margin-top:40px">
+    <div class="intu"><span class="il">picture it</span>
+      Nobody taught you to ride a bike by explaining balance equations. You wobbled, you fell, you stayed up for three seconds, and something in you quietly reinforced whatever you did in those three seconds. Do that enough and balance becomes automatic, though you still cannot put it into words. <b>Reasoning was trained the same way: not explained, but rewarded into existence,</b> which is also why the model cannot always tell you honestly how it really reached an answer.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">07 · the knob · test-time compute</div>
+    <h2 class="big">More thinking buys accuracy, until it doesn't</h2>
+    <p>The defining dial of reasoning models is how long you let them think. Below is the accuracy of a reasoning model plotted against its thinking budget. Drag the budget and watch the curve. Then flip the problem from hard to easy and notice the whole story change.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="demo">
+      <div class="demo-head"><span>test-time compute · drag the budget</span><span id="ttcRead" class="mval"></span></div>
+      <div class="demo-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+          <button class="chip on" data-diff="hard">a hard problem</button>
+          <button class="chip" data-diff="easy">an easy problem</button>
+        </div>
+        <div class="fig" id="ttcFig" style="touch-action:none"></div>
+        <label for="ttcSlider" style="font-family:var(--v6);font-size:12px;color:#b8a9ad;display:block;margin:14px 0 8px">
+          thinking budget: <span class="mval" id="ttcBudget">short</span></label>
+        <input type="range" id="ttcSlider" min="0" max="100" step="1" value="18" aria-label="Thinking budget">
+        <div class="mlab"><span style="color:var(--v1)">accuracy on this problem</span><span class="mval" id="ttcAcc"></span></div>
+        <div class="mlab"><span>cost + latency you pay</span><span class="mval" id="ttcCost"></span></div>
+        <div class="meter"><i id="ttcCostBar"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="wide"><div class="figcap"><b>Figure 5</b>Drag along the curve (or the slider). On the hard problem, accuracy climbs steeply then flattens: the first bit of thinking helps enormously, the last bit barely at all. On the easy problem the curve is flat and already high, so thinking is wasted money. Cost and latency rise in a straight line the whole time.</div></div>
+  <div class="col reveal" style="margin-top:26px">
+    <p>Two lessons sit in that curve. Thinking has sharply diminishing returns, so there is a sweet spot past which you burn time and money for almost nothing. And thinking only helps in proportion to how hard the problem is; on easy questions a reasoning model is a slow, pricey way to get an answer a fast model already had. Matching the budget to the problem is the real skill.</p>
+    <div class="pull">A reasoning model is not better. It is better at hard things, and worse at being quick.</div>
+  </div>
+</section>
+</div>
+
+
+<div class="pIII" id="p3" data-c="#46654A">
+<div class="part-banner"><div class="pk">Part III · chapters 08 to 11</div><h2>Two families, in practice</h2></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">08 · the comparison</div>
+    <h2 class="big">Claude's extended thinking vs the GPT reasoning family</h2>
+    <p>Both Anthropic and OpenAI ship reasoning models, and the underlying idea is the same one you just saw. What differs is the product philosophy: how much of the thinking you see, and how much control you get over it. Click each dimension to compare. A note on names first: reasoning models are recent (the GPT o-series, and Claude's extended thinking). GPT-3, from 2020, was not one, so if you are comparing "Opus 4.8 vs GPT-3," you are really comparing a reasoning model against a plain one.</p>
+    <div class="demo">
+      <div class="demo-head"><span>two philosophies · click a dimension</span></div>
+      <div class="demo-body">
+        <div class="layers">
+          <button class="layer on" data-c2="0"><b>can you see the thinking?</b></button>
+          <button class="layer" data-c2="1"><b>who controls how long it thinks?</b></button>
+          <button class="layer" data-c2="2"><b>do you pay for the thinking tokens?</b></button>
+          <button class="layer" data-c2="3"><b>the shared core</b></button>
+        </div>
+        <div class="cmp" id="cmpOut"></div>
+      </div>
+    </div>
+    <div class="figcap"><b>Figure 6</b>Click each dimension. Left is Claude's extended thinking, right is the GPT o-series approach. The differences are product choices around one shared mechanism.</div>
+    <aside class="mnote"><b>Honesty note.</b> Exact training and architecture are proprietary. This compares published, observable behavior as of mid-2026; both evolve, and specifics change.</aside>
+    <p style="margin-top:26px">Strip the branding and the picture is simple. Both learned to reason from checkable rewards; both spend test-time compute; both let you dial effort up or down. One leans toward showing you a summary of its thoughts and handing you the budget dial directly; the other leans toward hiding the raw thoughts and managing the effort for you. Neither choice is wrong. They serve different tastes for transparency and control.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">09 · when to reach for one</div>
+    <h2 class="big">Great for hard, wasteful for easy</h2>
+    <p>The test-time curve already told you when a reasoning model earns its keep, but here it is as a rule of thumb you can act on. Reach for a reasoning model when the task has <strong>many steps and a checkable outcome</strong>: math, algorithms, debugging, logic puzzles, careful planning, anything where a wrong intermediate step sinks the whole answer.</p>
+    <p>Skip it, and use a fast standard model, when the task is <strong>quick, open-ended, or latency-sensitive</strong>: casual chat, simple lookups, drafting, brainstorming, autocomplete. There, the pause is pure cost. Paying a reasoning model to think hard about "reword this sentence" is like hiring a structural engineer to hang a picture.</p>
+    <div class="intu"><span class="il">picture it</span>
+      You do not take the scenic mountain road to buy milk, and you do not take the motorway shortcut across a glacier. The right route depends entirely on the terrain. <b>Reasoning models are the mountain road: slower, and the only way across genuinely hard ground.</b> For the corner shop, the fast flat road wins every time, and reaching for the mountain road there just makes you late.</p></div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">10 · the twist</div>
+    <h2 class="big">Put a reasoning model inside a harness and get both</h2>
+    <p>Now the payoff from chapter 05. A reasoning model and an agent harness are not rivals; they stack. Inside a ReAct loop, each turn can be handled by a reasoning model. So on every step, the model thinks deeply in its own head <em>and then</em> takes an external action, reads the real result, and thinks again on the next turn.</p>
+    <p>That is the shape of the strongest AI systems today: an external loop that gives the model tools and memory, wrapped around an internal reasoning that makes each individual decision sharp. The outer loop supplies the hands and the world; the reasoning model supplies the careful thought behind each move. One loop you can see, one you cannot, working together.</p>
+    <div class="pull">Internal thinking makes each move wise. The external loop lets it act, look, and move again.</div>
+    <div class="note">This is why "reasoning model" and "agent" get tangled together. An agent is the harness plus tools plus a stopping rule; a reasoning model is what you can drop into it to make each turn count. You can have either without the other, and the best results usually use both.</div>
+  </div>
+</section>
+<div class="divider"></div>
+
+
+<section>
+  <div class="col reveal">
+    <div class="eyebrow">11 · honest limits</div>
+    <h2 class="big">The thinking is useful, not trustworthy</h2>
+    <p>Watching a model reason feels like watching it be honest. It is not quite that, and the gaps matter.</p>
+    <p><strong>The trace is not a faithful log.</strong> Research keeps finding that the written reasoning is not always how the model truly reached its answer. It can produce clean steps and a wrong answer, or reach a right answer by a route its trace does not mention. Read the thinking as a useful artifact, not a confession.</p>
+    <p><strong>More thinking can hurt.</strong> Past the sweet spot on that curve, models sometimes talk themselves out of a correct answer, or loop without progress. Longer is not reliably better, which is exactly why the budget is a dial and not a maximum.</p>
+    <p><strong>It costs real time and money.</strong> Those thinking tokens are generated, and in most products you pay for them and wait for them. A reasoning model on every request is a way to make a cheap product slow and expensive.</p>
+    <p><strong>Hidden reasoning cannot be audited.</strong> When a product hides the raw thoughts and shows only a summary, you are trusting that the summary is faithful. For high-stakes or regulated use, that opacity is a real limitation, not a detail.</p>
+  </div>
+</section>
+</div>
+
+
+<section class="close-sec pIII">
+  <div class="col reveal">
+    <p>The pause is the model thinking in its own words.<br>
+    It learned to, from a scorekeeper, not a teacher.<br>
+    It is not a prompt and not a loop in your code; the loop was the training.<br>
+    Spend its thinking on hard problems, and let fast models handle the rest.</p>
+  </div>
+</section>
+
+
+<div class="pIII">
+<section style="padding-top:0">
+  <div class="wide reveal">
+    <div style="max-width:var(--v5);margin:0 auto">
+      <div class="eyebrow">the effort lab</div>
+      <h2 class="big">Match the effort to the job</h2>
+      <p>Put it together. Pick how hard the task is and how much thinking you allow, and read what you get for it: accuracy, and the cost and latency you paid. The presets are three real situations. Watch how the right amount of thinking depends entirely on the task.</p>
+    </div>
+    <div class="demo">
+      <div class="demo-head"><span>reasoning effort · illustrative</span><span id="labVerdict" class="mval"></span></div>
+      <div class="demo-body">
+        <div class="presets">
+          <button class="btn" data-pre="chat">preset: casual chat</button>
+          <button class="btn" data-pre="proof">preset: a hard proof</button>
+          <button class="btn" data-pre="over">preset: overthinking a simple task</button>
+        </div>
+        <div class="pg-controls">
+          <div><label>task difficulty</label>
+            <div class="toggle" id="labDiff"><button data-v="easy" class="on">easy</button><button data-v="medium">medium</button><button data-v="hard">hard</button></div></div>
+          <div><label>thinking budget: <span id="labBv" class="mval" style="color:#b8a9ad">medium</span></label>
+            <input type="range" id="labBudget" min="0" max="100" step="1" value="40" aria-label="Thinking budget"></div>
+        </div>
+        <div class="mlab"><span style="color:var(--v1)">accuracy</span><span class="mval" id="labAcc"></span></div>
+        <div class="meter"><i id="labAccBar"></i></div>
+        <div class="mlab"><span>cost + latency</span><span class="mval" id="labCost"></span></div>
+        <div class="meter"><i id="labCostBar"></i></div>
+        <div class="mlab"><span>value for money</span><span class="mval" id="labValue"></span></div>
+        <div class="meter"><i id="labValueBar"></i></div>
+        <div id="labOut" style="font-family:var(--v6);font-size:12.5px;line-height:1.8;color:#b8a9ad;margin-top:16px;border-top:1px solid #33272a;padding-top:14px"></div>
+      </div>
+    </div>
+    <div style="max-width:var(--v5);margin:0 auto">
+      <div class="figcap"><b>Figure 7</b>Try the overthinking preset: an easy task with a huge budget. Accuracy barely moves, cost soars, value for money craters. The best setting is never "maximum thinking"; it is "enough for this task."</div>
+    </div>
+  </div>
+</section>
+
+
+<section style="padding-top:24px">
+  <div class="col reveal weeds">
+    <div class="eyebrow">into the weeds</div>
+    <h2 class="big" style="font-size:clamp(26px,4vw,36px)">For the readers who scrolled this far</h2>
+    <p>Seven rabbit holes the main path stepped around. Each stands alone.</p>
+    <details><summary>Reinforcement learning from verifiable rewards, precisely</summary><div class="wbody">The engine behind reasoning models is often called RLVR: reinforcement learning from verifiable rewards. "Verifiable" is the key word. The reward comes from an automatic check, a math answer that is right or wrong, code that passes tests or fails, not from a human rating. That objectivity is why math and coding drove the first wave: you can generate endless problems and grade them for free, so the model can practice millions of times without anyone watching.</div></details>
+    <details><summary>Why some labs hide the raw chain of thought</summary><div class="wbody">Two reasons usually given. Competitive: the raw traces are valuable training data, and a rival could distill them to copy the capability cheaply. Safety and honesty: an unfiltered, un-optimized scratchpad may contain content the lab does not want to surface, and showing a polished summary avoids users over-trusting messy internal text. The cost is transparency, which is why the visible-versus-hidden choice from chapter 08 is genuinely a values trade, not just a UI decision.</div></details>
+    <details><summary>Distilling reasoning into smaller models</summary><div class="wbody">Once a big model reasons well, you can have it generate many good reasoning traces and train a smaller model to imitate them. The small model inherits much of the reasoning skill at a fraction of the cost. This is why capable "mini" reasoning models appear shortly after the large ones, and why the ability spreads down to models you can run on a laptop faster than you would expect.</div></details>
+    <details><summary>Chain-of-thought faithfulness</summary><div class="wbody">A live research question: does the written reasoning actually reflect the computation that produced the answer? Studies have shown models that reach an answer for one reason but write a trace giving another, and models whose answer does not change even when their stated reasoning is edited. The practical upshot from chapter 11 stands: the trace is a useful window, not a guaranteed-true transcript, and safety work depends on closing this gap.</div></details>
+    <details><summary>Long chain-of-thought versus sampling many short ones</summary><div class="wbody">There are two ways to spend test-time compute. One long deliberate think (what reasoning models do), or many short independent attempts that then vote on the answer (self-consistency). They can be combined: sample several long reasoning traces and take the majority. More compute either way, spent on depth, on breadth, or on both, all in service of turning extra computation into extra accuracy.</div></details>
+    <details><summary>You are billed for tokens you may never see</summary><div class="wbody">Thinking tokens are generated tokens, so they cost money and time even when a product only shows you a summary. A reasoning answer can quietly use many times the tokens of a plain answer. This matters for anyone building on the API: a reasoning model on a high-traffic feature can multiply your bill, which is another reason to reserve it for tasks that actually need the depth.</div></details>
+    <details><summary>Reasoning models versus agents, one more time</summary><div class="wbody">A reasoning model thinks hard inside a single response. An agent takes actions in the world across many responses, using tools and a loop. They are different axes: a model can reason without being an agent (just answer a hard question well), and an agent can act without deep reasoning (a simple loop around a fast model). The frontier combines them, per chapter 10, but keeping the two ideas separate is what stops the whole field from sounding like magic.</div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="col">
+    figures are illustrative teaching aids driven by simple functions in your browser, not measurements of any specific model · the test-time-compute curve shows the shape of the real phenomenon, not any product's numbers · comparisons reflect published, observable behavior as of mid-2026 and will change; exact model internals are proprietary<br>
+    built with the interactive-explainer skill · single file · no model was called to make this page
+  </div>
+</footer>
+
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;function t(t){return document.getElementById(t)}function e(t,e){var a=document.createElementNS("http://www.w3.org/2000/svg",t);for(var n in e)a.setAttribute(n,e[n]);return a}var a=t("pdialFill"),n=t("pdialTxt"),r=2*Math.PI*23;a.style.strokeDasharray=r,a.style.strokeDashoffset=r,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);a.style.strokeDashoffset=r*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0});var o=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),o.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(t){o.observe(t)});var i=document.querySelectorAll("#rail a"),s={p1:"I",p2:"II",p3:"III"},d=new IntersectionObserver(function(t){t.forEach(function(t){if(t.isIntersecting){var e=t.target.getAttribute("data-c");a.style.stroke=e,s[t.target.id]&&(n.textContent=s[t.target.id],n.style.color=e),i.forEach(function(a){var n=a.getAttribute("href")==="#"+t.target.id;a.classList.toggle("on",n),n&&a.style.setProperty("--v14",e)})}})},{rootMargin:"-40% 0px -40% 0px"});function l(t,e){var a=[].slice.call(document.querySelectorAll("#"+t+" .stp")),n=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(a.forEach(function(e){e.classList.toggle("on",e===t.target)}),e(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});a.forEach(function(t){n.observe(t)}),e(0)}["p1","p2","p3"].forEach(function(e){d.observe(t(e))});var c,h,u=[{t:'<span class="dim">thinking…</span>',c:"thinking"},{t:'<span class="th">Let the third friend pay x. The other two each pay 2x.</span>',c:"thinking"},{t:'<span class="th">Total = x + 2x + 2x = 5x. And 5x = 60, so x = 12.</span> <span class="dim">Wait, check: 12 + 24 + 24 = 60. ✓</span>',c:"thinking"},{t:'<span class="th">The check passes, so the third friend paid 12.</span>',c:"thinking"},{t:'<span class="an">▸ The third friend paid 12.</span>',c:"answer"}];c=t("traceBox"),h=t("traceCount"),l("scTrace",function(t){c.innerHTML=u.slice(0,t+1).map(function(t){return'<div style="margin-bottom:8px">'+t.t+"</div>"}).join("");var e=14*Math.min(t,4);h.textContent=t>=4?"thinking tokens: ~56   ·   answer tokens: ~7   (thinking is 8× the answer)":"thinking… (~"+e+" tokens so far)"}),function(e,a,n){var r=t(n);function o(t){r.innerHTML=a[t],document.querySelectorAll("["+e+"]").forEach(function(a){a.classList.toggle("on",+a.getAttribute(e)===t)})}document.querySelectorAll("["+e+"]").forEach(function(t){t.addEventListener("click",function(){o(+t.getAttribute(e))})}),o(0)}("data-l",{0:'<b>Prompted chain-of-thought.</b> You add "think step by step" to your prompt to any model. <b>Where the reasoning lives:</b> in your prompt. <b>Model calls:</b> one. <b>Loop:</b> none. <b>Cost:</b> cheap. It is a trick you apply from outside; the model was never trained to reason, it is just following your instruction this once.',1:'<b>An agent harness (ReAct).</b> Your code runs a loop: the model writes a Thought and an Action (a tool call), your code runs the action and feeds back the Observation, repeat until done. <b>Where the reasoning lives:</b> across many messages, orchestrated by your code. <b>Model calls:</b> many, one per turn. <b>Loop:</b> yes, in your harness code. <b>Cost:</b> higher, and you built the loop. This is what "ReAct" means, and it works with any model.',2:"<b>A reasoning model.</b> The thinking is trained into the weights by reinforcement learning. <b>Where the reasoning lives:</b> inside the model, generated automatically. <b>Model calls:</b> one (a single long generation with a thinking section, then an answer). <b>Loop:</b> none at inference; the loop was during training. <b>Cost:</b> more tokens per call. You do not ask it to think; it thinks by default because it was rewarded for it."},"disOut"),function(){var a=e("svg",{viewBox:"0 0 360 300"}),n=e("g",{});function r(t,a,r,o,i,s,d){var l=e("g",{"data-gel":d});return l.appendChild(e("rect",{x:t-r/2,y:a-o/2,width:r,height:o,rx:6,fill:"#271b1e",stroke:i,"stroke-width":1.8})),l.appendChild(e("text",{x:t,y:a+4,"text-anchor":"middle",class:"nlab",fill:"#E9E2E0"})).textContent=s,n.appendChild(l),l}function o(t,a,r,o,i,s){var d=e("g",{"data-gel":i});d.appendChild(e("line",{x1:t,y1:a,x2:r,y2:o,stroke:s||"#5a4a4d","stroke-width":1.6,"marker-end":"url(#ah)"})),n.appendChild(d)}a.appendChild(n);var i=e("defs",{}),s=e("marker",{id:"ah",markerWidth:8,markerHeight:8,refX:6,refY:3,orient:"auto"});s.appendChild(e("path",{d:"M0,0 L6,3 L0,6 Z",fill:"#5a4a4d"})),i.appendChild(s),a.appendChild(i),r(180,40,180,38,"var(--v8)","problem (answer known)","prob"),o(180,60,180,96,"a1"),r(180,120,180,42,"var(--v21)","model attempts + thinks","attempt"),o(270,120,300,120,"a2"),o(180,142,180,180,"a2"),r(180,204,150,38,"var(--v7)","checker grades it","check"),o(105,204,60,204,"a3"),o(60,204,60,120,"a3"),o(60,120,90,120,"a3"),r(60,120,0,0,"transparent","","a3");var d=e("g",{"data-gel":"reward"});d.appendChild(e("text",{x:180,y:262,"text-anchor":"middle",class:"elab",fill:"var(--v17)"})).textContent="✓ right → reinforce this reasoning",d.appendChild(e("text",{x:180,y:280,"text-anchor":"middle",class:"elab",fill:"var(--v16)"})).textContent="✗ wrong → make it less likely",n.appendChild(d);var c=e("g",{"data-gel":"loop"});c.appendChild(e("text",{x:30,y:120,"text-anchor":"middle",class:"elab",fill:"var(--v21)",transform:"rotate(-90 30 120)"})).textContent="↑ repeat millions of times",n.appendChild(c),t("rlFig").appendChild(a);var h={0:["prob"],1:["prob","a1","attempt"],2:["prob","attempt","a2","check"],3:["prob","attempt","check","a3","reward"],4:["prob","attempt","check","reward","loop"]};l("scRL",function(t){var e=h[t]||[];a.querySelectorAll("[data-gel]").forEach(function(t){t.classList.toggle("show",e.indexOf(t.getAttribute("data-gel"))>=0)})})}(),function(){var a=230,n=44,r=504,o=196;function i(t){return n+t/100*460}function s(t){return o-t/100*180}function d(t){return 30+58*(1-Math.exp(-.05*t))}function l(t){return 90+4*(1-Math.exp(-.06*t))}var c=e("svg",{viewBox:"0 0 520 "+a}),h=e("g",{});c.appendChild(h),h.appendChild(e("line",{x1:n,y1:o,x2:r,y2:o,stroke:"#5a4a4d"})),h.appendChild(e("line",{x1:n,y1:o,x2:n,y2:16,stroke:"#5a4a4d"})),h.appendChild(e("text",{x:274,y:224,"text-anchor":"middle",class:"ax"})).textContent="thinking budget  →";var u=e("text",{x:12,y:106,"text-anchor":"middle",class:"ax",transform:"rotate(-90 12 106)"});function f(t,a,n){for(var r=[],o=0;o<=100;o+=2)r.push(i(o)+","+s(t(o)));h.appendChild(e("polyline",{points:r.join(" "),fill:"none",stroke:a,"stroke-width":2.4,"data-c3":n,opacity:"hard"===n?1:.25}))}u.textContent="accuracy  →",h.appendChild(u),[25,50,75,100].forEach(function(t){h.appendChild(e("text",{x:38,y:s(t)+3,"text-anchor":"end",class:"ax"})).textContent=t}),f(d,"var(--v1)","hard"),f(l,"var(--v21)","easy");var g=e("circle",{cx:i(18),cy:s(d(18)),r:7,fill:"var(--v0)",stroke:"#fff","stroke-width":2});h.appendChild(g);var p=e("line",{x1:i(18),y1:o,x2:i(18),y2:s(d(18)),stroke:"var(--v0)","stroke-dasharray":"3 3","stroke-opacity":.5});h.appendChild(p);var b=e("rect",{x:0,y:0,width:520,height:a,fill:"rgba(0,0,0,0)",style:"cursor:pointer"});h.appendChild(b),t("ttcFig").appendChild(c);var v="hard",m=18;function y(){var e,a=(e=m,"hard"===v?d(e):l(e));g.setAttribute("cx",i(m)),g.setAttribute("cy",s(a)),p.setAttribute("x1",i(m)),p.setAttribute("x2",i(m)),p.setAttribute("y2",s(a)),c.querySelectorAll("[data-c3]").forEach(function(t){t.setAttribute("opacity",t.getAttribute("data-c3")===v?1:.22)}),t("ttcBudget").textContent=function(t){return t<20?"short":t<50?"medium":t<80?"long":"very long"}(m),t("ttcAcc").textContent=Math.round(a)+"%";var n=Math.round(10*(1+.09*m))/10;t("ttcCost").textContent=n+"× tokens · +"+(.06*m).toFixed(1)+"s",t("ttcCostBar").style.width=Math.min(100,m)+"%",t("ttcCostBar").style.background=m>70?"var(--v15)":m>40?"var(--v22)":"var(--v19)";var r="hard"===v?"thinking is paying off":"thinking barely helps here";t("ttcRead").innerHTML='<span style="color:'+("hard"===v?"var(--v1)":"var(--v21)")+'">'+r+"</span>"}t("ttcSlider").addEventListener("input",function(){m=+this.value,y()}),document.querySelectorAll("[data-diff]").forEach(function(t){t.addEventListener("click",function(){v=t.getAttribute("data-diff"),document.querySelectorAll("[data-diff]").forEach(function(e){e.classList.toggle("on",e===t)}),y()})});var k=!1;function x(e){var a=function(t){var e=c.getBoundingClientRect(),a=c.viewBox.baseVal;return(t-e.left)/e.width*a.width}(e);m=Math.max(0,Math.min(100,Math.round((a-n)/460*100))),t("ttcSlider").value=m,y()}b.addEventListener("pointerdown",function(t){t.preventDefault(),k=!0,x(t.clientX)}),window.addEventListener("pointermove",function(t){k&&x(t.clientX)}),window.addEventListener("pointerup",function(){k=!1}),y()}();var f=[{A:"<b>A summary you can read.</b> Extended thinking surfaces its reasoning as a readable stream or summary, so you can watch it work and often see where it went.",B:"<b>Hidden, with a summary shown.</b> The o-series keeps the raw thinking private and shows you a cleaned-up summary. You see that it thought, and roughly about what, not the unfiltered trace."},{A:"<b>You set the budget.</b> You can hand Claude an explicit thinking budget, dialing effort up for a proof or down for speed, directly from the request.",B:"<b>Mostly automatic.</b> The o-series tends to manage effort for you, sometimes exposed as a coarse low/medium/high setting rather than a fine token budget."},{A:"<b>Yes, you pay for thinking.</b> The thinking tokens are generated and billed, even the ones summarized away. More thinking, larger bill.",B:"<b>Yes, you pay for thinking.</b> Hidden reasoning tokens are still counted and charged. Hidden does not mean free; it means you cannot read what you paid for."},{A:"<b>Learned to reason from checkable rewards.</b> Spends test-time compute on a long internal chain of thought. Effort is a dial. Same core mechanism as the other family.",B:"<b>Learned to reason from checkable rewards.</b> Spends test-time compute on a long internal chain of thought. Effort is a dial. Same core mechanism as the other family."}];!function(){function e(e){var a=f[e];t("cmpOut").innerHTML='<div class="side A"><div class="h">Claude · extended thinking</div>'+a.A+'</div><div class="side B"><div class="h">GPT · o-series reasoning</div>'+a.B+"</div>",document.querySelectorAll("[data-c2]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-c2")===e)})}document.querySelectorAll("[data-c2]").forEach(function(t){t.addEventListener("click",function(){e(+t.getAttribute("data-c2"))})}),e(0)}();var g={diff:"easy",budget:40};function p(t,e){return"easy"===t?90+4*(1-Math.exp(-.06*e)):"medium"===t?60+30*(1-Math.exp(-.05*e)):30+58*(1-Math.exp(-.05*e))}function b(){var e,a,n=p(g.diff,g.budget),r=1+.09*g.budget,o=n-p(g.diff,0),i=Math.max(0,Math.round(o/r*8));t("labAcc").textContent=Math.round(n)+"%",t("labAccBar").style.width=n+"%",t("labAccBar").style.background=n>75?"var(--v19)":n>50?"var(--v22)":"var(--v15)",t("labCost").textContent=Math.round(10*r)/10+"× · +"+(.06*g.budget).toFixed(1)+"s",t("labCostBar").style.width=Math.min(100,g.budget)+"%",t("labCostBar").style.background=g.budget>70?"var(--v15)":g.budget>40?"var(--v22)":"var(--v19)",t("labValue").textContent=i+"/100",t("labValueBar").style.width=Math.min(100,i)+"%",t("labValueBar").style.background=i>55?"var(--v19)":i>25?"var(--v22)":"var(--v15)",e="easy"===g.diff&&g.budget>40?'<span style="color:var(--v15)">overkill</span>':"hard"===g.diff&&g.budget<25?'<span style="color:var(--v22)">under-thinking</span>':'<span style="color:var(--v19)">well matched</span>',t("labVerdict").innerHTML=e,a="easy"===g.diff&&g.budget>40?"An easy task with a big budget. Accuracy was already high with no thinking, so almost all this cost bought nothing. This is the overthinking trap.":"hard"===g.diff&&g.budget<25?"A hard task on a tiny budget. The model is being cut off before it can work the problem out. Give it room and accuracy jumps.":"hard"===g.diff?"A hard task with real thinking budget. This is where reasoning models earn their cost: accuracy you simply cannot get from a fast model.":"Reasonable. The budget roughly fits the task, so you are paying for accuracy you actually gain rather than for thinking that changes nothing.",t("labOut").innerHTML=a}document.querySelectorAll("#labDiff button").forEach(function(t){t.addEventListener("click",function(){g.diff=t.getAttribute("data-v"),document.querySelectorAll("#labDiff button").forEach(function(e){e.classList.toggle("on",e===t)}),b()})}),t("labBudget").addEventListener("input",function(){g.budget=+this.value,t("labBv").textContent=g.budget<25?"short":g.budget<60?"medium":"long",b()});var v={chat:{diff:"easy",budget:8},proof:{diff:"hard",budget:78},over:{diff:"easy",budget:88}};document.querySelectorAll("[data-pre]").forEach(function(e){e.addEventListener("click",function(){var a=v[e.getAttribute("data-pre")];g.diff=a.diff,g.budget=a.budget,t("labBudget").value=a.budget,t("labBv").textContent=a.budget<25?"short":a.budget<60?"medium":"long",document.querySelectorAll("#labDiff button").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-v")===g.diff)}),b()})}),b()}();
+</script>
+</body>
+</html>

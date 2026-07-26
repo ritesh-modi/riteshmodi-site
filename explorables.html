@@ -39,30 +39,143 @@
     <button class="chip on" data-f="all">Everything</button>
     <button class="chip" data-f="ai">AI</button>
     <button class="chip" data-f="systems">Systems</button>
+    <button class="chip" data-f="governance">Governance</button>
     <button class="chip" data-f="beginner">Beginner-friendly</button>
-    <span class="count" id="count">6 explorables</span>
+    <span class="count" id="count">19 explorables</span>
   </div>
 
   <div class="grid" id="grid">
     <a class="card" data-cat="ai beginner" style="--ac:var(--coral)" href="/explorables/is-it-actually-thinking.html">
       <div class="thumb"><div class="mini fib">first language is<span class="cc">French</span></div></div>
-      <div class="body"><span class="k">Beginner · AI</span><h3>Is it actually thinking?</h3>
-        <p>What an AI assistant really is: autocomplete that read the internet, not a mind. Feel the prediction happen.</p>
+      <div class="body"><span class="k">AI · Beginner</span><h3>Is it actually thinking?</h3>
+        <p>What an AI assistant really is under the hood: prediction, not a mind. Feel the guessing happen for yourself.</p>
         <div class="tags"><span class="tag">AI</span><span class="tag">beginners</span></div></div>
       <div class="go">→</div>
     </a>
-    <a class="card" data-cat="ai" style="--ac:var(--grape)" href="/explorables/what-ai-is-good-and-bad-at.html">
+    <a class="card" data-cat="ai beginner" style="--ac:var(--grape)" href="/explorables/what-ai-is-good-and-bad-at.html">
       <div class="thumb"><div class="mini lights"><i></i><i></i><i class="on-g"></i></div></div>
-      <div class="body"><span class="k">AI · judgment</span><h3>Good at, bad at?</h3>
-        <p>A plain map of what AI nails and where it quietly fails, with one live knob: pick a task, get a green or red light.</p>
-        <div class="tags"><span class="tag">AI</span><span class="tag">using it well</span></div></div>
+      <div class="body"><span class="k">AI · Beginner</span><h3>Good at, bad at?</h3>
+        <p>A plain map of what AI nails and where it quietly fails. Pick a task, get a green or red light.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">judgment</span></div></div>
       <div class="go">→</div>
     </a>
-    <a class="card" data-cat="systems" style="--ac:var(--teal)" href="/explorables/partitioning-postgres.html">
+    <a class="card" data-cat="ai beginner" style="--ac:var(--teal)" href="/explorables/genai-vocabulary-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">📖</div></div>
+      <div class="body"><span class="k">AI · Beginner</span><h3>The words for the machine</h3>
+        <p>A plain-language map of GenAI, from token to agent, with every term drawn as something you can picture.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">vocabulary</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai beginner" style="--ac:var(--sun)" href="/explorables/evaluating-models-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">⚖️</div></div>
+      <div class="body"><span class="k">AI · Beginner</span><h3>Is it actually better?</h3>
+        <p>How to compare AI models and test prompts, so you know when a change really helped and not just felt better.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">evaluation</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai beginner" style="--ac:var(--sky)" href="/explorables/discovering-models-trends-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🧭</div></div>
+      <div class="body"><span class="k">AI · Beginner</span><h3>Stop feeling behind</h3>
+        <p>How to discover what today&#x27;s AI models can do and track what&#x27;s next, without the constant fear of missing out.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">trends</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai" style="--ac:var(--pink)" href="/explorables/prompt-engineering-explainer.html">
+      <div class="thumb"><div class="mini prompt">write a poem<span class="cur"></span></div></div>
+      <div class="body"><span class="k">AI</span><h3>The words are the program</h3>
+        <p>A field guide to prompting, from zero-shot to ReAct: the words you choose are the actual instructions.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">prompting</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai" style="--ac:var(--coral)" href="/explorables/reasoning-models-explainer.html">
+      <div class="thumb"><div class="mini think"><i></i><i></i><i></i></div></div>
+      <div class="body"><span class="k">AI</span><h3>The pause before the answer</h3>
+        <p>How reasoning models work: the hidden scratch paper where the model thinks step by step before it replies.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">reasoning</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai" style="--ac:var(--grape)" href="/explorables/multimodal-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">👁️</div></div>
+      <div class="body"><span class="k">AI</span><h3>One brain, many senses</h3>
+        <p>What multimodal really means: one model handling text, images and sound, and how multi-model is a different thing.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">multimodal</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai" style="--ac:var(--teal)" href="/explorables/ai-transformation-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🌊</div></div>
+      <div class="body"><span class="k">AI</span><h3>AI everywhere, transformation nowhere</h3>
+        <p>Why pouring GenAI into every workflow doesn&#x27;t move the needle, and what real reinvention actually takes.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">strategy</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="systems" style="--ac:var(--sun)" href="/explorables/rate-limiting-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🚦</div></div>
+      <div class="body"><span class="k">Systems</span><h3>A way to say no</h3>
+        <p>Rate limiting explained live: token buckets, sliding windows, and what happens when the requests flood in.</p>
+        <div class="tags"><span class="tag">systems</span><span class="tag">APIs</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="systems" style="--ac:var(--sky)" href="/explorables/azure-service-principals-explainer.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🔑</div></div>
+      <div class="body"><span class="k">Systems</span><h3>Machines don&#x27;t log in</h3>
+        <p>Azure service principals, OAuth, and how the permissions you grant quietly decide your blast radius.</p>
+        <div class="tags"><span class="tag">Azure</span><span class="tag">security</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="systems" style="--ac:var(--pink)" href="/explorables/postgres-partitioning-explainer.html">
       <div class="thumb"><div class="mini parts"><i></i><i></i><i class="lit"></i><i></i><i></i></div></div>
-      <div class="body"><span class="k">Databases · systems</span><h3>Partitioning Postgres</h3>
-        <p>Locality and cheap bulk removal. Drag a project id and watch the planner skip seven of eight partitions.</p>
-        <div class="tags"><span class="tag">Postgres</span><span class="tag">systems</span></div></div>
+      <div class="body"><span class="k">Systems</span><h3>Partitioning Postgres</h3>
+        <p>One slice grew huge. Don&#x27;t scan the whole table to fix it: locality, pruning, and cheap bulk removal.</p>
+        <div class="tags"><span class="tag">Postgres</span><span class="tag">databases</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance beginner" style="--ac:var(--grape)" href="/explorables/grc-explained.html">
+      <div class="thumb"><div class="mini grc"><i>G</i><i class="mid">R</i><i>C</i></div></div>
+      <div class="body"><span class="k">Governance · Beginner</span><h3>The GRC machine</h3>
+        <p>Governance, risk and compliance as one machine that keeps an organization honest with itself. The whole loop, explained.</p>
+        <div class="tags"><span class="tag">GRC</span><span class="tag">governance</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance beginner" style="--ac:var(--teal)" href="/explorables/grc-building-blocks.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🧱</div></div>
+      <div class="body"><span class="k">Governance · Beginner</span><h3>The seven building blocks of GRC</h3>
+        <p>The seven parts every GRC program is built from, and how they fit together into one working system.</p>
+        <div class="tags"><span class="tag">GRC</span><span class="tag">foundations</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance beginner" style="--ac:var(--sun)" href="/explorables/grc-building-blocks-lesson.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">📐</div></div>
+      <div class="body"><span class="k">Governance · Beginner</span><h3>GRC building blocks: the lesson</h3>
+        <p>A hands-on walkthrough of the seven building blocks of GRC, taken one piece at a time.</p>
+        <div class="tags"><span class="tag">GRC</span><span class="tag">lesson</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance" style="--ac:var(--sky)" href="/explorables/grc-operating-registers.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🗂️</div></div>
+      <div class="body"><span class="k">Governance</span><h3>The registers an org keeps on itself</h3>
+        <p>Risks, controls, policies, incidents: the living records a GRC program keeps, and how they connect.</p>
+        <div class="tags"><span class="tag">GRC</span><span class="tag">registers</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance" style="--ac:var(--pink)" href="/explorables/regulatory-atlas.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🗺️</div></div>
+      <div class="body"><span class="k">Governance</span><h3>The regulatory atlas</h3>
+        <p>A map of the regulations an organization must answer to, and how obligations turn into concrete controls.</p>
+        <div class="tags"><span class="tag">regulation</span><span class="tag">compliance</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="governance ai" style="--ac:var(--coral)" href="/explorables/grc-for-genai.html">
+      <div class="thumb"><div class="mini" style="font:800 56px 'Baloo 2';color:var(--ac)">🤖</div></div>
+      <div class="body"><span class="k">Governance · AI</span><h3>Governing generative AI</h3>
+        <p>GRC applied end to end to generative AI: the new risks, controls and guardrails, from model to deployment.</p>
+        <div class="tags"><span class="tag">GRC</span><span class="tag">GenAI</span></div></div>
+      <div class="go">→</div>
+    </a>
+    <a class="card" data-cat="ai beginner" style="--ac:var(--grape)" href="/explorables/tokenization-03A.html">
+      <div class="thumb"><div class="mini tokens"><i>To</i><i>ken</i><i>ize</i><i>this</i></div></div>
+      <div class="body"><span class="k">AI · Beginner</span><h3>Nothing reaches the model as text</h3>
+        <p>Before a model sees your words, they&#x27;re split into tokens and turned into numbers. Watch the text break apart.</p>
+        <div class="tags"><span class="tag">AI</span><span class="tag">tokens</span></div></div>
       <div class="go">→</div>
     </a>
     <a class="card soon" data-cat="ai" style="--ac:var(--sun)" href="#">
@@ -78,13 +191,6 @@
       <div class="body"><span class="k">AI · embeddings</span><h3>Words become numbers</h3>
         <p>Drag a word around a space and watch meaning turn into coordinates. Real cosine math you can feel.</p>
         <div class="tags"><span class="tag">embeddings</span><span class="tag">math</span></div></div>
-    </a>
-    <a class="card soon" data-cat="ai beginner" style="--ac:var(--pink)" href="#">
-      <div class="ribbon">In the works</div>
-      <div class="thumb"><div class="mini fib">so my answer is<span class="cc">better</span></div></div>
-      <div class="body"><span class="k">AI · prompting</span><h3>Prompting, actually</h3>
-        <p>Why the same question gets different answers, and the handful of moves that reliably make them better.</p>
-        <div class="tags"><span class="tag">prompting</span><span class="tag">practical</span></div></div>
     </a>
   </div>
 </div>
