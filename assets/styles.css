@@ -55,8 +55,9 @@ nav{position:fixed;top:16px;left:0;right:0;z-index:60;display:flex;justify-conte
 .nav-inner{pointer-events:auto;display:flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--card) 82%,transparent);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--rule);
   border-radius:999px;padding:8px 8px 8px 20px;box-shadow:var(--shadow-sm);max-width:calc(100% - 32px)}
-.brand{font-family:"Baloo 2";font-weight:800;font-size:19px;margin-right:8px;white-space:nowrap}
-.brand .wv{display:inline-block;transform-origin:70% 70%}
+.brand{font-family:"Baloo 2";font-weight:800;font-size:20px;margin-right:8px;white-space:nowrap;letter-spacing:-.015em;display:inline-flex;align-items:center;gap:5px}
+.brand .wv{display:inline-block;transform-origin:70% 70%;filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--grape) 34%,transparent))}
+.brand .bw,.foot .fb .bw{background:linear-gradient(92deg,var(--coral),var(--grape) 52%,var(--teal));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
 .nav-links{display:flex;gap:2px}
 .nav-links a{font-weight:700;font-size:15px;color:var(--ink-soft);padding:8px 14px;border-radius:999px;transition:all .2s}
 .nav-links a:hover,.nav-links a.here{color:var(--ink);background:var(--paper-2)}
