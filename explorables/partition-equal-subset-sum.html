@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split it in two: the equal-subset-sum problem, without the fear</title>
+<meta name="description" content="An intuitive, interactive walkthrough of LeetCode 416 (partition equal subset sum): balance a scale, watch a checklist of reachable sums fill in, and read the same dynamic-programming solution in Python, Rust, and JavaScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4EFE3; --paper-2:#EBE3D2; --ink:#231C12; --ink-soft:#5A4F3C;
+    --ink-faint:#8C7F66; --rule:#DAD0BB; --accent:#B07515;
+    --safe:#3E7D52; --risk:#B0432B; --warn:#C08430;
+    --panel:#221A0F; --panel-ink:#EDE3D0;
+    --maxw:680px; --wide:1040px; --pad:24px;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+    --t:.5s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
+
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.66;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--t),color var(--t)}
+
+  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+  .bleed{width:100%;margin:0}
+  section{padding:clamp(72px,9vw,120px) 0}
+  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+
+  h1,h2,h3{font-family:"Baloo 2",system-ui,sans-serif;font-weight:700;line-height:1.04;margin:0;letter-spacing:-.01em}
+  h1{font-size:clamp(44px,7vw,88px);line-height:.98;letter-spacing:-.02em}
+  h2.big{font-size:clamp(30px,4.5vw,40px);margin:0 0 20px}
+  p{margin:0 0 20px}
+  .lede{font-family:"Baloo 2",sans-serif;font-weight:500;font-size:clamp(21px,3vw,28px);
+    line-height:1.32;color:var(--ink-soft)}
+
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:11px;margin:0 0 20px;font-weight:500}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+
+  .pull{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:clamp(22px,3.4vw,28px);
+    line-height:1.28;color:var(--accent);border-left:3px solid var(--accent);padding-left:24px;margin:36px 0}
+  .note{background:var(--paper-2);border-radius:6px;padding:18px 22px;margin-top:24px;
+    font-size:16px;color:var(--ink-soft)}
+  .try{background:var(--paper-2);border-left:3px solid var(--accent);padding:16px 22px;margin:24px 0;
+    border-radius:0 6px 6px 0;font-size:18px}
+  .intu{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;
+    padding:18px 24px;margin:26px 0;background:var(--paper-2);font-size:18px;line-height:1.58}
+  .intu .il{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:9px;font-weight:600}
+  .intu b{color:var(--ink)}
+
+  .fig{border:1px solid var(--rule);background:var(--paper);border-radius:10px;margin:30px auto 0;
+    padding:clamp(20px,3vw,34px);overflow:hidden}
+  .fig svg{display:block;width:100%;height:auto}
+  .cap{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--ink-faint);
+    margin-top:16px;line-height:1.5}
+  .cap b{color:var(--accent);font-weight:600}
+
+  .chip{font-family:var(--mono);font-size:13px;font-weight:500;padding:8px 13px;border:1px solid var(--rule);
+    border-radius:22px;background:var(--paper);cursor:pointer;transition:all .16s;color:var(--ink-soft)}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn{font-family:var(--mono);font-size:13px;font-weight:600;padding:9px 16px;border:1px solid var(--accent);
+    border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;transition:all .16s}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.ghost{background:var(--paper);color:var(--accent)}
+  .ctrl{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:20px}
+  input[type=range]{width:100%;accent-color:var(--accent);margin-top:6px}
+
+  .panel{background:var(--panel);color:var(--panel-ink);border-radius:10px}
+  .panel pre{margin:0;padding:22px 22px;overflow-x:auto;font-family:var(--mono);font-size:13px;
+    line-height:1.72;color:var(--panel-ink)}
+  .panel .kw{color:#E0A33D}.panel .fn{color:#7FC7A6}.panel .cm{color:#8C7F66;font-style:italic}
+  .panel .st{color:#D99A7A}.panel .nm{color:#E6C08A}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  ::selection{background:var(--accent);color:#fff}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* hero */
+  header{padding:clamp(40px,7vw,86px) 0 clamp(50px,7vw,90px)}
+  .hsplit{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,64px);align-items:center}
+  @media(max-width:840px){.hsplit{grid-template-columns:1fr;gap:34px}}
+
+  /* progress dial */
+  .pdial{position:fixed;right:20px;bottom:20px;width:54px;height:54px;z-index:100;display:flex;
+    align-items:center;justify-content:center;border-radius:50%;background:var(--paper-2);
+    box-shadow:0 6px 20px rgba(40,30,10,.18)}
+  .pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .pdial .trk{fill:none;stroke:var(--rule);stroke-width:3}
+  .pdial .fil{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round}
+  .pdial span{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink)}
+  @media(max-width:640px){.pdial{display:none}}
+
+  /* scrolly */
+  .scrolly{position:relative;display:grid;gap:4vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);
+    max-width:1180px;margin:0 auto}
+  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
+  .sg > *{width:100%;max-width:520px}
+  .ss{margin:34vh 0 40vh}
+  .stp{min-height:74vh;display:flex;flex-direction:column;justify-content:center;opacity:.3;transition:opacity .35s;cursor:pointer}
+  .stp.on{opacity:1}
+  .stp h3{font-size:24px;margin-bottom:8px}
+  @media(max-width:900px){
+    .scrolly{grid-template-columns:1fr;gap:0}
+    .sg{order:-1;position:sticky;height:46vh;background:var(--paper);border-bottom:1px solid var(--rule);z-index:5}
+    .ss{margin:3vh 0 10vh}.stp{min-height:auto;margin:26px 0}
+  }
+
+  /* svg atom + parts (fill/stroke only, no box chrome) */
+  .cell-e{fill:none;stroke:var(--rule);stroke-width:1.5;stroke-dasharray:3 3}
+  .cell-n{fill:var(--paper);stroke:var(--rule);stroke-width:1.5}
+  .cell-on{fill:var(--accent);stroke:var(--accent);stroke-width:1.5}
+  .cell-hit{fill:var(--safe);stroke:var(--safe);stroke-width:1.5}
+  .cell-bad{fill:var(--risk);stroke:var(--risk);stroke-width:1.5}
+  .glab{font-family:var(--mono);fill:var(--ink-faint)}
+  .tsel{stroke:var(--ink);stroke-width:3;fill:none}
+  .hint{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--ink-faint);
+    text-align:center;cursor:pointer;margin:26px 0}
+  .hint kbd{border:1px solid var(--rule);border-radius:3px;padding:1px 6px;color:var(--ink-soft)}
+  .hint:hover,.hint:focus-visible{color:var(--accent)}
+  .weeds[hidden]{display:none}
+  #weeds details{border-top:1px solid var(--rule);padding:16px 0}
+  #weeds summary{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:18px;cursor:pointer;color:var(--ink)}
+  #weeds details p{margin:12px 0 0;font-size:16px;color:var(--ink-soft)}
+  footer{padding:60px 0;color:var(--ink-faint);font-size:16px}
+  footer .col{border-top:1px solid var(--rule);padding-top:26px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="pdial"><svg viewBox="0 0 54 54"><circle class="trk" cx="27" cy="27" r="23"/><circle class="fil" id="pf" cx="27" cy="27" r="23"/></svg><span id="pt">1</span></div>
+
+<!-- HERO -->
+<header class="hero" data-hero="split">
+  <div class="wide hsplit">
+    <div class="reveal">
+      <p class="eyebrow">leetcode 416</p>
+      <h1>Split it<br>in two.</h1>
+      <p class="lede">You are handed a pile of numbers. Can you deal them into two stacks that weigh exactly the same? People call this a hard problem. It is a scale you can tip with your finger.</p>
+    </div>
+    <div class="fig reveal" style="margin:0;background:var(--paper-2)">
+      <svg id="scaleSvg" viewBox="0 0 420 300" role="img" aria-label="A balance scale you tip by moving numbers between two pans"></svg>
+      <p class="cap">Tap any number to send it across. <b>Balance the two pans.</b></p>
+    </div>
+  </div>
+</header>
+
+<!-- CH01 -->
+<section class="col reveal" data-ch="01" data-defines="partition, subset, sum">
+  <h2 class="big">Two kids, one bag of candy</h2>
+  <p>Maya and Theo tip a bag of candy onto the table. The pieces weigh 1, 5, 11, and 5 grams. They want two equal piles, no piece cut in half. Try it in your head before you read on: which pieces go to Maya?</p>
+  <p>You probably found it fast. The 11 goes to one kid. The 1, 5, and 5 go to the other. Eleven grams each. Nobody cries.</p>
+  <div class="intu"><span class="il">picture it</span>Splitting the pile into two equal stacks is the same move as sorting each piece into a <b>left</b> box or a <b>right</b> box, then hoping both boxes weigh the same. A <b>subset</b> is just "the pieces you put in one box."</div>
+  <div class="fig reveal">
+    <svg id="exSvg" viewBox="0 0 560 150" role="img" aria-label="Four example arrays; tapping one shows whether an equal split exists"></svg>
+    <div class="ctrl" id="exChips">
+      <button class="chip on" data-ex="0">1 5 11 5</button>
+      <button class="chip" data-ex="1">2 2 2 2</button>
+      <button class="chip" data-ex="2">1 2 5</button>
+      <button class="chip" data-ex="3">1 2 3 5</button>
+    </div>
+    <p class="cap">Four bags. Tap one. <b>Green means an even split exists;</b> some bags simply cannot be split.</p>
+  </div>
+  <p>So the answer is sometimes yes and sometimes no. That "sometimes no" is the whole reason this is a real question and not a party trick. Before we hunt for the yes, there is one bag we can reject without any thinking at all.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH02 -->
+<section class="col reveal" data-ch="02" data-defines="total, target, parity" data-uses="partition, sum">
+  <h2 class="big">If the whole thing is odd, go home</h2>
+  <p>Add every piece in the bag. Call it the <b>total</b>. Now say you want two equal piles: each pile has to weigh exactly half of that total. Half of 22 is 11. Fine. But half of 23 is 11.5, and there is no such thing as half a candy.</p>
+  <p>Push the buttons below. Drop a number in or pull one out and watch the total. The instant the total goes odd, the answer is a flat no, and you did not inspect a single subset to know it.</p>
+  <div class="intu"><span class="il">picture it</span>Two equal piles means the total is split down the middle. <b>An odd total has no middle.</b> So step one is free: if the total is odd, stop. If it is even, your goal now has a name, the <b>target</b>, and it equals total divided by two.</div>
+  <div class="fig reveal">
+    <svg id="parSvg" viewBox="0 0 560 190" role="img" aria-label="The total as a bar with a midpoint; toggling numbers flips it between odd and even"></svg>
+    <div class="ctrl" id="parChips">
+      <button class="chip on" data-p="3">3</button>
+      <button class="chip on" data-p="1">1</button>
+      <button class="chip on" data-p="1b">1</button>
+      <button class="chip" data-p="4">4</button>
+      <button class="chip" data-p="7">7</button>
+    </div>
+    <p class="cap">Toggle numbers in and out of the bag. <b>Odd total: no midpoint, no split.</b> Even total: the target lights up.</p>
+  </div>
+  <p>Even total, though, is only a hall pass. The bag 1, 2, 5 adds to 8, nicely even, target 4, and it still cannot be split. So an even total gets us to the real question, and the real question is about one pile, not two.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH03 -->
+<section class="col reveal" data-ch="03" data-defines="subset sum, reachable" data-uses="subset, target">
+  <h2 class="big">Two equal piles is secretly one question</h2>
+  <p>Here is the move that turns this from scary to small. Forget about building two piles. Build only <b>one</b> pile, and try to make it weigh exactly the target. If you can, you are already done, because whatever you left behind is the other pile, and it weighs the total minus the target, which is the target again.</p>
+  <p>Fill the pan below. Tap pieces into it and chase the line at 11. Land on it exactly and the leftovers light up on their own, already equal.</p>
+  <div class="intu"><span class="il">picture it</span>You do not have to balance two things at once. You pick pieces for one pan until it reads the target. The other pan is then guaranteed, for free. The question shrinks to: <b>can some subset add up to exactly the target?</b> That question has a name, <b>subset sum</b>, and a sum you can build is called <b>reachable</b>.</div>
+  <div class="fig reveal">
+    <svg id="refSvg" viewBox="0 0 560 230" role="img" aria-label="One pan you fill with numbers, chasing an exact target line"></svg>
+    <div class="ctrl"><button class="btn ghost" id="refReset">reset the pan</button></div>
+    <p class="cap">Tap pieces into the pan. <b>Hit 11 exactly</b> and the leftovers turn out equal by themselves.</p>
+  </div>
+  <p>Good. The whole problem is now a single sentence: can I pick some of these numbers so they add to the target? The lazy way to answer that is to try every possible pick. Let us see how badly that goes.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH04 -->
+<section class="col reveal" data-ch="04" data-defines="brute force" data-uses="subset, subset sum">
+  <h2 class="big">Trying every pile does not scale</h2>
+  <p>Each number has two fates: in the pan, or out. Flip them yourself below. Every pattern of in and out is one subset to test, and the counter shows how many patterns exist. With four numbers it is sixteen. Cute. Now drag the slider.</p>
+  <div class="intu"><span class="il">picture it</span>Every number doubles the number of subsets, because it can be in or out independently of all the others. That is <b>brute force</b>: check all of them. Two, four, eight, sixteen, and by the time you have a modest bag it is more subsets than seconds in your life.</div>
+  <div class="fig reveal">
+    <svg id="bruteSvg" viewBox="0 0 560 170" role="img" aria-label="Toggle each number in or out; a counter shows the number of possible subsets growing"></svg>
+    <label class="cap" for="nSlider" style="display:block;margin-top:18px">bag size: <b id="nOut">4 numbers</b></label>
+    <input type="range" id="nSlider" min="4" max="40" value="4" step="1">
+    <p class="cap">Tap the tiles to pick a subset. <b>Every extra number doubles the work.</b> At 40 numbers, brute force is hopeless.</p>
+  </div>
+  <p>The trap in brute force is that it forgets. It rebuilds the sum 6 from scratch a thousand times over. What if, instead of listing every pile, we just kept a running checklist of which totals are even possible?</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH05 (centerpiece scrolly) -->
+<section class="reveal" data-ch="05" data-defines="checklist, build up" data-uses="reachable, target, subset sum">
+  <div class="col">
+    <h2 class="big">Keep a checklist of sums you can hit</h2>
+    <p>Start with one honest fact: the sum 0 is reachable, by picking nothing. Now feed in the numbers one at a time. Each number, when it arrives, looks at every sum already on your checklist and adds a fresh option: that sum plus itself. Watch the strip fill as we pour in 1, 5, 11, 5. The moment the target lights up, the answer is yes.</p>
+    <div class="intu"><span class="il">picture it</span>You keep a row of boxes, one per possible sum from 0 up to the target. A box is ticked if that exact sum can be built from the numbers seen so far. Each new number <b>builds up</b> new ticks by copying every existing tick that many boxes to the right. You never rebuild a pile; you just carry the checklist forward.</div>
+  </div>
+  <div class="bleed" style="margin-top:20px"><div class="scrolly" id="sc1">
+    <div class="sg"><div class="fig" style="margin:0">
+      <svg id="reachSvg" viewBox="0 0 520 220" role="img" aria-label="A row of boxes for sums 0 to 11, filling in as each number is processed"></svg>
+      <p class="cap" id="reachCap">Start: only <b>0</b> is reachable.</p>
+    </div></div>
+    <div class="ss">
+      <div class="stp on" data-step="0"><h3>Sum 0, for free</h3><p>Before any number, exactly one total is reachable: zero, the empty pan. Everything else is blank.</p></div>
+      <div class="stp" data-step="1"><h3>The 1 arrives</h3><p>For every ticked box, tick the box one step to the right. Zero was ticked, so now 1 is too. Reachable: 0, 1.</p></div>
+      <div class="stp" data-step="2"><h3>The 5 arrives</h3><p>Copy every tick five boxes right. 0 gives 5, and 1 gives 6. The checklist grows without redoing old work. Reachable: 0, 1, 5, 6.</p></div>
+      <div class="stp" data-step="3"><h3>The 11 lands on target</h3><p>Copy every tick eleven boxes right. Zero plus eleven is eleven, and eleven is the target. The box turns green. The answer is already yes.</p></div>
+      <div class="stp" data-step="4"><h3>The last 5, for completeness</h3><p>The final 5 fills in a few more boxes, but we were done a step ago. One pass over the numbers, one row of boxes, one clear yes.</p></div>
+    </div>
+  </div></div>
+  <div class="col">
+    <div class="ctrl" style="justify-content:center"><button class="btn" id="reachStep">feed the next number</button><button class="btn ghost" id="reachReset">start over</button></div>
+    <p class="pull">Brute force asked "which pile?" over and over. The checklist asks "which sums are possible?" exactly once.</p>
+    <p>That row of boxes is the entire idea behind the scary phrase. But where do the boxes come from, and why is copying-to-the-right always correct? For that we open the hood and look at the table underneath.</p>
+  </div>
+</section>
+<div class="divider"></div>
+
+<!-- CH06 -->
+<section class="col reveal" data-ch="06" data-defines="dp table, recurrence" data-uses="checklist, reachable">
+  <h2 class="big">The table behind the checklist</h2>
+  <p>Stack a checklist for each stage. Row 0 is before any number: only sum 0 is reachable. Each later row adds one number to the ones allowed so far. The grid below is that stack for 1, 5, 11, 5. Tap any green cell and it shows you the two cells above it that made it true.</p>
+  <div class="intu"><span class="il">picture it</span>A cell in row <b>i</b>, column <b>t</b> asks: using the first i numbers, can I hit sum t? It is true in exactly two ways. Either the row above already hit t without this number, or the row above hit t minus this number and this number finishes the job. That two-way rule is the <b>recurrence</b>, and the stacked grid is the <b>dp table</b>.</div>
+  <div class="fig reveal">
+    <svg id="gridSvg" viewBox="0 0 620 300" role="img" aria-label="A grid of cells, rows per number added, columns per possible sum; tapping a true cell reveals its two parent cells"></svg>
+    <p class="cap" id="gridCap">Tap a <b>green</b> cell to see where it came from.</p>
+  </div>
+  <p>Look closely at a lit cell and you notice something wasteful: every row copies almost all of the row above it, unchanged. We are storing a whole history we never look back at. That waste is an invitation.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH07 -->
+<section class="col reveal" data-ch="07" data-defines="one row, down iteration" data-uses="dp table, recurrence">
+  <h2 class="big">One row is enough</h2>
+  <p>Since each row only ever reads the row directly above, throw the history away and keep a single row, updating it in place. There is exactly one trap, and it is worth feeling before you are told. Take one number, a 3, and a fresh row where only 0 is ticked. Apply the 3 two ways below.</p>
+  <div class="intu"><span class="il">picture it</span>Update the row from the <b>right end back toward the start</b>, and each box reads a neighbor that still belongs to the old row, so the number is used once. That is <b>down iteration</b>. Update left to right instead and box 3 ticks box 6 ticks box 9, all from a single 3. You just used one candy three times. Keeping <b>one row</b> is fine; the direction is the whole game.</div>
+  <div class="fig reveal">
+    <svg id="dirSvg" viewBox="0 0 560 240" role="img" aria-label="One number applied two ways to a single row: right-to-left ticks one box, left-to-right wrongly ticks three"></svg>
+    <div class="ctrl"><button class="btn" id="dirApply">apply the 3</button><button class="btn ghost" id="dirReset">reset</button></div>
+    <p class="cap"><b>Down (right to left):</b> only 3 lights, correct. <b>Up (left to right):</b> 3, 6, 9 light, the 3 got reused.</p>
+  </div>
+  <p>So the finished machine is tiny: one boolean row, one pass per number, always sweeping downward. That fits in a dozen lines, and it looks almost the same whichever language you reach for.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH08 -->
+<section class="col reveal" data-ch="08" data-uses="one row, down iteration">
+  <h2 class="big">The same idea in three languages</h2>
+  <p>Step the trace on the right and watch the single row fill exactly as the code says, sweeping each number downward. Then switch languages. Python, Rust, and JavaScript disagree about semicolons and nothing else that matters here.</p>
+  <div class="intu"><span class="il">picture it</span>Every version does four things: bail if the total is odd, make a row of falses with true at 0, sweep each number from the target down to itself, and read off the target box at the end. If you can see those four beats in one language, you can find them in all three.</div>
+  <div class="fig reveal">
+    <svg id="traceSvg" viewBox="0 0 520 150" role="img" aria-label="The one-row array filling as the code runs, one number at a time"></svg>
+    <div class="ctrl"><button class="btn" id="traceStep">run one number</button><button class="btn ghost" id="traceReset">reset trace</button><span class="cap" id="traceCap" style="margin:0"></span></div>
+  </div>
+  <div class="panel reveal" style="margin-top:20px">
+    <div class="ctrl" id="langChips" style="margin:0;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.12)">
+      <button class="chip on" data-lang="py">Python</button>
+      <button class="chip" data-lang="rs">Rust</button>
+      <button class="chip" data-lang="js">JavaScript</button>
+    </div>
+    <pre id="codeBox"></pre>
+  </div>
+  <p>None of that is bigger than the balance scale you tipped at the top. The fear was about the words, not the work. One honest caveat remains, and it is about size, not difficulty.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CH09 -->
+<section class="col reveal" data-ch="09" data-defines="pseudo polynomial" data-uses="one row, target">
+  <h2 class="big">When the row gets too long</h2>
+  <p>The row has one box per sum from 0 to the target, and the target is half the total. Small numbers, short row, instant answer. But scale every number up and the row stretches with them. Slide below and watch the work, which is bag size times target, balloon even though the count of numbers never changed.</p>
+  <div class="intu"><span class="il">picture it</span>The cost is the grid area: how many numbers times how many boxes. Because the box count follows the size of the values, not just how many there are, this is called <b>pseudo polynomial</b>. It flies for everyday numbers and crawls when the values are astronomically large. That is the real edge of the trick, and it is honest to know where it is.</div>
+  <div class="fig reveal">
+    <svg id="limSvg" viewBox="0 0 560 200" role="img" aria-label="The work grid growing as the numbers are scaled up"></svg>
+    <label class="cap" for="kSlider" style="display:block;margin-top:18px">scale the numbers: <b id="kOut">x1</b> &nbsp; work: <b id="workOut">4 x 11 cells</b></label>
+    <input type="range" id="kSlider" min="1" max="9" value="1" step="1">
+    <p class="cap">Same four numbers, scaled up. <b>The answer is just as easy; the row is not.</b></p>
+  </div>
+  <p>For the arrays you meet in an interview, none of that bites. You have a linear-feeling sweep, one row of booleans, and a problem you can now explain to the kid dividing the candy.</p>
+</section>
+<div class="divider"></div>
+
+<!-- CLOSE -->
+<section class="col reveal" style="text-align:center">
+  <p class="eyebrow" style="justify-content:center">the whole thing</p>
+  <h2 class="big" style="max-width:640px;margin:0 auto 18px">A pile splits in two exactly when some subset of it hits the halfway mark. Tick the sums you can reach, sweep each number downward once, and read the last box.</h2>
+  <p class="lede" style="max-width:560px;margin:0 auto">The same shape shows up whenever two things must come out even: splitting a bill without a calculator, balancing two servers, dividing work across a night shift. It was never a monster. It was a scale.</p>
+</section>
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+<section class="weeds col" id="weeds" hidden aria-labelledby="weedsHint">
+  <h2 class="big">Into the weeds</h2>
+  <details><summary>Why is this problem called "NP-complete" if the code is so short?</summary><p>Subset sum is NP-complete in general, but our row-of-booleans runs in bag size times target time. There is no contradiction: the target can be exponentially large in the number of digits it takes to write it down. When the values are small the target is small and the trick is fast; when the values can be gigantic, the row can be gigantic too. The short code is fast in the value, not fast in the input length, which is exactly what "pseudo polynomial" means.</p></details>
+  <details><summary>The bitset speedup</summary><p>A reachable-sums row is a row of bits, and copying every tick k boxes to the right is a left shift by k followed by an OR with itself. In Python that is one line: <code>bits |= bits &lt;&lt; x</code> on a big integer, then check bit number target. It does the same work the loop does, but the machine moves 64 sums per instruction, so it is often an order of magnitude faster with no change to the idea.</p></details>
+  <details><summary>Proving down-iteration is correct</summary><p>When you update box t you read box t minus x. Sweeping from high t to low t, box t minus x has not been touched yet this pass, so it still reflects the row before this number arrived, meaning this number is counted at most once. Sweeping the other way, box t minus x may already include this same number, which is how a single 3 climbs to 6 and 9. The direction is the proof.</p></details>
+  <details><summary>Reconstructing the actual split</summary><p>The boolean row answers yes or no. To hand Maya her exact pieces, keep the 2D table (or a parent pointer per cell) and walk backward from the target box in the last row: at each step, if the sum was reachable without the current number, step up; otherwise take that number into the pile and subtract it. You arrive at 0 holding one valid half.</p></details>
+</section>
+
+<footer><div class="col">
+  <p>Worked example: <b>nums = [1, 5, 11, 5]</b>, total 22, target 11. Every reachable-set and grid value on this page was computed and checked in Python. The problem is LeetCode 416, "Partition Equal Subset Sum."</p>
+  <p style="margin:0;color:var(--ink-faint)">Built as an interactive explorable. Tip the scale, feed the checklist, read the code.</p>
+</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* reveal on scroll */
+  var ro=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+  },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el); });
+
+  /* progress dial */
+  var pf=document.getElementById('pf'), pt=document.getElementById('pt'), C=2*Math.PI*23;
+  pf.style.strokeDasharray=C; pf.style.strokeDashoffset=C;
+  var secs=[].slice.call(document.querySelectorAll('section[data-ch]'));
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);
+    pf.style.strokeDashoffset=C*(1-Math.min(1,Math.max(0,p||0)));
+    var idx=1; secs.forEach(function(s){ if(s.getBoundingClientRect().top<200) idx=+s.getAttribute('data-ch'); });
+    pt.textContent=idx;
+  },{passive:true});
+
+  /* ---------- shared atom: a cell ---------- */
+  function cell(x,y,w,label,state){
+    var cls={e:'cell-e',n:'cell-n',on:'cell-on',hit:'cell-hit',bad:'cell-bad'}[state]||'cell-n';
+    var tc=(state==='on'||state==='hit'||state==='bad')?'#fff':'var(--ink)';
+    var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+w+'" rx="8" class="'+cls+'" shape-rendering="geometricPrecision"/>';
+    if(label!==''&&label!=null) s+='<text x="'+(x+w/2)+'" y="'+(y+w/2+5)+'" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="15" fill="'+tc+'">'+label+'</text>';
+    return s;
+  }
+  function label(x,y,t,size,anchor){ return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'start')+'" class="glab" font-size="'+(size||13)+'">'+t+'</text>'; }
+
+  /* ================= HERO: balance scale ================= */
+  (function(){
+    var svg=document.getElementById('scaleSvg'); if(!svg) return;
+    var tiles=[{v:11,side:'L'},{v:1,side:'R'},{v:5,side:'R'},{v:5,side:'R'}];
+    function sums(){var L=0,R=0;tiles.forEach(function(t){if(t.side==='L')L+=t.v;else R+=t.v;});return[L,R];}
+    function draw(){
+      var s=sums(),L=s[0],R=s[1];
+      var CX=210, tilt=Math.max(-34,Math.min(34,(L-R)*3));
+      var ly=120+tilt, ry=120-tilt;
+      var g='';
+      // stand
+      g+='<rect x="204" y="120" width="12" height="150" rx="4" fill="var(--rule)"/>';
+      g+='<path d="M180 272 L240 272 L210 240 Z" fill="var(--ink-faint)"/>';
+      // beam
+      g+='<line x1="70" y1="'+ly+'" x2="350" y2="'+ry+'" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>';
+      g+='<circle cx="210" cy="120" r="7" fill="var(--ink)"/>';
+      // pans + tiles
+      [['L',70,ly,L],['R',350,ry,R]].forEach(function(p){
+        var px=p[1], py=p[2]+46;
+        g+='<line x1="'+p[1]+'" y1="'+p[2]+'" x2="'+p[1]+'" y2="'+(py-14)+'" stroke="var(--ink-faint)" stroke-width="2"/>';
+        g+='<path d="M'+(px-46)+' '+(py-14)+' Q'+px+' '+(py+22)+' '+(px+46)+' '+(py-14)+'" fill="none" stroke="var(--ink)" stroke-width="2.5"/>';
+        var mine=tiles.map(function(t,i){return{t:t,i:i};}).filter(function(o){return o.t.side===p[0];});
+        var tw=26, startx=px-(mine.length*tw)/2;
+        mine.forEach(function(o,k){ g+=cell(Math.round(startx+k*tw),Math.round(py-40),22,o.t.v,'on'); });
+        g+=label(px,py-52,p[3],17,'middle');
+      });
+      // verdict
+      var msg=(L===R)?'balanced':'off by '+Math.abs(L-R);
+      g+='<text x="210" y="26" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(L===R?'var(--safe)':'var(--ink-faint)')+'">'+msg+'</text>';
+      // hit targets over tiles
+      tiles.forEach(function(t,i){
+        var isL=t.side==='L', s2=sums();
+        var px=isL?70:350, py=(isL?(120+Math.max(-34,Math.min(34,(s2[0]-s2[1])*3))):(120-Math.max(-34,Math.min(34,(s2[0]-s2[1])*3))))+46;
+        var mine=tiles.map(function(tt,ii){return{t:tt,i:ii};}).filter(function(o){return o.t.side===t.side;});
+        var pos=mine.findIndex(function(o){return o.i===i;});
+        var tw=26, startx=px-(mine.length*tw)/2;
+        g+='<rect x="'+(startx+pos*tw-3)+'" y="'+(py-46)+'" width="30" height="30" fill="rgba(0,0,0,0)" style="cursor:pointer" data-tile="'+i+'"/>';
+      });
+      svg.innerHTML=g;
+      svg.querySelectorAll('[data-tile]').forEach(function(el){
+        el.addEventListener('click',function(){ var i=+el.getAttribute('data-tile'); tiles[i].side=tiles[i].side==='L'?'R':'L'; draw(); });
+      });
+    }
+    draw();
+  })();
+
+  /* ================= CH01: example verdicts ================= */
+  (function(){
+    var svg=document.getElementById('exSvg'); if(!svg) return;
+    var EX=[
+      {nums:[1,5,11,5], ok:true, split:[[11],[1,5,5]]},
+      {nums:[2,2,2,2], ok:true, split:[[2,2],[2,2]]},
+      {nums:[1,2,5], ok:false},
+      {nums:[1,2,3,5], ok:false}
+    ];
+    function draw(k){
+      var e=EX[k], g='', y=44;
+      if(e.ok){
+        g+=label(28,30,'one pile',13);
+        var x=28; e.split[0].forEach(function(v){ g+=cell(x,y,40,v,'on'); x+=48; });
+        g+=label(300,30,'other pile',13);
+        var x2=300; e.split[1].forEach(function(v){ g+=cell(x2,y,40,v,'on'); x2+=48; });
+        var half=e.nums.reduce(function(a,b){return a+b;},0)/2;
+        g+='<text x="500" y="72" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--safe)">'+half+' = '+half+'</text>';
+        g+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">yes, it splits evenly</text>';
+      } else {
+        var x=180; e.nums.forEach(function(v){ g+=cell(x,y,40,v,'n'); x+=48; });
+        var tot=e.nums.reduce(function(a,b){return a+b;},0);
+        var why=(tot%2)?('total '+tot+' is odd'):('total '+tot+', but no subset hits '+(tot/2));
+        g+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--risk)">no split: '+why+'</text>';
+      }
+      svg.innerHTML=g;
+    }
+    draw(0);
+    document.querySelectorAll('#exChips .chip').forEach(function(c){
+      c.addEventListener('click',function(){
+        document.querySelectorAll('#exChips .chip').forEach(function(x){x.classList.remove('on');});
+        c.classList.add('on'); draw(+c.getAttribute('data-ex'));
+      });
+    });
+  })();
+
+  /* ================= CH02: parity bar ================= */
+  (function(){
+    var svg=document.getElementById('parSvg'); if(!svg) return;
+    var pool=[{k:'3',v:3,on:true},{k:'1',v:1,on:true},{k:'1b',v:1,on:true},{k:'4',v:4,on:false},{k:'7',v:7,on:false}];
+    function draw(){
+      var total=pool.filter(function(p){return p.on;}).reduce(function(a,p){return a+p.v;},0);
+      var odd=(total%2)!==0, W=480, x0=40, unit=Math.min(30,W/Math.max(total,1));
+      var g='';
+      g+=label(x0,34,'the bag adds to',13);
+      g+='<text x="'+(x0+150)+'" y="34" font-family="Baloo 2" font-weight="700" font-size="20" fill="var(--ink)">'+total+'</text>';
+      // bar
+      var bx=x0, by=64;
+      for(var s=0;s<total;s++){ g+='<rect x="'+(bx+s*unit)+'" y="'+by+'" width="'+(unit-2)+'" height="30" rx="3" fill="var(--accent)" opacity="0.85"/>'; }
+      // midpoint
+      var mid=x0+(total/2)*unit;
+      g+='<line x1="'+mid+'" y1="'+(by-10)+'" x2="'+mid+'" y2="'+(by+40)+'" stroke="'+(odd?'var(--risk)':'var(--safe)')+'" stroke-width="3" stroke-dasharray="'+(odd?'4 4':'0')+'"/>';
+      if(odd){
+        g+='<text x="'+x0+'" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--risk)">odd total: the midline lands between two candies. No split. Stop.</text>';
+      } else {
+        g+='<text x="'+mid+'" y="'+(by-16)+'" text-anchor="middle" class="glab" font-size="13" fill="var(--safe)">target '+(total/2)+'</text>';
+        g+='<text x="'+x0+'" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">even total: the goal is now to build exactly '+(total/2)+'.</text>';
+      }
+      svg.innerHTML=g;
+    }
+    draw();
+    document.querySelectorAll('#parChips .chip').forEach(function(c){
+      c.addEventListener('click',function(){
+        var p=pool.filter(function(o){return o.k===c.getAttribute('data-p');})[0];
+        p.on=!p.on; c.classList.toggle('on',p.on); draw();
+      });
+    });
+  })();
+
+  /* ================= CH03: reframe, fill one pan ================= */
+  (function(){
+    var svg=document.getElementById('refSvg'); if(!svg) return;
+    var TARGET=11, nums=[{v:1,in:false},{v:5,in:false},{v:11,in:false},{v:5,in:false}];
+    function draw(){
+      var sum=nums.filter(function(n){return n.in;}).reduce(function(a,n){return a+n.v;},0);
+      var hit=sum===TARGET, g='';
+      // target line scale 0..22 across width 480
+      var x0=40, W=480, scale=W/22;
+      g+=label(x0,30,'pan total',13);
+      g+='<text x="'+(x0+92)+'" y="30" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(hit?'var(--safe)':'var(--ink)')+'">'+sum+' / '+TARGET+'</text>';
+      // gauge
+      g+='<rect x="'+x0+'" y="48" width="'+W+'" height="20" rx="6" fill="var(--paper-2)"/>';
+      g+='<rect x="'+x0+'" y="48" width="'+(Math.min(sum,22)*scale)+'" height="20" rx="6" fill="'+(hit?'var(--safe)':'var(--accent)')+'"/>';
+      var tx=x0+TARGET*scale;
+      g+='<line x1="'+tx+'" y1="40" x2="'+tx+'" y2="76" stroke="var(--ink)" stroke-width="2.5"/>';
+      g+=label(tx,92,'target 11','13','middle');
+      // number tiles
+      var x=x0;
+      nums.forEach(function(n,i){
+        g+=cell(x,120,44,n.v,n.in?'on':'n');
+        g+='<rect x="'+x+'" y="120" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-n="'+i+'"/>';
+        x+=54;
+      });
+      g+=label(x0+260,150,'tap to drop into the pan',13);
+      if(hit){
+        var rest=nums.filter(function(n){return !n.in;}).map(function(n){return n.v;});
+        g+='<text x="'+x0+'" y="206" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">leftovers '+(rest.join(' + ')||'0')+' = 11 too. Both piles equal.</text>';
+      }
+      svg.innerHTML=g;
+      svg.querySelectorAll('[data-n]').forEach(function(el){
+        el.addEventListener('click',function(){ var i=+el.getAttribute('data-n'); nums[i].in=!nums[i].in; draw(); });
+      });
+    }
+    draw();
+    document.getElementById('refReset').addEventListener('click',function(){ nums.forEach(function(n){n.in=false;}); draw(); });
+  })();
+
+  /* ================= CH04: brute force ================= */
+  (function(){
+    var svg=document.getElementById('bruteSvg'); if(!svg) return;
+    var base=[1,5,11,5], picks=[false,false,false,false];
+    function draw(){
+      var g='', x=40, sum=0;
+      base.forEach(function(v,i){
+        g+=cell(x,50,44,v,picks[i]?'on':'e');
+        g+=label(x+22,116,picks[i]?'in':'out','13','middle');
+        g+='<rect x="'+x+'" y="50" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-b="'+i+'"/>';
+        if(picks[i])sum+=v; x+=60;
+      });
+      g+=label(320,50,'this subset sums to',13);
+      g+='<text x="320" y="80" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--accent)">'+sum+'</text>';
+      g+=label(320,116,(sum===11?'that is a valid half':'not 11'),13);
+      svg.innerHTML=g;
+      svg.querySelectorAll('[data-b]').forEach(function(el){
+        el.addEventListener('click',function(){ var i=+el.getAttribute('data-b'); picks[i]=!picks[i]; draw(); });
+      });
+    }
+    draw();
+    var sl=document.getElementById('nSlider'), nOut=document.getElementById('nOut');
+    function fmt(n){ var c=Math.pow(2,n); return c>1e6?(c.toExponential(1)):c.toLocaleString('en-US'); }
+    sl.addEventListener('input',function(){
+      var n=+this.value; nOut.innerHTML=n+' numbers &rarr; '+fmt(n)+' subsets to check';
+    });
+    nOut.innerHTML='4 numbers &rarr; 16 subsets to check';
+  })();
+
+  /* ================= CH05: reachable strip (scrolly) ================= */
+  (function(){
+    var svg=document.getElementById('reachSvg'); if(!svg) return;
+    var TARGET=11, order=[1,5,11,5];
+    var SETS=[[0],[0,1],[0,1,5,6],[0,1,5,6,11],[0,1,5,6,10,11]];
+    var CAPS=['Start: only <b>0</b> is reachable.',
+      'After the <b>1</b>: reachable 0, 1.',
+      'After the <b>5</b>: reachable 0, 1, 5, 6.',
+      'After the <b>11</b>: <b>target 11 is reachable</b>. Answer is yes.',
+      'After the last <b>5</b>: 0, 1, 5, 6, 10, 11. Done.'];
+    var step=0;
+    function draw(i){
+      var set=SETS[i], g='', x0=18, w=40, gap=4;
+      g+=label(x0,26,(i===0?'before any number':'numbers used: '+order.slice(0,i).join(', ')),13);
+      for(var s=0;s<=TARGET;s++){
+        var st=set.indexOf(s)>=0?(s===TARGET?'hit':'on'):'e';
+        g+=cell(x0+s*(w+gap),40,w,s,st);
+      }
+      g+=label(x0,120,'sum',13);
+      // arrows showing copy for the just-added number
+      if(i>0){
+        var x=order[i-1];
+        g+='<text x="'+x0+'" y="150" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--accent)">each tick copies '+x+' boxes to the right</text>';
+      }
+      svg.innerHTML=g;
+      document.getElementById('reachCap').innerHTML=CAPS[i];
+    }
+    draw(0);
+    // scrolly
+    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
+    function setStep(i){ step=i; steps.forEach(function(s){ s.classList.toggle('on',+s.getAttribute('data-step')===i); }); draw(i); }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting) setStep(+e.target.getAttribute('data-step')); });
+    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+    steps.forEach(function(s){ io.observe(s); s.addEventListener('click',function(){ setStep(+s.getAttribute('data-step')); }); });
+    document.getElementById('reachStep').addEventListener('click',function(){ setStep(Math.min(4,step+1)); });
+    document.getElementById('reachReset').addEventListener('click',function(){ setStep(0); });
+  })();
+
+  /* ================= CH06: 2D grid ================= */
+  (function(){
+    var svg=document.getElementById('gridSvg'); if(!svg) return;
+    var nums=[1,5,11,5], T=11;
+    var DP=[]; for(var i=0;i<=4;i++){ DP.push([]); for(var t=0;t<=T;t++){ DP[i][t]=(t===0); } }
+    for(var i2=1;i2<=4;i2++){ for(var t2=1;t2<=T;t2++){ DP[i2][t2]=DP[i2-1][t2]||(t2>=nums[i2-1]&&DP[i2-1][t2-nums[i2-1]]); } }
+    var w=42, gap=4, x0=70, y0=44, sel=null;
+    function draw(){
+      var g='';
+      // column headers
+      for(var t=0;t<=T;t++){ g+=label(x0+t*(w+gap)+w/2,y0-10,t,13,'middle'); }
+      g+=label(x0-8,y0-10,'sum','13','end');
+      for(var i=0;i<=4;i++){
+        var rowlab=i===0?'{ }':'+ '+nums.slice(0,i).join(' ');
+        g+=label(x0-10,y0+i*(w+gap)+w/2+5,rowlab,13,'end');
+        for(var t3=0;t3<=T;t3++){
+          var on=DP[i][t3], st=on?(t3===T?'hit':'on'):'e';
+          var cx=x0+t3*(w+gap), cy=y0+i*(w+gap);
+          if(sel && sel.parents && sel.parents.some(function(p){return p[0]===i&&p[1]===t3;})) {
+            g+='<rect x="'+(cx-3)+'" y="'+(cy-3)+'" width="'+(w+6)+'" height="'+(w+6)+'" rx="10" class="tsel"/>';
+          }
+          g+=cell(cx,cy,w,(on?t3:''),st);
+          if(on&&i>0){ g+='<rect x="'+cx+'" y="'+cy+'" width="'+w+'" height="'+w+'" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-c="'+i+'_'+t3+'"/>'; }
+        }
+      }
+      svg.innerHTML=g;
+      svg.querySelectorAll('[data-c]').forEach(function(el){
+        el.addEventListener('click',function(){
+          var pr=el.getAttribute('data-c').split('_'), i=+pr[0], t=+pr[1], x=nums[i-1];
+          var parents=[[i-1,t]]; if(t-x>=0&&DP[i-1][t-x]) parents.push([i-1,t-x]);
+          sel={i:i,t:t,parents:parents}; draw();
+          document.getElementById('gridCap').innerHTML='sum <b>'+t+'</b> using '+i+' number'+(i===1?'':'s')+': true because the row above already hit '+t+(t-x>=0&&DP[i-1][t-x]?(' or hit '+(t-x)+', then added '+x):'')+'.';
+        });
+      });
+    }
+    draw();
+  })();
+
+  /* ================= CH07: down vs up ================= */
+  (function(){
+    var svg=document.getElementById('dirSvg'); if(!svg) return;
+    var T=9, X=3, applied=false;
+    function rowFor(dir){
+      var r=[]; for(var t=0;t<=T;t++) r[t]=(t===0);
+      if(applied){
+        if(dir==='down'){ for(var t=T;t>=X;t--){ if(r[t-X]) r[t]=true; } }
+        else { for(var t2=X;t2<=T;t2++){ if(r[t2-X]) r[t2]=true; } }
+      }
+      return r;
+    }
+    function drawRow(y,dir,title,g){
+      var r=rowFor(dir), w=40, gap=4, x0=40, out='';
+      out+=label(x0,y-14,title,13);
+      for(var t=0;t<=T;t++){
+        var st=r[t]?(t===0?'on':(dir==='up'&&t>0&&t%3===0&&t!==3?'bad':(t===X?'hit':'on'))):'e';
+        if(dir==='down') st=r[t]?(t===X?'hit':'on'):'e';
+        out+=cell(x0+t*(w+gap),y,w,t,st);
+      }
+      return out;
+    }
+    function draw(){
+      var g='';
+      g+=drawRow(60,'down','sweep down, right to left',g);
+      g+=drawRow(150,'up','sweep up, left to right',g);
+      if(applied){
+        g+='<text x="40" y="228" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--risk)">up-sweep lit 6 and 9 too: the single 3 got spent three times.</text>';
+      } else {
+        g+=label(40,228,'press apply to send one 3 through each row',13);
+      }
+      svg.innerHTML=g;
+    }
+    draw();
+    document.getElementById('dirApply').addEventListener('click',function(){ applied=true; draw(); });
+    document.getElementById('dirReset').addEventListener('click',function(){ applied=false; draw(); });
+  })();
+
+  /* ================= CH08: trace + code ================= */
+  (function(){
+    var svg=document.getElementById('traceSvg'); if(!svg) return;
+    var nums=[1,5,11,5], T=11, idx=0, row=[]; for(var t=0;t<=T;t++) row[t]=(t===0);
+    function draw(){
+      var g='', w=40, gap=4, x0=18;
+      g+=label(x0,26,(idx===0?'row = [true, false, ...], only 0 set':'after processing '+nums.slice(0,idx).join(', ')),13);
+      for(var t=0;t<=T;t++){ g+=cell(x0+t*(w+gap),40,w,t,row[t]?(t===T?'hit':'on'):'e'); }
+      svg.innerHTML=g;
+      var cap=document.getElementById('traceCap');
+      cap.textContent = idx>=nums.length ? ('done: box 11 is '+(row[T]?'true, they split':'false')) : (row[T]?'target already reachable':'sweeping '+nums[idx]+' next');
+    }
+    draw();
+    document.getElementById('traceStep').addEventListener('click',function(){
+      if(idx>=nums.length) return; var x=nums[idx];
+      for(var t=T;t>=x;t--){ if(row[t-x]) row[t]=true; } idx++; draw();
+    });
+    document.getElementById('traceReset').addEventListener('click',function(){
+      idx=0; row=[]; for(var t=0;t<=T;t++) row[t]=(t===0); draw();
+    });
+    // code
+    var CODE={
+      py:'<span class="cm"># reachable[t] = can we hit sum t?</span>\n'+
+         '<span class="kw">def</span> <span class="fn">can_partition</span>(nums):\n'+
+         '    total = <span class="fn">sum</span>(nums)\n'+
+         '    <span class="kw">if</span> total % <span class="nm">2</span>: <span class="kw">return</span> <span class="kw">False</span>\n'+
+         '    target = total // <span class="nm">2</span>\n'+
+         '    reachable = [<span class="kw">True</span>] + [<span class="kw">False</span>] * target\n'+
+         '    <span class="kw">for</span> x <span class="kw">in</span> nums:\n'+
+         '        <span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(target, x - <span class="nm">1</span>, -<span class="nm">1</span>):\n'+
+         '            <span class="kw">if</span> reachable[t - x]: reachable[t] = <span class="kw">True</span>\n'+
+         '    <span class="kw">return</span> reachable[target]',
+      rs:'<span class="cm">// one row of booleans, swept downward</span>\n'+
+         '<span class="kw">fn</span> <span class="fn">can_partition</span>(nums: &amp;[<span class="nm">i64</span>]) -&gt; <span class="nm">bool</span> {\n'+
+         '    <span class="kw">let</span> total: <span class="nm">i64</span> = nums.<span class="fn">iter</span>().<span class="fn">sum</span>();\n'+
+         '    <span class="kw">if</span> total % <span class="nm">2</span> != <span class="nm">0</span> { <span class="kw">return</span> <span class="kw">false</span>; }\n'+
+         '    <span class="kw">let</span> target = (total / <span class="nm">2</span>) <span class="kw">as</span> <span class="nm">usize</span>;\n'+
+         '    <span class="kw">let mut</span> reachable = <span class="fn">vec!</span>[<span class="kw">false</span>; target + <span class="nm">1</span>];\n'+
+         '    reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n'+
+         '    <span class="kw">for</span> &amp;x <span class="kw">in</span> nums {\n'+
+         '        <span class="kw">let</span> x = x <span class="kw">as</span> <span class="nm">usize</span>;\n'+
+         '        <span class="kw">for</span> t <span class="kw">in</span> (x..=target).<span class="fn">rev</span>() {\n'+
+         '            <span class="kw">if</span> reachable[t - x] { reachable[t] = <span class="kw">true</span>; }\n'+
+         '        }\n'+
+         '    }\n'+
+         '    reachable[target]\n}',
+      js:'<span class="cm">// same four beats, in JavaScript</span>\n'+
+         '<span class="kw">function</span> <span class="fn">canPartition</span>(nums) {\n'+
+         '  <span class="kw">const</span> total = nums.<span class="fn">reduce</span>((a, b) =&gt; a + b, <span class="nm">0</span>);\n'+
+         '  <span class="kw">if</span> (total % <span class="nm">2</span> !== <span class="nm">0</span>) <span class="kw">return</span> <span class="kw">false</span>;\n'+
+         '  <span class="kw">const</span> target = total / <span class="nm">2</span>;\n'+
+         '  <span class="kw">const</span> reachable = <span class="kw">new</span> <span class="fn">Array</span>(target + <span class="nm">1</span>).<span class="fn">fill</span>(<span class="kw">false</span>);\n'+
+         '  reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n'+
+         '  <span class="kw">for</span> (<span class="kw">const</span> x <span class="kw">of</span> nums) {\n'+
+         '    <span class="kw">for</span> (<span class="kw">let</span> t = target; t &gt;= x; t<span>--</span>) {\n'+
+         '      <span class="kw">if</span> (reachable[t - x]) reachable[t] = <span class="kw">true</span>;\n'+
+         '    }\n'+
+         '  }\n'+
+         '  <span class="kw">return</span> reachable[target];\n}'
+    };
+    var box=document.getElementById('codeBox');
+    function setLang(k){ box.innerHTML=CODE[k]; document.querySelectorAll('#langChips .chip').forEach(function(c){ c.classList.toggle('on',c.getAttribute('data-lang')===k); }); }
+    setLang('py');
+    document.querySelectorAll('#langChips .chip').forEach(function(c){ c.addEventListener('click',function(){ setLang(c.getAttribute('data-lang')); }); });
+  })();
+
+  /* ================= CH09: pseudo-poly growth ================= */
+  (function(){
+    var svg=document.getElementById('limSvg'); if(!svg) return;
+    var n=4, baseT=11;
+    function draw(k){
+      var T=baseT*k, cells=n*(T+1), g='';
+      var cols=Math.min(T+1,46), w=Math.max(3,Math.min(10,460/cols)), gap=1, x0=40, y0=40;
+      for(var i=0;i<n;i++){ for(var c=0;c<cols;c++){
+        var col=(cells>200)?'var(--risk)':(cells>90?'var(--warn)':'var(--accent)');
+        g+='<rect x="'+(x0+c*(w+gap))+'" y="'+(y0+i*(w+gap))+'" width="'+w+'" height="'+w+'" rx="1.5" fill="'+col+'" opacity="0.85"/>';
+      }}
+      if(T+1>cols) g+=label(x0+cols*(w+gap)+8,y0+ (n*(w+gap))/2,'...',16);
+      g+='<text x="40" y="'+(y0+n*(w+gap)+34)+'" font-family="Baloo 2" font-weight="600" font-size="18" fill="'+((cells>200)?'var(--risk)':'var(--ink)')+'">'+cells+' cells to fill'+(cells>200?': now it drags':'')+'</text>';
+      svg.innerHTML=g;
+      document.getElementById('kOut').textContent='x'+k;
+      document.getElementById('workOut').textContent=n+' x '+T+' cells';
+    }
+    draw(1);
+    document.getElementById('kSlider').addEventListener('input',function(){ draw(+this.value); });
+  })();
+
+  /* ================= press s: weeds ================= */
+  (function(){
+    var weeds=document.getElementById('weeds'), hint=document.getElementById('weedsHint');
+    function toggle(){
+      var open=weeds.hidden; weeds.hidden=!open;
+      hint.setAttribute('aria-expanded',String(open));
+      hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
+      if(open){ weeds.setAttribute('tabindex','-1'); weeds.focus({preventScroll:true}); weeds.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); }
+    }
+    document.addEventListener('keydown',function(e){
+      if(e.key!=='s'&&e.key!=='S') return;
+      if(e.metaKey||e.ctrlKey||e.altKey) return;
+      var tag=(e.target.tagName||'').toLowerCase();
+      if(tag==='input'||tag==='textarea'||e.target.isContentEditable) return;
+      e.preventDefault(); toggle();
+    });
+    hint.addEventListener('click',toggle);
+    hint.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
+  })();
+})();
+</script>
+</body>
+</html>
