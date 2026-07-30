@@ -16,10 +16,7 @@
 .hero .hx-meta .hx-p{color:var(--v0);background:var(--v11);border:1px solid var(--v13);border-radius:3px;padding:2px 7px;margin-right:7px}
 .hero .hx-h{font-family:"Literata",Georgia,serif;font-weight:600;font-size:clamp(36px,6.4vw,70px);line-height:1.15;letter-spacing:-.015em;margin:0;color:var(--v1)}
 .hero .hx-slot{display:inline-block;position:relative;margin-left:.3em;white-space:nowrap}
-.hero .hx-word{color:var(--v0);border-bottom:3px dotted var(--v0);padding-bottom:.04em;transition:opacity .17s ease}
-.hero .hx-word.sw{opacity:0}
-.hero .hx-caret{display:inline-block;width:2px;height:.8em;background:var(--v0);margin-left:.11em;vertical-align:-.04em;animation:hxBlink 1.05s steps(1) infinite}
-@keyframes hxBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.hero .hx-word{border-bottom:3px dotted var(--v0);padding-bottom:.04em}
 .hero .hx-drop{margin:24px 0 34px;max-width:436px;border:1px solid var(--v13);border-radius:7px;background:var(--v11);overflow:hidden;box-shadow:0 12px 32px rgba(16,32,31,.10)}
 .hero .hx-r{display:grid;grid-template-columns:110px 1fr 46px;gap:11px;align-items:center;padding:9px 14px;font-family:var(--v5);font-size:12.5px;color:var(--v3);border-bottom:1px solid var(--v9)}
 .hero .hx-r:last-child{border-bottom:none}
@@ -32,7 +29,7 @@
 .hero .hx-r.top .v{color:var(--v0)}
 .hero .lede{max-width:640px;margin:0}
 @media(max-width:640px){.hero .hx-drop{max-width:none}.hero .hx-r{grid-template-columns:86px 1fr 42px;font-size:11.5px}}
-@media (prefers-reduced-motion:reduce){.hero .hx-caret{animation:none}.hero .hx-word{transition:none}}</style>
+</style>
 </head>
 <body>
 
@@ -42,7 +39,7 @@
 <header class="hero" data-hero="title-completes-itself" data-ch="1">
   <div class="hero-inner">
     <p class="hx-meta"><span class="hx-p">P(next&nbsp;word)</span> ranked over 50,257 candidates &middot; top 4 shown</p>
-    <h1 class="hx-h" aria-label="Is it actually thinking?">Is it actually<span class="hx-slot"><span class="hx-word" id="hxWord">thinking</span><span class="hx-q">?</span><span class="hx-caret"></span></span></h1>
+    <h1 class="hx-h">Is it actually<span class="hx-slot"><span class="hx-word">thinking</span>?</span></h1>
     <div class="hx-drop" id="hxDrop" role="presentation"></div>
     <p class="lede">Short answer: no. It is autocomplete that read most of the internet. Once you see the one small trick underneath, two big beginner worries fall away at the same time. It is not a mind hiding in a box, and it is not always right.</p>
   </div>
@@ -253,43 +250,22 @@
 <script>!function(){"use strict";var e=document.getElementById("pf"),t=document.getElementById("pt"),n=2*Math.PI*23;e.style.strokeDasharray=n,e.style.strokeDashoffset=n,window.addEventListener("scroll",function(){var t=document.documentElement,a=t.scrollTop/(t.scrollHeight-t.clientHeight);e.style.strokeDashoffset=n*(1-Math.min(1,Math.max(0,a||0)))},{passive:!0});var a=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var n=e.target.getAttribute("data-ch");n&&(t.textContent=n)}})},{rootMargin:"-45% 0px -45% 0px"});document.querySelectorAll("[data-ch]").forEach(function(e){a.observe(e)});var s=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),s.unobserve(e.target))})},{threshold:.1,rootMargin:"0px 0px -6% 0px"});function i(e,t,n){e.innerHTML="",t.forEach(function(t,n){var a,s,i=t[0],o=t[1],r=t[2]||"",c=document.createElement("div");c.className="drow"+(0===n?" top":"")+(r?" "+r:""),c.innerHTML='<span class="dt">'+i+'</span><span class="dtk"><i></i></span><span class="dv">'+o+"</span>",e.appendChild(c),a=c.querySelector("i"),s=o,requestAnimationFrame(function(){requestAnimationFrame(function(){a.style.width=s+"%"})})})}document.querySelectorAll(".reveal").forEach(function(e){s.observe(e)});var o={paris:{city:"Paris",dist:[["French",88],["English",6],["Arabic",3],["German",3]]},tokyo:{city:"Tokyo",dist:[["Japanese",91],["English",5],["Korean",2],["Chinese",2]]},berlin:{city:"Berlin",dist:[["German",89],["English",5],["Turkish",4],["Russian",2]]},cairo:{city:"Cairo",dist:[["Arabic",87],["English",7],["French",4],["Coptic",2]]},moscow:{city:"Moscow",dist:[["Russian",90],["English",5],["Ukrainian",3],["Tatar",2]]},seoul:{city:"Seoul",dist:[["Korean",90],["English",6],["Japanese",2],["Chinese",2]]},"mexico city":{city:"Mexico City",dist:[["Spanish",88],["English",6],["Nahuatl",4],["Maya",2]]},mumbai:{city:"Mumbai",dist:[["Hindi",44],["Marathi",30],["English",18],["Gujarati",8],["","split"]]}},r=document.getElementById("cityChips"),c=document.getElementById("cityWord"),l=document.getElementById("cityFill"),d=document.getElementById("cityDist"),u=document.getElementById("cityLangHead");function h(e){var t=o[e];c.textContent=t.city,u.textContent="context: "+e;var n=t.dist.slice(),a=n.length&&""===n[n.length-1][0];a&&(n=n.slice(0,-1));var s=n.map(function(e){return a?[e[0],e[1],"split"]:e});l.textContent=s[0][0],l.classList.remove("pending"),i(d,s),r.querySelectorAll(".chip").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-city")===e)})}["paris","tokyo","berlin","cairo","moscow","seoul","mexico city","mumbai"].forEach(function(e){var t=document.createElement("button");t.className="chip",t.setAttribute("data-city",e),t.textContent=o[e].city,t.addEventListener("click",function(){h(e)}),r.appendChild(t)}),h("paris"),function(){var e=[].slice.call(document.querySelectorAll("#sc1 .stp")),t=document.getElementById("sc1"),n=document.getElementById("scBlank"),a={0:["flat"],1:["read"],2:["read"],3:["read","weighted"]};function s(e){var s=a[e]||a[0];t.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",s.indexOf(e.getAttribute("data-gel"))>=0)}),n.textContent=e>=3?"French":"?",n.style.color=e>=3?"#7FE0E6":"#5FC7CE"}var i=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(e.forEach(function(e){e.classList.toggle("on",e===t.target)}),s(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});e.forEach(function(e){i.observe(e)}),s(0)}();var m={real:{head:"case: real",stem:'The largest planet in our solar system is <span class="fill" id="_">Jupiter</span>.',dist:[["Jupiter",96],["Saturn",2],["Neptune",1],["Earth",1]],verdict:["real","This one is true. Jupiter really is the largest planet."]},fake:{head:"case: invented",stem:'The largest planet in the fictional Vega system is <span class="fill" id="_">Vega Prime</span>.',dist:[["Vega Prime",91],["Vega IV",5],["Vega Major",3],["Aldara",1],["","fake"]],verdict:["fake","There is no Vega system, so there is no true answer. It filled the blank with a smooth, confident, invented name anyway."]}},g=document.getElementById("trChips"),p=document.getElementById("trStem"),y=document.getElementById("trDist"),f=document.getElementById("trHead"),_=document.getElementById("trVerdict");function v(e){var t=m[e];f.textContent=t.head,p.innerHTML=t.stem;var n=t.dist.slice(),a=n.length&&""===n[n.length-1][0];a&&(n=n.slice(0,-1));var s=n.map(function(e){return a?[e[0],e[1],"fake"]:e});i(y,s),_.innerHTML='<span class="verdict '+t.verdict[0]+'">'+("real"===t.verdict[0]?"✓ true":"✕ invented")+'</span><p style="margin-top:14px;color:var(--v3);font-size:16px">'+t.verdict[1]+"</p>",g.querySelectorAll(".chip").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-tr")===e)})}[["real","A true blank"],["fake","A made-up blank"]].forEach(function(e){var t=document.createElement("button");t.className="chip",t.setAttribute("data-tr",e[0]),t.textContent=e[1],t.addEventListener("click",function(){v(e[0])}),g.appendChild(t)}),v("real");var E=[{s:"Twinkle twinkle little ___",o:[["star",97],["light",2],["bird",1]]},{s:"The capital of France is ___",o:[["Paris",95],["Lyon",3],["Nice",2]]},{s:"Once upon a ___",o:[["time",96],["dream",2],["while",2]]},{s:"Roses are red, violets are ___",o:[["blue",94],["violet",4],["purple",2]]},{s:"To be or not to ___",o:[["be",98],["see",1],["do",1]]},{s:"She opened her umbrella because it was ___",o:[["raining",85],["pouring",9],["wet",6]]},{s:"Two plus two equals ___",o:[["four",96],["five",2],["22",2]]},{s:"The opposite of hot is ___",o:[["cold",93],["cool",5],["warm",2]]},{s:"He slammed the ___",o:[["door",74],["brakes",13],["phone",13]]},{s:"Better late than ___",o:[["never",96],["sorry",2],["early",2]]},{s:"The sun rises in the ___",o:[["east",92],["morning",6],["sky",2]]},{s:"Happy birthday to ___",o:[["you",97],["her",2],["all",1]]},{s:"A dog says woof, a cat says ___",o:[["meow",94],["purr",4],["hiss",2]]},{s:"It was so cold I could see my ___",o:[["breath",82],["hands",10],["fingers",8]]},{s:"Water boils at 100 degrees ___",o:[["Celsius",79],["C",15],["centigrade",6]]},{s:"Knock knock, who's ___",o:[["there",96],["that",3],["calling",1]]},{s:"The early bird catches the ___",o:[["worm",95],["bus",3],["sunrise",2]]},{s:"She's a doctor, so she works at a ___",o:[["hospital",68],["clinic",22],["practice",10]]},{s:"Add flour, sugar, and two ___",o:[["eggs",73],["cups",15],["spoons",12]]},{s:"The Great Wall of ___",o:[["China",96],["stone",2],["Ages",2]]},{s:"Thank you very ___",o:[["much",95],["kindly",3],["well",2]]},{s:"Actions speak louder than ___",o:[["words",95],["thoughts",3],["ever",2]]},{s:"I'll have a coffee with milk and ___",o:[["sugar",64],["cream",20],["honey",16]]},{s:"Please remember to tie your ___",o:[["shoes",58],["shoelaces",30],["laces",12]]}],b=document.getElementById("galStem"),k=document.getElementById("galDist"),w=document.getElementById("galCount"),I=0;function x(e){var t,n=E[I=(e+E.length)%E.length];b.innerHTML=n.s.replace("___",'<span class="fill">'+n.o[0][0]+"</span>"),i(k,n.o),w.textContent=((t=I+1)<10?"0":"")+t+" / "+E.length}document.getElementById("galNext").addEventListener("click",function(){x(I+1)}),document.getElementById("galPrev").addEventListener("click",function(){x(I-1)});var C=7;document.getElementById("galShuffle").addEventListener("click",function(){x(C=(5*C+3)%E.length)}),x(0)}();
 </script>
 <script>!function(){"use strict";
-/* Hero: the title predicts its own last word. Same atom as every figure below —
-   a ranked distribution — so the opening demonstrates the claim before the lede states it. */
-var word=document.getElementById("hxWord"),drop=document.getElementById("hxDrop");
-if(!word||!drop)return;
-var sets=[
- [["thinking",62],["reasoning",17],["understanding",12],["conscious",9]],
- [["reasoning",54],["thinking",26],["planning",12],["aware",8]],
- [["understanding",47],["thinking",31],["listening",13],["alive",9]],
- [["conscious",41],["thinking",34],["sentient",15],["awake",10]]
-];
-function paint(d){
-  drop.innerHTML="";
-  var bars=d.map(function(p,n){
-    var r=document.createElement("div");
-    r.className="hx-r"+(0===n?" top":"");
-    r.innerHTML='<span class="w">'+p[0]+'</span><span class="b"><i></i></span><span class="v">'+p[1]+'%</span>';
-    drop.appendChild(r);
-    return r.querySelector("i");
-  });
-  /* Force layout, then set the widths. Deliberately not requestAnimationFrame: rAF is
-     suspended while the tab is hidden, which would leave every bar stuck at zero. */
-  void drop.offsetWidth;
-  bars.forEach(function(b,n){b.style.width=d[n][1]+"%"});
-}
-function show(n,first){
-  var d=sets[n];
-  paint(d);
-  if(first){word.textContent=d[0][0];return}
-  word.classList.add("sw");
-  setTimeout(function(){word.textContent=d[0][0];word.classList.remove("sw")},170);
-}
-show(0,true);
-if(!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches)){
-  var i=0;
-  setInterval(function(){show(i=(i+1)%sets.length)},2800);
-}
-}();
-</script>
+/* Hero figure: the ranked distribution behind the headline's last word. The headline itself
+   is static -- only the bars animate, once, on load. */
+var drop=document.getElementById("hxDrop");
+if(!drop)return;
+var d=[["thinking",62],["reasoning",17],["understanding",12],["conscious",9]];
+var bars=d.map(function(p,n){
+  var r=document.createElement("div");
+  r.className="hx-r"+(0===n?" top":"");
+  r.innerHTML='<span class="w">'+p[0]+'</span><span class="b"><i></i></span><span class="v">'+p[1]+'%</span>';
+  drop.appendChild(r);
+  return r.querySelector("i");
+});
+/* Forced reflow rather than rAF: rAF is suspended in hidden tabs, which would leave every
+   bar stuck at zero width. */
+void drop.offsetWidth;
+bars.forEach(function(b,n){b.style.width=d[n][1]+"%"});
+}();</script>
 </body>
 </html>
