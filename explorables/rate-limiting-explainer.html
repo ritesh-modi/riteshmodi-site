@@ -26,7 +26,6 @@
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">01 · the incident</div>
     <h2 class="big">One laptop can outrun your whole cluster</h2>
     <div class="try">Do this math in your head: a <code>while(true)</code> loop with no sleep, sending one HTTP request per iteration. How many requests per second is that from a single laptop?</div>
     <p>Whatever you guessed, it's more. A tight loop over a keep-alive connection pushes <span style="font-family:'IBM Plex Mono',monospace">2,000–10,000</span> requests a second. From one machine. On hotel Wi-Fi.</p>
@@ -39,7 +38,6 @@
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">02 · the naive fix</div>
     <h2 class="big">Retries turn a slowdown into an outage</h2>
     <p>The instinctive answer is capacity: add pods, the load balancer spreads the pain. But watch what actually happens when demand passes supply and every failed request <em>comes back</em>. Press play.</p>
     <div class="demo">
@@ -56,7 +54,6 @@
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">03 · the concept</div>
     <h2 class="big">The fix is a counter that says no early</h2>
     <p>Here's the move Maya's team shipped that weekend, and it's almost embarrassingly small: <strong>count each client's requests, and past a line, refuse instantly.</strong> That's rate limiting. The refusal is the feature — a rejected request costs microseconds and no database work, so saying no stays cheap even at 10,000 rps.</p>
     <p>The counting scheme they used — the one most of the industry uses — is a <strong>token bucket</strong>. Give each client a bucket holding at most <span style="font-family:'IBM Plex Mono',monospace">C</span> tokens. Tokens drip in at <span style="font-family:'IBM Plex Mono',monospace">r</span> per second. Each request takes one token to pass. Empty bucket, no entry: HTTP <span style="font-family:'IBM Plex Mono',monospace">429 Too Many Requests</span>.</p>
@@ -69,7 +66,6 @@
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">04 · smallest working version</div>
     <h2 class="big">Ten lines decide every request</h2>
     <p>The entire mechanism, no framework, no queue:</p>
 <pre><code>tokens   = 10        <span class="cm"># capacity C — the burst allowance</span>
@@ -90,7 +86,7 @@ last     = now()
         <div class="log" id="stepLog" aria-live="polite"><div class="l-dim">— press step to advance —</div></div>
       </div>
     </div>
-    <p style="margin-top:26px">Twelve arrived; eleven got served within half a second; two were told — instantly, politely, with a machine-readable status — to come back later. Total cost of the two refusals: effectively zero. Compare that to chapter 02, where refusal-by-collapse cost everything.</p>
+    <p style="margin-top:26px">Twelve arrived; eleven got served within half a second; two were told — instantly, politely, with a machine-readable status — to come back later. Total cost of the two refusals: effectively zero. Compare that to the retry storm, where refusal-by-collapse cost everything.</p>
   </div>
 </section>
 <div class="divider"></div>
@@ -98,7 +94,6 @@ last     = now()
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">05 · inside the bucket</div>
     <h2 class="big">The bucket makes two different promises</h2>
     <p>Before you touch the knob, read the bucket's diary. Full bucket, a burst of 8 spends it in one gulp; idle time pays it back at 5 tokens a second; then a <em>sustained</em> 8&nbsp;rps — 3 more than the refill — drains it for good:</p>
     <div class="svgbox">
@@ -126,9 +121,8 @@ last     = now()
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">06 · the knob</div>
     <h2 class="big">Drag the traffic. The refill rate doesn't move</h2>
-    <p>This is the whole chapter: one slider. It sets incoming traffic λ against the same bucket — capacity 10, refill 5/s — running live right now. Push λ past 5 and watch which number saturates and which one climbs.</p>
+    <p>This is the whole idea: one slider. It sets incoming traffic λ against the same bucket — capacity 10, refill 5/s — running live right now. Push λ past 5 and watch which number saturates and which one climbs.</p>
     <div class="demo">
       <div class="demo-head"><span>live simulation · C=10 · r=5/s</span><span id="simState" class="l-warn">running</span></div>
       <div class="demo-body">
@@ -157,7 +151,6 @@ last     = now()
 
 <section>
   <div class="col reveal">
-    <div class="eyebrow">07 · the fine print</div>
     <h2 class="big">A 429 is a promise kept — but it isn't free</h2>
     <p>Rate limiting does not solve overload. It <em>chooses who feels it</em> — and every choice of C and r is a real trade-off. Same bucket, three configurations:</p>
     <div class="demo">
@@ -173,7 +166,7 @@ last     = now()
     </div>
     <p style="margin-top:26px">And the parts the bucket can't fix, stated plainly:</p>
     <p><strong>Distributed counters drift.</strong> Ten gateway nodes each holding "the" bucket will collectively let through more than one bucket's worth, unless they share state (Redis, usually) — which adds a network hop to the thing you built to be free.</p>
-    <p><strong>Clients retry.</strong> A 429 with no <span style="font-family:'IBM Plex Mono',monospace">Retry-After</span> header and no client-side jitter just reruns chapter 02 with a different status code.</p>
+    <p><strong>Clients retry.</strong> A 429 with no <span style="font-family:'IBM Plex Mono',monospace">Retry-After</span> header and no client-side jitter just reruns the retry storm with a different status code.</p>
     <p><strong>Fairness is per-key, not global.</strong> Limit by API key and one customer's ten keys beat another's one. Limit by IP and a whole office NAT looks like one abuser. The counter is easy; deciding <em>what to count</em> is the design work.</p>
   </div>
 </section>
