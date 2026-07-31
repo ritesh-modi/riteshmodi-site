@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Four of these words nest. The rest are not layers at all.</title>
+<meta name="description" content="AI, machine learning, neural networks, deep learning, GenAI, LLM, GPT, ChatGPT — what each word means, which ones genuinely sit inside each other, and where every version of the famous circle diagram goes wrong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F0EFE9; --paper-2:#E5E4DA; --card:#F7F6F1;
+  --ink:#1D1F17; --ink-soft:#464A3B; --ink-faint:#7A7D6C; --rule:#D2D1C4;
+  --accent:#5A6E2B; --accent-soft:#8AA152;
+  --warn:#B4622A; --bad:#A63A2E; --good:#3C7A4E;
+  --maxw:680px; --wide:1080px; --pad:26px;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+section{padding:92px 0}
+h1,h2,h3{font-family:"Sora",system-ui,sans-serif;line-height:1.12;margin:0}
+h2{font-size:clamp(27px,4vw,40px);font-weight:700;letter-spacing:-.028em;margin:0 0 22px;text-wrap:balance}
+h3{font-size:19.5px;font-weight:700;letter-spacing:-.012em;margin:0 0 10px}
+p{margin:0 0 22px}
+strong{font-weight:600}
+a{color:var(--accent)}
+.divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+.lede{font-size:clamp(19.5px,2.4vw,24px);line-height:1.52;color:var(--ink-soft)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+
+/* ---------- hero: the nesting that stops working ----------
+   data-hero="rings-that-stop-nesting". The piece's whole claim is that the diagram is right
+   for four rings and then breaks, because the later words are a different kind of word.
+   So the opening draws the four that nest, inward, and then fails to close the fifth. */
+.hero{padding:88px 0 74px}
+.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 26px}
+.hero h1{font-size:clamp(29px,4.7vw,52px);font-weight:800;letter-spacing:-.034em}
+.hero h1 span{display:block}
+.hero .lede{margin:26px 0 0;max-width:620px}
+.rings{max-width:560px;margin:0 0 34px}
+.rings svg{width:100%;height:auto;display:block}
+.rk{fill:none;stroke-width:1.6;stroke-linejoin:round}
+.rlab{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase}
+.rdate{font-family:"JetBrains Mono",monospace;font-size:9px;fill:var(--ink-faint)}
+@keyframes draw{to{stroke-dashoffset:0}}
+.rk{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1s cubic-bezier(.4,0,.2,1) both;animation-delay:var(--d)}
+@keyframes fadeIn{to{opacity:1}}
+.rtxt{opacity:0;animation:fadeIn .5s ease both;animation-delay:var(--d)}
+.brk{stroke-dasharray:7 6;stroke-width:1.6;fill:none;opacity:0;animation:fadeIn .6s ease both;animation-delay:1.5s}
+/* same fade, but text must keep its fill -- .brk sets fill:none for the outline */
+.brktxt{opacity:0;animation:fadeIn .6s ease both;animation-delay:1.7s}
+@media (prefers-reduced-motion:reduce){.rk,.rtxt,.brk,.brktxt{animation:none;stroke-dashoffset:0;opacity:1}}
+
+/* ---------- shared ---------- */
+.fig{background:var(--card);border:1px solid var(--rule);border-radius:10px;margin:30px 0;overflow:hidden}
+.fig-h{padding:13px 20px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fig-b{padding:24px 22px}
+.cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
+.btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;transition:opacity .2s}
+.btn:hover{opacity:.87}
+.btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink-soft)}
+.note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
+.note b{color:var(--ink)}
+.try{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17.5px}
+.try .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.pull{font-family:"Sora",sans-serif;font-weight:600;font-size:clamp(20px,2.8vw,28px);line-height:1.32;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:15.5px}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);padding:9px 11px;font-weight:400}
+td{padding:11px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+
+/* ---------- ring picker ---------- */
+.rp{display:flex;flex-direction:column;gap:10px}
+.rpi{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:14px 16px}
+.rpq{font-size:16.5px;line-height:1.45;margin-bottom:11px}
+.rpb{display:flex;gap:6px;flex-wrap:wrap}
+.rb{font-family:var(--mono);font-size:11px;padding:6px 10px;border:1px solid var(--rule);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft);transition:all .15s}
+.rb:hover{border-color:var(--accent)}
+.rb.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.rpa{display:none;margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule);font-size:14.8px;line-height:1.56;color:var(--ink-soft)}
+.rpi.done .rpa{display:block}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-right:8px;background:rgba(90,110,43,.14);color:var(--accent)}
+.tag.miss{background:rgba(166,58,46,.13);color:var(--bad)}
+.score{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+
+/* ---------- six words ---------- */
+.words{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+@media(max-width:700px){.words{grid-template-columns:repeat(2,1fr)}}
+.wd{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:13px 14px;cursor:pointer;text-align:left;font:inherit;transition:all .16s}
+.wd:hover{border-color:var(--accent)}
+.wd.on{background:var(--accent);border-color:var(--accent)}
+.wd .wn{font-family:"Sora",sans-serif;font-weight:700;font-size:16px}
+.wd .wk{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);margin-top:3px}
+.wd.on .wn,.wd.on .wk{color:#fff}
+.wout{margin-top:16px;padding:17px 19px;border-radius:8px;background:var(--paper-2);font-size:16px;line-height:1.56;min-height:88px}
+.wout .wv{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+
+/* ---------- breakers ---------- */
+.brs{display:flex;flex-direction:column;gap:8px}
+.br{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:13px 16px;cursor:pointer;transition:all .16s}
+.br:hover{border-color:var(--accent)}
+.br .bn{font-size:16px;font-weight:500}
+.br .bs{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+.br.open{border-color:var(--bad);background:rgba(166,58,46,.05)}
+.br .bx{grid-column:1/-1;font-size:14.8px;line-height:1.56;color:var(--ink-soft);border-top:1px dashed var(--rule);padding-top:11px;display:none}
+.br.open .bx{display:block}
+.arrow{font-family:var(--mono);font-size:12px;color:var(--bad);display:inline-block;margin-top:6px}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+footer{border-top:1px solid var(--rule);padding:40px var(--pad) 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:var(--mono);line-height:1.9}
+footer a{color:var(--accent)}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:640px){body{font-size:17.5px}section{padding:66px 0}}
+</style>
+</head>
+<body>
+
+<header class="hero" data-hero="rings-that-stop-nesting">
+  <div class="col">
+    <p class="hmeta">eight words, four of which are rings</p>
+    <div class="rings" aria-hidden="true">
+      <svg viewBox="0 0 520 330">
+        <rect class="rk" x="8" y="8" width="504" height="196" rx="10" stroke="#8AA152" style="--len:1420;--d:0s"/>
+        <text class="rlab rtxt" x="22" y="27" fill="#5A6E2B" style="--d:.15s">artificial intelligence</text>
+        <text class="rdate rtxt" x="498" y="27" text-anchor="end" style="--d:.15s">1950s &middot; a goal</text>
+
+        <rect class="rk" x="40" y="40" width="440" height="132" rx="9" stroke="#7A8F45" style="--len:1156;--d:.5s"/>
+        <text class="rlab rtxt" x="54" y="59" fill="#5A6E2B" style="--d:.65s">machine learning</text>
+        <text class="rdate rtxt" x="466" y="59" text-anchor="end" style="--d:.65s">1980s &middot; a method</text>
+
+        <rect class="rk" x="72" y="72" width="376" height="68" rx="8" stroke="#5A6E2B" style="--len:900;--d:1s"/>
+        <text class="rlab rtxt" x="86" y="91" fill="#5A6E2B" style="--d:1.15s">neural networks</text>
+        <text class="rdate rtxt" x="434" y="91" text-anchor="end" style="--d:1.15s">1958 &middot; a family</text>
+
+        <rect class="rk" x="104" y="102" width="312" height="28" rx="6" stroke="#3F4F1D" style="--len:690;--d:1.5s"/>
+        <text class="rlab rtxt" x="118" y="120" fill="#3F4F1D" style="--d:1.65s">deep learning</text>
+        <text class="rdate rtxt" x="402" y="120" text-anchor="end" style="--d:1.65s">2012 &middot; the scale</text>
+
+        <line x1="8" y1="232" x2="512" y2="232" stroke="#D2D1C4" stroke-width="1"/>
+        <text class="rlab rtxt" x="8" y="252" fill="#A63A2E" style="--d:2s">and here the drawing breaks</text>
+
+        <path class="brk" d="M8 268 h250 M300 268 h212 M8 268 v44 M512 268 v44 M8 312 h190 M250 312 h262" stroke="#A63A2E"/>
+        <text class="rdate brktxt" x="26" y="296" fill="#7A7D6C" style="font-size:10.5px">transformer &middot; generative ai &middot; llm &middot; gpt &middot; gpt&#8209;4 &middot; chatgpt</text>
+      </svg>
+    </div>
+    <h1><span>Four of these words nest.</span><span>The rest are not</span><span>layers at all.</span></h1>
+    <p class="lede">AI, machine learning, neural networks and deep learning really do sit inside one another, like India, Maharashtra, Mumbai, Bandra. Then the diagram keeps going &mdash; and everything after that point is a different kind of word entirely. Almost every version of this picture you have seen gets that part wrong.</p>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>The question with an annoying answer</h2>
+    <p>People keep asking some version of: <em>is ChatGPT AI, or is it machine learning, or is it GenAI?</em> The honest answer is unsatisfying and completely correct: <strong>yes, all of them, at the same time.</strong></p>
+    <p>That is not a dodge. It is the same kind of answer as this one:</p>
+    <p class="pull">&ldquo;Do you live in India, or in Maharashtra, or in Mumbai, or in Bandra?&rdquo;</p>
+    <p>Nobody finds that confusing. All four are true at once. They are not four different places you might live; they are four levels of zoom on one place. You would use different ones in different conversations &mdash; &ldquo;India&rdquo; to someone abroad, &ldquo;Bandra&rdquo; to someone across town &mdash; and switching between them is not a contradiction.</p>
+    <p>Two things fall straight out of that, and both are worth stating plainly:</p>
+    <p><strong>The bigger the ring, the older, broader and vaguer it is.</strong> &ldquo;India&rdquo; covers enormous ground and tells you very little about any particular person. Same with &ldquo;AI&rdquo;.</p>
+    <p><strong>The smaller the ring, the newer, narrower and more specific.</strong> &ldquo;Flat 4B&rdquo; is extremely informative and applies to almost nobody. Same with &ldquo;ChatGPT&rdquo;.</p>
+    <div class="try"><span class="tl">the question that saves you money</span>If a vendor tells you their product &ldquo;uses AI&rdquo;, how much have they actually told you? About as much as telling you they live in India. The useful question is always <strong>which ring</strong>.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>The four that genuinely nest</h2>
+    <p>These four are settled and agreed on. Notice, in the drawing at the top, that the dates go <em>down</em> as the rings get smaller. That is not a coincidence &mdash; each inner ring is a later, more specific answer to the problem the outer ring set.</p>
+
+    <h3>Artificial intelligence &mdash; the ambition</h3>
+    <p>Any machine doing something that would count as intelligent if a person did it. The useful analogy is <strong>transport</strong>. Transport is not a technology; it is a goal &mdash; moving things from A to B. Bullock carts, bicycles, ships, aircraft and lifts are all transport, and they share almost no engineering. &ldquo;How does transport work?&rdquo; is not a well-formed question.</p>
+    <p>AI is exactly like that. It is a goal, not a technique, which is why the outer ring is so wide and so vague, and why the term has meant completely different things across seventy years.</p>
+    <p>The example that proves this ring is bigger than learning: IBM&rsquo;s Deep Blue beat world champion Garry Kasparov in 1997. Unquestionably AI, and a landmark. It contained <strong>no machine learning whatsoever</strong> &mdash; hand-written evaluation rules plus enormous brute-force search. Nothing about it improved on its own.</p>
+    <div class="note"><b>AI does not require learning.</b> Most people assume it does. It doesn&rsquo;t, and the counter-example is famous.</div>
+
+    <h3>Machine learning &mdash; the method that won</h3>
+    <p>The part of AI where the rule is <strong>learned from examples</strong> instead of written by a human. If AI is &ldquo;transport&rdquo;, machine learning is &ldquo;engines&rdquo; &mdash; one particular approach that turned out to work so well it now dominates. Plenty of transport has no engine, and there was a great deal of transport before engines existed.</p>
+    <p>Now the correction that matters most, because it is the opposite of what the press implies. The techniques living in this ring &mdash; logistic regression, decision trees, random forests, k-means, nearest neighbours &mdash; were almost all invented between the 1950s and the 1990s. None of them is a neural network. None is deep learning. And <strong>they still run most of the world&rsquo;s actual production machine learning</strong>: credit scoring, churn prediction, demand forecasting, insurance pricing, fraud, medical risk scores.</p>
+    <p>There is a solid practical reason. On <strong>tabular data</strong> &mdash; rows and columns, the kind of data most organisations actually have, with headers like <span class="eyebrow" style="text-transform:none;letter-spacing:0">customer_id</span> and <span class="eyebrow" style="text-transform:none;letter-spacing:0">last_order_value</span> &mdash; a well-tuned random forest routinely matches or beats a deep neural network. It trains in minutes instead of days, on a laptop instead of a cluster, on thousands of rows instead of millions, and it comes with an explanation you can show a regulator.</p>
+    <div class="note"><b>If your problem is a spreadsheet, you probably do not need deep learning</b> &mdash; and you certainly should not start there. Deep learning earns its keep on images, audio, video and language: data with no natural columns.</div>
+
+    <h3>Neural networks &mdash; one family of technique</h3>
+    <p>A way of learning that stacks layers of very simple units, loosely inspired by neurons. The honest analogy is <strong>an assembly line of extremely dim workers</strong>. No individual worker understands the product. Each does one trivial thing &mdash; &ldquo;is this edge dark or light?&rdquo; &mdash; and passes it on. The complexity comes entirely from how many of them there are and how they are wired, not from any one being clever.</p>
+    <p>That is the real picture. A single unit does something so simple you could do it on paper in about four seconds. Millions of them, arranged in layers, produce ChatGPT.</p>
+    <p>The historical point is worth making, because it corrects a false impression of inevitability. The idea dates to 1958. It then failed, repeatedly, for <strong>fifty years</strong>. Through the 1980s and 1990s it was a fringe technique that mostly lost to the methods in the ring above. Two full &ldquo;AI winters&rdquo; &mdash; periods when funding collapsed because the field had over-promised &mdash; happened with neural networks sitting right there, not working.</p>
+    <p>So what changed? Not the idea. The idea was already there. <strong>Data and computing power arrived.</strong> That is a genuinely useful lesson for judging any technology today: the same idea can be worthless and then transformative without changing at all.</p>
+
+    <h3>Deep learning &mdash; the same thing, with many more layers</h3>
+    <p>Neural networks with a large number of layers, which turns out to change what is <em>possible</em>, not merely how well it works. And here is the single most important technical idea on this page:</p>
+    <p class="pull">Classical machine learning needs a human to decide what to look at. Deep learning works out what to look at, by itself.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>same task, and the one column that changed everything</span></div>
+      <div class="fig-b">
+        <table style="margin:0">
+          <thead><tr><th></th><th>Classical ML</th><th>Deep learning</th></tr></thead>
+          <tbody>
+            <tr><td><strong>The task</strong></td><td>Is this photo a dog?</td><td>Is this photo a dog?</td></tr>
+            <tr><td><strong>What a human must do first</strong></td><td>Decide what to measure &mdash; ear length, snout-to-skull ratio, fur texture, tail curvature. Write code to extract each one. Months of expert work.</td><td>Nothing.</td></tr>
+            <tr><td><strong>What the machine gets</strong></td><td>Those seven numbers</td><td>The raw pixels</td></tr>
+            <tr><td><strong>Who decided ears matter</strong></td><td>A human</td><td><strong>Nobody. It worked that out.</strong></td></tr>
+            <tr><td><strong>If it fails</strong></td><td>A human must think of a better measurement</td><td>Show it more examples</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <p>That human step in the left column has a name &mdash; <strong>feature engineering</strong> &mdash; and for thirty years it was the actual job. Deep learning largely automated it away.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Where the drawing breaks</h2>
+    <p>Up to deep learning, every word is the same <em>kind</em> of word: a category of technique, each a genuine subset of the one before. After deep learning, the words are different kinds of things entirely, and stacking them in one picture makes them look like a hierarchy when they are not.</p>
+    <p>Cricket fixes this instantly. Consider: sport &rarr; ball sports &rarr; cricket &rarr; T20 &rarr; the IPL &rarr; Mumbai Indians &rarr; the match on Saturday.</p>
+    <p>The first three are a clean nesting: cricket really is a kind of ball sport, which really is a kind of sport. Then it changes. <strong>T20</strong> is a format &mdash; a set of rules. <strong>The IPL</strong> is a tournament that uses that format. <strong>Mumbai Indians</strong> is a team that plays in it. <strong>Saturday&rsquo;s match</strong> is an event.</p>
+    <p>Is Mumbai Indians &ldquo;inside&rdquo; T20? Loosely, in a way you would accept in conversation. But it is not the same kind of thing at all, and drawing it as one more nested circle implies something false &mdash; that every T20 match involves Mumbai Indians, which is nonsense.</p>
+    <p>The famous diagram does exactly this. It takes an architecture, a capability, a class of model, a brand, a version and a product, and draws all six as though they were nested categories.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>six words, sorted by what kind of thing they are</span><span class="score">tap one</span></div>
+      <div class="fig-b">
+        <div class="words" id="wordGrid"></div>
+        <div class="wout" id="wordOut"><span class="wv">start here</span>Tap any of the six. The vehicle column is the point: &ldquo;front-wheel drive&rdquo; and &ldquo;a delivery vehicle&rdquo; are not the same kind of statement. One is about how a thing is built, the other about what it is for. A delivery vehicle might be front-wheel drive or not &mdash; which is exactly why these two cannot be nested.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <h3>The distinction that costs real money</h3>
+    <p>A trained model is an engine. A chat product is a car. When you type into a chat product you are getting the model <em>plus</em> a great deal of surrounding machinery &mdash; a chat interface, conversation memory, a hidden system instruction shaping its behaviour, safety filters, and the ability to search the web or run code.</p>
+    <p>When you buy access through an API instead, you get closer to the bare engine and you build the rest yourself. Three consequences follow:</p>
+    <p><strong>Behaviour differs.</strong> The same underlying model can answer differently in the product versus the API, because the product wraps it in instructions you never see.</p>
+    <p><strong>You are usually buying a product, not a model.</strong> Comparing one chat product against another mixes categories &mdash; you are comparing two wrappers, and the wrapper often matters more than the model for everyday use.</p>
+    <p><strong>What your company builds sits at the model layer.</strong> The interface, guardrails and integrations are yours to design, which is where most of the actual value and most of the actual risk lives.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Five things that break the circles</h2>
+    <p>The fastest way to see that the inner circles are not really nested is to hold up things that do not fit. Each of these is real, well known, and snaps one specific arrow.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>tap each one to see which arrow it snaps</span><span class="score" id="brScore">0 of 5 opened</span></div>
+      <div class="fig-b"><div class="brs" id="brList"></div></div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>The image generator and the text classifier are the pair to sit with. Together they prove the arrows point in <em>both</em> directions: there is generative AI that is not built on the transformer design, and there are transformers that generate nothing at all. Two things that overlap but where neither contains the other cannot be drawn as one circle inside another.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Now place a few yourself</h2>
+    <p>Each of these is described by <em>what it does</em>, never by the technique behind it &mdash; because you cannot place something on a diagram if the description itself is jargon you would have to decode first. How far in does each one go?</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>how far in does it go?</span><span class="score" id="rpScore">0 of 8 placed</span></div>
+      <div class="fig-b"><div class="rp" id="rpList"></div></div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>The thermostat, the chess computer, the image generator and the ticket sorter are where the real learning is. The thermostat is on none of these rings &mdash; it is plain automation, and someone always wants to put it inside AI. The chess computer proves the outer ring is bigger than learning. And the last two, side by side, show why generative AI cannot be drawn as a circle inside anything: one generates and is not a language model; the other is built on the same underlying design as a chatbot and writes nothing at all.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Why the ring is a budget decision</h2>
+    <p>Beginners assume the rings are trivia. They are not &mdash; they are a cost and risk map. Which ring your problem sits in determines almost everything about how you would resource it.</p>
+    <table>
+      <thead><tr><th></th><th>Classical ML</th><th>Deep learning</th><th>Foundation models</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Data you need</strong></td><td>Thousands of labelled rows</td><td>Millions of examples</td><td>None &mdash; someone else already trained it</td></tr>
+        <tr><td><strong>Who builds it</strong></td><td>Your own analytics team</td><td>A specialist team</td><td>You don&rsquo;t build it; you access it</td></tr>
+        <tr><td><strong>Time to something working</strong></td><td>Days to weeks</td><td>Months</td><td>Hours</td></tr>
+        <tr><td><strong>Cost shape</strong></td><td>One-off build, cheap to run</td><td>Large upfront, expensive to run</td><td>No build; <strong>you pay per use, forever</strong></td></tr>
+        <tr><td><strong>Can you explain a decision</strong></td><td>Usually yes</td><td>No</td><td>No</td></tr>
+        <tr><td><strong>Best for</strong></td><td>Numbers in tables</td><td>Images, audio, video</td><td>Language, content, drafting</td></tr>
+        <tr><td><strong>Failure mode</strong></td><td>Quietly mediocre</td><td>Expensive and late</td><td>Confidently wrong, at scale</td></tr>
+      </tbody>
+    </table>
+    <p>Three things worth saying out loud from that table.</p>
+    <p><strong>The foundation-model column has no build cost and no end to its running cost.</strong> That is a genuinely different economic shape from anything most organisations have bought before, and budgets built for one-off software projects handle it badly.</p>
+    <p><strong>The explainability row is why banking and insurance still live in the second ring.</strong> That is not conservatism. If you must justify a declined loan to a regulator, an unreadable model is not an option.</p>
+    <p><strong>Being in the outer, older ring is not a defeat.</strong> A simple model that ships this quarter and can be explained beats a deep learning project that lands next year and cannot.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>What this map does not tell you</h2>
+    <p>Two honest limits, because a diagram this tidy invites overconfidence.</p>
+    <p><strong>It shows techniques, not capability.</strong> New inner circles have appeared every few years and will keep appearing. Nothing in this picture tells you how far the field will go, and any slide claiming otherwise is selling something.</p>
+    <p><strong>The leaf names drift constantly.</strong> Particular model families and version numbers change on a timescale of months. Treat the specific product names anywhere on this page as illustrative and check a live source before quoting current capabilities or rankings. The <em>shape</em> is stable; the labels at the edges are not.</p>
+    <p>One more thing worth heading off. &ldquo;Should we move from machine learning to AI?&rdquo; is a sentence that gets said in real meetings, and it does not mean anything &mdash; nobody moves from ML to AI, because they were already doing AI. Usually the sentence means &ldquo;we should use large language models&rdquo;, which is a specific and expensive choice that deserves to be argued on its merits rather than smuggled in through vocabulary.</p>
+    <div class="note"><b>Four sentences to keep.</b> These are not competing things; they are nested things, like India, Maharashtra, Mumbai, Bandra. AI does not require learning, and learning does not require deep learning. Most working machine learning in business is in the second ring, not the fourth &mdash; and that is a feature, not a shortfall. After deep learning the words stop being layers: they become blueprints, jobs, brands and products, and every confusing diagram you will ever see is caused by drawing those four as circles.</div>
+  </div>
+</section>
+
+<footer>
+  <div>a beginner&rsquo;s map of eight words &middot; companion to <a href="/explorables/ai-vs-ml-explained.html">how a system actually learns</a></div>
+  <div><a href="/explorables.html">&larr; more explorables</a></div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
+document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
+
+/* ---------- six words ---------- */
+var WORDS=[
+ ["Transformer","an architecture","a blueprint &mdash; front-wheel drive","A 2017 design for neural networks that handles sequences by looking at all parts at once instead of one at a time. It describes <em>how a thing is built</em>."],
+ ["Generative AI","a capability","a job &mdash; &ldquo;a delivery vehicle&rdquo;","Any AI whose output is new content &mdash; text, images, audio, code &mdash; rather than a label or a number. It describes <em>what a thing is for</em>, which is a completely different axis from how it is built."],
+ ["LLM","a class of model","a category &mdash; a lorry","A very large model, usually a transformer, trained on enormous amounts of text. This is a genuine category of thing, and several companies make them."],
+ ["GPT","a family or brand","one maker&rsquo;s range","One company&rsquo;s line of large language models. Others exist from other companies. This is the level people most often get backwards: the category contains the brand, not the other way round."],
+ ["GPT&#8209;4","a specific version","one particular model","One particular trained model, frozen at a point in time. A version number, not a category."],
+ ["ChatGPT","a product","the vehicle, with driver and route","A model <em>plus</em> a chat interface, memory, a safety layer, hidden system instructions and tools. What you buy is the whole assembly, not the engine."]
+];
+var wg=document.getElementById("wordGrid"), wo=document.getElementById("wordOut");
+WORDS.forEach(function(w,i){
+  var b=document.createElement("button");
+  b.className="wd"; b.type="button";
+  b.innerHTML='<div class="wn">'+w[0]+'</div><div class="wk">'+w[1]+'</div>';
+  b.addEventListener("click",function(){
+    wg.querySelectorAll(".wd").forEach(function(x){x.classList.remove("on")});
+    b.classList.add("on");
+    wo.innerHTML='<span class="wv">'+w[1]+' &nbsp;&middot;&nbsp; '+w[2]+'</span>'+w[3];
+  });
+  wg.appendChild(b);
+});
+
+/* ---------- five breakers ---------- */
+var BREAK=[
+ ["The chess computer that beat the world champion in 1997","AI, but not machine learning","Every rule was written by a human, plus brute-force search. It is unquestionably AI and it learned nothing.","breaks &nbsp;AI = machine learning"],
+ ["A bank&rsquo;s credit-scoring model","machine learning, but not deep learning","Learned from examples, and deliberately not a neural network so the bank can explain a rejection. It also happens to be the most common kind of production ML on earth.","breaks &nbsp;machine learning = deep learning"],
+ ["An image generator turning a sentence into a photograph","generative and deep, but not a language model","It generates, and there is not a word in sight. The mechanism underneath is not next-word prediction at all.","breaks &nbsp;generative AI sits inside language models"],
+ ["A system that reads support tickets and files each as billing or complaint","a transformer, and a language model, but not generative","Built on the same underlying design as a chatbot. It classifies and understands rather than writing. Same machinery, different job.","breaks &nbsp;transformer = generative AI"],
+ ["Autocomplete on a phone from 2005","generative, with no deep learning anywhere","It produces text you did not type, which is the definition of generative, using none of the modern machinery.","breaks &nbsp;generative AI sits inside deep learning"]
+];
+var bl=document.getElementById("brList"), bs=document.getElementById("brScore"), opened=0;
+BREAK.forEach(function(b){
+  var d=document.createElement("div"); d.className="br"; d.setAttribute("role","button"); d.tabIndex=0;
+  d.innerHTML='<span class="bn">'+b[0]+'</span><span class="bs">'+b[1]+'</span>'+
+              '<span class="bx">'+b[2]+'<span class="arrow">&#9482; '+b[3]+'</span></span>';
+  function open(){ if(!d.classList.contains("open")){opened++;bs.textContent=opened+" of 5 opened"} d.classList.add("open"); }
+  d.addEventListener("click",open);
+  d.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}});
+  bl.appendChild(d);
+});
+
+/* ---------- ring picker ---------- */
+var RINGS=["not on it at all","AI only","in to ML","in to deep learning","all the way to GenAI"];
+var PICK=[
+ ["A bank deciding whether to approve your home loan",2,"Learned from past loans, but kept deliberately in the second ring so the bank can explain a rejection to a regulator."],
+ ["Your phone unlocking when it sees your face",3,"It is images, so deep learning genuinely earns its place. Nobody wrote down what your face looks like."],
+ ["The chess computer that beat the world champion in 1997",1,"Every rule was written by a human. This is the item that proves the outer ring is bigger than learning."],
+ ["Turning the sentence &ldquo;a red running shoe on a marble floor&rdquo; into a photograph that never existed",4,"All the way out to generative &mdash; and there is not a word of language in the output. It generates without being a language model."],
+ ["A chatbot drafting an email for you",4,"The only item that touches every single layer: AI, then ML, then neural networks, then deep learning, then generative, then a language model, then one company&rsquo;s family, then a product."],
+ ["A thermostat that switches on the AC whenever the room goes above 24&deg;C",0,"None of them. It is plain automation. Someone always wants to put this inside AI, and noticing why it does not belong is the useful moment."],
+ ["A system that reads support tickets and files each one as billing, technical or complaint",3,"Deep learning, built on the same underlying design as a chatbot &mdash; but it never writes anything, so it is not generative. Same machinery, different job."],
+ ["A telecom working out which customers are likely to cancel next month",2,"A table of customer records, so the second ring is the right answer here, not a compromise."]
+];
+var rl=document.getElementById("rpList"), rs=document.getElementById("rpScore"), placed=0;
+PICK.forEach(function(p){
+  var d=document.createElement("div"); d.className="rpi";
+  var btns=RINGS.map(function(r,i){return '<button class="rb" type="button" data-i="'+i+'">'+r+'</button>'}).join("");
+  d.innerHTML='<div class="rpq">'+p[0]+'</div><div class="rpb">'+btns+'</div><div class="rpa"></div>';
+  d.querySelectorAll(".rb").forEach(function(b){
+    b.addEventListener("click",function(){
+      if(d.classList.contains("done")) return;
+      d.querySelectorAll(".rb").forEach(function(x){x.classList.remove("sel")});
+      b.classList.add("sel"); d.classList.add("done");
+      var right = (+b.getAttribute("data-i"))===p[1];
+      d.querySelector(".rpa").innerHTML='<span class="tag'+(right?"":" miss")+'">'+RINGS[p[1]]+'</span>'+(right?"":"<strong>Not quite. </strong>")+p[2];
+      placed++; rs.textContent=placed+" of 8 placed";
+    });
+  });
+  rl.appendChild(d);
+});
+})();
+</script>
+</body>
+</html>
