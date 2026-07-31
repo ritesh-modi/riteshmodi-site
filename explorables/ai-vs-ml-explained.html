@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A thermostat and a Nest look the same. Only one of them is learning.</title>
+<meta name="description" content="The difference between automation, machine learning and AI is one line across the middle of a whiteboard. A beginner's walkthrough, with a feedback loop you can run yourself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E4DEDC; --paper-2:#DBD4D2; --card:#EDE8E7;
+  --ink:#231A1E; --ink-soft:#4C3F44; --ink-faint:#7B6C71; --rule:#CDC2C0;
+  --accent:#8E2F62; --accent-soft:#B75C89;
+  --auto:#7B6C71;  --learn:#8E2F62;
+  --yes:#2C7A57; --no:#B4472F;
+  --board:#1E1619; --board-ink:#E6DDDF;
+  --maxw:680px; --wide:1080px; --pad:26px;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --t:.5s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+section{padding:92px 0}
+h1,h2,h3{font-family:"Epilogue",system-ui,sans-serif;line-height:1.1;margin:0}
+h2{font-size:clamp(28px,4.2vw,42px);font-weight:700;letter-spacing:-.025em;margin:0 0 22px;text-wrap:balance}
+h3{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:0 0 10px}
+p{margin:0 0 22px}
+strong{font-weight:600}
+a{color:var(--accent)}
+.divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+.lede{font-size:clamp(20px,2.5vw,25px);line-height:1.5;color:var(--ink-soft)}
+.mono{font-family:var(--mono);font-size:.84em}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+
+/* ---------- hero: the board, and the line across its middle ----------
+   data-hero="the-dividing-line-on-the-board". The whole piece is one whiteboard whose
+   top half runs once and whose bottom half loops. So the opening IS that board, live:
+   a token crosses the top three terms and stops; below the line, three more cycle forever. */
+.hero{padding:92px 0 76px}
+.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 26px}
+.hero h1{font-size:clamp(30px,4.9vw,54px);font-weight:800;letter-spacing:-.032em;color:var(--ink)}
+.hero h1 span{display:block}
+.hero .lede{margin:26px 0 0;max-width:620px}
+.board{background:var(--board);border-radius:12px;padding:26px 26px 22px;margin:0 0 34px;max-width:560px;box-shadow:0 18px 44px rgba(35,26,30,.20)}
+.brow{display:grid;grid-template-columns:112px 1fr;gap:14px;align-items:center;padding:6px 0;font-family:var(--mono);font-size:12.5px;color:var(--board-ink)}
+.brow .bk{text-align:right;color:#9C8B90}
+.btrack{position:relative;height:16px;border-radius:3px;background:#2C2226;overflow:hidden}
+.btrack i{position:absolute;top:3px;left:0;width:10px;height:10px;border-radius:50%;opacity:0}
+.bhalf{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:#8A787D;margin:0 0 6px}
+.bline{height:3px;background:repeating-linear-gradient(90deg,#B75C89 0 8px,transparent 8px 14px);margin:16px 0 6px;border-radius:2px}
+.blab{font-family:var(--mono);font-size:10.5px;color:#B75C89;letter-spacing:.1em;text-transform:uppercase;margin:0 0 14px}
+.bsum{font-family:var(--mono);font-size:11.5px;color:#9C8B90;border-top:1px solid #35292E;margin-top:16px;padding-top:13px}
+@keyframes runOnce{0%{left:0;opacity:0}8%{opacity:1}88%{opacity:1}100%{left:calc(100% - 10px);opacity:0}}
+.btrack i{animation:runOnce 2.4s cubic-bezier(.5,0,.5,1) 1 both;animation-delay:var(--d,0s);background:var(--c,#9C8B90)}
+@keyframes restAtEnd{to{left:calc(100% - 10px);opacity:.5}}
+/* the top half fires once and stops; the bottom half never stops. That IS the lesson. */
+.btrack.loop i{animation:runOnce 2.4s cubic-bezier(.5,0,.5,1) infinite}
+@media (prefers-reduced-motion:reduce){.btrack i,.btrack.loop i{animation:none;opacity:1;left:calc(100% - 10px)}}
+
+/* ---------- shared pieces ---------- */
+.fig{background:var(--card);border:1px solid var(--rule);border-radius:10px;margin:30px 0;overflow:hidden}
+.fig-h{padding:13px 20px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fig-b{padding:24px 22px}
+.cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
+.btn{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;transition:opacity .2s}
+.btn:hover{opacity:.87}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink-soft)}
+.note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
+.note b{color:var(--ink)}
+.try{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17.5px}
+.try .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.pull{font-family:"Epilogue",sans-serif;font-weight:600;font-size:clamp(21px,3vw,29px);line-height:1.3;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
+
+/* ---------- the two boxes ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.bx{border:1px solid var(--rule);border-radius:9px;padding:20px;background:var(--paper)}
+.bx .bxt{font-family:"Epilogue",sans-serif;font-weight:700;font-size:17px;margin-bottom:4px}
+.bx .bxs{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.bx.a .bxs{color:var(--auto)}
+.bx.b .bxs{color:var(--learn)}
+.bx ul{margin:0;padding-left:17px;font-size:15.5px;line-height:1.62;color:var(--ink-soft)}
+.bx.b{border-color:var(--accent-soft);box-shadow:0 0 0 1px var(--accent-soft)}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+
+/* ---------- the chai stall loop (the live knob) ---------- */
+.stall{display:grid;grid-template-columns:1fr 200px;gap:22px;align-items:start}
+@media(max-width:720px){.stall{grid-template-columns:1fr}}
+.days{display:flex;flex-direction:column;gap:7px;min-height:212px}
+.day{display:grid;grid-template-columns:64px 1fr 1fr 58px;gap:10px;align-items:center;font-family:var(--mono);font-size:12px;padding:7px 10px;border-radius:5px;background:var(--paper);border:1px solid var(--rule)}
+.day .dl{color:var(--ink-faint)}
+.day .dp{color:var(--ink-soft)}
+.day .da{color:var(--ink)}
+.day .de{text-align:right;font-weight:500}
+.day.big .de{color:var(--no)}
+.day.small .de{color:var(--yes)}
+.day .lbl{font-size:9.5px;color:var(--ink-faint);display:block;letter-spacing:.06em;text-transform:uppercase}
+.gauge{border:1px solid var(--rule);border-radius:8px;padding:16px;background:var(--paper)}
+.gauge .gt{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+.gauge .gv{font-family:"Epilogue",sans-serif;font-weight:800;font-size:40px;line-height:1;letter-spacing:-.03em}
+.gauge .gs{font-size:13px;color:var(--ink-faint);margin-top:6px;line-height:1.4}
+.swrap{display:flex;align-items:center;gap:11px;margin-top:16px;font-size:14.5px;color:var(--ink-soft);cursor:pointer;user-select:none}
+.sw{width:44px;height:24px;border-radius:14px;background:var(--rule);position:relative;flex:none;transition:background .22s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .22s}
+.swrap.on .sw{background:var(--accent)}
+.swrap.on .sw::after{transform:translateX(20px)}
+
+/* ---------- sorting activity ---------- */
+.sort{display:flex;flex-direction:column;gap:9px}
+.item{border:1px solid var(--rule);border-radius:7px;background:var(--paper);padding:13px 16px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.item .q{font-size:16px;line-height:1.45}
+.item .picks{display:flex;gap:7px;flex:none}
+.pk{font-family:var(--mono);font-size:11px;padding:6px 11px;border:1px solid var(--rule);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft);transition:all .16s}
+.pk:hover{border-color:var(--accent)}
+.pk.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.item .ans{grid-column:1/-1;font-size:14.5px;line-height:1.55;color:var(--ink-soft);border-top:1px dashed var(--rule);padding-top:11px;display:none}
+.item.done .ans{display:block}
+.item .vd{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-right:8px}
+.vd.ml{background:rgba(142,47,98,.13);color:var(--accent)}
+.vd.no{background:rgba(180,71,47,.13);color:var(--no)}
+.score{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+
+/* ---------- stack of specialists ---------- */
+.spec{display:flex;flex-direction:column;gap:8px}
+.sp{display:grid;grid-template-columns:26px 1fr auto;gap:13px;align-items:center;border:1px solid var(--rule);border-radius:7px;padding:12px 15px;background:var(--paper);font-size:15.5px}
+.sp .n{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+.sp .v{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);text-align:right}
+.sp.clash{border-color:var(--no);background:rgba(180,71,47,.06)}
+.sp.clash .v{color:var(--no)}
+.verdict{margin-top:16px;padding:15px 18px;border-radius:7px;background:var(--paper-2);font-size:16px;line-height:1.55}
+
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:15.5px}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);padding:9px 11px;font-weight:400}
+td{padding:11px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+footer{border-top:1px solid var(--rule);padding:40px var(--pad) 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:var(--mono);line-height:1.9}
+footer a{color:var(--accent)}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:640px){body{font-size:17.5px}section{padding:66px 0}}
+</style>
+</head>
+<body>
+
+<header class="hero" data-hero="the-dividing-line-on-the-board">
+  <div class="col">
+    <p class="hmeta">six words on a whiteboard &middot; no maths, no code</p>
+    <div class="board" aria-hidden="true">
+      <p class="bhalf">runs once, front to back</p>
+      <div class="brow"><span class="bk">observe</span><span class="btrack"><i style="--d:0s"></i></span></div>
+      <div class="brow"><span class="bk">analyze</span><span class="btrack"><i style="--d:.18s"></i></span></div>
+      <div class="brow"><span class="bk">infer</span><span class="btrack"><i style="--d:.36s"></i></span></div>
+      <div class="bline"></div>
+      <p class="blab">and then, only sometimes</p>
+      <div class="brow"><span class="bk">predict</span><span class="btrack loop"><i style="--c:#B75C89;--d:0s"></i></span></div>
+      <div class="brow"><span class="bk">reconcile</span><span class="btrack loop"><i style="--c:#B75C89;--d:.3s"></i></span></div>
+      <div class="brow"><span class="bk">recalibrate</span><span class="btrack loop"><i style="--c:#B75C89;--d:.6s"></i></span></div>
+      <p class="bsum">everything below the line is optional &mdash; and it is the whole difference</p>
+    </div>
+    <h1><span>A thermostat and</span><span>a Nest look the same.</span><span>Only one is learning.</span></h1>
+    <p class="lede">Both watch the room. Both decide something. Both act. The word that separates them is not <em>smart</em>, and it is not <em>modern</em> &mdash; it is whether the thing ever finds out it was wrong. This page walks that one idea end to end, and hands you a feedback loop you can run yourself.</p>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Start with two boxes on a wall</h2>
+    <p>Picture an old wall thermostat. The room hits 26&deg;. You set it to 24&deg;. It switches on the air conditioning. It watched the world, it applied a rule, it did something about it.</p>
+    <p>Now picture a Nest on the same wall. It also watches the room, applies a rule, and switches the air conditioning on. From across the room, on any single afternoon, you could not tell them apart.</p>
+    <p>Here is the question that separates them, and it has nothing to do with how clever either one looks:</p>
+    <p class="pull">If you unplugged it for a year and plugged it back in, would it behave any differently?</p>
+    <p>The thermostat would not. On day ten thousand, in a different house, in a different season, it does exactly what it did on day one. It has never once been wrong in a way it could notice, because it never made a guess and never checked one.</p>
+    <p>The Nest would. It noticed you override it to 22&deg; most nights around ten. It started pre-cooling before you got home. One Tuesday you came back early to a hot house and overrode it &mdash; and that override was the whole point. That was it finding out it was wrong.</p>
+    <div class="fig">
+      <div class="fig-h"><span>the same three steps, then a fourth thing</span></div>
+      <div class="fig-b">
+        <div class="two">
+          <div class="bx a">
+            <div class="bxt">Wall thermostat</div>
+            <div class="bxs">automation</div>
+            <ul>
+              <li>Sees: room is 26&deg;</li>
+              <li>Applies: 26 is above the 24 you set</li>
+              <li>Acts: switch on the AC</li>
+              <li><em>&mdash; and that is the entire list</em></li>
+            </ul>
+          </div>
+          <div class="bx b">
+            <div class="bxt">Nest</div>
+            <div class="bxs">machine learning</div>
+            <ul>
+              <li>Sees: nobody home Tuesdays, 2&ndash;5</li>
+              <li>Applies: its current picture of your week</li>
+              <li>Acts: pre-cool on a Tuesday</li>
+              <li><strong>Checks: you came home early and overrode it &mdash; so the picture was wrong, and it changes</strong></li>
+            </ul>
+          </div>
+        </div>
+        <p class="cap">Both boxes do the first three things. Only the second box does the fourth. Everything else in this page is an unpacking of that gap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>The top half: what happens one time</h2>
+    <p>Any system that does something useful runs three steps, in order, once per question. They are worth slowing down on, because beginners skip past them and then get confused later.</p>
+
+    <h3>Observe</h3>
+    <p>Something comes in from the world. Notice how astonishingly narrow this always is. A fraud system does not &ldquo;see&rdquo; your shopping trip &mdash; it sees an amount, a merchant category, a city, a time, and a flag saying whether the card was physically present. A r&eacute;sum&eacute; screener does not meet you; it sees a PDF.</p>
+    <p>Whatever is not observed simply does not exist as far as the system is concerned. A surprising share of real-world failures trace back to exactly this line: the thing that actually mattered was never in the input.</p>
+
+    <h3>Analyze</h3>
+    <p>The observation gets pushed through some internal rule to turn it into something meaningful. In a thermostat, a human wrote that rule in plain words. In machine learning, nobody wrote it &mdash; it was worked out from thousands of past examples, and it exists as a very large pile of numbers that no one can read as a sentence. That fact gets its own section later, because it genuinely surprises people.</p>
+
+    <h3>Infer</h3>
+    <p>The system commits to an answer. The word <em>infer</em> is deliberate and worth stopping on. It does not mean <em>know</em>, or <em>look up</em>, or <em>calculate</em>. It means: reach the most reasonable conclusion available from incomplete evidence.</p>
+    <p>A doctor looking at a fever infers an infection. She does not know it. Everything a model produces is of this kind &mdash; a best available guess, not a retrieved fact. Which is exactly why these systems are sometimes confidently wrong. Being confidently wrong is not a bug in inference; it is the nature of inference. People do it constantly too.</p>
+
+    <div class="note"><b>Having the top half does not make something intelligent.</b> A calculator observes, processes and outputs. So does a doorbell. So does an Excel formula. The top half alone is just <em>doing</em>.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>The bottom half: what happens across many times</h2>
+    <p>Below the line, the activity changes kind entirely. It does not produce an answer for anybody. It produces a <strong>better system</strong>.</p>
+
+    <h3>Predict</h3>
+    <p>The system commits to a guess <em>before</em> reality reveals the answer, in a form that can later be scored. &ldquo;This customer will leave.&rdquo; &ldquo;This transaction is fraud.&rdquo; A guess that is never written down and never scored teaches nobody anything &mdash; which is as true of organisations as it is of algorithms.</p>
+
+    <h3>Reconcile</h3>
+    <p>Reality arrives, and it differs from the guess. <em>Reconcile</em> is an accounting word and it is the right one: you put the prediction and the actual side by side, and you stare at the gap.</p>
+
+    <h3>Recalibrate</h3>
+    <p>You adjust the internal rule so the gap would have been smaller. Not a rewrite from scratch &mdash; a nudge. Thousands of small nudges is what training actually is.</p>
+
+    <p>Then those three run again. And again. That loop is the engine of the entire field. Not the maths, not the hardware &mdash; this loop. Here it is with real numbers, and you can turn it off.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h">
+        <span>a tea stall, one decision a day</span>
+        <span class="score" id="stallDay">day 0</span>
+      </div>
+      <div class="fig-b">
+        <p style="margin-top:0;font-size:16.5px;color:var(--ink-soft)">Ramesh runs a tea stall and must decide each morning how much milk to buy. Too little and he turns customers away; too much and it curdles by evening. He starts believing rain lifts demand by about 20%. It actually lifts it by far more. Press the button and watch what happens to the gap.</p>
+        <div class="stall">
+          <div>
+            <div class="days" id="stallDays"></div>
+            <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+              <button class="btn" id="stallRun">Run tomorrow</button>
+              <button class="btn ghost" id="stallReset">Start over</button>
+            </div>
+          </div>
+          <div>
+            <div class="gauge">
+              <div class="gt">latest gap</div>
+              <div class="gv" id="stallErr">&mdash;</div>
+              <div class="gs" id="stallMsg">Press <em>Run tomorrow</em> to serve the first day.</div>
+            </div>
+            <div class="swrap on" id="stallSw" role="button" tabindex="0" aria-pressed="true">
+              <span class="sw"></span>
+              <span>Count the people he turned away</span>
+            </div>
+          </div>
+        </div>
+        <p class="cap">The only thing that changes across days is the rule in Ramesh&rsquo;s head, and it changes because he compared his guess against what actually happened. Switch off the counting and the gap stops shrinking &mdash; same stall, same tea, same effort, forever.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <div class="note"><b>That gap is the only thing a machine learning system cares about.</b> Training is nothing more than running this loop millions of times and nudging the internal rule each round so the number gets smaller. Everything you will ever read about gradient descent, loss functions and epochs is machinery for doing exactly what Ramesh just did &mdash; faster, and across more variables than a person can hold in their head.</div>
+    <p>And the failure mode is just as plain. If Ramesh never counts the people he turned away, he has no error signal, and he will make the same mistake for twenty years. <strong>No feedback, no learning</strong> &mdash; however much data you have. A great many stalled corporate projects fail here and nowhere else: they observe constantly and reconcile never.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Nobody can read the rule, and that is not a flaw</h2>
+    <p>Watch a toddler learn what a dog is. She sees a Labrador in a park. Four legs, fur, tail, wet nose, makes a noise. An adult says &ldquo;dog&rdquo; and she files it away. Next week at a farm she sees a goat, points, and says <strong>&ldquo;Dog!&rdquo;</strong></p>
+    <p>Her mother says: &ldquo;No, that&rsquo;s a goat.&rdquo; The child&rsquo;s internal rule was <em>four legs plus fur equals dog</em>. Clearly not enough. The rule quietly shifts to include ears, snout shape, the sound it makes, how it moves. Repeat across a horse, a cat, a cow, a fox, a wolf on television, and a few hundred more animals over three years.</p>
+    <p>By five she is essentially perfect at identifying dogs &mdash; including breeds she has never seen, from behind, in bad light, half hidden behind a car. <strong>And she cannot tell you the rule.</strong> Ask a five-year-old to define &ldquo;dog&rdquo; and you get nonsense.</p>
+    <p>The knowledge is real. It is reliable. It works on cases never encountered before. And it is not expressible in words. That is exactly what a trained model is: not a rulebook, but a capability learned from corrected examples, sitting in a form nobody can read back as a sentence.</p>
+    <p>Ask yourself who taught that child. Nobody wrote the definition. Reality did the teaching, one correction at a time.</p>
+    <div class="try"><span class="tl">worth sitting with</span>You can ride a bicycle. Now write down instructions precise enough that someone who has never ridden could follow them and stay upright. You cannot. Nobody can. The knowledge is genuine and it lives in a form that isn&rsquo;t language.</div>
+    <p>This is why you cannot audit one of these systems by reading it. You audit it by testing it, on cases where you already know the right answer. It is also why &ldquo;why did it reject my application?&rdquo; has no easy answer, and why a model can be confidently and systematically wrong in a way that stays invisible until somebody deliberately looks.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Sort these yourself</h2>
+    <p>You now have everything you need. There is one test, and it is the only one you need: <strong>does it have the bottom half?</strong> Not &ldquo;is it clever&rdquo;, not &ldquo;is it modern&rdquo;, not &ldquo;does it react to the world&rdquo;. Does it ever find out it was wrong, and change?</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>ten things &mdash; learning, or just doing?</span><span class="score" id="sortScore">0 of 10 answered</span></div>
+      <div class="fig-b"><div class="sort" id="sortList"></div></div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>If the traffic light and the chess computer caught you out, they were meant to. A system can respond to live sensor data, second by second, and still be pure automation &mdash; reacting is not learning. And a chess program from the 1990s was genuinely artificial intelligence while containing no learning whatsoever, which is the cleanest proof that these two words are not synonyms.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Where a chatbot actually sits</h2>
+    <p>This is the part that changes how people use these tools, and almost every beginner misunderstanding traces back to getting it wrong.</p>
+    <p><strong>The bottom half already happened, once, and it is over.</strong> The predicting, reconciling and recalibrating ran across an enormous quantity of text, took months, and cost a great deal of money. Then it stopped. The result was frozen. That frozen result is the model.</p>
+    <p>When you type a message, <strong>only the top half runs.</strong> It observes your message plus the conversation so far, pushes it through the frozen numbers, and infers the most plausible next word. Then the next. Then the next.</p>
+    <p>No prediction is being scored. No reconciliation is happening. Nothing is being recalibrated. The bottom half is switched off entirely while you chat &mdash; and everything that confuses people follows directly from that one fact.</p>
+    <table>
+      <thead><tr><th>What people notice</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>&ldquo;I corrected it, and it apologised &mdash; but made the same mistake in a new conversation.&rdquo;</td><td>Your correction changed the <em>input</em> for that conversation, not the model. Nothing was learned.</td></tr>
+        <tr><td>&ldquo;It seems to remember what I said earlier.&rdquo;</td><td>The whole conversation is re-fed as input every single turn. It is re-observing, not remembering.</td></tr>
+        <tr><td>&ldquo;It doesn&rsquo;t know about last month&rsquo;s news.&rdquo;</td><td>Learning stopped when training stopped.</td></tr>
+        <tr><td>&ldquo;It said something false, with total confidence.&rdquo;</td><td>Inference means best plausible answer from incomplete evidence. It is doing exactly what it was built to do.</td></tr>
+      </tbody>
+    </table>
+    <p>Picture someone who studied intensively for two years and has now walked into a closed-book exam. During the exam they cannot learn anything new. They can only apply what is already in their head, and where they are unsure they write the most plausible thing they can construct. That is a large language model answering you.</p>
+    <p>Which makes the two ways of working around those frozen numbers obvious. You can <strong>slide them a reference sheet during the exam</strong> &mdash; hand the model the right documents as part of the input. That changes nothing about the model, only what it observes. Or you can <strong>send them back for a short refresher course</strong> &mdash; re-run a small slice of the bottom half on your own examples. That one does change the model.</p>
+    <div class="try"><span class="tl">the useful question</span>If the model is not learning from you while you chat, what is the only thing you actually control? The input. Which is the entire reason it is worth learning to write a good prompt.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>So where does intelligence come in?</h2>
+    <p>One inference is not intelligence. A thousand inferences are not intelligence either. Intelligence is many inferences, integrated, and pointed at an objective.</p>
+    <p>A self-driving car makes thousands of separate inferences every second. Each one is a complete six-step system of its own, expert at exactly one narrow job, and none of them knows the others exist.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>five specialists approaching a green light</span><span class="score" id="carState">all reports agree</span></div>
+      <div class="fig-b">
+        <div class="spec" id="carSpec"></div>
+        <div class="verdict" id="carVerdict">Every one of these reports is correct. Press the button to change one thing about the road.</div>
+        <div style="margin-top:15px"><button class="btn" id="carBtn">Put a child at the kerb</button></div>
+        <p class="cap">Each specialist is individually excellent and individually useless. Not one of them is driving.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>Take the sign reader on its own. It is superb &mdash; it reads signs better than you do, at night, in rain, at speed. Put it in a car with nothing else and the car does not move. It sits there reading signs perfectly and going nowhere.</p>
+    <p>The same is true of every one of them. The object detector identifies everything on the road and does nothing about any of it. The route planner knows the perfect road and cannot see the child stepping off the kerb.</p>
+    <p>When the reports point in different directions, nothing in the list resolves it. What resolves it is <strong>the objective</strong> &mdash; and specifically the fact that &ldquo;safely&rdquo; outranks &ldquo;on time&rdquo;. The car lifts off the accelerator and covers the brake.</p>
+    <p class="pull">That arbitration is the intelligence. Not the sensing, not the recognising, not the braking calculation.</p>
+    <p>This is also the cleanest description of an <strong>AI agent</strong> you will get: several models, each expert at one narrow inference, none aware of the others, plus a layer that holds the objective and decides which inference wins when they disagree.</p>
+    <p>Swap the five capabilities and you have a business system rather than a car. Something handling customer complaints: classify the complaint, pull up this customer&rsquo;s history, judge how annoyed they are, draft a reply, decide whether a human must approve it &mdash; all pointed at &ldquo;resolve it in one contact without giving away more than policy allows&rdquo;. Same shape. Same arbitration problem.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Putting the three words in their place</h2>
+    <table>
+      <thead><tr><th></th><th>Automation</th><th>Machine learning</th><th>Artificial intelligence</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Which half</strong></td><td>Top only</td><td>Top and bottom</td><td>Many top-and-bottoms, aimed at a goal</td></tr>
+        <tr><td><strong>Who wrote the rule</strong></td><td>A human, in words</td><td>Nobody. Learned from examples</td><td>A mixture</td></tr>
+        <tr><td><strong>Can you read it</strong></td><td>Yes, it is in the code</td><td>No</td><td>No</td></tr>
+        <tr><td><strong>Improves on its own</strong></td><td>Never</td><td>Whenever feedback arrives</td><td>Yes</td></tr>
+        <tr><td><strong>Fails when</strong></td><td>The world changes</td><td>The data was skewed, or the feedback stopped</td><td>The objective was wrongly specified</td></tr>
+      </tbody>
+    </table>
+    <p>Two relationships people routinely get backwards:</p>
+    <p><strong>All machine learning is AI, but not all AI is machine learning.</strong> Those 1990s chess programs were AI and contained no learning at all &mdash; just enormous hand-built search. Machine learning happens to be the approach that currently works best, which is why the two words get used interchangeably in the press. They are not the same word.</p>
+    <p><strong>Machine learning is how a system gets good at one inference. AI is many inferences pointed at an objective.</strong> That is the whole distinction, and it is sitting right there on the board: the six steps are machine learning, the closing line is AI.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>What this page does not settle</h2>
+    <p>Two honest caveats, because a framework this tidy can make you overconfident.</p>
+    <p><strong>It does not tell you whether any of this is thinking.</strong> Observing, processing, inferring and correcting against feedback is all mechanism. Whether that adds up to thinking is a genuinely open question and this page does not resolve it. What you can say confidently is narrower: it is not doing what you do when you think, and it does not need to in order to be extremely useful &mdash; or extremely wrong.</p>
+    <p><strong>The loop has no opinion about what it learns.</strong> It learns whatever reality it is shown, including reality nobody is proud of. A hiring tool trained on ten years of past decisions faithfully learns the pattern that was actually in that data. And because the learned rule ends up unreadable, nobody notices deliberately &mdash; it takes someone going looking.</p>
+    <p>Worse, a system like that runs its own feedback loop out in the world. Its decisions shape next year&rsquo;s training data, which strengthens the pattern. A loop pointed at the wrong objective does not drift randomly. It accelerates.</p>
+    <p>Which is why the closing line on the board says <em>objective</em>, and why choosing it is the most consequential decision anyone makes here. The components are increasingly things you can buy. The objective is irreducibly yours, and it is the part that decides what the system does when its own pieces disagree.</p>
+    <div class="note"><b>Four sentences to keep.</b> The top half does something; the bottom half gets better at it. No feedback, no learning &mdash; however much data you have. A pile of excellent inferences is not intelligence until something aims them. And the objective never sets itself.</div>
+  </div>
+</section>
+
+<footer>
+  <div>a beginner&rsquo;s walk through one whiteboard &middot; no maths, no code</div>
+  <div><a href="/explorables.html">&larr; more explorables</a></div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- reveal ---------- */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
+document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
+
+/* ---------- the chai stall: a feedback loop you can switch off ----------
+   True rain effect is 45%. Ramesh starts believing 20%. With reconciliation on, the belief
+   is nudged toward the truth each day and the gap shrinks. With it off, the belief is frozen
+   and the same gap repeats forever -- which is the point of the section. */
+var TRUE_RAIN=.45, BASE=100, START=.20, LR=.55;
+var belief=START, day=0, seed=7, feedback=true;
+function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return (seed/0x7fffffff); }
+var daysEl=document.getElementById("stallDays"),
+    errEl=document.getElementById("stallErr"),
+    msgEl=document.getElementById("stallMsg"),
+    dayEl=document.getElementById("stallDay"),
+    swEl=document.getElementById("stallSw");
+
+function row(n,pred,act,err){
+  var d=document.createElement("div");
+  d.className="day "+(Math.abs(err)>=18?"big":Math.abs(err)<=9?"small":"");
+  d.innerHTML='<span class="dl"><span class="lbl">day</span>'+n+'</span>'+
+              '<span class="dp"><span class="lbl">he prepares</span>'+pred+' cups</span>'+
+              '<span class="da"><span class="lbl">people came</span>'+act+'</span>'+
+              '<span class="de"><span class="lbl">gap</span>'+(err>0?"+":"")+err+'</span>';
+  daysEl.appendChild(d);
+  while(daysEl.children.length>6) daysEl.removeChild(daysEl.firstChild);
+}
+function runDay(){
+  day++;
+  var raining = day===1 ? true : rnd()>.35;
+  var pred = Math.round(BASE*(1+belief*(raining?1:0)));
+  var noise = Math.round((rnd()-.5)*9);
+  var act  = Math.round(BASE*(1+TRUE_RAIN*(raining?1:0)))+noise;
+  var err  = act-pred;
+  row(day,pred,act,err);
+  errEl.textContent=(err>0?"+":"")+err;
+  errEl.style.color = Math.abs(err)<=9 ? "var(--yes)" : Math.abs(err)>=18 ? "var(--no)" : "var(--ink)";
+  dayEl.textContent="day "+day;
+  if(feedback){
+    if(raining) belief += LR*(err/BASE);
+    msgEl.innerHTML = Math.abs(err)<=9
+      ? "He is close now. His rain rule moved from 20% to <strong>"+Math.round(belief*100)+"%</strong>."
+      : "He compares guess against reality and nudges. Rain rule now <strong>"+Math.round(belief*100)+"%</strong>.";
+  } else {
+    msgEl.innerHTML = "Nothing was counted, so nothing changed. His rain rule is still <strong>"+Math.round(belief*100)+"%</strong>, and it always will be.";
+  }
+}
+function reset(){ belief=START; day=0; seed=7; daysEl.innerHTML=""; errEl.textContent="—"; errEl.style.color="var(--ink)"; dayEl.textContent="day 0"; msgEl.innerHTML="Press <em>Run tomorrow</em> to serve the first day."; }
+document.getElementById("stallRun").addEventListener("click",runDay);
+document.getElementById("stallReset").addEventListener("click",reset);
+function toggle(){ feedback=!feedback; swEl.classList.toggle("on",feedback); swEl.setAttribute("aria-pressed",String(feedback));
+  msgEl.innerHTML = feedback ? "Counting again. The next gap will start pulling the rule toward the truth."
+                             : "Counting switched off. He will still guess every morning &mdash; he just never finds out.";
+}
+swEl.addEventListener("click",toggle);
+swEl.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()} });
+
+/* ---------- sorting activity ---------- */
+var ITEMS=[
+ ["A vending machine that dispenses a drink when you pay",false,"Fixed rule. Identical on day one and day ten thousand."],
+ ["Spotify&rsquo;s Discover Weekly playlist",true,"Your skips and repeats are the feedback; the recommendations recalibrate."],
+ ["A traffic light on a fixed 90-second cycle",false,"No observation of the world at all, let alone feedback."],
+ ["A traffic light that changes based on live sensor data using a fixed rule",false,"This is the one that catches people. It observes, analyzes and infers &mdash; all three top-half steps. But the rule was hand-written and never changes."],
+ ["A traffic system that adjusts its timings over months to cut average wait",true,"Predicts, measures actual wait, reconciles, recalibrates. The complete loop."],
+ ["Spreadsheet autocomplete suggesting the next value in a series",false,"Pattern extrapolation by fixed rule. It never finds out whether it was right."],
+ ["Your phone&rsquo;s face unlock, getting better as you grow a beard",true,"Every successful unlock is a labelled example; the stored representation updates."],
+ ["A payroll system calculating tax",false,"Deterministic calculation from legislated rules. You would not <em>want</em> it to learn."],
+ ["A chess computer following rules a human wrote, checking millions of moves ahead",false,"Genuinely AI &mdash; and it plays brilliantly. It contains no learning whatsoever. This is the item that proves AI and ML are not the same word."],
+ ["A chatbot, while you are chatting with it",false,"A trick question. It is a machine learning <em>product</em>, but no learning is happening while you chat. The bottom half already ran and finished."]
+];
+var listEl=document.getElementById("sortList"), scoreEl=document.getElementById("sortScore"), answered=0;
+ITEMS.forEach(function(it,i){
+  var d=document.createElement("div"); d.className="item";
+  d.innerHTML='<span class="q">'+it[0]+'</span>'+
+    '<span class="picks"><button class="pk" data-v="1">learning</button><button class="pk" data-v="0">just doing</button></span>'+
+    '<span class="ans"></span>';
+  listEl.appendChild(d);
+  d.querySelectorAll(".pk").forEach(function(b){
+    b.addEventListener("click",function(){
+      if(d.classList.contains("done")) return;
+      d.querySelectorAll(".pk").forEach(function(x){x.classList.remove("sel")});
+      b.classList.add("sel"); d.classList.add("done");
+      var right = (b.getAttribute("data-v")==="1")===it[1];
+      d.querySelector(".ans").innerHTML='<span class="vd '+(it[1]?"ml":"no")+'">'+(it[1]?"learning":"just doing")+'</span>'+
+        (right?"":"<strong>Not quite. </strong>")+it[2];
+      answered++; scoreEl.textContent=answered+" of 10 answered";
+    });
+  });
+});
+
+/* ---------- five specialists ---------- */
+var SPECS=[
+ ["signs","reads the traffic signs","green light, limit 60","green light, limit 60"],
+ ["route","knows the road network","stay straight, 2 min behind","stay straight, 2 min behind"],
+ ["objects","sees what is on the road","kerb clear","child at kerb, looking down"],
+ ["vehicle","knows its own physics","dry road, 22 m to stop","wet road, 34 m to stop"],
+ ["controls","decides accelerate or brake","awaiting instruction","awaiting instruction"]
+];
+var specEl=document.getElementById("carSpec"), vEl=document.getElementById("carVerdict"),
+    stEl=document.getElementById("carState"), btn=document.getElementById("carBtn"), hazard=false;
+function paintCar(){
+  specEl.innerHTML="";
+  SPECS.forEach(function(s,i){
+    var d=document.createElement("div");
+    var clash = hazard && (i===2||i===3);
+    d.className="sp"+(clash?" clash":"");
+    d.innerHTML='<span class="n">'+(i+1)+'</span><span>'+s[1]+'</span><span class="v">'+(hazard?s[3]:s[2])+'</span>';
+    specEl.appendChild(d);
+  });
+  stEl.textContent = hazard ? "two reports disagree with the other three" : "all reports agree";
+  vEl.innerHTML = hazard
+    ? "Every one of these five reports is still correct. But they now point in different directions: the green light and the schedule say <strong>go</strong>; the child and the wet road say <strong>slow down now</strong>. Nothing in the list resolves this. What resolves it is the objective &mdash; and the fact that <strong>safely</strong> outranks <strong>on time</strong>."
+    : "Every one of these reports is correct. Press the button to change one thing about the road.";
+  btn.textContent = hazard ? "Clear the kerb again" : "Put a child at the kerb";
+}
+btn.addEventListener("click",function(){ hazard=!hazard; paintCar(); });
+paintCar();
+
+})();
+</script>
+</body>
+</html>
