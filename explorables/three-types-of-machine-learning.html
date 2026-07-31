@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A chef, a recipe box, and a restaurant.</title>
+<meta name="description" content="Supervised, unsupervised and reinforcement learning for absolute beginners. They are not three technologies — they are three situations, told apart by one question: what does the teacher look like?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Rubik:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2EDE4; --paper-2:#E7E0D4; --card:#F8F5EF;
+  --ink:#221C15; --ink-soft:#4C4237; --ink-faint:#847768; --rule:#D8CEBE;
+  --accent:#B85C2B; --accent-soft:#D08A5E;
+  --sup:#2F6F8F; --uns:#6B4C93; --rei:#2E7350;
+  --bad:#A63A2E; --good:#2E7350;
+  --maxw:680px; --wide:1080px; --pad:26px;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Rubik",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+section{padding:92px 0}
+h1,h2,h3{font-family:"Outfit",system-ui,sans-serif;line-height:1.12;margin:0}
+h2{font-size:clamp(27px,4vw,40px);font-weight:700;letter-spacing:-.026em;margin:0 0 22px;text-wrap:balance}
+h3{font-size:19.5px;font-weight:600;letter-spacing:-.01em;margin:0 0 10px}
+p{margin:0 0 22px}
+strong{font-weight:600}
+a{color:var(--accent)}
+.divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+.lede{font-size:clamp(19.5px,2.4vw,24px);line-height:1.52;color:var(--ink-soft)}
+.m{font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 6px;border-radius:3px}
+
+/* ---------- hero: three teachers, three kinds of feedback ----------
+   data-hero="what-comes-back-from-each-teacher". The source's organising question is not
+   "what are the three types" but "what does the teacher look like" -- an answer key, nothing,
+   or a scoreboard. So the opening sends the same attempt down three lanes and shows what
+   comes back down each one. The middle lane, correctly, returns nothing at all. */
+.hero{padding:88px 0 74px}
+.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 24px}
+.hero h1{font-size:clamp(30px,4.9vw,56px);font-weight:800;letter-spacing:-.032em}
+.hero h1 span{display:block}
+.hero .lede{margin:26px 0 0;max-width:620px}
+.lanes{max-width:560px;margin:0 0 32px;border:1px solid var(--rule);border-radius:10px;background:var(--card);padding:20px 22px}
+.lane{display:grid;grid-template-columns:96px 1fr auto;gap:13px;align-items:center;padding:11px 0;border-bottom:1px solid var(--rule)}
+.lane:last-child{border-bottom:none}
+.lane .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;text-align:right;color:var(--c)}
+.lane .track{position:relative;height:20px;border-radius:3px;background:var(--paper-2);overflow:hidden}
+.lane .track i{position:absolute;top:6px;left:0;width:8px;height:8px;border-radius:50%;background:var(--c);animation:go 2.8s cubic-bezier(.5,0,.5,1) infinite;animation-delay:var(--d)}
+@keyframes go{0%{left:0;opacity:0}10%{opacity:1}55%{left:calc(100% - 8px);opacity:1}62%{opacity:0}100%{left:calc(100% - 8px);opacity:0}}
+.lane .back{font-family:var(--mono);font-size:11.5px;min-width:112px;text-align:right;color:var(--c);opacity:0;animation:blip 2.8s ease infinite;animation-delay:var(--d)}
+.lane .back.none{color:var(--ink-faint)}
+@keyframes blip{0%,54%{opacity:0}62%{opacity:1}92%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.lane .track i{animation:none;left:calc(100% - 8px)}.lane .back{animation:none;opacity:1}}
+.lanecap{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:14px;padding-top:13px;border-top:1px solid var(--rule)}
+
+/* ---------- shared ---------- */
+.fig{background:var(--card);border:1px solid var(--rule);border-radius:10px;margin:30px 0;overflow:hidden}
+.fig-h{padding:13px 20px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fig-b{padding:24px 22px}
+.cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
+.btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px}
+.btn:hover{opacity:.88}
+.note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
+.note b{color:var(--ink)}
+.try{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17.5px}
+.try .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
+.pull{font-family:"Outfit",sans-serif;font-weight:600;font-size:clamp(20px,2.8vw,28px);line-height:1.32;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
+table{width:100%;border-collapse:collapse;margin:26px 0;font-size:15.5px}
+th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);padding:9px 11px;font-weight:400}
+td{padding:11px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+
+/* ---------- ask-it-three-ways ---------- */
+.ask{display:flex;flex-direction:column;gap:9px}
+.askb{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:14px 16px;cursor:pointer;font:inherit;text-align:left;font-size:16.5px;transition:all .16s}
+.askb:hover{border-color:var(--accent)}
+.askb.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.askout{margin-top:16px;border:1px solid var(--rule);border-radius:8px;background:var(--paper-2);padding:19px 21px}
+.askout .at{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.askout .av{font-family:"Outfit",sans-serif;font-weight:800;font-size:34px;line-height:1;letter-spacing:-.03em;margin-bottom:10px}
+.askout .an{font-size:15.5px;line-height:1.55;color:var(--ink-soft)}
+
+/* ---------- accuracy trap ---------- */
+.acc{display:grid;grid-template-columns:1fr 200px;gap:22px;align-items:center}
+@media(max-width:700px){.acc{grid-template-columns:1fr}}
+.accbig{font-family:"Outfit",sans-serif;font-weight:800;font-size:52px;line-height:1;letter-spacing:-.035em;color:var(--bad)}
+.accsub{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:8px;line-height:1.5}
+.slider{width:100%;accent-color:var(--accent)}
+
+/* ---------- naming exercise ---------- */
+.nm{display:flex;flex-direction:column;gap:9px}
+.nmi{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:14px 16px}
+.nmq{font-size:16.5px;line-height:1.45;margin-bottom:11px}
+.nmb{display:flex;gap:6px;flex-wrap:wrap}
+.nb{font-family:var(--mono);font-size:11px;padding:6px 10px;border:1px solid var(--rule);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft)}
+.nb:hover{border-color:var(--accent)}
+.nb.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.nma{display:none;margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule);font-size:14.8px;line-height:1.56;color:var(--ink-soft)}
+.nmi.done .nma{display:block}
+.tg{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-right:8px;background:rgba(184,92,43,.15);color:var(--accent)}
+.tg.miss{background:rgba(166,58,46,.13);color:var(--bad)}
+.score{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+footer{border-top:1px solid var(--rule);padding:40px var(--pad) 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:var(--mono);line-height:1.9}
+footer a{color:var(--accent)}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:640px){body{font-size:17.5px}section{padding:66px 0}}
+</style>
+</head>
+<body>
+
+<header class="hero" data-hero="what-comes-back-from-each-teacher">
+  <div class="col">
+    <p class="hmeta">three situations, not three technologies</p>
+    <div class="lanes" aria-hidden="true">
+      <div class="lane" style="--c:var(--sup)"><span class="who">a chef</span><span class="track"><i style="--d:0s"></i></span><span class="back" style="--d:0s">&ldquo;too much salt&rdquo;</span></div>
+      <div class="lane" style="--c:var(--uns)"><span class="who">a recipe box</span><span class="track"><i style="--d:.5s"></i></span><span class="back none" style="--d:.5s">&mdash; nothing &mdash;</span></div>
+      <div class="lane" style="--c:var(--rei)"><span class="who">a restaurant</span><span class="track"><i style="--d:1s"></i></span><span class="back" style="--d:1s">table booked again</span></div>
+      <p class="lanecap">same attempt, three different things coming back</p>
+    </div>
+    <h1><span>A chef, a recipe box,</span><span>and a restaurant.</span></h1>
+    <p class="lede">Three ways to learn to cook &mdash; and the three kinds of machine learning, in the same order. What separates them is not how clever they are or when they were invented. It is one question: when you try something, what comes back?</p>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Three ways to learn to cook</h2>
+    <p>Do not start with definitions. Start here, because it carries all three and you will keep coming back to it.</p>
+
+    <h3>Cooking classes</h3>
+    <p>A chef stands next to you. You cook, the chef tastes it and says &ldquo;too much salt&rdquo; or &ldquo;perfect&rdquo;. Every single attempt comes back with the right answer attached. After a hundred dishes you have internalised the chef&rsquo;s judgement.</p>
+    <p>What made that possible: somebody who already knew the answer, willing to tell you, every time.</p>
+
+    <h3>The unlabelled recipe box</h3>
+    <p>Someone hands you five hundred recipes with the titles torn off and says: &ldquo;tell me something about these.&rdquo;</p>
+    <p>There is no right answer. Nobody is going to mark your work. But you would still notice things &mdash; a lot of these use tomato, garlic and basil; that pile is all baked; those over there take under fifteen minutes. You have found structure that nobody put there for you.</p>
+    <p>What made that possible: nothing but the data itself. No chef, no answers, no marking.</p>
+
+    <h3>Opening a restaurant</h3>
+    <p>Nobody tells you what to cook. You put dishes on the menu and find out, weeks later, from whether people come back and what they order again.</p>
+    <p>You never get told &ldquo;the biryani should have had more saffron&rdquo;. You only get the till receipts. So you experiment &mdash; change one thing, see what happens, keep what works, drop what does not. Slowly you get good, and you still could not fully explain why.</p>
+    <p>What made that possible: the freedom to try things, and consequences you could measure.</p>
+
+    <p class="pull">Chef is supervised. Recipe box is unsupervised. Restaurant is reinforcement.</p>
+
+    <table>
+      <thead><tr><th></th><th>The teacher</th><th>What the machine gets</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Supervised</strong></td><td>A teacher with an answer key</td><td>Every example comes with the right answer attached</td></tr>
+        <tr><td><strong>Unsupervised</strong></td><td>No teacher at all</td><td>Just a pile of data. &ldquo;Here &mdash; tell me something about this.&rdquo;</td></tr>
+        <tr><td><strong>Reinforcement</strong></td><td>No answer key, but a scoreboard</td><td>Nobody says what is right. You find out afterwards whether it went well.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note"><b>These are not three different technologies.</b> They are three different situations you can be in, defined entirely by what kind of feedback is available to you. The situation picks the approach &mdash; you don&rsquo;t.</div>
+
+    <div class="try"><span class="tl">worth trying on yourself</span>If you wanted to teach someone your job, which of the three would it be? Most people say &ldquo;I&rsquo;d sit with them and correct their work&rdquo; &mdash; supervised. Then ask: what about the parts of your job where you cannot say <em>why</em> you do it that way, only whether it worked? That is the other two.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>When somebody already knows the answer</h2>
+    <p>You have a pile of examples where the right answer is already known, and the machine learns to reproduce it on cases it has not seen. The most important word here is <strong>labelled</strong>. A label is the right answer, sitting next to the example. Forty cars <em>and what each sold for</em>. Ten customers <em>and whether each one cancelled</em>.</p>
+    <p>Where those labels come from is a business problem, not a technical one:</p>
+    <table>
+      <thead><tr><th>Source</th><th>Example</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td>Reality provides them, free</td><td>The customer cancelled or didn&rsquo;t. The parcel arrived at 4:12pm. The loan was repaid.</td><td>Free &mdash; but you must have <strong>recorded</strong> it, and most organisations didn&rsquo;t</td></tr>
+        <tr><td>A human sits and labels</td><td>Someone marks 10,000 support tickets by category</td><td>Expensive, slow, and the bottleneck on most real projects</td></tr>
+        <tr><td>Users label without noticing</td><td>Every &ldquo;mark as spam&rdquo; click. Every skipped song.</td><td>Free and enormous &mdash; this is why the big platforms win</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><b>Having data is not the requirement. Having data with the answers attached is the requirement.</b> Twenty years of invoices with no record of which customers turned out to be trouble gives you nothing to learn from.</div>
+
+    <h3>Does the answer come out as a word, or as a number?</h3>
+    <p>That single question splits supervised learning in two, and it is far more useful than the textbook vocabulary. Here is the test that settles it every time: <strong>could you write all the possible answers on a menu?</strong> If yes, the answer is a word from a list. If no &mdash; if they slide along a scale &mdash; the answer is a number.</p>
+    <p>Ask it another way: is there anything in between two answers? Between ten lakh and eleven lakh there is 10.5, and 10.51, and 10.513, infinitely many. So that is a number. Between &ldquo;spam&rdquo; and &ldquo;not spam&rdquo; there is nothing at all &mdash; you cannot be 40% of the way from spam to not-spam. So that is a word.</p>
+
+    <h3>The part almost nobody teaches</h3>
+    <p>Take one customer and one set of data. Watch what happens when you change nothing except how you phrase the question.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>same customer, same data &mdash; you choose the question</span></div>
+      <div class="fig-b">
+        <div class="ask" id="askList"></div>
+        <div class="askout" id="askOut"></div>
+        <p class="cap">Same customer. Same data. Same information available. Different types of machine learning &mdash; because you chose how to ask.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <p>Two things follow. <strong>The type is chosen by the question, not by the data.</strong> Anyone who tells you &ldquo;our data is a classification problem&rdquo; has skipped a decision that was theirs to make.</p>
+    <p>And <strong>turning a number into a band throws information away &mdash; sometimes on purpose.</strong> A precise figure and a band are not equally useful. The band is easier to act on, easier to explain, and easier to get right. Simplifying the question is a legitimate and often smart move.</p>
+    <div class="try"><span class="tl">the question behind the question</span>Which version would you rather hand a sales team on a Monday morning? Most people say the band. Now which would you rather have for the annual budget? Most switch to the precise number. The right type depends on what the answer is for.</div>
+    <p>One piece of vocabulary worth being blunt about: the formal name for predicting a number is <em>regression</em>, which is a historical accident from 19th-century statistics and has nothing to do with going backwards. It just means predicting a number. Saying so plainly buys more credibility than pretending the name makes sense.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>When nobody knows the answer</h2>
+    <p>You have data and no answers at all, and you are asking the machine to find structure that nobody labelled. There is no cancelled column. No price column. No answer of any kind, anywhere.</p>
+    <p>That is genuinely a different activity. With a chef, reality told us the answer and we learned to match it. Here nothing does &mdash; so there is nothing to be &ldquo;right&rdquo; about.</p>
+    <p class="pull">Supervised learning answers a question you asked. Unsupervised learning tells you something you did not know to ask.</p>
+
+    <h3>What groups are in here?</h3>
+    <p>Think of sorting laundry. Nobody gives you the categories. You just start putting like with like, and piles emerge &mdash; whites, colours, delicates. Different people would make slightly different piles, and none of them is wrong.</p>
+    <p>That last point matters and is worth stating plainly: <strong>clustering has no right answer.</strong> Ask for two groups and you get two. Ask for five and you get five. The machine will always oblige. Whether the groups are <em>useful</em> is a human judgement, and it is yours.</p>
+    <p>Where it earns its keep: customer segments nobody defined in a marketing meeting; which branches actually behave alike, regardless of region; products bought by the same kind of person; themes across thousands of complaints.</p>
+    <p>The punchline is worth sitting with. A group like &ldquo;visits twice a year, spends a fortune&rdquo; is completely invisible on a visits-per-month report. Nobody would have defined that segment in a meeting. The data had it all along &mdash; clustering just made somebody look.</p>
+
+    <h3>What does not belong?</h3>
+    <p>A different job: not sorting into groups, but looking for the single thing that should not be there. The red sock in the white wash. A transaction that does not look like <em>you</em>. A machine vibrating slightly wrong before it fails. A login from a country you have never been to.</p>
+    <p>Here is the puzzle worth pausing on. Fraud is just yes or no &mdash; so why not take past frauds, label them, and learn what fraud looks like? Two reasons, and both are deep.</p>
+    <p><strong>You do not have examples of what you are looking for.</strong> The fraud that will hurt you next year has not happened yet. A classifier can only recognise patterns it has already been shown, so it is permanently one step behind.</p>
+    <p><strong>And the classes are hopelessly lopsided.</strong> Drag this and see what a model that simply always says &ldquo;not fraud&rdquo; would score.</p>
+  </div>
+
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>a model that never catches anything</span></div>
+      <div class="fig-b">
+        <div class="acc">
+          <div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:8px">fraud happens in <b id="rateLab">1 in 10,000</b> transactions</div>
+            <input class="slider" id="rate" type="range" min="2" max="5" step="0.05" value="4" aria-label="fraud rarity">
+            <p class="cap" style="margin-top:12px">Move it right and fraud gets rarer. The model below does nothing at all &mdash; it answers &ldquo;not fraud&rdquo; every single time, for every transaction, forever.</p>
+          </div>
+          <div style="text-align:right">
+            <div class="accbig" id="accV">99.99%</div>
+            <div class="accsub">accurate<br>and completely worthless</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col reveal">
+    <p>Accuracy is a broken measure when one answer is overwhelmingly common. So anomaly detection flips the question entirely:</p>
+    <div class="note"><b>Classification learns what the thing looks like. Anomaly detection learns what everything else looks like, and points at whatever is left over.</b></div>
+    <p>You need no examples of fraud at all. You only need lots of examples of <em>normal</em> &mdash; which you have, by the million, for free.</p>
+    <p>The cost of that flip, and it is worth being honest about: anomaly detection finds things that are <em>unusual</em>, and unusual is not the same as <em>wrong</em>. Your first-ever trip abroad is genuinely anomalous and entirely legitimate. That is why these systems generate so many false alarms, and why a human sits at the end of almost all of them.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>When you only find out afterwards</h2>
+    <p>Nobody tells you the right answer; you try things, and you find out later how it went. Reward and punishment is the whole vocabulary you need.</p>
+    <p>Training a dog is the clearest version. You never explain anything. The dog sits and gets a treat. Jumps on the sofa and gets none. Nobody has ever described the rule, and the dog could not state it &mdash; but within weeks the behaviour is exactly what you wanted.</p>
+    <p>Or learning to ride a bicycle: no one can give you instructions precise enough to follow. You wobble, you fall, you adjust. The feedback is falling over.</p>
+
+    <h3>Two things that make it hard</h3>
+    <p><strong>Which move was the good one?</strong> You win a chess game on move sixty. Which of your sixty moves won it? The reward arrives at the end, attached to everything you did. This is the single hardest thing in the field.</p>
+    <p>Every executive recognises the business version: a large deal closes after eight meetings, three emails and a dinner. Which one closed it? Nobody knows. That is not a failure of record-keeping &mdash; the credit genuinely cannot be assigned from a single outcome.</p>
+    <p><strong>The known-good, or the untried?</strong> Friday night. Your favourite restaurant, which you know is good &mdash; or the new place, which might be better and might be terrible?</p>
+    <p>Go to the favourite every time and you will never find anything better. Try somewhere new every time and you will eat a lot of bad dinners. Every reinforcement learning system faces this at every single step, and so does every business:</p>
+    <table>
+      <thead><tr><th>Stick with what works</th><th>Try something new</th></tr></thead>
+      <tbody>
+        <tr><td>Keep running the ad that works</td><td>Test a new one</td></tr>
+        <tr><td>Sell to the segment we understand</td><td>Try the segment we don&rsquo;t</td></tr>
+        <tr><td>Keep the pricing that&rsquo;s fine</td><td>Experiment and risk a bad quarter</td></tr>
+      </tbody>
+    </table>
+    <div class="try"><span class="tl">a board-level question long before it is a technical one</span>What share of your budget goes to trying things that might not work? For most organisations the honest answer is &ldquo;almost none, and we call that discipline.&rdquo;</div>
+
+    <h3>Why you rarely see it in business</h3>
+    <p>Be straight about this or the idea oversells itself. Reinforcement learning needs somewhere safe to fail thousands of times. A simulated robot can fall over a million times before lunch. A pricing algorithm cannot destroy a million real transactions to find out what works.</p>
+    <table>
+      <thead><tr><th>Works brilliantly</th><th>Struggles</th></tr></thead>
+      <tbody>
+        <tr><td>Games, where the rules are known and failure is free</td><td>Anything where each mistake costs real money</td></tr>
+        <tr><td>Robotics and logistics &mdash; you can simulate first</td><td>Anything a regulator must approve</td></tr>
+        <tr><td>Ad and offer selection &mdash; millions of cheap, fast, reversible decisions</td><td>Anything where feedback takes months</td></tr>
+      </tbody>
+    </table>
+    <p>The pattern: it thrives where mistakes are cheap, fast and reversible. Most business decisions are none of those three.</p>
+
+    <h3>Where you have already met it</h3>
+    <p>A raw language model, trained on a mountain of text, is good at predicting the next word and <strong>not</strong> naturally good at being helpful, safe or willing to follow an instruction. What fixed that was reinforcement learning: the model produces several answers to the same question, humans rank them &mdash; this one is more helpful, that one is rude &mdash; the model is rewarded for producing the preferred kind of answer, and that repeats, enormously.</p>
+    <p class="pull">Predicting the next word made it knowledgeable. Reinforcement made it useful.</p>
+    <p>Two things worth adding. The ranking is <em>labour</em>: thousands of people reading answers and choosing between them. That is the hidden human cost inside every polished AI product. And you get what you reward &mdash; a model rewarded for answers that <em>look</em> good learns to produce answers that look good, which is one honest explanation of why these systems sometimes sound confident about things they have invented.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>All five, on one page</h2>
+    <table>
+      <thead><tr><th></th><th>The teacher</th><th>Answer comes out as</th><th>Everyday example</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Classification</strong></td><td>Answer key</td><td>A label from a list</td><td>Is this email spam?</td></tr>
+        <tr><td><strong>Regression</strong></td><td>Answer key</td><td>A number on a scale</td><td>How long is the drive?</td></tr>
+        <tr><td><strong>Clustering</strong></td><td>None</td><td>Groups nobody defined</td><td>Sorting the laundry</td></tr>
+        <tr><td><strong>Anomaly detection</strong></td><td>None</td><td>The odd one out</td><td>The red sock in the white wash</td></tr>
+        <tr><td><strong>Reinforcement</strong></td><td>A scoreboard</td><td>What to do next</td><td>Training a dog</td></tr>
+      </tbody>
+    </table>
+    <p>Or in three lines: <strong>supervised</strong> &mdash; I show you the answers, learn to reproduce them. <strong>Unsupervised</strong> &mdash; I show you nothing, tell me what is in here. <strong>Reinforcement</strong> &mdash; I show you the score, work out what to do.</p>
+
+    <h3>Which one is your problem?</h3>
+    <p>Work down and stop at the first yes. Do you already know the right answer for past cases, and did somebody write it down? If yes, you are supervised &mdash; and then, is the answer one of a short list you could put on a menu, or a number that could land anywhere on a scale?</p>
+    <p>If no: are you looking for the odd one out rather than sorting everything into groups? Or do you just want to know what natural groups exist?</p>
+    <p>And if there is no answer key at all &mdash; only consequences that arrive later, and you can afford to experiment &mdash; that is reinforcement. If you cannot afford to experiment either, you may not have a machine learning problem yet.</p>
+    <div class="note"><b>That very first question is the one that stops most real projects.</b> Not &ldquo;do we have data&rdquo; but <em>do we have the answers, written down, for past cases?</em> Organisations routinely discover at exactly this point that nobody ever recorded what happened next.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Name the type</h2>
+    <p>Twelve jobs. Five possible answers. The last one is deliberately unfair, and that is the point.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>which kind of problem is this?</span><span class="score" id="nmScore">0 of 12 named</span></div>
+      <div class="fig-b"><div class="nm" id="nmList"></div></div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>The two loan questions are the whole exercise: identical data, identical customer, and the type changed because the question changed. If you keep one thing from this page, keep that.</p>
+    <p>And the star rating is genuinely ambiguous. Treat one-to-five stars as five labels and you cannot express 4.5. Treat it as a number and the model may output 3.7 stars, which nobody ever gave. Both choices are defensible and both lose something. Real problems sit on this boundary constantly.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>What this does not settle</h2>
+    <p>Two limits worth carrying away.</p>
+    <p><strong>The neat five-box table hides how often real problems straddle boxes.</strong> The star rating above is not a trick &mdash; it is typical. Plenty of live systems chain several types together: cluster first to find segments, then run a separate classifier inside each one. The table is a way to think, not a filing system.</p>
+    <p><strong>And picking the right type does not make the problem solvable.</strong> You can identify correctly that you have a supervised classification problem and still fail, because nobody recorded the labels, or the labels that exist encode a decision you would not want repeated. Which kind of problem you have and whether you can act on it are separate questions, and this page only answers the first.</p>
+    <div class="note"><b>Three sentences to keep.</b> These are three situations, not three technologies &mdash; the feedback available to you picks the approach. The type is chosen by the question you ask, not by the data you hold. And having data is not the requirement; having data with the answers attached is the requirement.</div>
+  </div>
+</section>
+
+<footer>
+  <div>which kind of problem you have &middot; companion to <a href="/explorables/how-models-learn.html">how the learning actually happens</a></div>
+  <div><a href="/explorables.html">&larr; more explorables</a></div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
+document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
+
+/* ---------- same customer, three ways to ask ---------- */
+var ASK=[
+ ["&ldquo;How much will they spend next year?&rdquo;","a number on a scale","&#8377;47,300",
+  "The answer could land anywhere. There is something in between &#8377;47,300 and &#8377;47,400, and between those, forever. That makes it a number problem."],
+ ["&ldquo;Will they spend more than &#8377;50,000?&rdquo;","a word from a list of two","No",
+  "Now there are exactly two possible answers and you could write both on a menu. Same customer, same data &mdash; but this is a different type of machine learning."],
+ ["&ldquo;Which band do they fall into: under 25k, 25&ndash;75k, or over 75k?&rdquo;","a word from a list of three","The middle band",
+  "Three possible answers, still a menu. Easier to act on and easier to get right than the exact figure &mdash; and you have deliberately thrown away the precision to get there."]
+];
+var al=document.getElementById("askList"), ao=document.getElementById("askOut");
+function showAsk(i){
+  al.querySelectorAll(".askb").forEach(function(b,j){ b.classList.toggle("on",i===j) });
+  var a=ASK[i];
+  ao.innerHTML='<div class="at">the answer comes out as '+a[1]+'</div><div class="av">'+a[2]+'</div><div class="an">'+a[3]+'</div>';
+}
+ASK.forEach(function(a,i){
+  var b=document.createElement("button"); b.className="askb"; b.type="button"; b.innerHTML=a[0];
+  b.addEventListener("click",function(){ showAsk(i) });
+  al.appendChild(b);
+});
+showAsk(0);
+
+/* ---------- the accuracy trap ---------- */
+(function(){
+  var r=document.getElementById("rate"), lab=document.getElementById("rateLab"), v=document.getElementById("accV");
+  if(!r) return;
+  function render(){
+    var n=Math.round(Math.pow(10,+r.value));
+    var acc=(1-1/n)*100;
+    lab.textContent="1 in "+n.toLocaleString("en-US");
+    v.textContent=acc.toFixed(acc>=99.9?3:2)+"%";
+  }
+  r.addEventListener("input",render); render();
+})();
+
+/* ---------- name the type ---------- */
+var TYPES=["classification","regression","clustering","anomaly","reinforcement"];
+var LABEL={classification:"classification",regression:"regression",clustering:"clustering",anomaly:"anomaly detection",reinforcement:"reinforcement"};
+var JOBS=[
+ ["Predict tomorrow&rsquo;s electricity demand in megawatts","regression","Megawatts is a number on a scale."],
+ ["Decide whether a photo contains a person","classification","Two answers: person, or no person."],
+ ["Group 50,000 customers into segments nobody has defined","clustering","No labels exist. The groups are the output, not the input."],
+ ["Spot the one supplier invoice that looks unlike all the others","anomaly","You want the odd one out, not groups &mdash; and you have no examples of a &ldquo;bad invoice&rdquo;."],
+ ["Work out how much to bid, in real time, for an ad slot &mdash; learning from what wins","reinforcement","No right answer exists. You learn from what your bids win, over and over."],
+ ["Estimate how many days a delivery will take","regression","Days is a number."],
+ ["Decide which of five departments a complaint should go to","classification","Five answers, on a menu."],
+ ["Find machines on the factory floor behaving unusually before they break","anomaly","Same shape as the invoice: you know what normal looks like, not what failure looks like."],
+ ["Predict whether a loan will be repaid","classification","Repaid or not repaid. Two answers."],
+ ["Predict how much of the loan will be repaid","regression","Same data as the question above, different question, different type. This is the whole point of the exercise."],
+ ["Teach a warehouse robot the fastest route by letting it try","reinforcement","Trial, consequence, repeat &mdash; and a warehouse is somewhere safe to fail."],
+ ["Read a customer&rsquo;s star rating out of five from their written review","classification","Honestly, either. One to five stars is a short list <em>and</em> a scale, and both choices are used in practice. Marked as a list here, but a number is equally defensible."]
+];
+var nl=document.getElementById("nmList"), ns=document.getElementById("nmScore"), named=0;
+JOBS.forEach(function(j){
+  var d=document.createElement("div"); d.className="nmi";
+  d.innerHTML='<div class="nmq">'+j[0]+'</div><div class="nmb">'+
+    TYPES.map(function(t){return '<button class="nb" type="button" data-t="'+t+'">'+LABEL[t]+'</button>'}).join("")+
+    '</div><div class="nma"></div>';
+  d.querySelectorAll(".nb").forEach(function(b){
+    b.addEventListener("click",function(){
+      if(d.classList.contains("done")) return;
+      d.querySelectorAll(".nb").forEach(function(x){x.classList.remove("sel")});
+      b.classList.add("sel"); d.classList.add("done");
+      var right=b.getAttribute("data-t")===j[1];
+      d.querySelector(".nma").innerHTML='<span class="tg'+(right?"":" miss")+'">'+LABEL[j[1]]+'</span>'+(right?"":"<strong>Not quite. </strong>")+j[2];
+      named++; ns.textContent=named+" of 12 named";
+    });
+  });
+  nl.appendChild(d);
+});
+})();
+</script>
+</body>
+</html>
