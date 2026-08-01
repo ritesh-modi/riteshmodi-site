@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partitioning Postgres: locality and cheap bulk removal</title>
+<title>Partitioning a Postgres table for locality and cheap removal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@ h1 .hl{display:block;text-wrap:balance}.hero h1 .i{font-style:italic;color:var(-
   <div class="hero-grid"></div>
   <div class="hero-inner">
     <p class="kick">Postgres · partitioning for locality and cheap bulk removal</p>
-    <h1><span class="hl">One slice grew huge.</span><span class="hl">Don't scan the whole table to fix it.</span></h1>
+    <h1><span class="hl">Partitioning a Postgres table</span><span class="hl">for locality and cheap removal</span></h1>
     <p class="lede">When a single tenant's rows dominate a table, or a log needs monthly retention, one big heap makes every cleanup touch everything. Partitioning splits the table so per-tenant work stays local and removing a slice becomes a metadata operation, not a million-row DELETE.</p>
     <div class="cmp">
       <div class="cmpcard bad"><div class="t">archive, the slow way</div><code>DELETE FROM claims WHERE …</code><br><span style="color:var(--v2)">scan, mark dead, vacuum, bloat</span></div>

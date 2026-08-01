@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nothing reaches the model as text</title>
+<title>Tokenization: how text becomes tokens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -609,7 +609,7 @@
   /* ---------------- HERO: headline made of sorts ---------------- */
   (function(){
     var h1=document.getElementById('heroH1'); if(!h1) return;
-    var words=['Nothing','reaches','the','model','as','text'];
+    var words=['How', 'text', 'becomes', 'tokens'];
     h1.innerHTML=words.map(function(w,i){
       return '<span class="sort" data-hw="'+i+'" role="button" tabindex="0">'+w+'</span>';
     }).join('');

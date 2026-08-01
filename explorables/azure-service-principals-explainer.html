@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Machines don't log in: Azure service principals, OAuth, and the blast radius you chose</title>
+<title>Azure service principals: machine identity, tokens and blast radius</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -46,7 +46,7 @@
       <div class="az-row"><span class="k">exp</span><span class="v cd" id="azExp">59:59</span></div>
     </div>
     <p class="az-meta">oauth2 client_credentials &middot; no human in the loop</p>
-    <h1 class="az-h"><span>Machines don&rsquo;t log in.</span> <span>They authenticate.</span></h1>
+    <h1 class="az-h"><span>Azure service principals:</span><span>machine identity and OAuth</span></h1>
     <p class="lede">A service principal is how software gets its own identity in Azure: its own passport, its own permissions, its own blast radius. This page builds one from scratch, decodes the token it receives, then hands you the slider that decides how bad a leaked-credential day gets. At the end, a full playground.</p>
   </div>
 </header>
