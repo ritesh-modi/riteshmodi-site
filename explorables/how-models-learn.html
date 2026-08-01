@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You never see the valley. You only feel the slope.</title>
-<meta name="description" content="Loss, gradient descent, learning rate and backpropagation in plain words — with a worked example whose every number you can check on paper, and a learning-rate dial you can break.">
+<meta name="description" content="Loss, gradient descent, learning rate and backpropagation in plain words — with a worked example whose every number you can check on paper, a learning-rate dial you can break, and a test you can take.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,7 +14,6 @@
   --ink:#161D22; --ink-soft:#3D4850; --ink-faint:#6E7A82; --rule:#C3CACD;
   --accent:#2D4A6B; --accent-soft:#5D7FA6;
   --good:#2F7355; --bad:#A8412F; --warn:#B0782A;
-  --fog:#E6E9EA;
   --maxw:680px; --wide:1080px; --pad:26px;
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
@@ -24,7 +23,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:"Karla",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
 .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-section{padding:92px 0}
+section{padding:88px 0}
 h1,h2,h3{font-family:"Manrope",system-ui,sans-serif;line-height:1.13;margin:0}
 h2{font-size:clamp(27px,4vw,40px);font-weight:800;letter-spacing:-.028em;margin:0 0 22px;text-wrap:balance}
 h3{font-size:19.5px;font-weight:700;letter-spacing:-.01em;margin:0 0 10px}
@@ -36,19 +35,20 @@ a{color:var(--accent)}
 .m{font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 6px;border-radius:3px}
 
 /* ---------- hero: the fog over the loss curve ----------
-   data-hero="fog-over-the-loss-curve". The piece's claim is that the machine can never see the
-   landscape it is descending -- it only ever feels the slope directly under it. So the opening
-   shows the real loss curve for the worked example with everything hidden except a small patch
-   around the walker, and lets it take its first five steps downhill on load. */
-.hero{padding:88px 0 74px}
+   data-hero="fog-over-the-loss-curve". The machine can never see the landscape it is
+   descending; it only feels the slope directly under it. So the opening is the real loss curve
+   with everything hidden except a patch around the walker -- and the reader can step it, or
+   lift the fog and see what the machine never gets to see. */
+.hero{padding:88px 0 72px}
 .hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 24px}
 .hero h1{font-size:clamp(30px,4.9vw,56px);font-weight:800;letter-spacing:-.035em}
 .hero h1 span{display:block}
 .hero .lede{margin:26px 0 0;max-width:620px}
-.fogwrap{max-width:560px;margin:0 0 32px;border:1px solid var(--rule);border-radius:10px;background:var(--card);overflow:hidden}
+.fogwrap{max-width:560px;margin:0 0 30px;border:1px solid var(--rule);border-radius:10px;background:var(--card);overflow:hidden}
 .fogwrap svg{width:100%;height:auto;display:block}
-.fogbar{display:flex;justify-content:space-between;gap:12px;padding:9px 15px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+.fogbar{display:flex;justify-content:space-between;gap:12px;padding:9px 15px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-wrap:wrap}
 .fogbar b{color:var(--accent);font-weight:500}
+.fogctl{display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--rule);flex-wrap:wrap}
 
 /* ---------- shared ---------- */
 .fig{background:var(--card);border:1px solid var(--rule);border-radius:10px;margin:30px 0;overflow:hidden}
@@ -57,56 +57,74 @@ a{color:var(--accent)}
 .cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
 .btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;transition:opacity .2s}
 .btn:hover{opacity:.87}
+.btn:disabled{opacity:.4;cursor:default}
 .btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink-soft)}
+.btn.sm{font-size:11.5px;padding:7px 12px}
 .note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
 .note b{color:var(--ink)}
 .try{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17.5px}
 .try .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
 .pull{font-family:"Manrope",sans-serif;font-weight:700;font-size:clamp(20px,2.8vw,28px);line-height:1.32;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
-table{width:100%;border-collapse:collapse;margin:26px 0;font-size:15.5px}
+table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px}
 th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);padding:9px 11px;font-weight:400}
 td{padding:11px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
 tr:last-child td{border-bottom:none}
 td.num,th.num{text-align:right;font-family:var(--mono);font-size:13.5px}
-
-/* ---------- learning rate dial ---------- */
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border:1px solid var(--rule);border-radius:5px;background:var(--paper);cursor:pointer;color:var(--ink-soft);transition:all .16s}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.out{margin-top:16px;padding:17px 19px;border-radius:8px;background:var(--paper-2);font-size:16px;line-height:1.56;min-height:76px}
+.out .ol{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+.big{font-family:"Manrope",sans-serif;font-weight:800;font-size:38px;line-height:1;letter-spacing:-.03em}
+.slider{width:100%;accent-color:var(--accent)}
+.rows{display:flex;flex-direction:column;gap:7px}
+.row{display:grid;grid-template-columns:150px 1fr 92px;gap:11px;align-items:center;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+@media(max-width:640px){.row{grid-template-columns:104px 1fr 76px;font-size:11.5px}}
+.row .rk{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .rb{height:14px;background:var(--paper-2);border-radius:3px;overflow:hidden}
+.row .rb i{display:block;height:100%;width:0;border-radius:3px;background:var(--rule);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.row .rv{text-align:right;font-variant-numeric:tabular-nums}
+.row.top .rk{color:var(--accent);font-weight:500}
+.row.top .rb i{background:var(--accent)} .row.top .rv{color:var(--accent)}
+.row.bad .rb i{background:var(--bad)} .row.bad .rv{color:var(--bad)} .row.bad .rk{color:var(--bad)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.card2{border:1px solid var(--rule);border-radius:8px;padding:16px 18px;background:var(--paper)}
+.card2 h4{margin:0 0 8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:400}
+.card2.warn{border-color:var(--bad)} .card2.warn .big{color:var(--bad)}
+.card2.ok .big{color:var(--good)}
+.plot{border:1px solid var(--rule);border-radius:8px;background:var(--paper);overflow:hidden}
+.plot svg{width:100%;height:auto;display:block}
 .lr{display:grid;grid-template-columns:1fr 224px;gap:24px;align-items:start}
 @media(max-width:760px){.lr{grid-template-columns:1fr}}
-.lrplot{border:1px solid var(--rule);border-radius:8px;background:var(--paper);overflow:hidden}
-.lrplot svg{width:100%;height:auto;display:block}
-.slider{width:100%;margin:16px 0 6px;accent-color:var(--accent)}
-.lrval{font-family:"Manrope",sans-serif;font-weight:800;font-size:38px;line-height:1;letter-spacing:-.03em}
-.lrlab{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
 .verdict{margin-top:14px;padding:13px 15px;border-radius:7px;font-size:15px;line-height:1.5;background:var(--paper-2)}
 .verdict.ok{background:rgba(47,115,85,.12);color:var(--good)}
 .verdict.osc{background:rgba(176,120,42,.13);color:var(--warn)}
 .verdict.blow{background:rgba(168,65,47,.12);color:var(--bad)}
 .steps{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--ink-soft);line-height:1.75}
 .steps b{color:var(--ink);font-weight:500}
-.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.pre{font-family:var(--mono);font-size:11px;padding:6px 10px;border:1px solid var(--rule);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft)}
-.pre:hover{border-color:var(--accent)}
-.pre.on{background:var(--accent);border-color:var(--accent);color:#fff}
-
-/* ---------- blame chain ---------- */
 .chain{display:flex;flex-direction:column;gap:0}
-.link{display:grid;grid-template-columns:118px 1fr auto;gap:14px;align-items:center;border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:13px 16px;font-size:15.5px}
+.link{display:grid;grid-template-columns:112px 1fr auto;gap:14px;align-items:center;border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:13px 16px;font-size:15.5px;transition:all .2s}
+.link.dim{opacity:.32}
 .link .who{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);text-align:right}
 .link .bl{font-family:var(--mono);font-size:13px;font-weight:500;text-align:right;color:var(--accent)}
-.down{height:18px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-family:var(--mono);font-size:12px}
+.down{height:16px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);font-family:var(--mono);font-size:12px}
 .wbox{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:6px}
 .wbox label{font-family:var(--mono);font-size:12px;color:var(--ink-soft);display:flex;align-items:center;gap:9px}
-
-/* ---------- held-back test ---------- */
-.hb{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:640px){.hb{grid-template-columns:1fr}}
-.hbx{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:18px}
-.hbx .hbt{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px}
-.hbx .hbv{font-family:"Manrope",sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em}
-.hbx .hbs{font-size:14px;color:var(--ink-faint);margin-top:8px;line-height:1.45}
-.hbx.warn{border-color:var(--bad)}
-.hbx.warn .hbv{color:var(--bad)}
-
+/* quiz */
+.qz{display:flex;flex-direction:column;gap:9px}
+.qi{border:1px solid var(--rule);border-radius:8px;background:var(--paper);padding:14px 16px}
+.qq{font-size:16.5px;line-height:1.45;margin-bottom:11px}
+.qb{display:flex;gap:6px;flex-wrap:wrap}
+.qbt{font-family:var(--mono);font-size:11px;padding:6px 11px;border:1px solid var(--rule);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft);transition:all .16s}
+.qbt:hover{border-color:var(--accent)}
+.qbt.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.qa{display:none;margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule);font-size:14.8px;line-height:1.56;color:var(--ink-soft)}
+.qi.done .qa{display:block}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-right:8px;background:rgba(45,74,107,.14);color:var(--accent)}
+.tag.miss{background:rgba(168,65,47,.13);color:var(--bad)}
+.score{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
@@ -114,7 +132,7 @@ footer{border-top:1px solid var(--rule);padding:40px var(--pad) 70px;text-align:
 footer a{color:var(--accent)}
 ::selection{background:var(--accent);color:#fff}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media(max-width:640px){body{font-size:17.5px}section{padding:66px 0}}
+@media(max-width:640px){body{font-size:17.5px}section{padding:64px 0}}
 </style>
 </head>
 <body>
@@ -126,14 +144,15 @@ footer a{color:var(--accent)}
       <svg viewBox="0 0 520 220" id="fogSvg" aria-hidden="true">
         <defs>
           <radialGradient id="fogHole">
-            <stop offset="0%" stop-color="#fff"/><stop offset="62%" stop-color="#fff"/><stop offset="100%" stop-color="#000"/>
+            <stop offset="0%" stop-color="#fff"/><stop offset="60%" stop-color="#fff"/><stop offset="100%" stop-color="#000"/>
           </radialGradient>
           <mask id="fogMask">
             <rect width="520" height="220" fill="#000"/>
-            <circle id="hole" cx="60" cy="40" r="74" fill="url(#fogHole)"/>
+            <circle id="hole" cx="60" cy="40" r="70" fill="url(#fogHole)"/>
           </mask>
+          <mask id="clearMask"><rect width="520" height="220" fill="#fff"/></mask>
         </defs>
-        <g mask="url(#fogMask)">
+        <g id="masked" mask="url(#fogMask)">
           <path id="curve" fill="none" stroke="#5D7FA6" stroke-width="2"/>
           <g id="ticks"></g>
         </g>
@@ -141,7 +160,12 @@ footer a{color:var(--accent)}
         <g id="dots"></g>
         <circle id="walker" r="6" fill="#2D4A6B"/>
       </svg>
-      <div class="fogbar"><span>weight <b id="fw">1.000</b></span><span>how wrong <b id="fl">38.667</b></span></div>
+      <div class="fogbar"><span>weight <b id="fw">1.000</b></span><span>how wrong <b id="fl">38.667</b></span><span id="fstep">step 0</span></div>
+      <div class="fogctl">
+        <button class="btn sm" id="fStep">Feel the slope, take a step</button>
+        <button class="btn sm ghost" id="fFog">Lift the fog</button>
+        <button class="btn sm ghost" id="fReset">Back to the start</button>
+      </div>
     </div>
     <h1><span>You never see the valley.</span><span>You only feel the slope.</span></h1>
     <p class="lede">A model with a billion things to adjust is standing on a hillside in thick fog. It cannot see where the bottom is. It can only feel which way the ground tilts under its feet, take a step that way, and feel again. That is the whole of how models learn &mdash; and the rest of this page is that sentence, slowly.</p>
@@ -154,16 +178,22 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>You already know this. This is just the vocabulary.</h2>
     <p>Nothing new is being introduced here. If you have ever tasted a dish, decided it needed more salt, added some, and tasted again, you have run the entire algorithm. What follows is the field&rsquo;s names for steps you already understand, plus the honest detail of how a machine does the &ldquo;adjust it a bit&rdquo; step when there are a billion things it could adjust.</p>
-    <table>
-      <thead><tr><th>What you would call it</th><th>What the field calls it</th></tr></thead>
-      <tbody>
-        <tr><td>Make a guess</td><td><strong>The forward pass</strong></td></tr>
-        <tr><td>Compare the guess to reality</td><td><strong>The loss</strong> &mdash; one number for how wrong you were</td></tr>
-        <tr><td>Work out what to change</td><td><strong>Backpropagation</strong> &mdash; work out who is to blame</td></tr>
-        <tr><td>Change it a little</td><td><strong>Gradient descent</strong> &mdash; nudge everything downhill</td></tr>
-        <tr><td>Do that a few million times</td><td><strong>Training</strong></td></tr>
-      </tbody>
-    </table>
+    <p>Tap any step to see its three names.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>the same five steps, in three vocabularies</span><span class="score" id="vocLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="vocChips"></div>
+        <div class="two" style="margin-top:18px">
+          <div class="card2"><h4>what you would call it</h4><div id="vocPlain" style="font-size:17px;line-height:1.5"></div></div>
+          <div class="card2"><h4>what the field calls it</h4><div id="vocField" style="font-size:17px;line-height:1.5"></div></div>
+        </div>
+        <div class="out" id="vocOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>One word deserves keeping: <strong>experiment</strong>. Every single step of training is a tiny experiment &mdash; change something slightly, measure whether it helped, keep the change if it did. Nobody designs the final numbers inside a model. They are discovered, by experiment, at enormous speed.</p>
   </div>
 </section>
@@ -174,23 +204,43 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>Loss: one number for how wrong you are</h2>
     <p>The loss is the machine&rsquo;s report card, and it is a single number. Ramesh at the tea stall predicted 120 cups and sold 145 &mdash; a gap of 25. Next time, a gap of 7. That shrinking number is the entire point of training.</p>
-
-    <h3>Why it has to be one number</h3>
-    <p>Suppose someone told you a model was &ldquo;good on price accuracy, mediocre on new cars, excellent on hatchbacks, poor on diesels&rdquo;. Now: did the last change help or hurt?</p>
-    <p>You cannot answer. With four measures pointing in different directions there is no way to say whether a change was an improvement. Boil it down to one number and the question becomes trivial: <strong>did the number go down?</strong></p>
+    <p>Why must it be <em>one</em> number? Here is a model scored four different ways, before and after a change. Decide whether the change helped.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>did the last change help?</span><span class="score" id="fourLab">four measures</span></div>
+      <div class="fig-b">
+        <div class="rows" id="fourRows"></div>
+        <div class="out" id="fourOut"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="fourAsk">I cannot tell</button>
+          <button class="btn ghost" id="fourOne">Collapse it to one number</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>With four measures pointing in different directions there is no way to say whether a change was an improvement. Boil it down to one number and the question becomes trivial: <strong>did the number go down?</strong></p>
     <div class="note"><b>Loss is the single dial the entire field is trying to turn down.</b> Every technique, every architecture, every warehouse full of expensive chips exists to make that one number smaller.</div>
 
     <h3>Why the errors get squared</h3>
-    <p>The standard loss adds up the errors <em>squared</em>, which sounds like a technicality and is not.</p>
-    <table>
-      <thead><tr><th>Miss by</th><th class="num">Squared</th><th>So it counts as</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td class="num">1</td><td>1</td></tr>
-        <tr><td>2</td><td class="num">4</td><td>4&times; worse, not 2&times;</td></tr>
-        <tr><td>5</td><td class="num">25</td><td>25&times; worse</td></tr>
-        <tr><td>10</td><td class="num">100</td><td>100&times; worse</td></tr>
-      </tbody>
-    </table>
+    <p>The standard loss adds up the errors <em>squared</em>, which sounds like a technicality and is not. Drag the size of the miss.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>how much a miss actually costs</span><span class="score" id="sqLab"></span></div>
+      <div class="fig-b">
+        <div class="two">
+          <div class="card2"><h4>you missed by</h4><div class="big" id="sqMiss">2</div>
+            <input class="slider" id="sqSlide" type="range" min="1" max="12" value="2" step="1" aria-label="size of the miss" style="margin-top:14px"></div>
+          <div class="card2 warn"><h4>so the loss counts it as</h4><div class="big" id="sqCost">4</div>
+            <div class="cap" id="sqNote" style="margin-top:6px"></div></div>
+        </div>
+        <div class="rows" id="sqRows" style="margin-top:18px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>This matches how being wrong actually feels. Pricing a car a little off is a rounding error. Pricing it wildly off loses you the customer and possibly the deal. It is not fifty times worse; it is catastrophically worse. Squaring builds that judgement in.</p>
     <p>There is a consequence worth flagging: squaring makes the model obsessive about its <em>worst</em> mistakes, sometimes at the cost of the ordinary ones. That is a choice, and other choices exist. If you would rather the model ignored the occasional wild outlier, you pick a different loss &mdash; which is a business decision wearing a technical hat.</p>
   </div>
@@ -202,21 +252,39 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>Walking downhill in fog</h2>
     <p>Here is the situation the machine is actually in. You are somewhere on a hillside. It is thick fog. You want to reach the bottom of the valley. You cannot see more than one step in any direction. What do you do?</p>
-    <p>Almost everyone says the same thing: feel which way the ground slopes under your feet, and take a step that way. Then feel again. Then step again.</p>
-    <p>That is gradient descent. That is the whole algorithm. Everything else is detail.</p>
-    <table>
-      <thead><tr><th>In the fog</th><th>In the machine</th></tr></thead>
-      <tbody>
-        <tr><td>Where you are standing</td><td>The current weights</td></tr>
-        <tr><td>Your height above sea level</td><td>The loss</td></tr>
-        <tr><td>The fog</td><td>You cannot see the whole landscape &mdash; there are billions of possible weight combinations</td></tr>
-        <tr><td>The slope under your feet</td><td>The <strong>gradient</strong></td></tr>
-        <tr><td>The size of your step</td><td>The <strong>learning rate</strong></td></tr>
-        <tr><td>The bottom of the valley</td><td>The lowest loss you can find</td></tr>
-      </tbody>
-    </table>
+    <p>Almost everyone says the same thing: feel which way the ground slopes under your feet, and take a step that way. Then feel again. That is gradient descent. That is the whole algorithm. Everything else is detail.</p>
+    <p>Tap each thing in the fog to see what it is in the machine.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>the fog, and the machine</span></div>
+      <div class="fig-b">
+        <div class="chips" id="fogChips"></div>
+        <div class="two" style="margin-top:18px">
+          <div class="card2"><h4>in the fog</h4><div id="fogA" style="font-size:17px;line-height:1.5"></div></div>
+          <div class="card2"><h4>in the machine</h4><div id="fogB" style="font-size:17px;line-height:1.5"></div></div>
+        </div>
+        <div class="out" id="fogOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <h3>Why the fog cannot simply be lifted</h3>
-    <p>Could you not just try every combination and pick the best? Take a small network with 100 adjustable numbers, and allow each just 10 possible values. That is a 1 followed by a hundred zeros of combinations &mdash; more than the number of atoms in the observable universe.</p>
+    <p>Could you not just try every combination and pick the best? Set the size of the network and see.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>could you just try everything?</span><span class="score" id="combLab"></span></div>
+      <div class="fig-b">
+        <div class="card2"><h4>weights to set, each with 10 possible values</h4>
+          <div class="big" id="combN">100</div>
+          <input class="slider" id="combSlide" type="range" min="2" max="100" value="100" step="1" aria-label="number of weights" style="margin-top:14px">
+        </div>
+        <div class="out" id="combOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p class="pull">Stepping downhill in fog is not a shortcut. It is the only option there has ever been.</p>
   </div>
 </section>
@@ -226,37 +294,27 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>A worked example you can check on paper</h2>
-    <p>Three data points. The real rule is that y is always three times x &mdash; but the machine does not know that. It has to find the three.</p>
+    <p>Three data points. The real rule is that y is always three times x &mdash; but the machine does not know that. It has to find the three. Its rule is <span class="m">y = w &times; x</span>, so it has exactly one thing to learn: <strong>w</strong>.</p>
     <table style="max-width:280px">
       <thead><tr><th class="num">x</th><th class="num">y</th></tr></thead>
-      <tbody>
-        <tr><td class="num">2</td><td class="num">6</td></tr>
-        <tr><td class="num">3</td><td class="num">9</td></tr>
-        <tr><td class="num">4</td><td class="num">12</td></tr>
-      </tbody>
+      <tbody><tr><td class="num">2</td><td class="num">6</td></tr><tr><td class="num">3</td><td class="num">9</td></tr><tr><td class="num">4</td><td class="num">12</td></tr></tbody>
     </table>
-    <p>The machine&rsquo;s rule is <span class="m">y = w &times; x</span>. It has exactly one thing to learn: <strong>w</strong>.</p>
-
-    <h3>First, the loss really is a valley</h3>
-    <p>Loss is the average of (guess &minus; actual), squared, across all three rows. Work it out for a few values of w:</p>
-    <table style="max-width:340px">
-      <thead><tr><th class="num">if w is&hellip;</th><th class="num">loss</th></tr></thead>
-      <tbody>
-        <tr><td class="num">1</td><td class="num">38.67</td></tr>
-        <tr><td class="num">2</td><td class="num">9.67</td></tr>
-        <tr><td class="num"><strong>3</strong></td><td class="num"><strong>0.00</strong></td></tr>
-        <tr><td class="num">4</td><td class="num">9.67</td></tr>
-        <tr><td class="num">5</td><td class="num">38.67</td></tr>
-      </tbody>
-    </table>
-    <p>Look at the shape. It falls to zero at w = 3 and climbs on both sides. That is the valley &mdash; and this time we can see the whole of it, because there is only one weight. With two weights it is a landscape. With a billion, it is a fog-bound world nobody can picture. But it is exactly the same idea.</p>
-
-    <h3>Then, feeling the slope</h3>
-    <p>Start at w = 1. Which way is downhill? Wiggle it and look: at w = 0.9 the loss is 42.63; at w = 1.0 it is 38.67; at w = 1.1 it is 34.90. Making w bigger makes the loss smaller. So downhill is up. Take a step up.</p>
-    <p>One honest note: a real system does not wiggle each weight and re-measure. With a billion weights that would take forever. It uses calculus to get the slope of all of them at once, instantly. <strong>But the meaning is exactly the wiggle above.</strong> The intuition is not a simplification; it is what the calculus computes.</p>
-
-    <h3>Then, walk down</h3>
-    <p>Take a step proportional to how steep it is. Steep slope, big step; nearly flat, small step &mdash; which is sensible, because near the bottom you want to creep, not stride.</p>
+    <p>First, feel the slope. Wiggle w a little in each direction and see which way the loss falls.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>wiggle it and look</span><span class="score" id="wigLab"></span></div>
+      <div class="fig-b">
+        <div class="card2"><h4>set w</h4><div class="big" id="wigW">1.00</div>
+          <input class="slider" id="wigSlide" type="range" min="0" max="600" value="100" step="1" aria-label="the weight w" style="margin-top:14px"></div>
+        <div class="rows" id="wigRows" style="margin-top:18px"></div>
+        <div class="out" id="wigOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>Making w bigger makes the loss smaller, so downhill is up. One honest note: a real system does not wiggle each weight and re-measure. With a billion weights that would take forever. It uses calculus to get the slope of all of them at once, instantly. <strong>But the meaning is exactly the wiggle above.</strong> The intuition is not a simplification; it is what the calculus computes.</p>
+    <p>Now walk down. Take a step proportional to how steep it is &mdash; steep slope, big step; nearly flat, small step, because near the bottom you want to creep, not stride.</p>
     <table style="max-width:420px">
       <thead><tr><th>step</th><th class="num">w</th><th class="num">loss</th></tr></thead>
       <tbody>
@@ -278,21 +336,20 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>The one setting that breaks everything</h2>
-    <p>The step size has a name &mdash; the <strong>learning rate</strong> &mdash; and it is the most temperamental setting in machine learning. Everyone has lived the analogy: adjusting a shower tap. Turn it too much and you go from freezing to scalding and back, overshooting every time. Turn it too little and you stand there shivering for five minutes. Get it right and you are comfortable in three adjustments.</p>
-    <p>Below is the same valley and the same starting point. The fog is lifted so you can see what the machine cannot. Drag the step size.</p>
+    <p>The step size has a name &mdash; the <strong>learning rate</strong> &mdash; and it is the most temperamental setting in machine learning. Everyone has lived the analogy: adjusting a shower tap. Turn it too much and you go from freezing to scalding and back, overshooting every time. Turn it too little and you stand there shivering for five minutes.</p>
+    <p>Below is the same valley and the same starting point, with the fog lifted so you can see what the machine cannot. Drag the step size.</p>
   </div>
-
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>five steps, from w = 1, with the fog lifted</span><span id="lrEdge" style="font-family:var(--mono);font-size:11px">divergence edge at 0.1034</span></div>
+      <div class="fig-h"><span>five steps, from w = 1, with the fog lifted</span><span style="font-family:var(--mono);font-size:11px">divergence edge at 0.1034</span></div>
       <div class="fig-b">
         <div class="lr">
-          <div class="lrplot"><svg viewBox="0 0 560 300" id="lrSvg" aria-hidden="true"></svg></div>
+          <div class="plot"><svg viewBox="0 0 560 300" id="lrSvg" aria-hidden="true"></svg></div>
           <div>
-            <div class="lrlab">learning rate</div>
-            <div class="lrval" id="lrVal">0.030</div>
-            <input class="slider" id="lrSlide" type="range" min="1" max="150" value="30" step="1" aria-label="learning rate">
-            <div class="presets" id="lrPre"></div>
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px">learning rate</div>
+            <div class="big" id="lrVal">0.030</div>
+            <input class="slider" id="lrSlide" type="range" min="1" max="150" value="30" step="1" aria-label="learning rate" style="margin:16px 0 6px">
+            <div class="chips" id="lrPre"></div>
             <div class="verdict" id="lrVerdict"></div>
             <div class="steps" id="lrSteps"></div>
           </div>
@@ -301,11 +358,10 @@ footer a{color:var(--accent)}
       </div>
     </div>
   </div>
-
   <div class="col reveal">
-    <p>Push the dial past about 0.10 and watch what happens. At 0.10 the walk bounces from one side of the valley to the other but still creeps inward. At 0.11 it bounces <em>outward</em> &mdash; the loss actively climbs, and the model gets steadily worse the longer you train it.</p>
+    <p>Push the dial past about 0.10 and watch. At 0.10 the walk bounces from one side of the valley to the other but still creeps inward. At 0.11 it bounces <em>outward</em> &mdash; the loss actively climbs, and the model gets steadily worse the longer you train it.</p>
     <div class="note"><b>A one-hundredth of a change flips this from working to broken.</b> Not slightly worse. Broken.</div>
-    <p>Two things follow, and both matter to anyone paying for this work. <strong>Training runs fail for reasons that have nothing to do with your data or your idea</strong> &mdash; a setting nobody outside the team has heard of was slightly too large. And <strong>this is a real part of the cost</strong>: &ldquo;we are tuning hyperparameters&rdquo; means &ldquo;we are hunting for numbers like this one&rdquo;, which is why this kind of project has unpredictable timelines. Nobody can tell you the right learning rate in advance. It is found by experiment.</p>
+    <p>Two things follow. <strong>Training runs fail for reasons that have nothing to do with your data or your idea</strong> &mdash; a setting nobody outside the team has heard of was slightly too large. And <strong>this is a real part of the cost</strong>: &ldquo;we are tuning hyperparameters&rdquo; means &ldquo;we are hunting for numbers like this one&rdquo;, which is why this kind of project has unpredictable timelines.</p>
   </div>
 </section>
 
@@ -314,22 +370,18 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>Who is to blame?</h2>
-    <p>Everything so far had one weight. Real networks have layers of them, and that creates a genuinely hard problem.</p>
-    <p>A customer sends a dish back. It is bad. Who should change what?</p>
-    <p>The manager can observe exactly one thing: the customer is unhappy. Nobody handed the chef a note saying &ldquo;your sauce was 12% over-reduced&rdquo;. So the blame has to be traced <strong>backwards</strong>.</p>
+    <p>Everything so far had one weight. Real networks have layers of them, and that creates a genuinely hard problem. A customer sends a dish back. It is bad. Who should change what?</p>
+    <p>The manager can observe exactly one thing: the customer is unhappy. Nobody handed the chef a note saying &ldquo;your sauce was 12% over-reduced&rdquo;. So the blame has to be traced <strong>backwards</strong>. Step it back through the kitchen.</p>
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>the only measurement is at the very end</span></div>
+      <div class="fig-h"><span>the only measurement is at the very end</span><span class="score" id="kitLab"></span></div>
       <div class="fig-b">
-        <div class="chain">
-          <div class="link"><span class="who">customer</span><span>&ldquo;This is bad.&rdquo;</span><span class="bl">the only thing measured</span></div>
-          <div class="down">&darr;</div>
-          <div class="link"><span class="who">head chef</span><span>&ldquo;The sauce was wrong.&rdquo;</span><span class="bl">most of the blame</span></div>
-          <div class="down">&darr;</div>
-          <div class="link"><span class="who">sous-chef</span><span>&ldquo;The tomatoes I was given were off.&rdquo;</span><span class="bl">some of it</span></div>
-          <div class="down">&darr;</div>
-          <div class="link"><span class="who">supplier</span><span>adjusts what they send tomorrow</span><span class="bl">a little</span></div>
+        <div class="chain" id="kitChain"></div>
+        <div class="out" id="kitOut"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="kitBack">Trace one step back</button>
+          <button class="btn ghost" id="kitReset">Start from the complaint</button>
         </div>
       </div>
     </div>
@@ -356,9 +408,8 @@ footer a{color:var(--accent)}
     </div>
   </div>
   <div class="col reveal">
-    <h3>Why it must run backwards</h3>
-    <p>Look again at how the first weight&rsquo;s blame was worked out: it needed the second weight&rsquo;s value in the calculation. You cannot work out the first layer&rsquo;s blame until you already know the last layer&rsquo;s. There is no way round it. So the calculation starts at the output &mdash; the only place reality speaks &mdash; and works its way back to the front, layer by layer.</p>
-    <p>There is a version of this everyone recognises. A large deal closes after eight meetings, three emails and a dinner. Which one closed it? You only observed the outcome. To apportion credit you have to work backwards through the chain, giving each step a share based on how much it moved things along. That is the same problem, and it is genuinely hard for the same reason.</p>
+    <p>Look again at how the first weight&rsquo;s blame was worked out: it needed the second weight&rsquo;s value. You cannot work out the first layer&rsquo;s blame until you already know the last layer&rsquo;s. So the calculation starts at the output &mdash; the only place reality speaks &mdash; and works its way back to the front, layer by layer.</p>
+    <p>There is a version of this everyone recognises. A large deal closes after eight meetings, three emails and a dinner. Which one closed it? You only observed the outcome. To apportion credit you have to work backwards through the chain, giving each step a share based on how much it moved things along. Same problem, genuinely hard for the same reason.</p>
   </div>
 </section>
 
@@ -368,7 +419,22 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>Why not just solve it directly?</h2>
     <p>Fair question, and there is a sharp answer. For a straight line, <strong>a formula exists</strong>. Mathematicians solved that in the 1800s: feed in the data, out comes the exact best answer. No fog, no steps, no learning rate.</p>
-    <p>For a neural network, no such formula exists and none ever will. Once you stack layers with a &ldquo;throw away the negatives&rdquo; step in between, the problem stops having a solution you can write down. There is nothing to solve. You can only walk downhill.</p>
+    <p>For a neural network, no such formula exists and none ever will. Once you stack layers with a &ldquo;throw away the negatives&rdquo; step in between, the problem stops having a solution you can write down. There is nothing to solve. You can only walk downhill &mdash; and where you start decides where you finish. Train it again and see.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>the same data, trained again from a different random start</span><span class="score" id="reLab">no runs yet</span></div>
+      <div class="fig-b">
+        <div class="rows" id="reRows"></div>
+        <div class="out" id="reOut"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="reRun">Train it again</button>
+          <button class="btn ghost" id="reReset">Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <table>
       <thead><tr><th></th><th>A straight line</th><th>A network</th></tr></thead>
       <tbody>
@@ -376,11 +442,10 @@ footer a{color:var(--accent)}
         <tr><td><strong>How you get the answer</strong></td><td>Solve it, once</td><td>Step downhill, millions of times</td></tr>
         <tr><td><strong>How long</strong></td><td>Instant</td><td>Hours to months</td></tr>
         <tr><td><strong>Do you get the best answer?</strong></td><td>Yes, provably</td><td><strong>No &mdash; you get a good one</strong></td></tr>
-        <tr><td><strong>Cost</strong></td><td>Nothing</td><td>The compute bill</td></tr>
       </tbody>
     </table>
-    <p>That second-to-last row is the honest bit. A trained network is not the best possible network. It is wherever the walk happened to stop. Run the training again from a different random starting point and you get a <em>different</em> model, with slightly different answers, and no way to say which is truly better.</p>
-    <div class="note"><b>This is why &ldquo;we retrained the model and it behaves a bit differently&rdquo; is a normal sentence in this field</b>, and why reproducibility is genuinely hard. It is worth knowing before it arrives as a surprise.</div>
+    <p>A trained network is not the best possible network. It is wherever the walk happened to stop.</p>
+    <div class="note"><b>This is why &ldquo;we retrained the model and it behaves a bit differently&rdquo; is a normal sentence in this field</b>, and why reproducibility is genuinely hard. Worth knowing before it arrives as a surprise.</div>
   </div>
 </section>
 
@@ -388,31 +453,53 @@ footer a{color:var(--accent)}
 
 <section>
   <div class="col reveal">
-    <h2>The two ways it goes wrong</h2>
-
-    <h3>Stopping in the wrong valley</h3>
+    <h2>Stopping in the wrong valley</h2>
     <p>You walk downhill in fog and eventually the ground stops falling away. You have reached a bottom &mdash; but is it <em>the</em> bottom? In fog you cannot tell whether the real valley is just over the next ridge.</p>
-    <p>The everyday version: settling into a job that is comfortable and fine, and never finding out whether the better one existed, because looking would mean climbing.</p>
-    <p>What is actually done about it: start from several different random places and see whether they agree, and give the walk a bit of momentum so it can roll through a shallow dip rather than stopping in it. Neither is a guarantee. In practice the field has largely made peace with this &mdash; a good-enough valley is usually good enough.</p>
-
-    <h3>Memorising instead of learning</h3>
-    <p>This is the one that costs businesses real money, so it deserves time.</p>
-    <p>Picture the student who mugs up past papers. Ten years of question papers, memorised perfectly. Scores full marks on every one of them. Then the exam asks something slightly new and they are lost &mdash; because they never learned the subject, they learned <em>those papers</em>.</p>
-    <p>A model does exactly this if you let it. Give it enough weights and it will memorise your training data perfectly &mdash; a loss of zero &mdash; and be useless on anything it has not seen. <strong>Fewer things to learn than examples to learn from</strong> is a crude rule, but it is the right instinct.</p>
+    <p>Here is a landscape with two valleys, one genuinely deeper than the other. Drop the walker in different places and see where it ends up. It always goes downhill correctly. That is the problem.</p>
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>the test any buyer can demand</span></div>
+      <div class="fig-h"><span>same landscape, same rule, different starting point</span><span class="score" id="dwLab"></span></div>
       <div class="fig-b">
-        <div class="hb">
-          <div class="hbx"><div class="hbt">on data it trained on</div><div class="hbv">99%</div><div class="hbs">Every vendor quotes this number. On its own it tells you almost nothing.</div></div>
-          <div class="hbx warn"><div class="hbt">on data it had never seen</div><div class="hbv">61%</div><div class="hbs">This is the number that matters. The gap is the memorising.</div></div>
-        </div>
-        <p class="cap">Hold some examples back. Never train on them. Then check the model on those. Brilliant on what it studied and poor on what it has not seen means it memorised &mdash; do not ship it.</p>
+        <div class="plot"><svg viewBox="0 0 560 260" id="dwSvg" aria-hidden="true"></svg></div>
+        <div class="chips" id="dwChips" style="margin-top:16px"></div>
+        <div class="out" id="dwOut"></div>
       </div>
     </div>
   </div>
   <div class="col reveal">
+    <p>The everyday version: settling into a job that is comfortable and fine, and never finding out whether the better one existed, because looking would mean climbing.</p>
+    <p>What is actually done about it: start from several different random places and see whether they agree, and give the walk a bit of momentum so it can roll through a shallow dip rather than stopping in it. Neither is a guarantee. In practice the field has largely made peace with this &mdash; a good-enough valley is usually good enough.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Memorising instead of learning</h2>
+    <p>This is the one that costs real money, so it deserves time. Picture the student who mugs up past papers. Ten years of question papers, memorised perfectly. Full marks on every one. Then the exam asks something slightly new and they are lost &mdash; because they never learned the subject, they learned <em>those papers</em>.</p>
+    <p>Below are ten data points that genuinely came from a straight line, with a bit of noise. Give the model more and more numbers to learn, and watch both scores. These are real fits, computed on real numbers.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>ten data points, and a model allowed more and more freedom</span><span class="score" id="ofLab"></span></div>
+      <div class="fig-b">
+        <div class="card2"><h4>numbers the model is allowed to learn</h4>
+          <div class="big" id="ofN">2</div>
+          <input class="slider" id="ofSlide" type="range" min="2" max="10" value="2" step="1" aria-label="model capacity" style="margin-top:14px">
+        </div>
+        <div class="two" style="margin-top:16px">
+          <div class="card2 ok"><h4>error on data it trained on</h4><div class="big" id="ofTrain"></div><div class="cap" style="margin-top:6px">the number every vendor quotes</div></div>
+          <div class="card2 warn"><h4>error on data it never saw</h4><div class="big" id="ofTest"></div><div class="cap" style="margin-top:6px">the only number that matters</div></div>
+        </div>
+        <div class="out" id="ofOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>At ten numbers for ten points it fits the training data <em>perfectly</em> &mdash; an error of zero &mdash; and its error on data it has never seen is catastrophic. <strong>Fewer things to learn than examples to learn from</strong> is a crude rule, but it is the right instinct.</p>
+    <p>Notice too that the held-back error does not climb smoothly. It wobbles, dips, and only then explodes. Real curves look like this, which is exactly why you check rather than assume.</p>
     <div class="try"><span class="tl">the one question to ask a vendor</span>&ldquo;What was the accuracy on data the model had never seen?&rdquo; If they only quote one accuracy figure, they have not done this &mdash; and the number they are quoting is close to meaningless.</div>
   </div>
 </section>
@@ -421,8 +508,38 @@ footer a{color:var(--accent)}
 
 <section>
   <div class="col reveal">
+    <h2>Test yourself</h2>
+    <p>Ten questions. Everything you need is above, and the last two are the ones that would otherwise turn into a worried email six months from now.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>ten questions</span><span class="score" id="qzScore">0 of 10 answered</span></div>
+      <div class="fig-b"><div class="qz" id="qzList"></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
     <h2>The whole loop, and what it does not promise</h2>
-    <p>Make a guess with the weights you have. Measure how wrong it was, as one number. Share the blame backwards through the layers, in proportion to how much each part contributed. Nudge every weight a little way downhill, by an amount set by the step size. Repeat a few million times, until the number stops falling.</p>
+    <p>Everything on this page is one cycle, running until the number stops falling. Step it round once.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>one turn of the loop</span><span class="score" id="loopLab"></span></div>
+      <div class="fig-b">
+        <div class="rows" id="loopRows"></div>
+        <div class="out" id="loopOut"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="loopNext">Next step</button>
+          <button class="btn ghost" id="loopReset">Back to the start</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>That is it. Predict, reconcile, recalibrate, loop &mdash; the field just gave the steps longer names.</p>
     <p>Two honest limits to carry away. <strong>Training does not find the best answer</strong>, only a good one it happened to walk into, and a different run finds a different good one. And <strong>a low loss is not the same as a useful model</strong> &mdash; a model that has memorised its training data has a loss of nearly zero and is worthless, which is exactly why the held-back test matters more than the headline number.</p>
     <div class="note"><b>Three sentences to keep.</b> Loss is one number, and the whole field exists to make it smaller. The machine never sees the landscape &mdash; it only ever feels the slope where it is standing. And the step size is a knife-edge: slightly too large and the model gets worse the longer you train it.</div>
@@ -439,128 +556,410 @@ footer a{color:var(--accent)}
 "use strict";
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
 document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
+function el(id){return document.getElementById(id)}
+function chips(host,items,onPick,start){
+  host.innerHTML="";
+  items.forEach(function(t){var b=document.createElement("button");b.className="chip";b.type="button";b.innerHTML=t;host.appendChild(b)});
+  var all=[].slice.call(host.querySelectorAll(".chip"));
+  all.forEach(function(b,i){b.addEventListener("click",function(){
+    all.forEach(function(x){x.classList.remove("on")}); b.classList.add("on"); onPick(i);
+  })});
+  var k=start||0; all[k].classList.add("on"); onPick(k);
+}
+/* forced reflow, never rAF: rAF is suspended in a hidden tab and every bar would stick at 0 */
+function bars(host,rows){
+  host.innerHTML="";
+  var max=Math.max.apply(null,rows.map(function(r){return Math.abs(r[1])}))||1;
+  var fills=rows.map(function(r){
+    var d=document.createElement("div"); d.className="row"+(r[2]===1?" top":r[2]===2?" bad":"");
+    d.innerHTML='<span class="rk">'+r[0]+'</span><span class="rb"><i></i></span><span class="rv">'+r[3]+'</span>';
+    host.appendChild(d); return [d.querySelector("i"),Math.abs(r[1])/max*100];
+  });
+  void host.offsetWidth;
+  fills.forEach(function(f){f[0].style.width=f[1]+"%"});
+}
 
-/* Loss for y = w*x on (2,6),(3,9),(4,12).
-   L(w) = mean((w*x - y)^2) = (w-3)^2 * mean(x^2) = (w-3)^2 * 29/3.
-   Every figure quoted in the prose comes out of these two functions. */
+/* Loss for y = w*x on (2,6),(3,9),(4,12): L(w) = (w-3)^2 * 29/3. Every quoted figure
+   on this page comes out of these two functions. */
 var K=29/3;
-function L(w){ return (w-3)*(w-3)*K }
-function G(w){ return 2*(w-3)*K }
+function L(w){return (w-3)*(w-3)*K}
+function G(w){return 2*(w-3)*K}
 
-/* ---------- hero: the loss curve under fog ---------- */
+/* ---------- hero: fog over the loss curve ---------- */
 (function(){
-  var svg=document.getElementById("fogSvg"); if(!svg) return;
+  var svg=el("fogSvg"); if(!svg) return;
   var W=520,H=220,wLo=-0.6,wHi=6.6,lHi=62;
-  function X(w){ return 20+(w-wLo)/(wHi-wLo)*(W-40) }
-  function Y(l){ return H-24-Math.min(l,lHi)/lHi*(H-48) }
+  function X(w){return 20+(w-wLo)/(wHi-wLo)*(W-40)}
+  function Y(l){return H-24-Math.min(l,lHi)/lHi*(H-48)}
   var d="",i;
-  for(i=0;i<=240;i++){ var w=wLo+(wHi-wLo)*i/240; d+=(i?"L":"M")+X(w).toFixed(1)+" "+Y(L(w)).toFixed(1) }
-  document.getElementById("curve").setAttribute("d",d);
-  var tk=document.getElementById("ticks"),g="";
-  for(i=0;i<=6;i++){ g+='<line x1="'+X(i)+'" y1="'+(H-24)+'" x2="'+X(i)+'" y2="'+(H-19)+'" stroke="#6E7A82" stroke-width="1"/>' }
-  tk.innerHTML=g;
-
-  var hole=document.getElementById("hole"), walker=document.getElementById("walker"),
-      trail=document.getElementById("trail"), dots=document.getElementById("dots"),
-      fw=document.getElementById("fw"), fl=document.getElementById("fl");
-  var path=[], w=1;
+  for(i=0;i<=240;i++){var w=wLo+(wHi-wLo)*i/240; d+=(i?"L":"M")+X(w).toFixed(1)+" "+Y(L(w)).toFixed(1)}
+  el("curve").setAttribute("d",d);
+  var g="";for(i=0;i<=6;i++){g+='<line x1="'+X(i)+'" y1="'+(H-24)+'" x2="'+X(i)+'" y2="'+(H-19)+'" stroke="#6E7A82"/>'}
+  el("ticks").innerHTML=g;
+  var hole=el("hole"),walker=el("walker"),trail=el("trail"),dots=el("dots"),
+      fw=el("fw"),fl=el("fl"),fstep=el("fstep"),masked=el("masked");
+  var path=[],w=1,n=0,foggy=true;
   function place(){
     var x=X(w),y=Y(L(w));
-    walker.setAttribute("cx",x); walker.setAttribute("cy",y);
-    hole.setAttribute("cx",x);   hole.setAttribute("cy",y);
+    walker.setAttribute("cx",x);walker.setAttribute("cy",y);
+    hole.setAttribute("cx",x);hole.setAttribute("cy",y);
     path.push(x+","+y); trail.setAttribute("points",path.join(" "));
     dots.innerHTML=path.map(function(p){var c=p.split(",");return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="2.4" fill="#2D4A6B" opacity=".45"/>'}).join("");
-    fw.textContent=w.toFixed(3); fl.textContent=L(w).toFixed(3);
+    fw.textContent=w.toFixed(3); fl.textContent=L(w).toFixed(3); fstep.textContent="step "+n;
   }
+  el("fStep").addEventListener("click",function(){ if(n<8){ w=w-0.03*G(w); n++; place() } });
+  el("fFog").addEventListener("click",function(){
+    foggy=!foggy;
+    masked.setAttribute("mask","url(#"+(foggy?"fogMask":"clearMask")+")");
+    el("fFog").textContent=foggy?"Lift the fog":"Put the fog back";
+  });
+  el("fReset").addEventListener("click",function(){ w=1;n=0;path=[];place() });
   place();
-  var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  var n=0;
-  function step(){ if(n++>=5) return; w=w-0.03*G(w); place(); setTimeout(step,760) }
-  if(reduce){ for(var k=0;k<5;k++){ w=w-0.03*G(w); place() } } else setTimeout(step,700);
 })();
 
-/* ---------- the learning-rate dial ---------- */
+/* ---------- vocabulary ---------- */
 (function(){
-  var svg=document.getElementById("lrSvg"), slide=document.getElementById("lrSlide"),
-      val=document.getElementById("lrVal"), verd=document.getElementById("lrVerdict"),
-      stepsEl=document.getElementById("lrSteps"), pre=document.getElementById("lrPre");
-  if(!svg) return;
-  var W=560,H=300;
-  function walk(lr){ var w=1,out=[w]; for(var i=0;i<5;i++){ w=w-lr*G(w); out.push(w) } return out }
+  var V=[
+   ["make a guess","Make a guess with the weights you have","the <strong>forward pass</strong>","Cook the dish. Nothing is judged yet."],
+   ["see how wrong","Compare the guess to reality","the <strong>loss</strong> &mdash; one number for how wrong","The customer&rsquo;s complaint, boiled down to a single score."],
+   ["find the culprit","Work out what to change","<strong>backpropagation</strong> &mdash; who is to blame","Tracing the complaint back through the kitchen to the supplier."],
+   ["change it a little","Nudge everything a little way downhill","<strong>gradient descent</strong>","Take one step. Not a rewrite &mdash; a nudge."],
+   ["do it again","Repeat a few million times","<strong>training</strong>","Twenty years of cooking, compressed."]
+  ];
+  chips(el("vocChips"),V.map(function(v){return v[0]}),function(i){
+    el("vocPlain").innerHTML=V[i][1];
+    el("vocField").innerHTML=V[i][2];
+    el("vocOut").innerHTML='<span class="ol">the everyday version</span>'+V[i][3];
+    el("vocLab").textContent=V[i][0];
+  });
+})();
+
+/* ---------- four measures vs one number ---------- */
+(function(){
+  var M=[["price accuracy",-4,"6.2 &rarr; 5.9"],["new cars",2,"3.1 &rarr; 3.4"],
+         ["hatchbacks",-6,"2.4 &rarr; 1.8"],["diesels",5,"7.0 &rarr; 8.1"]];
+  function four(){
+    bars(el("fourRows"),M.map(function(m){return [m[0],Math.abs(m[1])*10,m[1]>0?2:1,m[2]]}));
+    el("fourOut").innerHTML='<span class="ol">two got better, two got worse</span>So &mdash; did the change help? There is no answer to that question in this form, and there never will be. This is why nobody scores a model four ways.';
+    el("fourLab").textContent="four measures";
+  }
+  function one(){
+    bars(el("fourRows"),[["the loss",100,1,"4.78 &rarr; 4.55"]]);
+    el("fourOut").innerHTML='<span class="ol">one number</span>It went down. The change helped. The question became trivial the moment there was only one thing to look at.';
+    el("fourLab").textContent="one number";
+  }
+  el("fourAsk").addEventListener("click",four);
+  el("fourOne").addEventListener("click",one);
+  four();
+})();
+
+/* ---------- squaring ---------- */
+(function(){
+  var s=el("sqSlide");
+  function paint(){
+    var m=+s.value, c=m*m;
+    el("sqMiss").textContent=m; el("sqCost").textContent=c;
+    el("sqLab").textContent="miss by "+m;
+    el("sqNote").textContent = m===1 ? "the same" : c+" times the cost of missing by one";
+    bars(el("sqRows"),[1,2,5,10].concat(m>10?[m]:[]).filter(function(v,i,a){return a.indexOf(v)===i})
+      .map(function(v){return ["miss by "+v,v*v,v===m?1:0,v*v+""]}));
+  }
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- fog correspondence ---------- */
+(function(){
+  var F=[
+   ["where you stand","Where you are standing on the hillside","The current weights &mdash; every adjustable number in the model","There are a billion of them, so &ldquo;where you stand&rdquo; is a position in a billion-dimensional space. Nobody can picture that, and nobody needs to."],
+   ["your height","Your height above sea level","The loss","The one number the whole exercise is trying to reduce."],
+   ["the fog","You cannot see more than a step in any direction","You cannot see the whole landscape","Not because the machine is limited, but because the landscape is unimaginably large. See the next figure."],
+   ["the slope","The tilt of the ground under your feet","The <strong>gradient</strong>","The only information available. It tells you which way is down, right here, and nothing about anywhere else."],
+   ["your stride","How big a step you take","The <strong>learning rate</strong>","The single most temperamental setting in the field. It gets its own section."],
+   ["the valley floor","The bottom of the valley","The lowest loss you can find","Note: <em>can find</em>, not <em>exists</em>. Those are different, and the difference has its own section too."]
+  ];
+  chips(el("fogChips"),F.map(function(f){return f[0]}),function(i){
+    el("fogA").innerHTML=F[i][1]; el("fogB").innerHTML=F[i][2];
+    el("fogOut").innerHTML='<span class="ol">why it matters</span>'+F[i][3];
+  });
+})();
+
+/* ---------- combinatorial explosion ---------- */
+(function(){
+  var s=el("combSlide");
+  function paint(){
+    var n=+s.value;
+    el("combN").textContent=n;
+    el("combLab").textContent=n+" weights";
+    var digits=n; // 10^n
+    var msg;
+    if(n<=8) msg="That is "+Math.pow(10,n).toLocaleString("en-US")+" combinations. A computer could genuinely try them all.";
+    else if(n<=20) msg="That is a 1 followed by "+digits+" zeros. Already far beyond trying them all, and this is a network too small to be useful.";
+    else if(n<80) msg="A 1 followed by "+digits+" zeros. For scale, there are roughly 10<sup>80</sup> atoms in the observable universe.";
+    else msg="A 1 followed by "+digits+" zeros &mdash; <strong>more combinations than there are atoms in the observable universe</strong>. And a real model has billions of weights, not a hundred.";
+    el("combOut").innerHTML='<span class="ol">combinations to check</span>'+msg;
+  }
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- wiggle w ---------- */
+(function(){
+  var s=el("wigSlide");
+  function paint(){
+    var w=(+s.value)/100;
+    el("wigW").textContent=w.toFixed(2);
+    el("wigLab").textContent="w = "+w.toFixed(2);
+    var lo=L(w-0.1), me=L(w), hi=L(w+0.1);
+    bars(el("wigRows"),[
+      ["w &minus; 0.1 &rarr; "+(w-0.1).toFixed(2),lo,lo<me?1:0,lo.toFixed(2)],
+      ["w &rarr; "+w.toFixed(2),me,0,me.toFixed(2)],
+      ["w + 0.1 &rarr; "+(w+0.1).toFixed(2),hi,hi<me?1:0,hi.toFixed(2)]
+    ]);
+    var dir = Math.abs(w-3)<0.02 ? "flat" : (hi<me?"up":"down");
+    el("wigOut").innerHTML='<span class="ol">which way is downhill?</span>'+
+      (dir==="flat"
+        ? "Neither direction helps. The ground is level, the loss is <strong>"+me.toFixed(3)+"</strong>, and the walk stops. You have found w = 3 &mdash; without ever being told it."
+        : "Making w <strong>"+dir+"</strong> makes the loss smaller, so downhill is "+dir+". That is the entire signal the machine gets: not the answer, just which way is warmer.");
+  }
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- learning rate ---------- */
+(function(){
+  var svg=el("lrSvg"),slide=el("lrSlide"),val=el("lrVal"),verd=el("lrVerdict"),stepsEl=el("lrSteps"),pre=el("lrPre");
+  function walk(lr){var w=1,out=[w];for(var i=0;i<5;i++){w=w-lr*G(w);out.push(w)}return out}
   function draw(lr){
-    var p=walk(lr), maxAbs=Math.max(6.5,Math.max.apply(null,p.map(Math.abs))+1);
-    var wLo=Math.min(-0.6,-maxAbs), wHi=Math.max(6.6,maxAbs);
-    var lHi=Math.max(62,L(wLo),L(wHi));
-    function X(w){ return 30+(w-wLo)/(wHi-wLo)*(W-50) }
-    function Y(l){ return H-30-Math.min(l,lHi)/lHi*(H-56) }
+    var W=560,H=300,p=walk(lr),maxAbs=Math.max(6.5,Math.max.apply(null,p.map(Math.abs))+1);
+    var wLo=Math.min(-0.6,-maxAbs),wHi=Math.max(6.6,maxAbs),lHi=Math.max(62,L(wLo),L(wHi));
+    function X(w){return 30+(w-wLo)/(wHi-wLo)*(W-50)}
+    function Y(l){return H-30-Math.min(l,lHi)/lHi*(H-56)}
     var d="",i;
-    for(i=0;i<=300;i++){ var w=wLo+(wHi-wLo)*i/300; d+=(i?"L":"M")+X(w).toFixed(1)+" "+Y(L(w)).toFixed(1) }
-    var pts=p.map(function(w){ return X(w).toFixed(1)+","+Y(L(w)).toFixed(1) });
-    var marks=p.map(function(w,i){
-      return '<circle cx="'+X(w).toFixed(1)+'" cy="'+Y(L(w)).toFixed(1)+'" r="'+(i===0?5:4)+'" fill="'+(i===0?"#6E7A82":"#2D4A6B")+'"/>';
-    }).join("");
-    svg.innerHTML =
-      '<line x1="30" y1="'+(H-30)+'" x2="'+(W-20)+'" y2="'+(H-30)+'" stroke="#C3CACD"/>'+
-      '<line x1="'+X(3)+'" y1="24" x2="'+X(3)+'" y2="'+(H-30)+'" stroke="#2F7355" stroke-width="1" stroke-dasharray="3 4" opacity=".7"/>'+
+    for(i=0;i<=300;i++){var w=wLo+(wHi-wLo)*i/300; d+=(i?"L":"M")+X(w).toFixed(1)+" "+Y(L(w)).toFixed(1)}
+    svg.innerHTML='<line x1="30" y1="'+(H-30)+'" x2="'+(W-20)+'" y2="'+(H-30)+'" stroke="#C3CACD"/>'+
+      '<line x1="'+X(3)+'" y1="24" x2="'+X(3)+'" y2="'+(H-30)+'" stroke="#2F7355" stroke-dasharray="3 4" opacity=".7"/>'+
       '<text x="'+(X(3)+6)+'" y="34" font-family="JetBrains Mono,monospace" font-size="10" fill="#2F7355">the answer, w = 3</text>'+
       '<path d="'+d+'" fill="none" stroke="#5D7FA6" stroke-width="2"/>'+
-      '<polyline points="'+pts.join(" ")+'" fill="none" stroke="#2D4A6B" stroke-width="1.6" stroke-dasharray="4 4"/>'+
-      marks;
+      '<polyline points="'+p.map(function(w){return X(w).toFixed(1)+","+Y(L(w)).toFixed(1)}).join(" ")+'" fill="none" stroke="#2D4A6B" stroke-width="1.6" stroke-dasharray="4 4"/>'+
+      p.map(function(w,i){return '<circle cx="'+X(w).toFixed(1)+'" cy="'+Y(L(w)).toFixed(1)+'" r="'+(i?4:5)+'" fill="'+(i?"#2D4A6B":"#6E7A82")+'"/>'}).join("");
     return p;
   }
   function render(){
-    var lr=(+slide.value)/1000;
-    val.textContent=lr.toFixed(3);
-    var p=draw(lr), end=p[p.length-1], loss=L(end), factor=Math.abs(1-lr*2*K);
-    var cls,msg;
-    if(lr<=0.006){ cls="osc"; msg="Far too small. After five steps it has barely moved off the starting point."; }
-    else if(factor<0.55){ cls="ok"; msg="Converging smoothly. This is what a healthy training run looks like."; }
-    else if(factor<1){ cls="osc"; msg="It overshoots and bounces across the valley, but each bounce is smaller. It will get there, slowly."; }
-    else { cls="blow"; msg="Over the edge. Each step lands further out than the last, so the loss climbs and the model gets worse the longer you train."; }
+    var lr=(+slide.value)/1000; val.textContent=lr.toFixed(3);
+    var p=draw(lr),end=p[p.length-1],loss=L(end),factor=Math.abs(1-lr*2*K),cls,msg;
+    if(lr<=0.006){cls="osc";msg="Far too small. After five steps it has barely moved off the starting point."}
+    else if(factor<0.55){cls="ok";msg="Converging smoothly. This is what a healthy training run looks like."}
+    else if(factor<1){cls="osc";msg="It overshoots and bounces across the valley, but each bounce is smaller. It will get there, slowly."}
+    else{cls="blow";msg="Over the edge. Each step lands further out than the last, so the loss climbs and the model gets worse the longer you train."}
     verd.className="verdict "+cls; verd.textContent=msg;
-    stepsEl.innerHTML = p.map(function(w,i){
-      return (i===0?"start":"step "+i)+" &nbsp; w = <b>"+(Math.abs(w)>1e4?w.toExponential(1):w.toFixed(3))+"</b>";
-    }).join("<br>") + '<br><span style="color:var(--ink-faint)">loss after five: <b>'+
-      (loss>1e4?loss.toExponential(2):loss.toFixed(3))+"</b></span>";
-    pre.querySelectorAll(".pre").forEach(function(b){ b.classList.toggle("on", +b.dataset.v===+slide.value) });
+    stepsEl.innerHTML=p.map(function(w,i){return (i?"step "+i:"start")+" &nbsp; w = <b>"+(Math.abs(w)>1e4?w.toExponential(1):w.toFixed(3))+"</b>"}).join("<br>")+
+      '<br><span style="color:var(--ink-faint)">loss after five: <b>'+(loss>1e4?loss.toExponential(2):loss.toFixed(3))+"</b></span>";
+    pre.querySelectorAll(".chip").forEach(function(b){b.classList.toggle("on",+b.dataset.v===+slide.value)});
   }
-  [["0.001","far too small",1],["0.030","about right",30],["0.100","bounces",100],["0.110","over the edge",110],["0.150","disaster",150]]
-    .forEach(function(o){
-      var b=document.createElement("button"); b.className="pre"; b.type="button"; b.dataset.v=o[2];
-      b.textContent=o[0]+" · "+o[1];
-      b.addEventListener("click",function(){ slide.value=o[2]; render() });
-      pre.appendChild(b);
-    });
-  slide.addEventListener("input",render);
-  render();
+  [["0.001",1],["0.030",30],["0.100",100],["0.110",110],["0.150",150]].forEach(function(o){
+    var b=document.createElement("button");b.className="chip";b.type="button";b.dataset.v=o[1];b.textContent=o[0];
+    b.addEventListener("click",function(){slide.value=o[1];render()});
+    pre.appendChild(b);
+  });
+  slide.addEventListener("input",render); render();
 })();
 
-/* ---------- the blame split ---------- */
+/* ---------- kitchen chain ---------- */
 (function(){
-  var s=document.getElementById("w2s"), out=document.getElementById("blameOut"), v=document.getElementById("w2v");
-  if(!s) return;
-  function render(){
-    var w2=(+s.value)/10, x=1, w1=1, h=x*w1, output=h*w2, target=6, err=output-target;
-    var bl2=err*h, bl1=err*w2*x;
-    v.textContent=w2.toFixed(1);
-    out.innerHTML=
-      '<div class="chain">'+
-      '<div class="link"><span class="who">input</span><span>x = 1 goes in</span><span class="bl">&mdash;</span></div>'+
-      '<div class="down">&darr;</div>'+
-      '<div class="link"><span class="who">first weight</span><span>w1 = 1, so the middle value is '+h.toFixed(1)+'</span><span class="bl">blame '+bl1.toFixed(1)+'</span></div>'+
-      '<div class="down">&darr;</div>'+
-      '<div class="link"><span class="who">second weight</span><span>w2 = '+w2.toFixed(1)+', so the output is '+output.toFixed(1)+'</span><span class="bl">blame '+bl2.toFixed(1)+'</span></div>'+
-      '<div class="down">&darr;</div>'+
-      '<div class="link"><span class="who">reality</span><span>the target was 6, so the error is '+err.toFixed(1)+'</span><span class="bl">the only measurement</span></div>'+
-      '</div>'+
+  var C=[
+   ["customer","&ldquo;This is bad.&rdquo;","the only measurement","This is everything reality tells you. One number, at the very end."],
+   ["head chef","&ldquo;The sauce was wrong.&rdquo;","most of the blame","Nobody told him what was wrong with it. He gets a share of the complaint, sized by how much he contributed."],
+   ["sous-chef","&ldquo;The tomatoes I was given were off.&rdquo;","some of it","He never sees the customer. He only receives his share from the person in front of him."],
+   ["supplier","adjusts what they send tomorrow","a little","Four steps removed from the only measurement that exists, and still adjusting in the right direction."]
+  ];
+  var at=0;
+  function paint(){
+    el("kitChain").innerHTML=C.map(function(c,i){
+      return '<div class="link'+(i>at?" dim":"")+'"><span class="who">'+c[0]+'</span><span>'+c[1]+'</span><span class="bl">'+c[2]+'</span></div>'+
+             (i<C.length-1?'<div class="down">&darr;</div>':"");
+    }).join("");
+    el("kitLab").textContent=C[at][0];
+    el("kitOut").innerHTML='<span class="ol">'+C[at][0]+'</span>'+C[at][3];
+    el("kitBack").disabled = at>=C.length-1;
+  }
+  el("kitBack").addEventListener("click",function(){if(at<C.length-1){at++;paint()}});
+  el("kitReset").addEventListener("click",function(){at=0;paint()});
+  paint();
+})();
+
+/* ---------- blame split ---------- */
+(function(){
+  var s=el("w2s");
+  function paint(){
+    var w2=(+s.value)/10,x=1,w1=1,h=x*w1,output=h*w2,target=6,err=output-target;
+    var bl2=err*h,bl1=err*w2*x;
+    el("w2v").textContent=w2.toFixed(1);
+    el("blameOut").innerHTML='<div class="chain">'+
+      '<div class="link"><span class="who">input</span><span>x = 1 goes in</span><span class="bl">&mdash;</span></div><div class="down">&darr;</div>'+
+      '<div class="link"><span class="who">first weight</span><span>w1 = 1, so the middle value is '+h.toFixed(1)+'</span><span class="bl">blame '+bl1.toFixed(1)+'</span></div><div class="down">&darr;</div>'+
+      '<div class="link"><span class="who">second weight</span><span>w2 = '+w2.toFixed(1)+', so the output is '+output.toFixed(1)+'</span><span class="bl">blame '+bl2.toFixed(1)+'</span></div><div class="down">&darr;</div>'+
+      '<div class="link"><span class="who">reality</span><span>the target was 6, so the error is '+err.toFixed(1)+'</span><span class="bl">the only measurement</span></div></div>'+
       '<p style="margin:14px 0 0;font-size:15.5px;color:var(--ink-soft)">The first weight carries <b>'+
-      (Math.abs(bl2)<1e-9?"&mdash;":(Math.abs(bl1/bl2)).toFixed(1)+"&times;")+
+      (Math.abs(bl2)<1e-9?"&mdash;":Math.abs(bl1/bl2).toFixed(1)+"&times;")+
       '</b> the blame of the second, because its effect gets multiplied by w2 on the way out.</p>';
   }
-  s.addEventListener("input",render); render();
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- retrain from different random starts ---------- */
+(function(){
+  var seed=3, runs=[];
+  function rnd(){seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff}
+  function run(){
+    var start=-2+rnd()*8, w=start;
+    for(var i=0;i<40;i++) w=w-0.03*G(w);
+    runs.push([start,w,L(w)]);
+    if(runs.length>5) runs.shift();
+    paint();
+  }
+  function paint(){
+    if(!runs.length){
+      el("reRows").innerHTML=""; el("reLab").textContent="no runs yet";
+      el("reOut").innerHTML='<span class="ol">press the button</span>Each run starts the weights somewhere random, exactly as a real training run does, and walks downhill from there.';
+      return;
+    }
+    bars(el("reRows"),runs.map(function(r,i){
+      return ["start "+r[0].toFixed(2),Math.abs(r[1]-3)+0.01,i===runs.length-1?1:0,"w = "+r[1].toFixed(4)];
+    }));
+    el("reLab").textContent=runs.length+" run"+(runs.length>1?"s":"");
+    var spread=Math.max.apply(null,runs.map(function(r){return r[1]}))-Math.min.apply(null,runs.map(function(r){return r[1]}));
+    el("reOut").innerHTML='<span class="ol">'+runs.length+' runs, same data</span>'+
+      (runs.length<2
+        ? "One run. Now do it again and compare &mdash; nothing about the data changed."
+        : "The runs disagree in the fourth decimal place, and the spread is <strong>"+spread.toFixed(4)+"</strong>. On this toy problem that is harmless. On a real network, with a landscape full of separate valleys, the same procedure lands on genuinely different models with genuinely different answers.");
+  }
+  el("reRun").addEventListener("click",run);
+  el("reReset").addEventListener("click",function(){runs=[];seed=3;paint()});
+  paint();
+})();
+
+/* ---------- double well: where you start decides where you stop ---------- */
+(function(){
+  var svg=el("dwSvg"),KK=1/40;
+  function DL(w){return (w*w-9)*(w*w-9)*KK + w/2 + 3}
+  function DG(w){return 4*w*(w*w-9)*KK + 0.5}
+  var STARTS=[-4.5,-2.0,0.5,2.0,4.5];
+  function descend(s){var w=s,path=[w];for(var i=0;i<400;i++){w-=0.05*DG(w);if(i%8===0)path.push(w)}path.push(w);return path}
+  function paint(i){
+    var s=STARTS[i],p=descend(s),endW=p[p.length-1],W=560,H=260,wLo=-5.4,wHi=5.4,lHi=9;
+    function X(w){return 28+(w-wLo)/(wHi-wLo)*(W-46)}
+    function Y(l){return H-28-Math.min(l,lHi)/lHi*(H-52)}
+    var d="",k;
+    for(k=0;k<=300;k++){var w=wLo+(wHi-wLo)*k/300; d+=(k?"L":"M")+X(w).toFixed(1)+" "+Y(DL(w)).toFixed(1)}
+    var deep=endW<0;
+    svg.innerHTML='<path d="'+d+'" fill="none" stroke="#5D7FA6" stroke-width="2"/>'+
+      '<circle cx="'+X(-3.25)+'" cy="'+Y(DL(-3.25))+'" r="4" fill="#2F7355"/>'+
+      '<text x="'+X(-3.25)+'" y="'+(Y(DL(-3.25))+18)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#2F7355">the deeper valley</text>'+
+      '<circle cx="'+X(2.67)+'" cy="'+Y(DL(2.67))+'" r="4" fill="#A8412F"/>'+
+      '<text x="'+X(2.67)+'" y="'+(Y(DL(2.67))+18)+'" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#A8412F">a worse one</text>'+
+      '<polyline points="'+p.map(function(w){return X(w).toFixed(1)+","+Y(DL(w)).toFixed(1)}).join(" ")+'" fill="none" stroke="#2D4A6B" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+      '<circle cx="'+X(s)+'" cy="'+Y(DL(s))+'" r="5" fill="#6E7A82"/>'+
+      '<circle cx="'+X(endW)+'" cy="'+Y(DL(endW))+'" r="6" fill="'+(deep?"#2F7355":"#A8412F")+'"/>';
+    el("dwLab").textContent="start at "+s;
+    el("dwOut").innerHTML='<span class="ol">stopped at w = '+endW.toFixed(2)+', height '+DL(endW).toFixed(2)+'</span>'+
+      (deep
+        ? "It found the deeper valley. Nothing about the walk was clever &mdash; it simply happened to start on this side of the ridge."
+        : "It stopped in the <strong>worse</strong> valley, at height "+DL(endW).toFixed(2)+" instead of 1.44. Every single step was correct: the ground really was falling away, and then it really did stop falling. In fog the walker has no way to know a better valley exists on the other side of the ridge.");
+  }
+  chips(el("dwChips"),STARTS.map(function(s){return "start at "+s}),paint,0);
+})();
+
+/* ---------- overfitting: real fits, computed offline ---------- */
+(function(){
+  /* Ten points generated from a straight line plus noise, then fitted with polynomials of
+     rising degree by least squares. Both errors are mean squared error; the held-back set was
+     never fitted. These are the actual computed values, not an illustration. */
+  var D={2:[1.642,2.9],3:[1.383,2.4],4:[1.363,2.5],5:[0.836,3.3],6:[0.424,2.2],
+         7:[0.090,6.3],8:[0.084,4.5],9:[0.036,38.9],10:[0.000,465.2]};
+  var s=el("ofSlide");
+  function paint(){
+    var n=+s.value,d=D[n];
+    el("ofN").textContent=n; el("ofLab").textContent=n+" of 10 points";
+    el("ofTrain").textContent=d[0].toFixed(3);
+    el("ofTest").textContent=d[1]>=100?Math.round(d[1]):d[1].toFixed(1);
+    var msg;
+    if(n<=3) msg="A straight line, roughly. It fits the training data loosely and does about as well on data it has never seen &mdash; which is what learning looks like.";
+    else if(n<=6) msg="Still healthy. Training error is falling and held-back error is holding roughly steady.";
+    else if(n<=8) msg="The training error keeps falling, but the held-back error has started to wander upward. This is where it begins, and it is easy to miss.";
+    else if(n===9) msg="Training error is nearly zero and held-back error has jumped to <strong>38.9</strong>. The model is now bending itself to fit the noise.";
+    else msg="Ten numbers for ten points. The training error is <strong>exactly zero</strong> &mdash; a perfect score &mdash; and the error on unseen data is <strong>465</strong>. It memorised the paper. It learned nothing.";
+    el("ofOut").innerHTML='<span class="ol">'+n+' numbers to learn, 10 points to learn from</span>'+msg;
+  }
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- one turn of the loop ---------- */
+(function(){
+  var S=[
+   ["forward pass","Guess, using the weights you have","Nothing is judged yet. The model simply produces an answer with whatever numbers it currently holds."],
+   ["loss","One number: how wrong was that?","Reality arrives and disagrees. The disagreement is boiled down to a single score, because four scores would be unanswerable."],
+   ["backpropagation","Share the blame backwards through the layers","Starting at the output, because that is the only place the error can be measured, and working forward-to-back in proportion to how much each part contributed."],
+   ["gradient descent","Nudge every weight a little way downhill","How far is the learning rate &mdash; the knife-edge setting. Too small and it crawls; a hundredth too large and the loss climbs instead."],
+   ["repeat","A few million times, until the loss stops falling","And then you stop, not because you found the best answer, but because the ground stopped falling away where you happen to be standing."]
+  ];
+  var at=0;
+  function paint(){
+    bars(el("loopRows"),S.map(function(s,i){
+      return [s[0], i<=at?100:12, i===at?1:0, i<at?"done":i===at?"now":"—"];
+    }));
+    el("loopLab").textContent=S[at][0];
+    el("loopOut").innerHTML='<span class="ol">'+S[at][0]+'</span><strong>'+S[at][1]+'</strong><br>'+S[at][2];
+    el("loopNext").textContent = at>=S.length-1 ? "Round again" : "Next step";
+  }
+  el("loopNext").addEventListener("click",function(){ at=(at+1)%S.length; paint() });
+  el("loopReset").addEventListener("click",function(){ at=0; paint() });
+  paint();
+})();
+
+/* ---------- the ten questions ---------- */
+(function(){
+  var Q=[
+   ["A model&rsquo;s loss goes 40, 22, 12, 7, 4. Is training working?",["yes","no"],0,
+    "Yes. The number is falling and the falls are getting smaller &mdash; a normal, healthy approach to the valley floor."],
+   ["A model&rsquo;s loss goes 40, 62, 91, 140. What is the most likely single cause?",["the data","the learning rate","the architecture"],1,
+    "The learning rate is too big. It is stepping over the valley and climbing the far side. Recall that 0.10 worked and 0.11 did not."],
+   ["Why is loss one number rather than a report with several measures?",["it is simpler to print","so &ldquo;did it go down?&rdquo; has an answer"],1,
+    "With several measures you cannot tell whether a change helped. One number makes the question answerable, which is the whole point."],
+   ["Why does missing by 10 count as 100 rather than 10?",["squaring","a scaling convention"],0,
+    "Squaring. It makes big misses count disproportionately, which matches the real cost of being badly wrong rather than slightly wrong."],
+   ["Why can the machine not just try every possible combination of weights?",["it would be slow","there are more combinations than atoms in the universe"],1,
+    "A hundred weights at ten values each is 10<sup>100</sup> combinations. The fog is not a shortcut; it is the only option."],
+   ["In the kitchen, why must the blame start with the customer?",["politeness","that is the only place the error can be measured"],1,
+    "Nobody tells the sous-chef what he did wrong. The only measurement exists at the very end, so it has to be traced back from there."],
+   ["The first weight got twice the blame of the second. Was it twice as wrong?",["yes","no"],1,
+    "No. It carries twice the blame because its effect gets doubled by the weight downstream. Influence, not wrongness."],
+   ["A model scores 99% on the data it trained on and 61% on data it has never seen. What happened?",["underfitting","overfitting","the learning rate"],1,
+    "It memorised the training data. Do not ship it &mdash; and ask why nobody held data back earlier."],
+   ["Your team retrains last month&rsquo;s model on the same data and gets slightly different answers. Is something broken?",["yes","no, that is normal"],1,
+    "Normal. There is no formula and no single best answer; the walk starts somewhere random and stops somewhere good-enough. Worth knowing before it alarms someone."],
+   ["Why does fitting a straight line need none of this machinery?",["lines are simple","a formula exists, solved in the 1800s"],1,
+    "An exact formula exists. Fog-walking is only needed when no formula does &mdash; which is the case the moment you stack layers."]
+  ];
+  var host=el("qzList"),sc=el("qzScore"),done=0;
+  Q.forEach(function(q){
+    var d=document.createElement("div"); d.className="qi";
+    d.innerHTML='<div class="qq">'+q[0]+'</div><div class="qb">'+
+      q[1].map(function(o,i){return '<button class="qbt" type="button" data-i="'+i+'">'+o+'</button>'}).join("")+
+      '</div><div class="qa"></div>';
+    d.querySelectorAll(".qbt").forEach(function(b){
+      b.addEventListener("click",function(){
+        if(d.classList.contains("done")) return;
+        d.querySelectorAll(".qbt").forEach(function(x){x.classList.remove("sel")});
+        b.classList.add("sel"); d.classList.add("done");
+        var right=(+b.getAttribute("data-i"))===q[2];
+        d.querySelector(".qa").innerHTML='<span class="tag'+(right?"":" miss")+'">'+q[1][q[2]]+'</span>'+(right?"":"<strong>Not quite. </strong>")+q[3];
+        done++; sc.textContent=done+" of 10 answered";
+      });
+    });
+    host.appendChild(d);
+  });
 })();
 })();
 </script>
+
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
