@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A rule is a promise. A model is a bet.</title>
-<meta name="description" content="When a rule beats a model, and when a model earns its cost. A beginner's guide with a decision checklist you can walk, a pair drill, and the layered design real systems actually use.">
+<meta name="description" content="When a rule beats a model, and when a model earns its cost. A beginner's guide with a checklist you can walk, a pair drill, a twelve-item sort, and the layered design real systems actually use.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Asap:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,8 +13,7 @@
   --paper:#FBF9F6; --paper-2:#F0ECE6; --card:#FFFFFF;
   --ink:#1A1620; --ink-soft:#463F52; --ink-faint:#7C7488; --rule-c:#DCD5E0;
   --accent:#4A2E7A; --accent-soft:#7A5CAE;
-  --isrule:#2E6B57; --ismodel:#B0602A; --isboth:#4A2E7A;
-  --bad:#A63A2E;
+  --isrule:#2E6B57; --ismodel:#B0602A; --bad:#A63A2E;
   --maxw:680px; --wide:1080px; --pad:26px;
   --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
@@ -24,7 +23,7 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:"Asap",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
 .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-section{padding:92px 0}
+section{padding:86px 0}
 h1,h2,h3{font-family:"Plus Jakarta Sans",system-ui,sans-serif;line-height:1.13;margin:0}
 h2{font-size:clamp(27px,4vw,40px);font-weight:800;letter-spacing:-.028em;margin:0 0 22px;text-wrap:balance}
 h3{font-size:19.5px;font-weight:700;letter-spacing:-.01em;margin:0 0 10px}
@@ -36,58 +35,89 @@ a{color:var(--accent)}
 .m{font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 6px;border-radius:3px}
 
 /* ---------- hero: the funnel that narrows before the model ----------
-   data-hero="the-narrowing-funnel-to-the-model". The document's real contribution is not
-   "avoid AI" -- it is a shape: hard rules settle most of the volume for free, the model only
-   ever sees the genuinely uncertain remainder, and rules guard the output again. So the
-   opening is that funnel, filling on load, with the counts falling as each layer takes its cut. */
-.hero{padding:88px 0 74px}
-.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 24px}
+   data-hero="the-narrowing-funnel-to-the-model". The document's real contribution is a shape:
+   hard rules settle most of the volume for free, the model sees only the uncertain remainder,
+   and rules guard the output again. The reader moves how much layer one catches and watches
+   what reaches the model — and what it costs. */
+.hero{padding:84px 0 70px}
+.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 22px}
 .hero h1{font-size:clamp(30px,4.9vw,56px);font-weight:800;letter-spacing:-.034em}
 .hero h1 span{display:block}
 .hero .lede{margin:26px 0 0;max-width:620px}
-.funnel{max-width:560px;margin:0 0 32px;border:1px solid var(--rule-c);border-radius:10px;background:var(--card);padding:20px 22px}
-.fl{display:grid;grid-template-columns:120px 1fr 62px;gap:13px;align-items:center;padding:10px 0}
+.funnel{max-width:560px;margin:0 0 28px;border:1px solid var(--rule-c);border-radius:10px;background:var(--card);overflow:hidden}
+.fbox{padding:20px 22px 14px}
+.fl{display:grid;grid-template-columns:118px 1fr 74px;gap:12px;align-items:center;padding:9px 0}
 .fl .fn{font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;text-align:right;color:var(--c)}
 .fl .fbar{height:22px;border-radius:4px;background:var(--paper-2);overflow:hidden}
-.fl .fbar i{display:block;height:100%;width:0;background:var(--c);border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.fl .fbar i{display:block;height:100%;width:0;background:var(--c);border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
 .fl .fv{font-family:var(--mono);font-size:12px;text-align:right;color:var(--c)}
-.fsep{height:1px;background:var(--rule-c);margin:6px 0}
-.fcap{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:14px;padding-top:13px;border-top:1px solid var(--rule-c)}
+.fsep{height:1px;background:var(--rule-c);margin:5px 0}
+.hctl{padding:12px 18px;border-top:1px solid var(--rule-c)}
+.hctl .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:7px}
+.hnote{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:9px;display:block}
 
 /* ---------- shared ---------- */
 .fig{background:var(--card);border:1px solid var(--rule-c);border-radius:10px;margin:30px 0;overflow:hidden}
 .fig-h{padding:13px 20px;border-bottom:1px solid var(--rule-c);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .fig-b{padding:24px 22px}
 .cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
-.btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px}
+.btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;transition:opacity .2s}
 .btn:hover{opacity:.88}
+.btn:disabled{opacity:.4;cursor:default}
 .btn.ghost{background:transparent;border:1px solid var(--rule-c);color:var(--ink-soft)}
 .note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
 .note b{color:var(--ink)}
 .try{background:var(--card);border:1px solid var(--rule-c);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17.5px}
 .try .tl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
 .pull{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:clamp(20px,2.8vw,28px);line-height:1.3;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
-table{width:100%;border-collapse:collapse;margin:26px 0;font-size:15.5px}
+table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px}
 th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule-c);padding:9px 11px;font-weight:400}
 td{padding:11px;border-bottom:1px solid var(--rule-c);vertical-align:top;line-height:1.5}
 tr:last-child td{border-bottom:none}
-
-/* ---------- checklist walk ---------- */
-.ck{min-height:210px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border:1px solid var(--rule-c);border-radius:5px;background:var(--paper);cursor:pointer;color:var(--ink-soft);transition:all .16s}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.out{margin-top:16px;padding:17px 19px;border-radius:8px;background:var(--paper-2);font-size:16px;line-height:1.56;min-height:80px}
+.out .ol{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
+.big{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em}
+.slider{width:100%;accent-color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+.card2{border:1px solid var(--rule-c);border-radius:8px;padding:16px 18px;background:var(--paper)}
+.card2 h4{margin:0 0 8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:400}
+.card2.ok{border-color:var(--isrule)} .card2.ok .big{color:var(--isrule)}
+.card2.warn{border-color:var(--ismodel)} .card2.warn .big{color:var(--ismodel)}
+.rows{display:flex;flex-direction:column;gap:7px}
+.row{display:grid;grid-template-columns:170px 1fr 96px;gap:11px;align-items:center;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
+@media(max-width:640px){.row{grid-template-columns:108px 1fr 76px;font-size:11.5px}}
+.row .rk{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .rb{height:14px;background:var(--paper-2);border-radius:3px;overflow:hidden}
+.row .rb i{display:block;height:100%;width:0;border-radius:3px;background:var(--rule-c);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.row .rv{text-align:right;font-variant-numeric:tabular-nums}
+.row.top .rk{color:var(--isrule);font-weight:500}
+.row.top .rb i{background:var(--isrule)} .row.top .rv{color:var(--isrule)}
+.row.bad .rb i{background:var(--bad)} .row.bad .rv,.row.bad .rk{color:var(--bad)}
+.row.mid .rb i{background:var(--ismodel)} .row.mid .rv,.row.mid .rk{color:var(--ismodel)}
+/* ask log */
+.log{display:flex;flex-direction:column;gap:6px;min-height:150px}
+.logrow{display:grid;grid-template-columns:52px 1fr 1fr;gap:10px;font-family:var(--mono);font-size:12.5px;padding:7px 11px;border-radius:5px;background:var(--paper);border:1px solid var(--rule-c)}
+.logrow .lc{color:var(--isrule)}
+.logrow .lf{color:var(--ismodel)}
+.logrow.wrong .lf{color:var(--bad);font-weight:500}
+.logrow .ln{color:var(--ink-faint)}
+/* checklist walk */
+.ck{min-height:200px}
 .ckq{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:20px;line-height:1.32;margin-bottom:6px}
 .ckh{font-size:15px;color:var(--ink-faint);margin-bottom:16px;line-height:1.5}
-.ckb{display:flex;gap:9px;flex-wrap:wrap}
 .ckn{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:12px}
 .ckout{border-radius:8px;padding:20px 22px;background:var(--paper-2)}
-.ckout .cv{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-.028em;margin-bottom:10px}
+.ckout .cv{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:29px;line-height:1.1;letter-spacing:-.028em;margin-bottom:10px}
 .ckout .cw{font-size:16px;line-height:1.55;color:var(--ink-soft)}
-.ckout.rule .cv{color:var(--isrule)}
-.ckout.model .cv{color:var(--ismodel)}
-.ckout.both .cv{color:var(--isboth)}
+.ckout.rule .cv{color:var(--isrule)} .ckout.model .cv{color:var(--ismodel)} .ckout.both .cv{color:var(--accent)}
 .ckline{display:flex;align-items:center;gap:12px;margin:20px 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
 .ckline::before,.ckline::after{content:"";flex:1;height:1px;background:var(--rule-c)}
-
-/* ---------- pair drill ---------- */
+/* pair drill */
 .pd{display:flex;flex-direction:column;gap:10px}
 .pdi{border:1px solid var(--rule-c);border-radius:8px;background:var(--card);padding:15px 17px}
 .pdr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -97,28 +127,31 @@ tr:last-child td{border-bottom:none}
 .pdi.done .pdt{cursor:default}
 .pdt .pk{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-top:8px;opacity:0}
 .pdi.done .pdt .pk{opacity:1}
-.pdt.isrule{border-color:var(--isrule);background:rgba(46,107,87,.07)}
-.pdt.isrule .pk{color:var(--isrule)}
-.pdt.ismodel{border-color:var(--ismodel);background:rgba(176,96,42,.07)}
-.pdt.ismodel .pk{color:var(--ismodel)}
+.pdt.isrule{border-color:var(--isrule);background:rgba(46,107,87,.07)} .pdt.isrule .pk{color:var(--isrule)}
+.pdt.ismodel{border-color:var(--ismodel);background:rgba(176,96,42,.07)} .pdt.ismodel .pk{color:var(--ismodel)}
 .pda{display:none;margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule-c);font-size:14.8px;line-height:1.56;color:var(--ink-soft)}
 .pdi.done .pda{display:block}
 .flag{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;background:rgba(74,46,122,.12);color:var(--accent);padding:2px 8px;border-radius:4px;margin-right:8px}
 .score{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
-
-/* ---------- three layers ---------- */
+/* quick sort */
+.qs{display:flex;flex-direction:column;gap:9px}
+.qi{border:1px solid var(--rule-c);border-radius:8px;background:var(--paper);padding:14px 16px}
+.qq{font-size:16.5px;line-height:1.45;margin-bottom:11px}
+.qb{display:flex;gap:6px;flex-wrap:wrap}
+.qbt{font-family:var(--mono);font-size:11px;padding:6px 11px;border:1px solid var(--rule-c);border-radius:5px;background:var(--card);cursor:pointer;color:var(--ink-soft);transition:all .15s}
+.qbt:hover{border-color:var(--accent)}
+.qbt.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.qa{display:none;margin-top:12px;padding-top:11px;border-top:1px dashed var(--rule-c);font-size:14.8px;line-height:1.56;color:var(--ink-soft)}
+.qi.done .qa{display:block}
+.tg{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-right:8px;background:rgba(74,46,122,.13);color:var(--accent)}
+.tg.miss{background:rgba(166,58,46,.13);color:var(--bad)}
+/* layers */
 .ly{border:1px solid var(--rule-c);border-radius:9px;overflow:hidden;margin-bottom:10px}
 .ly .lh{padding:11px 16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.ly.r1 .lh{background:rgba(46,107,87,.11);color:var(--isrule)}
+.ly.r1 .lh,.ly.r3 .lh{background:rgba(46,107,87,.11);color:var(--isrule)}
 .ly.r2 .lh{background:rgba(176,96,42,.11);color:var(--ismodel)}
-.ly.r3 .lh{background:rgba(46,107,87,.11);color:var(--isrule)}
 .ly .lb{padding:14px 16px;font-size:15.5px;line-height:1.6;background:var(--card)}
 .ly .lb ul{margin:0;padding-left:18px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.tb{font-family:var(--mono);font-size:11px;padding:7px 11px;border:1px solid var(--rule-c);border-radius:5px;background:var(--paper);cursor:pointer;color:var(--ink-soft)}
-.tb:hover{border-color:var(--accent)}
-.tb.on{background:var(--accent);border-color:var(--accent);color:#fff}
-
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
 .reveal.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
@@ -126,7 +159,7 @@ footer{border-top:1px solid var(--rule-c);padding:40px var(--pad) 70px;text-alig
 footer a{color:var(--accent)}
 ::selection{background:var(--accent);color:#fff}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media(max-width:640px){body{font-size:17.5px}section{padding:66px 0}}
+@media(max-width:640px){body{font-size:17.5px}section{padding:64px 0}}
 </style>
 </head>
 <body>
@@ -134,14 +167,20 @@ footer a{color:var(--accent)}
 <header class="hero" data-hero="the-narrowing-funnel-to-the-model">
   <div class="col">
     <p class="hmeta">what a well-built system actually looks like</p>
-    <div class="funnel" aria-hidden="true">
-      <div class="fl" style="--c:var(--ink-faint)"><span class="fn">arriving</span><span class="fbar"><i data-w="100"></i></span><span class="fv">1000</span></div>
-      <div class="fl" style="--c:var(--isrule)"><span class="fn">hard rules</span><span class="fbar"><i data-w="74"></i></span><span class="fv">740 settled</span></div>
-      <div class="fsep"></div>
-      <div class="fl" style="--c:var(--ismodel)"><span class="fn">the model</span><span class="fbar"><i data-w="26"></i></span><span class="fv">260 judged</span></div>
-      <div class="fsep"></div>
-      <div class="fl" style="--c:var(--isrule)"><span class="fn">rules again</span><span class="fbar"><i data-w="9"></i></span><span class="fv">90 held</span></div>
-      <p class="fcap">the model never sees the cases that were never in doubt</p>
+    <div class="funnel">
+      <div class="fbox">
+        <div class="fl" style="--c:var(--ink-faint)"><span class="fn">arriving</span><span class="fbar"><i id="f0"></i></span><span class="fv">1000</span></div>
+        <div class="fl" style="--c:var(--isrule)"><span class="fn">hard rules</span><span class="fbar"><i id="f1"></i></span><span class="fv" id="v1"></span></div>
+        <div class="fsep"></div>
+        <div class="fl" style="--c:var(--ismodel)"><span class="fn">the model</span><span class="fbar"><i id="f2"></i></span><span class="fv" id="v2"></span></div>
+        <div class="fsep"></div>
+        <div class="fl" style="--c:var(--isrule)"><span class="fn">rules again</span><span class="fbar"><i id="f3"></i></span><span class="fv" id="v3"></span></div>
+      </div>
+      <div class="hctl">
+        <span class="lbl">how much can layer one settle outright?</span>
+        <input class="slider" id="fSlide" type="range" min="0" max="95" value="74" step="1" aria-label="share settled by rules">
+        <span class="hnote" id="fNote"></span>
+      </div>
     </div>
     <h1><span>A rule is a promise.</span><span>A model is a bet.</span></h1>
     <p class="lede">When you can make the promise, do not place the bet. That sounds obvious written down, and it is violated constantly, expensively, by people who are not stupid &mdash; because nobody was ever promoted for saying &ldquo;we solved it with an IF statement&rdquo;.</p>
@@ -153,23 +192,45 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>You need 17 times 24</h2>
-    <p>You could use a calculator, or you could ask a very clever friend to estimate it in their head.</p>
-    <p>The calculator returns 408. It will return 408 forever. The friend says &ldquo;about 400, maybe 410&rdquo; &mdash; and on a bad day says 408 with total confidence when the answer was something else.</p>
-    <p>Which would you use for an invoice? Nobody hesitates. Now notice what that means: asking a language model to do arithmetic is asking the clever friend. It is not calculating. It is producing the most plausible-looking answer &mdash; which is exactly what inference is. Sometimes it is right.</p>
+    <p>You could use a calculator, or you could ask a very clever friend to estimate it in their head. Ask them both, as many times as you like.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>the same question, asked repeatedly</span><span class="score" id="askScore">nothing asked yet</span></div>
+      <div class="fig-b">
+        <div class="two">
+          <div class="card2 ok"><h4>the calculator</h4><div class="big" id="calcTally">&mdash;</div><div class="cap" style="margin-top:6px">returns 408, and will forever</div></div>
+          <div class="card2 warn"><h4>the very clever friend</h4><div class="big" id="friendTally">&mdash;</div><div class="cap" style="margin-top:6px">plausible, confident, sometimes right</div></div>
+        </div>
+        <div class="log" id="askLog" style="margin-top:16px"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="askOne">Ask them both</button>
+          <button class="btn ghost" id="askTen">Ask ten times</button>
+          <button class="btn ghost" id="askReset">Clear</button>
+        </div>
+        <p class="cap">Which would you use for an invoice? Nobody hesitates &mdash; and yet asking a language model to do arithmetic is asking the friend. It is not calculating. It is producing the most plausible-looking answer.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p class="pull">Right most of the time is a catastrophic property for an invoice.</p>
     <p>This is the most common live violation you will see. Someone pastes a column of numbers into a chatbot and asks for the total. A spreadsheet has done that correctly since 1985, for free, and it does not have opinions.</p>
-    <p>The pattern behind that and every case like it: these are jobs where <strong>the answer already exists</strong> and merely needs retrieving or computing. Inference is for when the answer does not exist yet and must be guessed at from evidence.</p>
-    <table>
-      <thead><tr><th>What people ask a model to do</th><th>What should do it</th><th>Why the model is the wrong tool</th></tr></thead>
-      <tbody>
-        <tr><td>Add up a column of numbers</td><td>A spreadsheet</td><td>It infers a plausible total. It does not add.</td></tr>
-        <tr><td>Sort a list alphabetically</td><td>A spreadsheet</td><td>Solved perfectly in the 1950s</td></tr>
-        <tr><td>Check an email address is valid</td><td>A validation rule</td><td>One line of code, exact</td></tr>
-        <tr><td>Calculate tax, interest or a discount</td><td>A formula</td><td>The rule is written in law or policy</td></tr>
-        <tr><td>Look up a customer&rsquo;s order history</td><td>A database query</td><td>The answer is a fact you already own</td></tr>
-        <tr><td>Redact card numbers from a document</td><td>A pattern rule</td><td>You need 100%, not 97%</td></tr>
-      </tbody>
-    </table>
+    <p>The pattern behind that and every case like it: these are jobs where <strong>the answer already exists</strong> and merely needs retrieving or computing. Inference is for when the answer does not exist yet and must be guessed at from evidence. Pick a task and see what should really do it.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>jobs people hand to a model that already have exact answers</span><span class="score" id="wrongLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="wrongChips"></div>
+        <div class="two" style="margin-top:18px">
+          <div class="card2"><h4>what should do it</h4><div id="wrongTool" style="font-size:17px;line-height:1.5"></div></div>
+          <div class="card2"><h4>why the model is the wrong tool</h4><div id="wrongWhy" style="font-size:16px;line-height:1.55"></div></div>
+        </div>
+        <div class="out" id="wrongOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <div class="note"><b>What is the actual harm?</b> You have replaced a guaranteed answer with a likely one, paid money for the privilege, and &mdash; worst of all &mdash; lost the ability to notice when it is wrong. A broken formula throws an error. A wrong total from a model looks exactly like a right one.</div>
   </div>
 </section>
@@ -179,26 +240,39 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>What &ldquo;deterministic&rdquo; actually means</h2>
-    <p>Skip the dictionary. Deterministic means: same input, same answer, every single time, and you can say in advance what it will be.</p>
-    <p>Two questions settle it for any system. <strong>Could a person write the rule down in one or two sentences?</strong> And <strong>if you ran it a million times on the same input, would you ever be surprised?</strong> Two yeses means deterministic. Write the rule.</p>
-    <p>Obviously deterministic: tax at a fixed rate. Whether someone is 18 today. Whether an order total exceeds a threshold. Whether a password matches. Sorting a list. Whether a seat is booked.</p>
-    <p>Obviously not: whether this customer will cancel next month. What this used car is worth. Whether this transaction is fraud. What this photo contains.</p>
+    <p>Skip the dictionary. Deterministic means: same input, same answer, every single time, and you can say in advance what it will be. Two questions settle it for any system. Try them on a few.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>two questions, and the verdict</span><span class="score" id="detLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="detChips"></div>
+        <div class="two" style="margin-top:18px">
+          <div class="card2" id="detQ1"><h4>could a person write the rule in a sentence or two?</h4><div class="big" id="detA1"></div></div>
+          <div class="card2" id="detQ2"><h4>run it a million times on the same input &mdash; ever surprised?</h4><div class="big" id="detA2"></div></div>
+        </div>
+        <div class="out" id="detOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>And then the interesting middle, which is where the real arguments happen. <em>Should we approve this loan?</em> Part of it is deterministic &mdash; is the applicant over 18, is the document valid, does the income clear the legal floor. Part of it is a genuine prediction &mdash; will they repay? Almost every real business decision splits like this.</p>
 
     <h3>Five reasons a rule wins whenever one exists</h3>
-    <table>
-      <thead><tr><th></th><th>A rule</th><th>A model</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Correctness</strong></td><td>Exactly right, always</td><td>Right most of the time. Never all of it.</td></tr>
-        <tr><td><strong>Explaining it</strong></td><td>Read the line out loud</td><td>Nobody can read it &mdash; not even the people who built it</td></tr>
-        <tr><td><strong>Cost</strong></td><td>Write once. Runs free forever.</td><td>Build cost, or pay per call forever</td></tr>
-        <tr><td><strong>Speed</strong></td><td>Instant</td><td>Milliseconds to seconds, and it can be down</td></tr>
-        <tr><td><strong>Testing</strong></td><td>Check every case</td><td>Test on samples and hope</td></tr>
-        <tr><td><strong>When it breaks</strong></td><td>Loudly, visibly</td><td><strong>Silently.</strong> Quality drifts and nobody notices for months</td></tr>
-        <tr><td><strong>Changing it</strong></td><td>Edit one line</td><td>Retrain, revalidate, redeploy</td></tr>
-      </tbody>
-    </table>
-    <p>That second-to-last row is the one people underweight. A broken rule throws an error. A degraded model just gets quietly worse while continuing to produce confident, plausible answers &mdash; which is far more dangerous than an outage, because an outage is at least noticed.</p>
+    <p>Pick a dimension and see the gap.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>a rule against a model, dimension by dimension</span><span class="score" id="cmpLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="cmpChips"></div>
+        <div class="rows" id="cmpRows" style="margin-top:18px"></div>
+        <div class="out" id="cmpOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>That silent-failure row is the one people underweight. A broken rule throws an error. A degraded model just gets quietly worse while continuing to produce confident, plausible answers &mdash; far more dangerous than an outage, because an outage is at least noticed.</p>
     <div class="note"><b>A model that is 99% right on tax calculation is 100% unacceptable.</b> For some jobs, &ldquo;almost always&rdquo; is not a high score. It is a failure.</div>
   </div>
 </section>
@@ -238,9 +312,27 @@ footer a{color:var(--accent)}
     </div>
   </div>
   <div class="col reveal">
-    <p>Two of those pairs run in the opposite order to what everyone expects, and they are the most useful ones on the page. Reading handwriting and transcribing speech genuinely need a model &mdash; and then a dead-simple rule checks the model&rsquo;s work. Comparing an amount written in words against the same amount in figures is trivial arithmetic, and it catches the model&rsquo;s mistakes for free.</p>
+    <p>Two of those pairs run in the opposite order to what everyone expects, and they are the most useful ones on the page. Reading handwriting and transcribing speech genuinely need a model &mdash; and then a dead-simple rule checks the model&rsquo;s work.</p>
     <div class="note"><b>A cheap rule checking an expensive model is one of the highest-value patterns in the whole field.</b> The model does what only a model can. The rule catches it when it slips.</div>
-    <p>And the discount pair is worth its own minute, because both halves sound like the same topic. &ldquo;Give the top tier ten percent off&rdquo; and &ldquo;decide who belongs in the top tier&rdquo; feel like one question. They are completely different: one is a policy the company chose, the other is a prediction about the future. Whenever somebody says a decision needs AI, ask which half they mean. Usually it is this split, and usually the policy half was never in question.</p>
+    <p>And the discount pair is worth its own minute, because both halves sound like the same topic. &ldquo;Give the top tier ten percent off&rdquo; and &ldquo;decide who belongs in the top tier&rdquo; feel like one question. They are completely different: one is a policy the company chose, the other is a prediction about the future.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="col reveal">
+    <h2>Sort these twelve</h2>
+    <p>Faster than the pairs, and closer to how the question actually arrives: one job at a time, described in plain business language. Rule, model, or both?</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>rule, model, or both?</span><span class="score" id="qsScore">0 of 12 sorted</span></div>
+      <div class="fig-b"><div class="qs" id="qsList"></div></div>
+    </div>
+  </div>
+  <div class="col reveal">
+    <p>The five plain rules in that list &mdash; tax, free delivery, file type, notice period, invoice approval &mdash; are the ones where somebody, somewhere, has genuinely proposed using AI. It is worth imagining what that pitch sounded like.</p>
   </div>
 </section>
 
@@ -250,16 +342,23 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>Three questions that sound identical</h2>
     <p>Take one apparently simple job: validating a phone number. Three questions live right next to each other, and only one of them is a rule.</p>
-    <table>
-      <thead><tr><th>The question</th><th>The answer</th><th>Why</th></tr></thead>
-      <tbody>
-        <tr><td>Is this number correctly formatted?</td><td><strong>A rule.</strong></td><td>A fixed number of digits, a known set of starting digits. Deterministic, and exactly right on every number that has ever existed or ever will.</td></tr>
-        <tr><td>Is this number real and active?</td><td><strong>Neither &mdash; it is a lookup.</strong></td><td>A network query. The answer is a fact somebody already holds. Not a rule, and certainly not a model.</td></tr>
-        <tr><td>Is this number a spam caller?</td><td><strong>A model.</strong></td><td>Changes constantly, adversaries involved, no rule survives.</td></tr>
-      </tbody>
-    </table>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>which question are you actually asking?</span><span class="score" id="phLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="phChips"></div>
+        <div class="two" style="margin-top:18px">
+          <div class="card2"><h4>the answer</h4><div class="big" id="phAns"></div></div>
+          <div class="card2"><h4>why</h4><div id="phWhy" style="font-size:16px;line-height:1.55"></div></div>
+        </div>
+        <div class="out" id="phOut"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>Which of those three did you assume &ldquo;phone number validation&rdquo; meant? <strong>Validation is not verification is not judgement.</strong> Most arguments about whether something needs AI are really arguments about which of these three questions is being asked &mdash; and they settle the moment somebody states the question precisely.</p>
-    <p>It is worth making the alternative concrete, because that is what lands it. Suppose you built a model for the formatting question instead. You would need thousands of labelled examples, and after all that work you might reach 99.7% accuracy &mdash; meaning three wrong in every thousand, forever, with no way to know which three. It would cost money on every call. And when a customer asked why their perfectly good number was rejected, nobody could tell them.</p>
+    <p>It is worth making the alternative concrete. Suppose you built a model for the formatting question instead. You would need thousands of labelled examples, and after all that work you might reach 99.7% accuracy &mdash; meaning three wrong in every thousand, forever, with no way to know which three. It would cost money on every call. And when a customer asked why their perfectly good number was rejected, nobody could tell them.</p>
     <p class="pull">You would have spent real money to make a solved problem worse and unexplainable.</p>
   </div>
 </section>
@@ -270,15 +369,15 @@ footer a{color:var(--accent)}
   <div class="col reveal">
     <h2>What real systems look like</h2>
     <p>The principle is not &ldquo;never use AI&rdquo;. It is <strong>do not use AI where a rule already works</strong> &mdash; and in practice that produces a layered design, which is what almost every well-built production system looks like.</p>
-    <p>Layer one is what can be decided with certainty before any model runs. Layer two is what genuinely needs a judgement. Layer three is the rules that sit on the model&rsquo;s output before anyone acts on it.</p>
+    <p>Layer one is what can be decided with certainty before any model runs. Layer two is what genuinely needs a judgement. Layer three is the rules that sit on the model&rsquo;s output before anyone acts on it. Seven different problems, one shape.</p>
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>the same three-layer shape, four different problems</span></div>
+      <div class="fig-h"><span>the same three-layer shape, seven different problems</span></div>
       <div class="fig-b">
-        <div class="tabs" id="lyTabs"></div>
-        <div id="lyOut"></div>
-        <p class="cap">In every one of them, layer one handles most of the volume and the model only ever sees the genuinely uncertain remainder. That is not a compromise &mdash; it is what makes the system cheaper, faster and more defensible than a pure model would be.</p>
+        <div class="chips" id="lyTabs"></div>
+        <div id="lyOut" style="margin-top:16px"></div>
+        <p class="cap">In every one, layer one handles most of the volume and the model only ever sees the genuinely uncertain remainder. That is not a compromise &mdash; it is what makes the system cheaper, faster and more defensible than a pure model would be.</p>
       </div>
     </div>
   </div>
@@ -295,16 +394,19 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>When someone insists anyway</h2>
-    <p>You will meet this. The productive move is not to argue about AI &mdash; it is to ask what job it is doing.</p>
-    <table>
-      <thead><tr><th>What they say</th><th>What to ask back</th></tr></thead>
-      <tbody>
-        <tr><td>&ldquo;We need AI in this product.&rdquo;</td><td>&ldquo;Which decision is it making? And can you write that decision down as a rule?&rdquo;</td></tr>
-        <tr><td>&ldquo;AI will make it smarter.&rdquo;</td><td>&ldquo;Smarter than what? What does the current rule get wrong?&rdquo;</td></tr>
-        <tr><td>&ldquo;Competitors are using AI.&rdquo;</td><td>&ldquo;For which decision? Ours may not be the same decision.&rdquo;</td></tr>
-        <tr><td>&ldquo;It will handle the edge cases.&rdquo;</td><td>&ldquo;Name three. If we can name them, they are rules.&rdquo;</td></tr>
-      </tbody>
-    </table>
+    <p>You will meet this. The productive move is not to argue about AI &mdash; it is to ask what job it is doing. Pick what they said.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>what they say, and what to ask back</span><span class="score" id="argLab"></span></div>
+      <div class="fig-b">
+        <div class="chips" id="argChips"></div>
+        <div class="out" id="argSaid" style="margin-top:18px"></div>
+        <div class="out" id="argAsk"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>The fair, non-cynical version of all of this: the goal is not to keep AI out. It is to spend it where it earns its cost. Every rupee spent modelling something an IF statement would have handled exactly is a rupee not spent on the problem where nobody can write the rule &mdash; and that problem is where all your competitive advantage actually is.</p>
   </div>
 </section>
@@ -314,8 +416,22 @@ footer a{color:var(--accent)}
 <section>
   <div class="col reveal">
     <h2>The honest counter-argument</h2>
-    <p>State this yourself, before someone else does, or the principle sounds dogmatic.</p>
-    <p><strong>Rules rot.</strong> A rule is a snapshot of the world at the moment somebody wrote it. When the world moves, the rule does not. The classic case is the spam filter that blocked a banned word until spammers started spelling it with a zero.</p>
+    <p>State this yourself, before someone else does, or the principle sounds dogmatic. <strong>Rules rot.</strong> A rule is a snapshot of the world at the moment somebody wrote it. When the world moves, the rule does not. Watch it happen.</p>
+  </div>
+  <div class="wide reveal">
+    <div class="fig">
+      <div class="fig-h"><span>a spam filter, week by week</span><span class="score" id="rotLab"></span></div>
+      <div class="fig-b">
+        <div class="rows" id="rotRows"></div>
+        <div class="out" id="rotOut"></div>
+        <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap">
+          <button class="btn" id="rotNext">Another week</button>
+          <button class="btn ghost" id="rotReset">Back to week 1</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col reveal">
     <p>So the principle is not &ldquo;rules are better than models&rdquo;. It is narrower and more useful:</p>
     <p class="pull">Rules are better than models where a rule is genuinely available &mdash; and available means it will still be correct next year.</p>
     <p>Three warning signs that your rule has stopped being available: somebody has to update it every few weeks; the list of exceptions is longer than the rule; the person who understood why the thresholds were chosen has left. Any of those, and you have a machine learning problem you are currently solving by hand.</p>
@@ -335,15 +451,145 @@ footer a{color:var(--accent)}
 "use strict";
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
 document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
+function el(id){return document.getElementById(id)}
+function chips(host,items,onPick,start){
+  host.innerHTML="";
+  items.forEach(function(t){var b=document.createElement("button");b.className="chip";b.type="button";b.innerHTML=t;host.appendChild(b)});
+  var all=[].slice.call(host.querySelectorAll(".chip"));
+  all.forEach(function(b,i){b.addEventListener("click",function(){
+    all.forEach(function(x){x.classList.remove("on")});b.classList.add("on");onPick(i);
+  })});
+  var k=start||0;all[k].classList.add("on");onPick(k);
+}
+/* forced reflow, never rAF: rAF is suspended in a hidden tab and bars would stick at zero */
+function bars(host,rows){
+  host.innerHTML="";
+  var max=Math.max.apply(null,rows.map(function(r){return r[1]}))||1;
+  var fills=rows.map(function(r){
+    var d=document.createElement("div");d.className="row"+(r[2]===1?" top":r[2]===2?" bad":r[2]===3?" mid":"");
+    d.innerHTML='<span class="rk">'+r[0]+'</span><span class="rb"><i></i></span><span class="rv">'+r[3]+'</span>';
+    host.appendChild(d);return [d.querySelector("i"),r[1]/max*100];
+  });
+  void host.offsetWidth;
+  fills.forEach(function(f){f[0].style.width=f[1]+"%"});
+}
 
-/* ---------- hero funnel: fill on load ----------
-   Forced reflow rather than rAF: rAF is suspended while the tab is hidden, which would
-   leave every bar stuck at zero. */
+/* ---------- hero funnel ---------- */
 (function(){
-  var bars=document.querySelectorAll(".funnel .fbar i");
-  if(!bars.length) return;
-  void document.querySelector(".funnel").offsetWidth;
-  setTimeout(function(){ bars.forEach(function(b){ b.style.width=b.getAttribute("data-w")+"%" }) },120);
+  var s=el("fSlide");
+  function paint(){
+    var pct=+s.value, settled=Math.round(1000*pct/100), judged=1000-settled, held=Math.round(judged*0.35);
+    el("f0").style.width="100%";
+    el("f1").style.width=pct+"%";
+    el("f2").style.width=(100-pct)+"%";
+    el("f3").style.width=(held/10)+"%";
+    el("v1").textContent=settled+" settled";
+    el("v2").textContent=judged+" judged";
+    el("v3").textContent=held+" held";
+    var msg;
+    if(pct===0) msg="Nothing is settled outright, so every single case is paid for. Including the ones that were never in doubt.";
+    else if(pct<40) msg="Most of the volume still reaches the model. Each of those calls costs money and returns a probability rather than a fact.";
+    else if(pct<85) msg="The model sees only what genuinely needs judging. Cheaper, faster, and easier to defend than a pure model would be.";
+    else msg="Almost everything is decided with certainty. If your problem really looks like this, ask honestly whether you need the model at all.";
+    el("fNote").innerHTML=msg;
+  }
+  s.addEventListener("input",paint); paint();
+})();
+
+/* ---------- calculator vs clever friend ---------- */
+(function(){
+  /* Deterministic: the friend is right 55% of the time and otherwise gives a plausible,
+     confidently-stated near-miss. The calculator is right every time, forever. */
+  var seed=7, asked=0, friendRight=0;
+  function rnd(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff }
+  var NEAR=[392,396,400,410,414,420];
+  function ask(){
+    asked++;
+    var u=rnd(), ans = u<0.55 ? 408 : NEAR[Math.floor(rnd()*NEAR.length)];
+    if(ans===408) friendRight++;
+    var d=document.createElement("div");
+    d.className="logrow"+(ans===408?"":" wrong");
+    d.innerHTML='<span class="ln">#'+asked+'</span><span class="lc">408</span>'+
+                '<span class="lf">'+ans+(ans===408?"":" &nbsp;&mdash; and quite sure")+'</span>';
+    el("askLog").appendChild(d);
+    while(el("askLog").children.length>6) el("askLog").removeChild(el("askLog").firstChild);
+    el("calcTally").textContent=asked+"/"+asked;
+    el("friendTally").textContent=friendRight+"/"+asked;
+    el("askScore").textContent=asked+(asked===1?" ask":" asks");
+  }
+  el("askOne").addEventListener("click",ask);
+  el("askTen").addEventListener("click",function(){for(var i=0;i<10;i++) ask()});
+  el("askReset").addEventListener("click",function(){
+    seed=7;asked=0;friendRight=0;el("askLog").innerHTML="";
+    el("calcTally").textContent="—";el("friendTally").textContent="—";
+    el("askScore").textContent="nothing asked yet";
+  });
+})();
+
+/* ---------- the wrong tool ---------- */
+(function(){
+  var W=[
+   ["add up a column","A spreadsheet sum","It infers a plausible total. It does not add. And a wrong total looks exactly like a right one.","Excel has done this correctly, for free, since 1985. There is no version of this where guessing is an improvement."],
+   ["sort a list","A sort function","Solved perfectly in the 1950s, and provably so.","The answer is not merely likely to be right. It is right, by construction, on every input that has ever existed."],
+   ["check an email is valid","A validation rule","One line of code, exact.","The format is defined by a specification. There is nothing to learn, because somebody already wrote the answer down."],
+   ["calculate tax or a discount","A formula","The rule is written in law or company policy.","A model here is indefensible the moment anyone asks why. You are not permitted to guess at a number somebody legislated."],
+   ["look up an order history","A database query","The answer is a fact you already own.","Nothing is being predicted. You are retrieving something you stored, and retrieval has no error rate."],
+   ["redact card numbers","A pattern rule","You need 100%, not 97%.","Three misses in a hundred is not a near miss on this task. It is a data breach."]
+  ];
+  chips(el("wrongChips"),W.map(function(w){return w[0]}),function(i){
+    el("wrongTool").innerHTML=W[i][1];
+    el("wrongWhy").innerHTML=W[i][2];
+    el("wrongOut").innerHTML='<span class="ol">'+W[i][0]+'</span>'+W[i][3];
+    el("wrongLab").textContent=W[i][0];
+  });
+})();
+
+/* ---------- the two-question test ---------- */
+(function(){
+  var D=[
+   ["tax at a fixed rate","yes","never","Two yeses. Deterministic. Write the rule &mdash; it takes an afternoon and it is exactly right forever."],
+   ["is this person 18 today","yes","never","A date subtraction. There is nothing here that could surprise you on the millionth run."],
+   ["does this password match","yes","never","A comparison. Deterministic, instant, and free."],
+   ["will this customer cancel","no","constantly","Two noes. Nobody can write this rule, and the same customer record could plausibly go either way. This is a genuine prediction."],
+   ["what is this used car worth","no","constantly","No rule exists, and the honest answer moves with the market every week."],
+   ["should we approve this loan","partly","partly","<strong>The interesting middle.</strong> Age, document validity and the legal income floor are deterministic. Whether they will repay is a prediction. Almost every real business decision splits like this &mdash; and pretending it is all one or all the other is where projects go wrong."]
+  ];
+  chips(el("detChips"),D.map(function(d){return d[0]}),function(i){
+    var d=D[i];
+    el("detA1").textContent=d[1];
+    el("detA2").textContent=d[2];
+    var rule = d[1]==="yes";
+    var mid = d[1]==="partly";
+    el("detA1").style.color = mid?"var(--accent)":(rule?"var(--isrule)":"var(--ismodel)");
+    el("detA2").style.color = mid?"var(--accent)":(rule?"var(--isrule)":"var(--ismodel)");
+    el("detOut").innerHTML='<span class="ol">'+(mid?"both halves":(rule?"deterministic — write the rule":"not deterministic — a model earns its cost"))+'</span>'+d[3];
+    el("detLab").textContent=d[0];
+  });
+})();
+
+/* ---------- rule vs model, dimension by dimension ---------- */
+(function(){
+  var C=[
+   ["correctness",[["a rule",100,1,"exactly right"],["a model",88,3,"most of the time"]],
+    "Never all of it. For some jobs &ldquo;almost always&rdquo; is not a high score &mdash; it is a failure. A model that is 99% right on tax calculation is 100% unacceptable."],
+   ["explaining it",[["a rule",100,1,"read the line"],["a model",6,2,"nobody can"]],
+    "Not even the people who built it. Which is fine until a customer, an auditor or a regulator asks why &mdash; and then it is not fine at all."],
+   ["cost",[["a rule",4,1,"write once, runs free"],["a model",100,2,"per call, forever"]],
+    "The rule has a one-off cost and then no running cost at all. The model has a build cost or a per-call cost that never ends."],
+   ["speed",[["a rule",4,1,"instant"],["a model",70,3,"ms to seconds"]],
+    "And the model can be down, which the rule cannot. That is a dependency you did not have before."],
+   ["testing",[["a rule",100,1,"check every case"],["a model",30,3,"sample and hope"]],
+    "You can enumerate every input to a simple rule. You cannot enumerate every input to a model, so you test on a sample and extrapolate."],
+   ["when it breaks",[["a rule",100,1,"loudly"],["a model",12,2,"silently"]],
+    "<strong>The row people underweight.</strong> A broken rule throws an error. A degraded model gets quietly worse while continuing to produce confident, plausible answers &mdash; more dangerous than an outage, because an outage is at least noticed."],
+   ["changing it",[["a rule",6,1,"edit one line"],["a model",100,2,"retrain, revalidate, redeploy"]],
+    "One is an afternoon. The other is a project with a timeline nobody can predict in advance."]
+  ];
+  chips(el("cmpChips"),C.map(function(c){return c[0]}),function(i){
+    bars(el("cmpRows"),C[i][1]);
+    el("cmpOut").innerHTML='<span class="ol">'+C[i][0]+'</span>'+C[i][2];
+    el("cmpLab").textContent=C[i][0];
+  });
 })();
 
 /* ---------- the checklist walk ---------- */
@@ -356,112 +602,222 @@ var Q=[
  ["Is the input messy &mdash; photos, speech, free text, video?","Handwriting, recorded calls, complaint text, scanned forms.","model","A model, and this is where deep learning genuinely earns it.","Data with no natural columns is exactly what a rule cannot parse and a model can. Pair it with a cheap rule that checks the output."],
  ["Is somebody actively working against you?","Fraud, spam, abuse, gaming of any threshold.","model","A model. Rules lose to adversaries.","A fixed threshold tells an attacker precisely where the wall is. They will probe until they find it, and then sit just underneath it."]
 ];
-var ckBox=document.getElementById("ckBox"), ckStep=document.getElementById("ckStep"), at=0;
-function renderQ(){
-  if(at>=Q.length){
-    ckStep.textContent="through all seven";
-    ckBox.innerHTML='<div class="ckout both"><div class="cv">Write a rule.</div>'+
-      '<div class="cw">You reached the bottom without a single yes. That means nothing here changes, nothing is messy, nobody is working against you, and nobody needs an explanation you cannot give. Write the rule &mdash; and be glad, because this is the cheap case.</div></div>';
-    return;
-  }
-  var q=Q[at];
-  ckStep.textContent="question "+(at+1)+" of 7";
-  var line = at===3 ? '<div class="ckline">only past here does a model start to make sense</div>' : '';
-  ckBox.innerHTML=line+
-    '<div class="ckn">question '+(at+1)+'</div>'+
-    '<div class="ckq">'+q[0]+'</div><div class="ckh">'+q[1]+'</div>'+
-    '<div class="ckb"><button class="btn" data-a="y">Yes</button><button class="btn ghost" data-a="n">No &mdash; next question</button></div>';
-  ckBox.querySelectorAll("button").forEach(function(b){
-    b.addEventListener("click",function(){
-      if(b.getAttribute("data-a")==="y"){
-        ckStep.textContent="stopped at question "+(at+1);
-        ckBox.innerHTML='<div class="ckout '+q[2]+'"><div class="cv">'+q[3]+'</div><div class="cw">'+q[4]+'</div></div>';
-      } else { at++; renderQ() }
+(function(){
+  var ckBox=el("ckBox"),ckStep=el("ckStep"),at=0;
+  function renderQ(){
+    if(at>=Q.length){
+      ckStep.textContent="through all seven";
+      ckBox.innerHTML='<div class="ckout both"><div class="cv">Write a rule.</div>'+
+        '<div class="cw">You reached the bottom without a single yes. Nothing here changes, nothing is messy, nobody is working against you, and nobody needs an explanation you cannot give. Write the rule &mdash; and be glad, because this is the cheap case.</div></div>';
+      return;
+    }
+    var q=Q[at];
+    ckStep.textContent="question "+(at+1)+" of 7";
+    var line = at===3 ? '<div class="ckline">only past here does a model start to make sense</div>' : '';
+    ckBox.innerHTML=line+'<div class="ckn">question '+(at+1)+'</div>'+
+      '<div class="ckq">'+q[0]+'</div><div class="ckh">'+q[1]+'</div>'+
+      '<div class="chips"><button class="btn" data-a="y">Yes</button><button class="btn ghost" data-a="n">No &mdash; next question</button></div>';
+    ckBox.querySelectorAll("button").forEach(function(b){
+      b.addEventListener("click",function(){
+        if(b.getAttribute("data-a")==="y"){
+          ckStep.textContent="stopped at question "+(at+1);
+          ckBox.innerHTML='<div class="ckout '+q[2]+'"><div class="cv">'+q[3]+'</div><div class="cw">'+q[4]+'</div></div>';
+        } else { at++; renderQ() }
+      });
     });
-  });
-}
-document.getElementById("ckReset").addEventListener("click",function(){ at=0; renderQ() });
-renderQ();
+  }
+  el("ckReset").addEventListener("click",function(){ at=0; renderQ() });
+  renderQ();
+})();
 
 /* ---------- the pair drill ---------- */
-var PAIRS=[
- ["Check a mobile number has the right number of digits","Decide whether that number belongs to a spam caller",0,"Format is fixed forever. Who is a nuisance changes weekly, and they are trying not to be caught.",false],
- ["Check a tax ID is formatted correctly","Decide whether a tax return is odd enough to audit",0,"The format is defined by the tax department. Which returns smell wrong is a judgement across hundreds of signals.",false],
- ["Block a card the customer has reported stolen","Block a card that is behaving strangely",0,"&ldquo;Reported stolen&rdquo; is a fact you already hold. &ldquo;Strange&rdquo; is an opinion that has to be learned.",false],
- ["Read the handwritten amount off a photo of a cheque","Check the amount in words matches the amount in figures",1,"The order is reversed here, and this is the pair worth your time. Reading handwriting needs a model. Comparing two numbers is trivial arithmetic &mdash; and it catches the model&rsquo;s mistakes for free.",true],
- ["Send the order from the warehouse nearest the delivery address","Tell the customer what time the parcel will arrive",0,"Distance between two locations is arithmetic. Arrival time depends on traffic, weather and the driver.",false],
- ["Escalate any support ticket untouched for 24 hours","Decide how urgent a ticket is from what the customer wrote",0,"A clock is deterministic. Reading distress in free text is not.",false],
- ["Give the top tier ten percent off","Decide which customers should be in the top tier",0,"Ten percent is a policy someone chose. Who deserves to be in the tier is a prediction about future value. Both halves sound like one question and are not.",true],
- ["Assign a seat when a passenger books","Decide how many seats to overbook the flight by",0,"Seat allocation is bookkeeping. Overbooking is a bet on no-show rates.",false],
- ["Transcribe a recorded customer service call","Remove the long ID numbers from that transcript",1,"Reversed again &mdash; the model runs first and the rule cleans up after it. A pattern rule strips a fixed-length number perfectly; the transcription could never have been a rule.",true],
- ["Reject applicants who do not hold the legally required licence","Rank the applicants who remain",0,"A licence is a yes-or-no fact. Ranking people is a prediction &mdash; and it is the place where a careless system quietly learns something you would not want repeated.",false]
-];
-var pl=document.getElementById("pdList"), ps=document.getElementById("pdScore"), done=0;
-PAIRS.forEach(function(p){
-  var d=document.createElement("div"); d.className="pdi";
-  d.innerHTML='<div class="pdr">'+
-    '<button class="pdt" type="button" data-i="0">'+p[0]+'<span class="pk"></span></button>'+
-    '<button class="pdt" type="button" data-i="1">'+p[1]+'<span class="pk"></span></button>'+
-    '</div><div class="pda"></div>';
-  d.querySelectorAll(".pdt").forEach(function(b){
-    b.addEventListener("click",function(){
-      if(d.classList.contains("done")) return;
-      d.classList.add("done");
-      var ruleIdx=p[2];
-      d.querySelectorAll(".pdt").forEach(function(x,i){
-        var isRule=(i===ruleIdx);
-        x.classList.add(isRule?"isrule":"ismodel");
-        x.querySelector(".pk").textContent=isRule?"the rule":"needs a model";
+(function(){
+  var PAIRS=[
+   ["Check a mobile number has the right number of digits","Decide whether that number belongs to a spam caller",0,"Format is fixed forever. Who is a nuisance changes weekly, and they are trying not to be caught.",false],
+   ["Check a tax ID is formatted correctly","Decide whether a tax return is odd enough to audit",0,"The format is defined by the tax department. Which returns smell wrong is a judgement across hundreds of signals.",false],
+   ["Block a card the customer has reported stolen","Block a card that is behaving strangely",0,"&ldquo;Reported stolen&rdquo; is a fact you already hold. &ldquo;Strange&rdquo; is an opinion that has to be learned.",false],
+   ["Read the handwritten amount off a photo of a cheque","Check the amount in words matches the amount in figures",1,"The order is reversed here, and this is the pair worth your time. Reading handwriting needs a model. Comparing two numbers is trivial arithmetic &mdash; and it catches the model&rsquo;s mistakes for free.",true],
+   ["Send the order from the warehouse nearest the delivery address","Tell the customer what time the parcel will arrive",0,"Distance between two locations is arithmetic. Arrival time depends on traffic, weather and the driver.",false],
+   ["Escalate any support ticket untouched for 24 hours","Decide how urgent a ticket is from what the customer wrote",0,"A clock is deterministic. Reading distress in free text is not.",false],
+   ["Give the top tier ten percent off","Decide which customers should be in the top tier",0,"Ten percent is a policy someone chose. Who deserves to be in the tier is a prediction about future value. Both halves sound like one question and are not.",true],
+   ["Assign a seat when a passenger books","Decide how many seats to overbook the flight by",0,"Seat allocation is bookkeeping. Overbooking is a bet on no-show rates.",false],
+   ["Transcribe a recorded customer service call","Remove the long ID numbers from that transcript",1,"Reversed again &mdash; the model runs first and the rule cleans up after it. A pattern rule strips a fixed-length number perfectly; the transcription could never have been a rule.",true],
+   ["Reject applicants who do not hold the legally required licence","Rank the applicants who remain",0,"A licence is a yes-or-no fact. Ranking people is a prediction &mdash; and it is the place where a careless system quietly learns something you would not want repeated.",false]
+  ];
+  var pl=el("pdList"),ps=el("pdScore"),done=0;
+  PAIRS.forEach(function(p){
+    var d=document.createElement("div");d.className="pdi";
+    d.innerHTML='<div class="pdr">'+
+      '<button class="pdt" type="button" data-i="0">'+p[0]+'<span class="pk"></span></button>'+
+      '<button class="pdt" type="button" data-i="1">'+p[1]+'<span class="pk"></span></button>'+
+      '</div><div class="pda"></div>';
+    d.querySelectorAll(".pdt").forEach(function(b){
+      b.addEventListener("click",function(){
+        if(d.classList.contains("done"))return;
+        d.classList.add("done");
+        var ruleIdx=p[2];
+        d.querySelectorAll(".pdt").forEach(function(x,i){
+          var isRule=(i===ruleIdx);
+          x.classList.add(isRule?"isrule":"ismodel");
+          x.querySelector(".pk").textContent=isRule?"the rule":"needs a model";
+        });
+        var right=(+b.getAttribute("data-i"))===ruleIdx;
+        d.querySelector(".pda").innerHTML=(p[4]?'<span class="flag">the surprising one</span>':'')+
+          (right?"":"<strong>The other way round. </strong>")+p[3];
+        done++;ps.textContent=done+" of 10 done";
       });
-      var right=(+b.getAttribute("data-i"))===ruleIdx;
-      d.querySelector(".pda").innerHTML=(p[4]?'<span class="flag">the surprising one</span>':'')+
-        (right?"":"<strong>The other way round. </strong>")+p[3];
-      done++; ps.textContent=done+" of 10 done";
     });
+    pl.appendChild(d);
   });
-  pl.appendChild(d);
-});
+})();
+
+/* ---------- the twelve-item quick sort ---------- */
+(function(){
+  var OPT=["rule","model","both"];
+  var LAB={rule:"a rule",model:"a model",both:"both"};
+  var JOBS=[
+   ["Work out the tax on an invoice","rule","It is the law. A model here is indefensible the moment anybody asks why."],
+   ["Decide if a customer qualifies for free delivery over a threshold","rule","Somebody chose that threshold in a meeting. There is nothing to learn."],
+   ["Decide which of 40,000 customers to call before they cancel","model","Too many signals, and nobody can write the rule."],
+   ["Check whether an uploaded file is really the format it claims","rule","Exact and instant. The specification already says what the answer is."],
+   ["Read a scanned handwritten form","model","Messy input, no rule possible. This is where a model genuinely earns it."],
+   ["Route a support ticket to the right team","both","Rules for the obvious keywords; a model for the rest. Most tickets never need the model."],
+   ["Decide who to shortlist from 500 CVs","both","Careful &mdash; probably both, with a human at the end. Ranking people is exactly where a careless system learns something you would not want repeated."],
+   ["Calculate an employee&rsquo;s notice period from their start date","rule","It is in the contract. Arithmetic on a date."],
+   ["Spot a fraudulent transaction","both","Hard rules for the impossible cases, a model for the merely suspicious, hard rules again on the output."],
+   ["Translate a product description into another language","model","No rule exists. Language is not deterministic."],
+   ["Flag any invoice above a set amount for director approval","rule","And you want it to fire every single time, not usually. That is the whole point of a rule."],
+   ["Summarise 200 pieces of customer feedback into themes","model","Free text, no rule. And no single right answer either, which is worth noticing."]
+  ];
+  var host=el("qsList"),sc=el("qsScore"),done=0;
+  JOBS.forEach(function(j){
+    var d=document.createElement("div");d.className="qi";
+    d.innerHTML='<div class="qq">'+j[0]+'</div><div class="qb">'+
+      OPT.map(function(o){return '<button class="qbt" type="button" data-o="'+o+'">'+LAB[o]+'</button>'}).join("")+
+      '</div><div class="qa"></div>';
+    d.querySelectorAll(".qbt").forEach(function(b){
+      b.addEventListener("click",function(){
+        if(d.classList.contains("done"))return;
+        d.querySelectorAll(".qbt").forEach(function(x){x.classList.remove("sel")});
+        b.classList.add("sel");d.classList.add("done");
+        var right=b.getAttribute("data-o")===j[1];
+        d.querySelector(".qa").innerHTML='<span class="tg'+(right?"":" miss")+'">'+LAB[j[1]]+'</span>'+(right?"":"<strong>Not quite. </strong>")+j[2];
+        done++;sc.textContent=done+" of 12 sorted";
+      });
+    });
+    host.appendChild(d);
+  });
+})();
+
+/* ---------- three questions that sound identical ---------- */
+(function(){
+  var P=[
+   ["is it correctly formatted?","A rule.","A fixed number of digits and a known set of starting digits. Deterministic, and exactly right on every number that has ever existed or ever will.",
+    "One line, written once, free forever. Build a model for this instead and you might reach 99.7% &mdash; three wrong in every thousand, forever, with no way to know which three."],
+   ["is it real and active?","Neither \u2014 a lookup.","A network query. The answer is a fact somebody already holds.",
+    "This is the one people miss. It is not a rule and it is certainly not a model &mdash; it is retrieval. Nothing is being decided or predicted at all."],
+   ["is it a spam caller?","A model.","Changes constantly, adversaries involved, no rule survives.",
+    "Here a model genuinely earns its cost, because somebody is actively working to stay ahead of whatever rule you wrote last week."]
+  ];
+  chips(el("phChips"),P.map(function(p){return p[0]}),function(i){
+    el("phAns").textContent=P[i][1];   /* real em dash, not an entity: textContent does not decode */
+    el("phAns").style.color = i===0?"var(--isrule)":i===1?"var(--accent)":"var(--ismodel)";
+    el("phWhy").innerHTML=P[i][2];
+    el("phOut").innerHTML='<span class="ol">'+P[i][0]+'</span>'+P[i][3];
+    el("phLab").textContent=P[i][0];
+  });
+})();
 
 /* ---------- the three-layer stack ---------- */
-var SCEN=[
- ["card fraud",
-  ["Account frozen or reported stolen","Two cities in ten minutes &mdash; physically impossible","Above the daily limit"],
-  ["Unusual hour for this person? Amount unlike anything they have sent before? Beneficiary account opened last week? Device never seen before? Out comes a risk score, not a verdict."],
-  ["Never auto-block below a trivial amount &mdash; not worth the friction","A known merchant or flagged customer routes to a human, never an auto-block","Every block must carry a reason code, because somebody will ask"]],
- ["an insurance claim",
-  ["Policy lapsed","Claim after the cover ended","Amount above the policy cap","Claimant is not the policyholder"],
-  ["Of the valid claims, which look unusual &mdash; treatment inconsistent with diagnosis, an odd claim pattern, a claim filed suspiciously soon after the policy started."],
-  ["Never auto-reject on a score alone","Claims below a small value are paid without review, because investigating costs more than the claim","Every investigation is logged with a reason"]],
- ["a credit limit increase",
-  ["Minimum account age","No missed payment in the required window","Regulatory floors &mdash; these are eligibility, and they are absolute"],
-  ["Of those eligible, who will handle a higher limit responsibly?"],
-  ["Never raise by more than a fixed multiple in one step","Never exceed the regulatory ceiling","Store a reason for every decision, because this is a lending decision and it will be audited"]],
- ["are these two records the same person?",
-  ["Identical phone, email or ID number means the same person. Certain, no model needed &mdash; and this resolves the large majority of cases for free."],
-  ["Everything else: near-miss names, abbreviated addresses, typos."],
-  ["Never auto-merge two records holding different ID numbers, however similar the names","Merges above a value threshold need a human"]]
-];
-var tabs=document.getElementById("lyTabs"), out=document.getElementById("lyOut");
-function paint(i){
-  tabs.querySelectorAll(".tb").forEach(function(b,j){ b.classList.toggle("on",i===j) });
-  var s=SCEN[i];
+(function(){
+  var SCEN=[
+   ["card fraud",
+    ["Account frozen or reported stolen","Two cities in ten minutes &mdash; physically impossible","Above the daily limit"],
+    ["Unusual hour for this person? Amount unlike anything they have sent before? Beneficiary account opened last week? Device never seen before? Out comes a risk score, not a verdict."],
+    ["Never auto-block below a trivial amount &mdash; not worth the friction","A known merchant or flagged customer routes to a human","Every block carries a reason code, because somebody will ask"]],
+   ["an insurance claim",
+    ["Policy lapsed","Claim after the cover ended","Amount above the policy cap","Claimant is not the policyholder"],
+    ["Of the valid claims, which look unusual &mdash; treatment inconsistent with diagnosis, an odd claim pattern, a claim filed suspiciously soon after the policy started."],
+    ["Never auto-reject on a score alone","Claims below a small value are paid without review, because investigating costs more than the claim","Every investigation is logged with a reason"]],
+   ["a KYC document",
+    ["Is the ID number the right length and checksum?","Has the document expired?","Is the file even readable?"],
+    ["Is this a photograph of a real document, or a photo of a screen? Has the image been edited? Does the face match the selfie?"],
+    ["A rejection must always name which check failed","Anything uncertain goes to a human, never to an auto-reject"]],
+   ["a marketplace listing",
+    ["Banned category","Banned keyword","Seller already suspended"],
+    ["Is this a counterfeit? Is the photo stolen from the brand&rsquo;s own site? Is the price implausible for a genuine item?"],
+    ["A seller above a trust threshold is never auto-removed &mdash; the listing is queued for review","Every removal is appealable"]],
+   ["a credit limit increase",
+    ["Minimum account age","No missed payment in the required window","Regulatory floors &mdash; eligibility, and absolute"],
+    ["Of those eligible, who will handle a higher limit responsibly?"],
+    ["Never raise by more than a fixed multiple in one step","Never exceed the regulatory ceiling","Store a reason for every decision, because this will be audited"]],
+   ["are these the same person?",
+    ["Identical phone, email or ID number means the same person &mdash; certain, and this resolves the large majority for free"],
+    ["Everything else: near-miss names, abbreviated addresses, typos."],
+    ["Never auto-merge two records holding different ID numbers, however similar the names","Merges above a value threshold need a human"]],
+   ["which ATM to refill",
+    ["Below the minimum cash floor &rarr; refill. Not negotiable."],
+    ["Predict demand for the next 48 hours &mdash; day of week, festivals, salary dates, local events."],
+    ["Never schedule a van outside its permitted hours","Hospital and airport machines get priority regardless of the prediction"]]
+  ];
   function block(cls,label,note,items){
     return '<div class="ly '+cls+'"><div class="lh"><span>'+label+'</span><span>'+note+'</span></div>'+
            '<div class="lb"><ul>'+items.map(function(t){return "<li>"+t+"</li>"}).join("")+'</ul></div></div>';
   }
-  out.innerHTML =
-    block("r1","layer one &middot; hard rules","instant, free, exactly right",s[1])+
-    block("r2","layer two &middot; the model","only what survives layer one",s[2])+
-    block("r3","layer three &middot; rules on the output","the safety net",s[3]);
-}
-SCEN.forEach(function(s,i){
-  var b=document.createElement("button"); b.className="tb"; b.type="button"; b.textContent=s[0];
-  b.addEventListener("click",function(){ paint(i) });
-  tabs.appendChild(b);
-});
-paint(0);
+  chips(el("lyTabs"),SCEN.map(function(s){return s[0]}),function(i){
+    var s=SCEN[i];
+    el("lyOut").innerHTML =
+      block("r1","layer one &middot; hard rules","instant, free, exactly right",s[1])+
+      block("r2","layer two &middot; the model","only what survives layer one",s[2])+
+      block("r3","layer three &middot; rules on the output","the safety net",s[3]);
+  });
+})();
+
+/* ---------- what to ask back ---------- */
+(function(){
+  var A=[
+   ["&ldquo;We need AI in this product.&rdquo;","&ldquo;Which decision is it making? And can you write that decision down as a rule?&rdquo;",
+    "Almost always the conversation stops here, because naming the decision is the hard part and nobody had done it."],
+   ["&ldquo;AI will make it smarter.&rdquo;","&ldquo;Smarter than what? What does the current rule get wrong?&rdquo;",
+    "If nobody can name a case the current rule handles badly, there is no problem to solve yet."],
+   ["&ldquo;Competitors are using AI.&rdquo;","&ldquo;For which decision? Ours may not be the same decision.&rdquo;",
+    "Two companies in the same industry rarely have the same bottleneck. Copying the technique without copying the problem is how budgets disappear."],
+   ["&ldquo;It will handle the edge cases.&rdquo;","&ldquo;Name three. If we can name them, they are rules.&rdquo;",
+    "The best question on this list. An edge case you can describe is an IF statement. An edge case you cannot describe is the genuine article &mdash; and there are usually far fewer than claimed."],
+   ["&ldquo;The board wants AI.&rdquo;","&ldquo;Then let us put it where it does something a rule cannot &mdash; and let us have a number for what it costs per call.&rdquo;",
+    "Not a refusal. This is the productive version: agree to spend it, and spend it where it can actually win something."]
+  ];
+  chips(el("argChips"),A.map(function(a,i){return "what they say "+(i+1)}),function(i){
+    el("argSaid").innerHTML='<span class="ol">what they say</span><strong>'+A[i][0]+'</strong>';
+    el("argAsk").innerHTML='<span class="ol">what to ask back</span><strong>'+A[i][1]+'</strong><br><br>'+A[i][2];
+    el("argLab").textContent="option "+(i+1);
+  });
+})();
+
+/* ---------- rules rot ---------- */
+(function(){
+  var R=[
+   ["week 1","the rule ships",96,1,"Block anything containing a short list of banned words. It works beautifully, and it cost an afternoon."],
+   ["week 2","still fine",94,1,"Nothing has changed in the world yet. This is the period in which everyone concludes the problem is solved."],
+   ["week 3","the first workaround",61,3,"Spammers start spelling the banned words with digits and symbols. The rule does not know that a zero can be an o."],
+   ["week 4","a human patches it",88,3,"Somebody adds the new spellings. It works again &mdash; until next week, because the other side is still working."],
+   ["week 6","the exceptions outgrow the rule",44,2,"The list of special cases is now longer than the original rule, and nobody remembers why half of them are there."],
+   ["week 8","the author has left",22,2,"<strong>All three warning signs at once.</strong> Somebody updates it constantly, the exceptions outnumber the rule, and the person who knew why the thresholds were chosen is gone. You have a machine learning problem, and you are solving it by hand."]
+  ];
+  var at=0;
+  function paint(){
+    bars(el("rotRows"),R.slice(0,at+1).map(function(r,i){return [r[0]+" · "+r[1],r[2],i===at?r[3]:0,r[2]+"% caught"]}));
+    el("rotLab").textContent=R[at][0];
+    el("rotOut").innerHTML='<span class="ol">'+R[at][0]+' &mdash; '+R[at][1]+'</span>'+R[at][4];
+    el("rotNext").disabled=at>=R.length-1;
+  }
+  el("rotNext").addEventListener("click",function(){if(at<R.length-1){at++;paint()}});
+  el("rotReset").addEventListener("click",function(){at=0;paint()});
+  paint();
+})();
 })();
 </script>
+
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
