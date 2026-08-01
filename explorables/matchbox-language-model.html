@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A language model you can hold in your hands</title>
+<meta name="description" content="Build a language model out of matchboxes and beads, the way Donald Michie built a noughts and crosses machine in 1960. Train it, make it write, turn the temperature dial, then reward it until it tells you what you want to hear.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Chivo:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8E2CE; --paper-2:#DCD5BB; --ink:#1A1C14; --ink-soft:#454838;
+    --ink-faint:#6A6C58; --rule:#C9C2A6; --accent:#2C6142;
+    --panel:#171A14; --panel-ink:#E2DFCB;
+    --risk:#9E3B26; --warn:#A9781C; --safe:#2C6142;
+    --b1:#3A6B4A; --b2:#8A5A18; --b3:#9E3B26; --b4:#6B4A7A;
+    --b5:#2F5A78; --b6:#7A6A24; --b7:#1F6B6B; --b8:#8C3A5A;
+    --maxw:680px; --wide:1080px; --pad:26px;
+    --disp:"Bitter",Georgia,serif;
+    --body:"Chivo",system-ui,sans-serif;
+    --mono:"DM Mono",ui-monospace,Menlo,monospace;
+    --f-lab:12px; --f-sm:15px; --f-bod:19px; --f-mid:24px; --f-h3:32px; --f-h2:46px; --f-hero:88px;
+    --t:.5s cubic-bezier(.4,0,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
+
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+    font-size:var(--f-bod);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  /* ---- width tiers ---- */
+  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+  .wide-hero{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+  .bleed{width:100%;margin:0}
+  section{padding:clamp(72px,9vw,128px) 0}
+  section + section{border-top:1px solid var(--rule)}
+
+  h1,h2{font-family:var(--disp);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}
+  h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px;max-width:15em}
+  h3{font-family:var(--disp);font-weight:500;font-size:clamp(23px,2.6vw,32px);
+     line-height:1.16;letter-spacing:-.012em;margin:0 0 16px}
+  p{margin:0 0 22px}
+  b,strong{font-weight:600}
+  code{font-family:var(--mono);font-size:var(--f-sm);background:var(--paper-2);
+       padding:2px 6px;border-radius:3px;color:var(--ink)}
+  a{color:var(--accent)}
+
+  .lede{font-family:var(--body);font-weight:400;font-size:clamp(20px,2.2vw,24px);
+        line-height:1.44;color:var(--ink-soft);max-width:26em}
+  .lede-meta{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.14em;
+        text-transform:uppercase;color:var(--ink-faint);margin:26px 0 0}
+
+  /* ---- HERO: the machine writes a line, beads shown under each word ---- */
+  header{padding:clamp(60px,9vw,116px) 0 clamp(40px,6vw,72px)}
+  h1{font-size:clamp(42px,8vw,88px);max-width:11em}
+  .wide-hero .lede{margin:34px 0 0}
+
+  /* ---- figure frame: the only figure container ---- */
+  .fig{border:1px solid var(--rule);background:var(--paper-2);border-radius:5px;
+    margin:34px 0 0;overflow:hidden}
+  .fig-head{padding:13px 20px;border-bottom:1px solid var(--rule);
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .fig-body{padding:30px 30px;background:var(--paper)}
+  .fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;
+    padding:15px 20px;border-top:1px solid var(--rule);background:var(--paper-2)}
+  .fig-ctl label{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.06em;
+    color:var(--ink-faint);white-space:nowrap}
+  .fig-cap{font-family:var(--mono);font-size:var(--f-lab);line-height:1.66;color:var(--ink-faint);
+    padding:13px 20px;border-top:1px solid var(--rule)}
+  .fig-cap b{color:var(--accent);font-weight:500}
+  .fig-read{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-faint);
+    letter-spacing:.06em;text-align:right}
+  .fig-read b{color:var(--accent);font-weight:500}
+  .fig-out{font-family:var(--mono);font-size:var(--f-sm);line-height:1.9;color:var(--ink-soft);
+    background:var(--paper-2);border-radius:4px;padding:16px 18px;margin:22px 0 0}
+  .fig-out b{color:var(--ink);font-weight:500}
+  .fig-out i{color:var(--ink-faint);font-style:normal}
+  .fig svg{display:block;width:100%;height:auto;touch-action:none}
+  .fig-slide{flex:1;min-width:180px;display:flex;align-items:center;gap:12px}
+  @media(max-width:760px){
+    .fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .fig-body svg{min-width:600px}
+    .fig-body::-webkit-scrollbar{height:6px}
+    .fig-body::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
+  }
+
+  /* ---- callouts ---- */
+  .fig-lab{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  .intu{border-left:3px solid var(--accent);background:var(--paper-2);
+    border-radius:0 5px 5px 0;padding:22px 26px;margin:32px 0;line-height:1.6}
+  .intu i{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent);font-style:normal;display:block;margin-bottom:11px}
+  .intu p{margin:0}
+  .intu b{font-weight:600}
+  .note{background:var(--paper-2);border-radius:4px;padding:20px 24px;margin:30px 0 0;
+    font-size:var(--f-sm);line-height:1.7;color:var(--ink-soft)}
+  .note b{color:var(--ink);font-weight:600}
+  .note-hint{background:none;text-align:center;color:var(--ink-faint);border:0;width:100%;
+    font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.09em;cursor:pointer;
+    padding:40px 0;margin:0}
+  .note-hint kbd{font-family:var(--mono);border:1px solid var(--rule);border-radius:3px;
+    padding:2px 7px;color:var(--ink-soft);background:var(--paper-2)}
+  .note-hint:hover,.note-hint:focus-visible{color:var(--accent)}
+  .pull{font-family:var(--disp);font-weight:500;font-size:clamp(23px,2.6vw,32px);
+    line-height:1.26;letter-spacing:-.014em;color:var(--accent);
+    border-left:3px solid var(--accent);padding-left:28px;margin:44px 0}
+
+  /* ---- controls ---- */
+  .chip{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.03em;
+    padding:9px 14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
+    color:var(--ink-soft);cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t)}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+  .chip.up{border-color:var(--safe);color:var(--safe)}
+  .chip.down{border-color:var(--risk);color:var(--risk)}
+  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
+
+  /* ---- dark panel ---- */
+  .panel{background:var(--panel);color:var(--panel-ink);border-radius:5px;
+    padding:28px 30px;margin:32px 0 0;font-family:var(--mono);font-size:var(--f-sm);
+    line-height:1.85;overflow-x:auto}
+  .panel b{color:#C8A54E;font-weight:500}
+  .panel i{color:#8E8C74;font-style:normal}
+  .panel.weeds{background:none;color:var(--ink);padding:0;margin:0;
+    font-family:var(--body);font-size:var(--f-bod);overflow:visible}
+  .panel.weeds[hidden]{display:none}
+  .panel.weeds details{border-top:1px solid var(--rule);padding:20px 0}
+  .panel.weeds summary{font-family:var(--disp);font-weight:500;font-size:var(--f-bod);
+    cursor:pointer;letter-spacing:-.01em}
+  .panel.weeds summary::marker{color:var(--accent)}
+  .panel.weeds p{margin:16px 0 0;font-size:var(--f-sm);line-height:1.75;color:var(--ink-soft)}
+
+  /* ---- progress: corner dial ---- */
+  .rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;
+    display:flex;align-items:center;justify-content:center;border-radius:50%;
+    background:var(--paper-2);border:1px solid var(--rule)}
+  .rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .rail circle{fill:none;stroke-width:2.5}
+  .rail .tk{stroke:var(--rule)}
+  .rail .fl{stroke:var(--accent);stroke-linecap:round}
+  .rail span{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-soft)}
+  @media(max-width:640px){.rail{display:none}}
+
+  /* ---- scrollytelling (width tier + modifier, no new frames) ---- */
+  .bleed.scrolly{position:relative;display:grid;gap:5vw;
+    grid-template-columns:minmax(0,1fr) minmax(0,420px);
+    max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+  .wide.sg{position:sticky;top:0;height:100vh;max-width:none;padding:0;
+    display:flex;align-items:center;justify-content:center}
+  .bleed.scrolly > *{min-width:0}
+  .wide.sg > *{width:100%;max-width:600px;min-width:0}
+  .col.ss{padding:38vh 0 42vh;max-width:none}
+  .col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;
+    opacity:.26;transition:opacity .35s;cursor:pointer;max-width:none;padding:0}
+  .col.stp.on{opacity:1}
+  .col.stp p{font-size:var(--f-mid);line-height:1.42;margin:0;color:var(--ink-soft)}
+  .col.stp.on p{color:var(--ink)}
+  [data-gel]{opacity:.1;transition:opacity var(--t)}
+  [data-gel].show{opacity:1}
+  @media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}
+  @media(max-width:900px){
+    .bleed.scrolly{grid-template-columns:1fr;gap:0}
+    .wide.sg{order:-1;width:100%;height:44vh;background:var(--paper);
+      border-bottom:1px solid var(--rule);z-index:5}
+    .col.ss{padding:4vh 0 12vh}
+    .col.stp{min-height:auto;margin:28px 0}
+    .col.stp p{font-size:var(--f-bod)}
+  }
+
+  /* ---- prose to figure coupling ---- */
+  .ref{border-bottom:1px dotted var(--accent);cursor:help}
+  .ref.hot{background:var(--paper-2)}
+  .fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}
+
+  /* ---- the atom: a bead ---- */
+  .bd{transition:opacity var(--t)}
+  .bd.drawn{stroke:var(--ink);stroke-width:2.5}
+  .bd.fresh{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:3 2.5}
+  .bd.gone{fill:none;stroke:var(--rule);stroke-width:1.5;opacity:.55}
+  .bx{fill:var(--paper);stroke:var(--rule);stroke-width:1.5}
+  .bx.sel{stroke:var(--accent);stroke-width:3}
+  .lb{font-family:var(--mono);fill:var(--ink-faint);letter-spacing:.03em}
+  .vl{font-family:var(--mono);fill:var(--ink)}
+  .wd{font-family:var(--disp);font-weight:500;fill:var(--ink);letter-spacing:-.01em}
+  .tgt{fill:rgba(0,0,0,0);cursor:pointer}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  footer{padding:70px 0 90px;color:var(--ink-faint);font-size:var(--f-sm);line-height:1.8}
+  footer a{color:var(--ink-soft)}
+  ::selection{background:var(--accent);color:var(--paper)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
+  <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
+</svg><span id="pt">i</span></div>
+
+<header class="wide-hero" data-hero="beads-drawn-under-the-written-line">
+  <h1>A language model you can hold in your hands</h1>
+  <p class="lede">In 1960 Donald Michie taught a stack of matchboxes to play noughts and crosses, using nothing but coloured beads and a rule for when to add them. Point the same machine at words and you get the thing sitting under every chatbot you have ever used.</p>
+  <p class="lede-meta">304 matchboxes &middot; one bead per move &middot; no electricity</p>
+  <div class="fig" id="figH">
+    <div class="fig-head"><span class="fig-lab">the machine writing, one bead at a time</span><span class="fig-read" id="hRead">warming up</span></div>
+    <div class="fig-body"><svg id="hSvg" viewBox="0 0 900 216" role="img" aria-label="A line of text written word by word, with the box and the drawn bead shown under each word"></svg></div>
+    <div class="fig-ctl"><button class="chip" id="hGo">write another line</button><span class="fig-read" id="hSub">every word above came out of the box drawn beneath it</span></div>
+  </div>
+</header>
+
+<!-- ============ 01 ============ -->
+<section data-ch="01" data-defines="box,bead,draw,reward" class="reveal">
+  <div class="col">
+    <h2>Three hundred and four matchboxes learned to play noughts and crosses</h2>
+    <p>Play a game against a filing cabinet. You go first, you put a cross in the middle. Now your opponent has to reply, and your opponent is a stack of matchboxes on a table.</p>
+    <p>Somebody finds the box with your exact position drawn on the front. Inside are <span class="ref" data-ref="beads">coloured beads</span>, one colour for each empty square. They shake it, tip out a single bead without looking, read its colour, and put a nought in the matching square. That is the whole move. Nobody thought about it, including the machine.</p>
+    <p>The interesting part happens after the game ends. If the machine lost, every bead it drew that game gets thrown away. If it won, three more beads of each drawn colour go back in. A draw is worth one extra. That is the entire learning algorithm, and it fits in a sentence.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span class="fig-lab">figure 1 &middot; one box, one move, one verdict</span><span class="fig-read" id="f1Read">24 beads in the box</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 344" role="img" aria-label="A matchbox holding coloured beads beside a noughts and crosses board"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f1Shake">shake and tip out a bead</button>
+        <button class="chip up" data-f1="win">it won &nbsp;+3</button>
+        <button class="chip" data-f1="draw">it drew &nbsp;+1</button>
+        <button class="chip down" data-f1="loss">it lost &nbsp;&minus;1</button>
+        <button class="chip" data-f1="reset">refill the box</button>
+      </div>
+      <div class="fig-cap"><b>Shake first, then judge the outcome.</b> Do it fifteen times, always punishing the bottom left square and always rewarding the top right, and watch the two piles trade places. Nothing in the box knows what a corner is.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A jar of raffle tickets for every decision you ever face, one jar per situation. You never think. You pull a ticket. But when the evening goes well you photocopy the tickets you used and drop the copies back in, and when it goes badly you bin them. <b>After a few hundred evenings the jars are full of the tickets that tend to work</b>, and none of them ever knew why.</p></div>
+    <p>Michie's machine, MENACE, needed 304 boxes to cover every position it could face as second player, and a couple of hundred games before it stopped losing. It has no processor and no memory in the usual sense. The bead counts <em>are</em> the memory, sitting in the open where you can count them.</p>
+    <p>Noughts and crosses is a small world: a position, a set of legal replies, a verdict at the end. Hold that shape in your head, because writing English has exactly the same shape, and almost nobody notices.</p>
+  </div>
+</section>
+
+<!-- ============ 02 ============ -->
+<section data-ch="02" data-uses="box,bead,draw" data-defines="label,context,vocabulary" class="reveal">
+  <div class="col">
+    <h2>A sentence is a position, and the next word is a move</h2>
+    <p>Finish this, out loud, before you read on: <b>&ldquo;humpty dumpty sat on a ___&rdquo;</b></p>
+    <p>You said wall. You did not consider every word in English and score them. Something in you already held a short list for this exact situation, weighted, and the fattest item on it came out first.</p>
+    <p>So build the box. Write the situation on the front, which here is just the word that came last. Inside go beads, one colour per word that could come next. Draw a bead, write down its word, and you have made a move.</p>
+    <p>Below is an empty box with <code>the</code> written on the front. Nothing is in it yet, because nothing has happened yet. Put beads in by hand and see what the box starts to say about the word <code>the</code>.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span class="fig-lab">figure 2 &middot; the box for &ldquo;the&rdquo;, filled by hand</span><span class="fig-read" id="f2Read">empty</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 300" role="img" aria-label="An empty box labelled the, filling with coloured beads as words are added"></svg></div>
+      <div class="fig-ctl" id="f2Chips"></div>
+      <div class="fig-cap"><b>Click a word to drop a bead in.</b> Click <b>mouse</b> four times and <b>spoon</b> once. The box now believes, with no idea what a mouse is, that <code>the mouse</code> is four times likelier than <code>the spoon</code>.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>The label on the front is <b>everything the machine is allowed to remember</b> at the moment it chooses. Not the topic, not who is talking, not what it said two lines ago. One word, written on a box. Everything else about the conversation has already fallen on the floor.</p></div>
+    <p>Filling boxes by hand is obviously absurd. English has a lot of words and they occur in a lot of situations, and you would be there until Tuesday.</p>
+    <p>Nobody fills them by hand. You pour text in and let it fill them, which turns out to be the least mysterious step in the whole business.</p>
+  </div>
+</section>
+
+<!-- ============ 03 : SCROLLY, graphic left ============ -->
+<section data-ch="03" data-uses="label,box,bead" data-defines="corpus,training" class="reveal">
+  <div class="col">
+    <h2>Training is counting, and there is no second step</h2>
+    <p>Here is the part that sounds like it must be more than it is. Take some text. Slide a window along it. Every time you see one word follow another, drop a bead in the appropriate box. Stop when you run out of text.</p>
+    <p>Scroll through it happening. The text is a handful of nursery rhymes, which is all the machine on this page will ever know.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span class="fig-lab">figure 3 &middot; pouring text into boxes</span><span class="fig-read" id="sc1Read">0 boxes &middot; 0 beads</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 620 560" role="img" aria-label="A line of nursery rhyme sliding past a window while boxes fill with beads"></svg></div>
+        <div class="fig-cap">Each step drops beads. <b>Click a step to jump to it.</b></div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><h3>Start with nothing</h3><p>No boxes, no beads, no rules about English. Just a line of text and a window two words wide.</p></div>
+      <div class="col stp" data-step="1"><h3>The window sees its first pair</h3><p>The line opens with <code>the cat</code>. So: find the box labelled <code>the</code>, and drop in a bead the colour of <code>cat</code>. If that box does not exist yet, make it.</p></div>
+      <div class="col stp" data-step="2"><h3>Slide it along, one word at a time</h3><p><code>cat and</code>, then <code>and the</code>, then <code>the fiddle</code>. Five beads down, and the box for <code>the</code> already holds two of them, because <code>the</code> keeps happening.</p></div>
+      <div class="col stp" data-step="3"><h3>One line finished</h3><p>Eleven words, twelve beads, nine boxes. The twelfth bead is the one that means the line has ended, and drawing it later is how the machine knows to stop. Nothing has been understood. Something has been counted.</p></div>
+      <div class="col stp" data-step="4"><h3>Now pour in the rest</h3><p>Sixteen lines of rhyme. The wall of boxes is the finished machine, and the fat boxes are the words English keeps coming back to.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A hotel where every guest signs the book on their way in, and the receptionist keeps one page per guest listing who walked in behind them. No conversation, no interest, no judgement. <b>Months later that book knows a startling amount about the hotel</b>, and the receptionist still knows nothing.</p></div>
+    <p>Real training is this, at a scale that is hard to picture: trillions of words, and boxes that hold not a handful of beads but a probability for every word in the language. The counting is dressed up as arithmetic on numbers rather than beads in card, for reasons worth getting to later. The move is identical.</p>
+    <p>So the boxes are full. What does a fat pile of beads actually mean?</p>
+  </div>
+</section>
+
+<!-- ============ 04 ============ -->
+<section data-ch="04" data-uses="corpus,training,box,bead" data-defines="probability,distribution" class="reveal">
+  <div class="col">
+    <h2>A pile of beads is a probability</h2>
+    <p>Open the box marked <code>little</code> and tip it out on the table. Ten beads in five colours, and one of those colours has four of them.</p>
+    <p>That heap is a <span class="ref" data-ref="dist">probability distribution</span>, which is a heavy phrase for a simple object: a list of options with a number on each, and the numbers add up to one whole box. Four beads out of ten is forty percent. It was never anything cleverer than a proportion.</p>
+    <p>The two pictures below are the same box twice. Beads on the left, percentages on the right. Click either one and both light up, because they are not two facts, they are one fact drawn two ways.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span class="fig-lab">figure 4 &middot; one box, two representations</span><span class="fig-read" id="f4Read">click a colour</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 340" role="img" aria-label="A box of beads beside the same counts drawn as percentage bars"></svg></div>
+      <div class="fig-ctl" id="f4Chips"></div>
+      <div class="fig-cap"><b>Switch boxes, then click a colour.</b> The box for <code>the</code> is fat and torn eighteen ways. The box for <code>hickory</code> holds one colour and has no choice to make at all.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A weather vane, not a forecaster. It has no theory about the weather. It has been standing in this field for years and it is currently pointing where the wind has mostly come from. <b>The machine does not know what a lamb is. It knows that four slips of paper out of ten said lamb</b>, and that is genuinely all it has.</p></div>
+    <p>Notice the boxes holding a single colour. After <code>hickory</code> the rhymes only ever said <code>dickory</code>, so that box has no opinion, only a reflex. Boxes like that will matter a great deal shortly.</p>
+    <p>Every box now holds a set of odds. Time to use them with your eyes shut.</p>
+  </div>
+</section>
+
+<!-- ============ 05 ============ -->
+<section data-ch="05" data-uses="probability,distribution,draw" data-defines="generation,sampling" class="reveal">
+  <div class="col">
+    <h2>Writing means pulling beads with your eyes shut</h2>
+    <p>The machine writes like this. Look at the last word. Find its box. Shake, pull one bead, write down the word on it. That word is now the last word, so find <em>its</em> box, and go again. Stop when you pull the bead that means stop.</p>
+    <p>There is no plan. Nothing was decided about where the sentence is going, because nothing in the machine can hold a sentence. It holds one word and a box.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span class="fig-lab">figure 5 &middot; the writing loop</span><span class="fig-read" id="f5Read">ready</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 300" role="img" aria-label="The current box with one bead being drawn, and the sentence written so far"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f5One">pull one bead</button>
+        <button class="chip" id="f5All">write the whole line</button>
+        <button class="chip" id="f5Reset">start over</button>
+      </div>
+      <div class="fig-cap"><b>Pull beads one at a time.</b> Watch the box on the left change every single time, because the label is always just the word you last wrote.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Run it a few times and you will get lines that are eerie in a specific way. <code>the mouse ran away with the spoon</code> is not in any rhyme. It is stitched from two of them at the word <code>ran</code>, where the box happened to offer a door into a different poem.</p>
+    <div class="intu"><i>picture it</i><p>Someone humming their way through a medley they half know. Every note they hum is a plausible next note, so it sounds like music the whole way through, <b>and they cannot tell you which song they are in</b>. The seams are invisible from inside because there is no inside.</p></div>
+    <p>That stitching is the closest thing here to creativity, and it is a side effect of a shared word. It is also why the output can be fluent and wrong at the same time: fluency lives in the boxes, and truth was never in them.</p>
+    <p>One thing has been quietly assumed so far. When you reach into the box, do you really take a bead at random?</p>
+  </div>
+</section>
+
+<!-- ============ 06 : THE KNOB ============ -->
+<section data-ch="06" data-uses="sampling,generation,distribution" data-defines="temperature,greedy" class="reveal">
+  <div class="col">
+    <h2>One dial sits between a parrot and a lunatic</h2>
+    <p>You do not have to draw fairly. You could cheat towards the fat piles by feeling for the colour there is most of, or you could cheat the other way and deliberately ignore how many there are of each.</p>
+    <p>That cheat has a name in every model you have used. It is the <span class="ref" data-ref="temp">temperature</span> dial, and it is the one number most people are given control of without being told what it does. It does not change a single bead in the box. It changes how much the pile sizes count when you reach in.</p>
+    <p>Drag it. The left column is the box as it actually is, unchanged. The right column is what the machine behaves as if it holds.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span class="fig-lab">figure 6 &middot; the same box, reached into differently</span><span class="fig-read" id="f6Read">temperature 0.80</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 330" role="img" aria-label="Real bead counts beside the effective chances after temperature is applied"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f6T">cold</label><input type="range" id="f6T" min="5" max="200" value="80" step="5" aria-label="temperature"><label for="f6T">hot</label></span>
+        <button class="chip" id="f6Go">write three lines</button>
+      </div>
+      <div class="fig-cap"><b>Drag the dial, then write three lines.</b> Below 0.3 the machine repeats itself, because the fattest bead wins every time and the fattest bead leads back to the same box.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="fig-out" id="f6Out">press write three lines</div>
+    <p>At the cold end it stops sampling and starts obeying: always the biggest pile, which is called greedy decoding. Greedy sounds safe and behaves badly, because a loop is a perfectly good answer to &ldquo;what is most likely next&rdquo; and the machine has no memory of having just said it.</p>
+    <p>At the hot end the piles stop mattering, the rare beads come out as often as the common ones, and you get word salad with correct spelling.</p>
+    <div class="intu"><i>picture it</i><p>How hard you shake the box before you reach in. <b>A gentle tilt and your fingers find the colour there is most of. A violent shake and every colour is equally likely to end up under your hand.</b> The beads are the same beads either way.</p></div>
+    <p>This is not a metaphor for what real models do, it is the same arithmetic. A model scores every possible next word, divides every score by the temperature, and turns the results back into chances. Dividing by a small number exaggerates the gaps between the piles. Dividing by a large one flattens them.</p>
+    <div class="pull">The dial changes how you reach into the box. It cannot put anything into the box that was not counted.</div>
+    <p>Which leaves the harder question. What decides what goes in the box in the first place? The writing on the front.</p>
+  </div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section data-ch="07" data-uses="label,corpus,box" data-defines="context window,sparsity,memorisation" class="reveal">
+  <div class="col">
+    <h2>Longer labels buy sense and cost beads</h2>
+    <p>The machine has been reading one word off the front of the box. That is why it wanders: after <code>ran</code> it cannot tell whether it is in the rhyme about the mouse or the one about the dish.</p>
+    <p>Fix it by writing more on the front. Label the boxes with the last two words, and <code>mouse ran</code> becomes a different box from <code>dish ran</code>. The machine stops changing poems mid sentence and starts sounding like it means something.</p>
+    <p>You pay for it immediately, and the bill is drawn below. Every word you add to the label multiplies the number of boxes you need, while the same fixed pile of beads gets spread across all of them.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span class="fig-lab">figure 7 &middot; what a longer label costs</span><span class="fig-read" id="f7Read">label: 1 word</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 340" role="img" aria-label="Box counts and bead spread as the label grows from one word to three"></svg></div>
+      <div class="fig-ctl" id="f7Chips"></div>
+      <div class="fig-cap"><b>Switch the label length.</b> Every figure here is counted from the actual rhymes on this page, not illustrated. Watch the dead boxes, the ones holding a single bead and therefore offering no choice at all.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>At three words nearly every box holds exactly one bead. The machine now writes beautiful English and has stopped composing: it is reciting the rhymes back at you word for word, because a box with one bead in it is not a decision, it is a quotation.</p>
+    <div class="intu"><i>picture it</i><p>Revising for an exam with flashcards. One word on the front and you can waffle about anything, badly. A whole paragraph on the front and your answer is perfect, right up until the question is phrased differently, <b>at which point you have no card and nothing to say</b>.</p></div>
+    <p>This is the trade every language model lives on. Short labels generalise and drivel. Long labels are accurate and memorise. Beads cannot escape it, because a box is either full or it is not.</p>
+    <p>Real models climb out by not using boxes at all, which is worth coming back to. First there is something more embarrassing to deal with.</p>
+  </div>
+</section>
+
+<!-- ============ 08 ============ -->
+<section data-ch="08" data-uses="generation,context window" data-defines="continuation,unseen context" class="reveal">
+  <div class="col">
+    <h2>It cannot answer you, it can only continue you</h2>
+    <p>Ask it something. Type a question into the machine and watch what it does with it, which is nothing whatsoever question shaped.</p>
+    <p>It takes the last word of whatever you gave it, looks for a box with that on the front, and carries on. A question mark is not a request. It is just text that ran out.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span class="fig-lab">figure 8 &middot; what happens to your prompt</span><span class="fig-read" id="f8Read">pick a prompt</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 280" role="img" aria-label="A prompt reduced to its last word, and the box that word lands in"></svg></div>
+      <div class="fig-ctl" id="f8Chips"></div>
+      <div class="fig-cap"><b>Try the last one.</b> There is no box labelled <code>email</code>, so the machine has nowhere to reach. Nothing tells it to apologise or ask for clarification, because those are also just words somebody would have had to count.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Handing a page of your writing to someone who has read every book and remembers none of them, and who has been told exactly one thing: <b>keep going, and make it sound like the page.</b> They are not being unhelpful when they fail to answer your question. Answering was never the job.</p></div>
+    <p>Everything you experience as an assistant answering you is built on top of this. The machine underneath still only continues text. It was later shown enormous numbers of examples where a question is followed by an answer, so continuing became answering, statistically. That fix is famous and it is next.</p>
+    <p>Michie's boxes did not start out any good either. They got good because somebody kept telling them how the game went.</p>
+  </div>
+</section>
+
+<!-- ============ 09 ============ -->
+<section data-ch="09" data-uses="reward,generation,box" data-defines="preference training,mode collapse" class="reveal">
+  <div class="col">
+    <h2>Reward it and it starts telling you what you want to hear</h2>
+    <p>Back to the bead rule from the very first box. The machine writes a line. You judge it. If you liked it, every bead it drew gets three copies dropped back into its box. If you did not, the beads it drew are removed.</p>
+    <p>Nothing else changes. Same boxes, same drawing, same dial. The only new thing in the system is your opinion, and your opinion is now editing the piles directly.</p>
+    <p>Do a few by hand to feel the rule. Then hand the job to a rater with one fixed taste: any line with the word <code>lamb</code> in it is good, everything else is bad, twenty five rounds to a click. Nothing tells the machine what the rater likes.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span class="fig-lab">figure 9 &middot; your opinion, in beads</span><span class="fig-read" id="f9Read">0 verdicts given</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 330" role="img" aria-label="A written line with the beads it used, and the boxes those beads came from"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f9Write">write a line</button>
+        <button class="chip up" id="f9Good">good &nbsp;+3</button>
+        <button class="chip down" id="f9Bad">bad &nbsp;&minus;1</button>
+        <button class="chip" id="f9Auto">let a picky rater loose &nbsp;25 rounds</button>
+        <button class="chip" id="f9Reset">forget my verdicts</button>
+      </div>
+      <div class="fig-cap"><b>Write and judge a few by hand, then press the rater three or four times.</b> The meter counts how many different lines come out of twenty attempts, and how often the single most common line turns up.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Watch the opening go first. The box at the start of a line is the one box every line passes through, so it collects beads faster than any other, and after a few dozen verdicts it has a firm favourite. Keep the rater running and variety across twenty attempts slides from twenty different lines down to around half that, with the same phrases surfacing again and again.</p>
+    <p>Notice what it never learned. It has no idea the rater wanted lambs. It learned which beads were in its hand at the moment the applause happened, which is not the same thing and is the reason this whole approach is delicate.</p>
+    <div class="intu"><i>picture it</i><p>A busker who plays six songs, notices you tip for one of them, and now plays that one every time you walk past. <b>They have not learned that you like music. They have learned which song produces coins.</b> Ask them for something new and there is nothing left in the case.</p></div>
+    <p>This is preference training, and its real version is why assistants feel helpful. Humans rate answers, the ratings reshape which words come out, and the model drifts towards what raters approve of. The drift is the point, and it is also the problem.</p>
+    <p>Reward confident answers and you get confident wrong answers. Reward agreement and you get flattery. Reward a particular phrasing hard enough and you get it every time, which is the collapse you can watch happening in the figure above in under a minute. The machine cannot tell the difference between being right and being clapped at, because those arrive through the same hole.</p>
+    <div class="pull">Nothing in a bead knows the difference between a good answer and an approved one.</div>
+    <p>So: counting, sampling, a dial, and applause. That is a working language model, and you could build it out of stationery. What are the real ones doing that this is not?</p>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section data-ch="10" data-uses="sparsity,box,label" data-defines="embedding,generalisation" class="reveal">
+  <div class="col">
+    <h2>The one thing beads cannot do is notice that two boxes are alike</h2>
+    <p>The box for <code>the</code> and the box for <code>a</code> are doing the same job in English. Both sit in front of a noun, both take roughly the same kinds of word next. A person sees that instantly. The machine cannot see it in principle, because a box has no way to look at another box.</p>
+    <p>So the fat box hoards while the thin one starves. Everything counted about <code>the</code> does nothing whatsoever for <code>a</code>, and a label you have never seen leaves you with no box and therefore nothing to say. This is the wall that counting hits, and you cannot climb it by counting harder.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span class="fig-lab">figure 10 &middot; two boxes that should be talking</span><span class="fig-read" id="f10Read">separate boxes</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 320" role="img" aria-label="Two similar boxes kept separate, then merged into one shared pile"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f10="apart">keep them separate</button>
+        <button class="chip" data-f10="share">let them share</button>
+        <button class="chip" data-f10="unseen">show an unseen label</button>
+      </div>
+      <div class="fig-cap"><b>Press let them share.</b> Overlapping colours pool, and the rare bead in one box is suddenly supported by the other. This is the single idea that separates a lookup table from a model.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A neural network never builds the boxes. It learns a <b>position</b> for every word, in a space where words that behave alike end up close together, and then a single rule that turns any position into a set of odds. Feed it a phrase it has never met and it still lands somewhere sensible, <b>because the rule works on where the words sit, not on whether that exact box was ever filled</b>.</p></div>
+    <p>That is what an embedding is, and it is why the counting machine dies at three word labels while a real model handles thousands of words of context. The counting machine needs to have seen your exact situation. The model needs your situation to resemble something.</p>
+    <div class="panel" id="f10Panel">boxes needed for a label of <b>n</b> words, vocabulary <b>V</b><br>
+<i>this page &middot; V = <span id="vTiny">0</span> words from the rhymes</i><br>
+&nbsp;&nbsp;n = 1 &nbsp;&rarr;&nbsp; <b id="vT1">0</b> possible boxes<br>
+&nbsp;&nbsp;n = 3 &nbsp;&rarr;&nbsp; <b id="vT3">0</b> possible boxes<br><br>
+<i>a small real vocabulary &middot; V = 50,000</i><br>
+&nbsp;&nbsp;n = 2 &nbsp;&rarr;&nbsp; <b>2,500,000,000</b> possible boxes<br>
+&nbsp;&nbsp;n = 8000 &nbsp;&rarr;&nbsp; <b>more boxes than atoms in the observable universe</b><br>
+<i>which is why nobody builds the boxes</i></div>
+    <p>Everything else you hear about, the attention that decides which earlier words matter most, the layers, the billions of parameters, is machinery for doing this one trick well over long stretches of text. Underneath, at the last step, the model still produces a pile of odds over the next word and something still reaches in and pulls one out.</p>
+  </div>
+</section>
+
+<!-- ============ CLOSE ============ -->
+<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--rule)">
+  <div class="col">
+    <h3>You have been holding it this whole time</h3>
+    <p>A language model is a very large set of boxes you never see, filled by counting, reached into with a dial, and reshaped by whoever rates the output. The beads on this page are the whole apparatus at a scale you can put on a table, and the parts that got left out are about capacity, not about kind.</p>
+    <p>The parts that did not get left out are the ones people find surprising. It does not know anything. It cannot answer, only continue. It will repeat itself if you make it too careful and babble if you make it too loose. And it will learn to please you specifically, quite fast, without ever learning what you actually wanted.</p>
+  </div>
+</div>
+
+<!-- ============ PLAYGROUND ============ -->
+<section class="reveal">
+  <div class="col">
+    <h2>Now break it</h2>
+    <p>Every dial at once, on text of your choosing. The corpus swaps between nursery rhymes, weather reports and support replies, which is the fastest way to feel that the machine has no subject matter of its own, only whatever it counted.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span class="fig-lab">the whole machine, unlocked</span><span class="fig-read" id="pgRead">rhymes &middot; label 1 &middot; t 0.80</span></div>
+      <div class="fig-body"><svg id="pgFig" viewBox="0 0 900 300" role="img" aria-label="The full box wall for the chosen corpus and label length"></svg></div>
+      <div class="fig-ctl" id="pgChips"></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="pgT">temperature</label><input type="range" id="pgT" min="5" max="200" value="80" step="5" aria-label="temperature"><label for="pgT" id="pgTv">0.80</label></span>
+        <button class="chip" id="pgGo">write five lines</button>
+      </div>
+      <div class="fig-cap"><b>Presets first, then take it apart.</b> The parrot and the lunatic are the two failure modes every generative system has, sitting at the two ends of one slider.</div>
+    </div>
+    <div class="fig-out" id="pgOut">pick a preset</div>
+  </div>
+</section>
+
+<button class="note note-hint" id="weedsHint" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</button>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h3>Into the weeds</h3>
+    <details><summary>Shannon did this by hand in 1948, with a book</summary>
+      <p>Claude Shannon needed text that behaved like English without being English, so he built the machine on this page out of a book and a pencil. He picked a word, flipped forward until he found that word again, and wrote down whatever came after it. That is a bead draw, executed with a thumb.</p>
+      <p>What came out: <em>the head and in frontal attack on an english writer that the character of this point is therefore another method for the letters that the time of who ever told the problem for an unexpected</em>. Ten words in the middle of that are indistinguishable from real prose. He stopped there because the next step up would have meant flipping through the book for every single word, and it was 1948.</p></details>
+    <details><summary>The bead that means stop</summary>
+      <p>The machine on this page counts an extra invisible word at the end of every line, and drawing it ends the sentence. Real models do the same with a special token, which is why a model can decide it has finished. It is also why a model sometimes stops mid thought: finishing is a word like any other, and it can be drawn at an awkward moment.</p></details>
+    <details><summary>What happens when the box does not exist</summary>
+      <p>The machine here gives up. Real counting models fall back: no box for the last three words, so try the last two, then the last one, and blend the answers together. That family of patches is called smoothing and backoff, and people spent the eighties and nineties on it. Neural models made the whole problem go away by never needing an exact match in the first place.</p></details>
+    <details><summary>Temperature, precisely</summary>
+      <p>A model produces a score for every possible next word. Divide every score by the temperature, exponentiate, normalise so they sum to one, and sample. Because the scores are logarithms of the counts, dividing them by t is the same as raising every bead pile to the power of one over t, which is exactly what the figure on this page does. Temperature zero is undefined in the arithmetic and is implemented as: take the biggest pile.</p>
+      <p>Top-k and top-p are the other two dials you will meet. Both throw away the tail of the distribution before sampling: keep the best k colours, or keep however many colours it takes to cover p percent of the beads. They cut off the nonsense without flattening what remains, which is why they are usually preferred to a hot temperature.</p></details>
+    <details><summary>Why MENACE needed exactly 304 boxes</summary>
+      <p>There are 19,683 ways to fill a three by three grid with blanks, noughts and crosses, but most of them cannot happen in a real game, and many are rotations or mirrors of each other. Michie collapsed those into 304 genuinely distinct positions that the machine could face when playing second. Building it was a hardware problem: 304 matchboxes, sorted, labelled and filled by hand.</p></details>
+    <details><summary>Where this stops being a fair picture</summary>
+      <p>Three things are honestly missing. Real models do not store counts, they store weights that produce counts, which is what lets them generalise. Attention lets them weigh a word from two thousand words back more heavily than the word immediately before, so the label on the front of the box is not a fixed window. And the preference stage is not a person clicking good on one output; it is a second model, trained on human comparisons, standing in for the human and scoring millions of samples. The bead rule survives all three. The bookkeeping does not.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p>Everything on this page is computed in your browser from the sixteen lines of public domain nursery rhyme it ships with. No counts are illustrative, no outputs are pre written, and the bead piles you edit are the piles the generator draws from.</p>
+    <p>Sources, checked 1 August 2026: Matthew Scroggs, <a href="https://www.mscroggs.co.uk/menace">MENACE: the Matchbox Educable Noughts And Crosses Engine</a>, for the 304 boxes and the exact reward rule. Donald Michie, <em>Trial and error</em>, Penguin Science Survey, 1961. Claude Shannon, <em>A Mathematical Theory of Communication</em>, 1948, for the word approximation quoted above.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+
+/* ================= corpora ================= */
+var CORPORA={
+rhymes:[
+'the cat and the fiddle the cow jumped over the moon',
+'the little dog laughed to see such fun',
+'and the dish ran away with the spoon',
+'hickory dickory dock',
+'the mouse ran up the clock',
+'the clock struck one and the mouse ran down',
+'hickory dickory dock',
+'mary had a little lamb little lamb little lamb',
+'mary had a little lamb its fleece was white as snow',
+'and everywhere that mary went the lamb was sure to go',
+'jack and jill went up the hill',
+'to fetch a pail of water',
+'jack fell down and broke his crown',
+'and jill came tumbling after',
+'twinkle twinkle little star',
+'how i wonder what you are',
+'up above the world so high',
+'like a diamond in the sky',
+'humpty dumpty sat on a wall',
+'humpty dumpty had a great fall',
+'all the kings horses and all the kings men',
+'could not put humpty together again',
+'little miss muffet sat on a tuffet',
+'eating her curds and whey',
+'there came a big spider who sat down beside her',
+'and frightened little miss muffet away',
+'baa baa black sheep have you any wool',
+'yes sir yes sir three bags full',
+'one for the master and one for the dame',
+'and one for the little boy who lives down the lane',
+'row row row your boat gently down the stream',
+'merrily merrily merrily merrily life is but a dream',
+'rain rain go away come again another day',
+'the little dog laughed to see the cat and the fiddle'
+],
+weather:[
+'rain in the morning turning to sun by the afternoon',
+'a cold start with frost on the hills and fog in the valleys',
+'showers moving in from the west later in the day',
+'sun in the south and heavy rain in the north',
+'wind from the west easing by the evening',
+'a dry day with cloud building through the afternoon',
+'frost in the morning and a cold wind by the evening',
+'heavy rain moving east with a risk of thunder',
+'cloud and drizzle in the north with sun in the south',
+'a mild day with light wind and long spells of sun'
+],
+support:[
+'thanks for getting in touch we are looking into it now',
+'sorry for the delay in getting back to you',
+'i have escalated this to the team and will update you shortly',
+'could you send us a screenshot of the error you are seeing',
+'this should be fixed in the latest release please try again',
+'happy to help let me know if anything else comes up',
+'we have refunded the charge and you should see it within five days',
+'i understand the frustration and i am sorry for the trouble',
+'thanks for your patience while we looked into this',
+'let me know if that works for you'
+]};
+
+var END='end.', START='start.';
+function toks(l){return l.toLowerCase().split(/\s+/).filter(Boolean);}
+
+/* stable colour per word */
+var HUES=['--b1','--b2','--b3','--b4','--b5','--b6','--b7','--b8'],hc={};
+function hue(w){
+  if(w===END||w===START)return 'var(--ink-faint)';
+  if(hc[w])return hc[w];
+  var h=0;for(var i=0;i<w.length;i++)h=(h*33+w.charCodeAt(i))>>>0;
+  hc[w]='var('+HUES[h%8]+')';return hc[w];
+}
+
+/* ================= the model ================= */
+function trainTokens(lines,order,addEnd){
+  var B={};
+  lines.forEach(function(w){
+    var s=addEnd===false?w.slice():w.concat([END]);
+    var ctx=[],k;
+    for(k=0;k<order;k++)ctx.push(START);
+    for(var i=0;i<s.length;i++){
+      var lab=ctx.join(' ');
+      if(!B[lab])B[lab]={};
+      B[lab][s[i]]=(B[lab][s[i]]||0)+1;
+      ctx.push(s[i]);ctx.shift();
+    }
+  });
+  return B;
+}
+function train(lines,order){return trainTokens(lines.map(toks),order,true);}
+function total(box){var t=0;for(var k in box)t+=box[k];return t;}
+function beadsIn(B){var t=0;for(var l in B)t+=total(B[l]);return t;}
+function sortedWords(box){
+  return Object.keys(box).sort(function(a,b){return box[b]-box[a]||(a<b?-1:1);});
+}
+function pick(box,T){
+  var ks=sortedWords(box),i,mx=box[ks[0]];
+  if(T<=0.12)return ks[0];
+  var wts=[],tot=0;
+  for(i=0;i<ks.length;i++){var v=Math.pow(box[ks[i]]/mx,1/T);wts.push(v);tot+=v;}
+  var r=Math.random()*tot;
+  for(i=0;i<ks.length;i++){r-=wts[i];if(r<=0)return ks[i];}
+  return ks[ks.length-1];
+}
+function gen(B,order,T,maxw,seed){
+  var ctx=(seed||[]).slice(),k;
+  while(ctx.length<order)ctx.unshift(START);
+  ctx=ctx.slice(-order);
+  var out=[],trace=[];
+  for(k=0;k<(maxw||16);k++){
+    var lab=ctx.join(' '),box=B[lab];
+    if(!box){trace.push({label:lab,word:null});break;}
+    var w=pick(box,T);
+    trace.push({label:lab,word:w,total:total(box),count:box[w]});
+    if(w===END)break;
+    out.push(w);ctx.push(w);ctx.shift();
+  }
+  return {words:out,trace:trace};
+}
+
+/* ================= svg helpers ================= */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function R(n){return Math.round(n);}
+function bead(x,y,r,fill,cls,extra){
+  return '<circle class="bd'+(cls?' '+cls:'')+'" cx="'+R(x)+'" cy="'+R(y)+'" r="'+r+'" fill="'+fill+'"'+(extra||'')+'/>';
+}
+function txt(x,y,s,size,cls,anchor){
+  return '<text class="'+(cls||'lb')+'" x="'+R(x)+'" y="'+R(y)+'" font-size="'+size+'"'+
+         (anchor?' text-anchor="'+anchor+'"':'')+'>'+esc(s)+'</text>';
+}
+function bx(x,y,w,h,cls){
+  return '<rect class="bx'+(cls?' '+cls:'')+'" x="'+R(x)+'" y="'+R(y)+'" width="'+R(w)+'" height="'+R(h)+
+         '" rx="3" shape-rendering="crispEdges"/>';
+}
+function tray(x,y,w,h){
+  return '<line x1="'+R(x+6)+'" y1="'+R(y+h-9)+'" x2="'+R(x+w-6)+'" y2="'+R(y+h-9)+
+         '" stroke="var(--rule)" stroke-width="1.5" shape-rendering="crispEdges"/>';
+}
+/* beads of a box laid out as a grid inside x,y,w,h */
+function beadGrid(box,x,y,w,h,r,gap,cap,sel){
+  var ks=sortedWords(box),flat=[],i;
+  ks.forEach(function(k){for(i=0;i<box[k];i++)flat.push(k);});
+  var per=Math.max(1,Math.floor((w-gap)/gap)),rows=Math.max(1,Math.floor(h/gap));
+  var room=Math.min(cap,per*rows),more=0,s='';
+  if(flat.length>room){
+    var keep=rows>1?Math.min(room,per*(rows-1)):Math.max(1,Math.min(room,per)-2);
+    more=flat.length-keep;flat=flat.slice(0,keep);
+  }
+  for(i=0;i<flat.length;i++){
+    var cx=x+gap/2+(i%per)*gap, cy=y+gap/2+Math.floor(i/per)*gap;
+    s+=bead(cx,cy,r,hue(flat[i]),sel&&sel===flat[i]?'drawn':'',' data-w="'+esc(flat[i])+'"');
+  }
+  if(more>0){
+    var lx=rows>1?x+2:x+gap/2+Math.max(0,per-2)*gap-6;
+    var ly=y+gap/2+(rows>1?(rows-1):0)*gap+4;
+    s+=txt(lx,ly,'+'+more,13,'lb');
+  }
+  return s;
+}
+function wrapWords(ws,maxch){
+  var lines=[],cur='';
+  ws.forEach(function(w){
+    if(cur&&(cur+' '+w).length>maxch){lines.push(cur);cur=w;}else cur=cur?cur+' '+w:w;
+  });
+  if(cur)lines.push(cur);
+  return lines;
+}
+
+/* ================= hero ================= */
+var HB=train(CORPORA.rhymes,1),heroTimer=null;
+function heroDraw(g,upto){
+  var n=Math.max(1,g.words.length),W=900,slot=W/n,s='',i;
+  for(i=0;i<g.words.length;i++){
+    if(i>=upto)break;
+    var cx=slot*(i+0.5),w=g.words[i],tr=g.trace[i];
+    s+=txt(cx,64,w,22,'wd','middle');
+    s+=bx(cx-30,118,60,80);
+    s+=tray(cx-30,118,60,80);
+    var box=HB[tr.label]||{};
+    var ks=sortedWords(box).slice(0,6),j;
+    for(j=0;j<ks.length;j++){
+      var bxp=cx-18+(j%2)*22, byp=136+Math.floor(j/2)*22;
+      s+=bead(bxp,byp,7,hue(ks[j]),ks[j]===w?'gone':'');
+    }
+    s+=bead(cx,100,10,hue(w),'drawn');
+    s+=txt(cx,212,tr.label===START?'start':tr.label,13,'lb','middle');
+  }
+  $('hSvg').innerHTML=s;
+}
+function heroRun(){
+  if(heroTimer)clearInterval(heroTimer);
+  var g=gen(HB,1,0.85,7);
+  while(g.words.length<4)g=gen(HB,1,0.85,7);
+  var i=0,red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  $('hRead').innerHTML='<b>'+g.words.length+'</b> words &middot; <b>'+g.words.length+'</b> beads drawn';
+  if(red){heroDraw(g,g.words.length);return;}
+  heroDraw(g,0);
+  heroTimer=setInterval(function(){
+    i++;heroDraw(g,i);
+    if(i>=g.words.length){clearInterval(heroTimer);heroTimer=null;}
+  },420);
+}
+$('hGo').addEventListener('click',heroRun);
+heroRun();
+
+/* ================= 01 · MENACE box ================= */
+var F1BASE={1:4,2:4,3:4,5:4,6:4,7:4},f1={},f1drawn=null,f1msg='';
+function f1reset(){f1={};for(var k in F1BASE)f1[k]=F1BASE[k];f1drawn=null;f1msg='';f1render();}
+function f1render(){
+  var s='',keys=Object.keys(f1),i,j;
+  s+=txt(40,74,'the box for this position',13,'lb');
+  s+=bx(40,88,370,200);s+=tray(40,88,370,200);
+  for(i=0;i<keys.length;i++){
+    var k=keys[i],cx=78+i*55,n=f1[k],shown=Math.min(n,8);
+    s+='<rect x="'+R(cx-13)+'" y="300" width="26" height="13" fill="'+hue('sq'+k)+'" opacity=".9" shape-rendering="crispEdges"/>';
+    for(j=0;j<shown;j++)s+=bead(cx,266-j*20,9,hue('sq'+k),'');
+    if(n>shown)s+=txt(cx,112,'+'+(n-shown),13,'lb','middle');
+    if(n===0)s+=txt(cx,266,'0',13,'lb','middle');
+  }
+  if(f1drawn!==null){
+    s+=txt(650,26,'drawn',13,'lb','middle');
+    s+=bead(650,52,12,hue('sq'+f1drawn),'drawn');
+  }
+  var BX=530,BY=84,C=76;
+  for(i=0;i<9;i++){
+    var r=Math.floor(i/3),c=i%3,x=BX+c*C,y=BY+r*C;
+    var occupied=(i===4||i===0)?'x':(i===8?'o':null);
+    s+='<rect x="'+x+'" y="'+y+'" width="'+C+'" height="'+C+'" fill="'+
+       (occupied?'var(--paper)':hue('sq'+i))+'" opacity="'+(occupied?'1':'.16')+
+       '" stroke="var(--rule)" stroke-width="1.5" shape-rendering="crispEdges"/>';
+    if(occupied==='x'){
+      s+='<line x1="'+(x+22)+'" y1="'+(y+22)+'" x2="'+(x+C-22)+'" y2="'+(y+C-22)+'" stroke="var(--ink)" stroke-width="3"/>'+
+         '<line x1="'+(x+C-22)+'" y1="'+(y+22)+'" x2="'+(x+22)+'" y2="'+(y+C-22)+'" stroke="var(--ink)" stroke-width="3"/>';
+    }else if(occupied==='o'){
+      s+='<circle cx="'+(x+C/2)+'" cy="'+(y+C/2)+'" r="19" fill="none" stroke="var(--ink)" stroke-width="3"/>';
+    }else if(f1drawn!==null&&+f1drawn===i){
+      s+='<circle cx="'+(x+C/2)+'" cy="'+(y+C/2)+'" r="19" fill="none" stroke="var(--accent)" stroke-width="4"/>';
+    }
+  }
+  s+=txt(530,332,'a colour on a bead is a square on the board',13,'lb');
+  $('f1').innerHTML='<g data-part="beads">'+s+'</g>';
+  var tot=0;for(var q in f1)tot+=f1[q];
+  $('f1Read').innerHTML='<b>'+tot+'</b> beads in the box'+(f1msg?' &middot; '+f1msg:'');
+}
+$('f1Shake').addEventListener('click',function(){
+  var pool=[],k,i;
+  for(k in f1)for(i=0;i<f1[k];i++)pool.push(k);
+  if(!pool.length){f1msg='box empty, it resigns';f1render();return;}
+  f1drawn=pool[Math.floor(Math.random()*pool.length)];
+  f1msg='now judge the game';f1render();
+});
+document.querySelectorAll('[data-f1]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var a=b.getAttribute('data-f1');
+    if(a==='reset'){f1reset();return;}
+    if(f1drawn===null){f1msg='shake first';f1render();return;}
+    if(a==='win'){f1[f1drawn]+=3;f1msg='+3 beads of that colour';}
+    if(a==='draw'){f1[f1drawn]+=1;f1msg='+1 bead of that colour';}
+    if(a==='loss'){f1[f1drawn]=Math.max(0,f1[f1drawn]-1);f1msg='that bead is gone';}
+    f1drawn=null;f1render();
+  });
+});
+f1reset();
+
+/* ================= 02 · fill a box by hand ================= */
+var F2WORDS=['mouse','cat','moon','clock','wall','spoon','sky','kings'],f2={},f2last=null;
+function f2render(){
+  var s='',tot=total(f2);
+  s+=txt(250,40,'the',26,'wd');
+  s+=txt(292,40,'← written on the front',13,'lb');
+  s+=bx(250,60,400,200);s+=tray(250,60,400,200);
+  s+=beadGrid(f2,258,70,384,172,11,30,60,f2last);
+  if(tot===0)s+=txt(450,168,'empty. nothing has happened yet.',13,'lb','middle');
+  $('f2').innerHTML=s;
+  if(!tot){$('f2Read').textContent='empty';return;}
+  var p=f2last?Math.round(f2[f2last]/tot*100):0;
+  $('f2Read').innerHTML=f2last?('<b>'+tot+'</b> beads &middot; the '+f2last+' = '+f2[f2last]+' of '+tot+' ('+p+'%)'):('<b>'+tot+'</b> beads');
+}
+(function(){
+  var c=$('f2Chips'),s='';
+  F2WORDS.forEach(function(w){
+    s+='<button class="chip" data-f2w="'+w+'" style="border-color:'+hue(w)+';color:'+hue(w)+'">'+w+'</button>';
+  });
+  s+='<button class="chip" data-f2w="__reset">empty the box</button>';
+  c.innerHTML=s;
+  c.addEventListener('click',function(e){
+    var b=e.target.closest('[data-f2w]');if(!b)return;
+    var w=b.getAttribute('data-f2w');
+    if(w==='__reset'){f2={};f2last=null;}
+    else{f2[w]=(f2[w]||0)+1;f2last=w;}
+    f2render();
+  });
+})();
+f2render();
+
+/* ================= 03 · scrolly, pouring text in ================= */
+var L0=toks(CORPORA.rhymes[0]);
+var STEPS=[
+  {model:{},win:-1,words:L0},
+  {model:trainTokens([L0.slice(0,2)],1,false),win:1,words:L0},
+  {model:trainTokens([L0.slice(0,5)],1,false),win:4,words:L0},
+  {model:trainTokens([L0],1,true),win:-1,words:L0},
+  {model:train(CORPORA.rhymes,1),win:-1,words:L0}
+];
+function labText(l,maxch){
+  var s=l.split(' ').map(function(t){return t===START?'start':t;}).join(' ');
+  return s.length>maxch?s.slice(0,Math.max(1,maxch-1))+'\u2026':s;
+}
+function wallSVG(B,x,y,w,cols,cap,bw,bh){
+  var labs=Object.keys(B).sort(function(a,b){return total(B[b])-total(B[a])||(a<b?-1:1);}).slice(0,cap);
+  var gapx=(w-cols*bw)/Math.max(1,cols-1),s='';
+  labs.forEach(function(l,i){
+    var cx=x+(i%cols)*(bw+gapx), cy=y+Math.floor(i/cols)*(bh+34);
+    s+=txt(cx,cy-6,labText(l,Math.floor(bw/8.6)),13,'lb');
+    s+=bx(cx,cy,bw,bh);s+=tray(cx,cy,bw,bh);
+    s+=beadGrid(B[l],cx+4,cy+4,bw-8,bh-14,4.5,12,24,null);
+  });
+  return s;
+}
+function sc1render(i){
+  var st=STEPS[i]||STEPS[0],s='',j;
+  s+=txt(0,22,'the text',13,'lb');
+  var x=0,y=48;
+  for(j=0;j<st.words.length;j++){
+    var wd=st.words[j],wdt=wd.length*11+14;
+    if(x+wdt>612){x=0;y+=40;}
+    var on=(st.win===j||st.win===j-1);
+    s+='<rect x="'+R(x)+'" y="'+R(y-22)+'" width="'+R(wdt)+'" height="30" rx="3" fill="'+
+       (on?'var(--accent)':'var(--paper-2)')+'" opacity="'+(on?'.16':'1')+'" shape-rendering="crispEdges"/>';
+    s+=txt(x+7,y,wd,17,on?'vl':'lb');
+    x+=wdt+7;
+  }
+  if(st.win>=0)s+=txt(0,y+34,'the window sits on a pair, so one bead drops',13,'lb');
+  s+=txt(0,y+80,'the boxes',13,'lb');
+  s+=wallSVG(st.model,0,y+106,612,4,20,140,58);
+  $('sc1fig').innerHTML=s;
+  var nb=Object.keys(st.model).length;
+  $('sc1Read').innerHTML='<b>'+nb+'</b> boxes &middot; <b>'+beadsIn(st.model)+'</b> beads';
+}
+(function(){
+  var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
+  function setStep(el){
+    steps.forEach(function(s){s.classList.toggle('on',s===el);});
+    sc1render(+el.getAttribute('data-step'));
+  }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting)setStep(e.target);});
+  },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+  steps.forEach(function(s){io.observe(s);s.addEventListener('click',function(){setStep(s);});});
+  sc1render(0);
+})();
+
+/* ================= 04 · two representations ================= */
+var B1=train(CORPORA.rhymes,1),f4lab='little',f4sel=null;
+function f4render(){
+  var box=B1[f4lab]||{},tot=total(box),ks=sortedWords(box).slice(0,9),s='',i;
+  s+=txt(40,40,f4lab,24,'wd');
+  s+=bx(40,60,380,250);s+=tray(40,60,380,250);
+  s+=beadGrid(box,48,70,364,222,10,26,72,f4sel);
+  s+=txt(470,40,'the same counts, as chances',13,'lb');
+  var y=76,W=252;
+  for(i=0;i<ks.length;i++){
+    var k=ks[i],p=box[k]/tot,bw=Math.max(3,p*W),kl=(k===END?'end':k);
+    if(kl.length>11)kl=kl.slice(0,10)+'\u2026';
+    s+='<g data-part="dist">';
+    s+='<rect x="470" y="'+R(y-14)+'" width="'+R(bw)+'" height="18" fill="'+hue(k)+'" opacity="'+
+       (f4sel===k?'1':'.75')+'" shape-rendering="crispEdges"/>';
+    s+=txt(738,y,kl,15,f4sel===k?'vl':'lb');
+    s+=txt(884,y,Math.round(p*100)+'%',15,'lb','end');
+    s+='<rect class="tgt" x="466" y="'+R(y-18)+'" width="424" height="26" data-w="'+esc(k)+'"/>';
+    s+='</g>';
+    y+=27;
+  }
+  $('f4').innerHTML=s;
+  if(f4sel&&box[f4sel])
+    $('f4Read').innerHTML=f4lab+' → <b>'+(f4sel===END?'end':f4sel)+'</b> &middot; '+box[f4sel]+' of '+tot+' beads &middot; '+Math.round(box[f4sel]/tot*100)+'%';
+  else $('f4Read').innerHTML='<b>'+tot+'</b> beads &middot; '+ks.length+' colours';
+}
+(function(){
+  var labs=['little','the','and','a','up','hickory'],s='';
+  labs.forEach(function(l,i){s+='<button class="chip'+(i===0?' on':'')+'" data-f4l="'+l+'">'+l+'</button>';});
+  var c=$('f4Chips');c.innerHTML=s;
+  c.addEventListener('click',function(e){
+    var b=e.target.closest('[data-f4l]');if(!b)return;
+    f4lab=b.getAttribute('data-f4l');f4sel=null;
+    c.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});
+    f4render();
+  });
+  $('f4').addEventListener('click',function(e){
+    var t=e.target.closest('[data-w]');if(!t)return;
+    var w=t.getAttribute('data-w');f4sel=(f4sel===w?null:w);f4render();
+  });
+})();
+f4render();
+
+/* ================= 05 · the writing loop ================= */
+var f5={ctx:[START],words:[],last:null,lab:START};
+function f5render(){
+  var s='',box=B1[f5.lab]||{},i;
+  s+=txt(40,34,'the line so far',13,'lb');
+  var line=f5.words.length?f5.words.join(' '):'(nothing yet)';
+  s+=txt(40,68,line,22,'wd');
+  s+=txt(40,116,'the box on the front of which is written',13,'lb');
+  s+=txt(40,152,f5.lab===START?'start':f5.lab,22,'wd');
+  s+=bx(40,170,420,110);s+=tray(40,170,420,110);
+  s+=beadGrid(box,48,178,404,88,9,24,60,f5.last);
+  s+='<line x1="500" y1="222" x2="560" y2="222" stroke="var(--rule)" stroke-width="1.5"/>';
+  s+='<path d="M560 222 l-10 -5 v10 z" fill="var(--rule)"/>';
+  if(f5.last){
+    s+=bead(600,222,14,hue(f5.last),'drawn');
+    s+=txt(630,229,f5.last===END?'end of line':f5.last,22,'wd');
+    s+=txt(630,196,'the bead you pulled',13,'lb');
+  }else{
+    s+=txt(600,229,'pull a bead',13,'lb');
+  }
+  $('f5').innerHTML=s;
+  $('f5Read').innerHTML='<b>'+f5.words.length+'</b> words &middot; '+(Object.keys(box).length||0)+' colours in this box';
+}
+function f5step(){
+  var box=B1[f5.lab];
+  if(!box||f5.last===END){return false;}
+  var w=pick(box,0.85);
+  f5.last=w;
+  if(w!==END){f5.words.push(w);f5.lab=w;}
+  f5render();return w!==END;
+}
+$('f5One').addEventListener('click',function(){if(f5.last===END)f5reset();f5step();});
+$('f5All').addEventListener('click',function(){
+  f5reset();var n=0;
+  while(f5step()&&n<15)n++;
+});
+function f5reset(){f5={ctx:[START],words:[],last:null,lab:START};f5render();}
+$('f5Reset').addEventListener('click',f5reset);
+f5reset();
+
+/* ================= 06 · temperature ================= */
+var F6LAB='little';
+function effective(box,T){
+  var ks=sortedWords(box),mx=box[ks[0]],out={},tot=0,i;
+  for(i=0;i<ks.length;i++){var v=T<=0.12?(box[ks[i]]===mx?1:0):Math.pow(box[ks[i]]/mx,1/T);out[ks[i]]=v;tot+=v;}
+  for(i=0;i<ks.length;i++)out[ks[i]]=out[ks[i]]/tot;
+  return out;
+}
+function f6render(){
+  var T=+$('f6T').value/100,box=B1[F6LAB],ks=sortedWords(box).slice(0,7),eff=effective(box,T),s='',i,j;
+  s+=txt(40,34,'what is in the box for "'+F6LAB+'"',13,'lb');
+  s+=txt(500,34,'what it behaves as if it holds',13,'lb');
+  var base=Math.max(1,box[ks[0]]);
+  for(i=0;i<ks.length;i++){
+    var k=ks[i],cx=70+i*58;
+    for(j=0;j<box[k];j++)s+=bead(cx,250-j*20,8.5,hue(k),'');
+    s+=txt(cx,278,k===END?'end':k.slice(0,6),13,'lb','middle');
+  }
+  s+='<g data-part="temp">';
+  for(i=0;i<ks.length;i++){
+    var k2=ks[i],cx2=530+i*52,n=Math.max(0,Math.round(eff[k2]*20));
+    for(j=0;j<n;j++)s+=bead(cx2,250-j*20,8.5,hue(k2),'');
+    if(n===0)s+=txt(cx2,250,'·',13,'lb','middle');
+    s+=txt(cx2,278,Math.round(eff[k2]*100)+'%',13,'lb','middle');
+  }
+  s+='</g>';
+  s+=txt(40,306,'raw bead counts, never change',13,'lb');
+  s+=txt(500,306,'chances after the dial, out of 20',13,'lb');
+  $('f6').innerHTML=s;
+  $('f6Read').innerHTML='temperature <b>'+T.toFixed(2)+'</b>'+(T<=0.12?' &middot; greedy':'');
+}
+$('f6T').addEventListener('input',f6render);
+$('f6Go').addEventListener('click',function(){
+  var T=+$('f6T').value/100,out='',i;
+  for(i=0;i<3;i++){
+    var g=gen(B1,1,T,16);
+    out+='<b>'+(g.words.join(' ')||'(nothing)')+'</b><br>';
+  }
+  $('f6Out').innerHTML=out+'<i>temperature '+T.toFixed(2)+'</i>';
+});
+f6render();
+
+/* ================= 07 · label length ================= */
+var f7order=1,ORD={};
+function ordModel(n){if(!ORD[n])ORD[n]=train(CORPORA.rhymes,n);return ORD[n];}
+function f7render(){
+  var B=ordModel(f7order),labs=Object.keys(B),n=labs.length,bd=beadsIn(B),i;
+  var singles=0;
+  labs.forEach(function(l){if(total(B[l])===1)singles++;});
+  var s='';
+  s+=txt(40,44,'boxes needed',13,'lb');
+  s+=txt(40,88,String(n),34,'wd');
+  s+=txt(240,44,'beads per box, average',13,'lb');
+  s+=txt(240,88,(bd/n).toFixed(2),34,'wd');
+  s+=txt(500,44,'boxes with only one bead',13,'lb');
+  s+=txt(500,88,Math.round(singles/n*100)+'%',34,'wd');
+  var barw=Math.round(singles/n*360);
+  s+='<rect x="500" y="104" width="360" height="10" fill="var(--paper-2)" shape-rendering="crispEdges"/>';
+  s+='<rect x="500" y="104" width="'+barw+'" height="10" fill="var(--risk)" shape-rendering="crispEdges"/>';
+  s+=txt(40,150,'the first twelve boxes',13,'lb');
+  s+=wallSVG(B,40,176,820,6,12,116,52);
+  var g=gen(B,f7order,0.85,16);
+  s+=txt(40,318,'it writes: '+(g.words.join(' ')||'(nothing)'),17,'vl');
+  $('f7').innerHTML=s;
+  $('f7Read').innerHTML='label: <b>'+f7order+'</b> word'+(f7order>1?'s':'');
+}
+(function(){
+  var c=$('f7Chips'),s='';
+  [1,2,3].forEach(function(n){s+='<button class="chip'+(n===1?' on':'')+'" data-f7="'+n+'">'+n+' word label</button>';});
+  s+='<button class="chip" data-f7="re">write another line</button>';
+  c.innerHTML=s;
+  c.addEventListener('click',function(e){
+    var b=e.target.closest('[data-f7]');if(!b)return;
+    var v=b.getAttribute('data-f7');
+    if(v!=='re'){f7order=+v;c.querySelectorAll('[data-f7]').forEach(function(x){
+      x.classList.toggle('on',x===b);});}
+    f7render();
+  });
+})();
+f7render();
+
+/* ================= 08 · your prompt ================= */
+var F8=[
+ 'humpty dumpty sat on a',
+ 'the mouse',
+ 'why is the sky',
+ 'please summarise this email'
+];
+var f8i=0;
+function f8render(){
+  var p=F8[f8i],ws=toks(p),lastw=ws[ws.length-1],box=B1[lastw],s='',i,x=40;
+  s+=txt(40,34,'what you typed',13,'lb');
+  for(i=0;i<ws.length;i++){
+    var wdt=ws[i].length*12+16,lastOne=(i===ws.length-1);
+    s+='<rect x="'+R(x)+'" y="46" width="'+R(wdt)+'" height="36" rx="3" fill="'+
+       (lastOne?'var(--accent)':'var(--paper-2)')+'" opacity="'+(lastOne?'.16':'1')+'" shape-rendering="crispEdges"/>';
+    s+=txt(x+8,71,ws[i],19,lastOne?'vl':'lb');
+    x+=wdt+8;
+  }
+  s+=txt(40,110,'everything but the last word falls on the floor',13,'lb');
+  s+='<line x1="60" y1="122" x2="60" y2="152" stroke="var(--rule)" stroke-width="1.5"/>';
+  s+='<path d="M60 152 l-5 -10 h10 z" fill="var(--rule)"/>';
+  if(box){
+    s+=txt(90,148,lastw,20,'wd');
+    s+=bx(90,160,300,86);s+=tray(90,160,300,86);
+    s+=beadGrid(box,96,166,288,68,8,20,48,null);
+    var g=gen(B1,1,0.85,12,[lastw]);
+    s+=txt(430,190,'it continues',13,'lb');
+    var ls=g.words.length?wrapWords(g.words,30).slice(0,2):['(it stops)'];
+    ls.forEach(function(ln,li){s+=txt(430,226+li*32,ln,20,'wd');});
+    $('f8Read').innerHTML='box found &middot; <b>'+total(box)+'</b> beads';
+  }else{
+    s+=txt(90,148,lastw,20,'wd');
+    s+='<rect x="90" y="160" width="300" height="86" rx="3" fill="none" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+=txt(240,210,'no box with this on the front',13,'lb','middle');
+    s+=txt(430,190,'it continues',13,'lb');
+    s+=txt(430,226,'(nothing at all)',20,'wd');
+    $('f8Read').innerHTML='<b>no box</b> &middot; nothing to reach into';
+  }
+  $('f8').innerHTML=s;
+}
+(function(){
+  var c=$('f8Chips'),s='';
+  F8.forEach(function(p,i){s+='<button class="chip'+(i===0?' on':'')+'" data-f8="'+i+'">'+p+'</button>';});
+  c.innerHTML=s;
+  c.addEventListener('click',function(e){
+    var b=e.target.closest('[data-f8]');if(!b)return;
+    f8i=+b.getAttribute('data-f8');
+    c.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});
+    f8render();
+  });
+})();
+f8render();
+
+/* ================= 09 · reward ================= */
+var RM=null,f9g=null,f9n=0,f9var=null;
+function rmReset(){
+  RM={};var B=train(CORPORA.rhymes,1);
+  for(var l in B){RM[l]={};for(var w in B[l])RM[l][w]=B[l][w];}
+  f9g=null;f9n=0;f9var=null;f9top=0;f9render();
+}
+var f9top=0;
+function variety(){
+  var seen={},i,n=0,mx=0;
+  for(i=0;i<20;i++){
+    var k=gen(RM,1,0.85,16).words.join(' ');
+    if(!seen[k]){seen[k]=1;n++;}else seen[k]++;
+    if(seen[k]>mx)mx=seen[k];
+  }
+  f9top=mx;return n;
+}
+function f9render(){
+  var s='',i;
+  s+=txt(40,34,'the line it wrote',13,'lb');
+  if(f9g){
+    var n=Math.max(1,f9g.words.length),slot=820/n,lab=slot>=78;
+    for(i=0;i<f9g.words.length;i++){
+      var cx=40+slot*i+slot/2,w=f9g.words[i];
+      s+=txt(cx,74,w,slot<64?15:20,'wd','middle');
+      s+=bead(cx,104,10,hue(w),'drawn');
+      if(lab)s+=txt(cx,136,'from '+(f9g.trace[i].label===START?'start':f9g.trace[i].label),13,'lb','middle');
+    }
+    if(!lab)s+=txt(40,140,'one bead per word, each from the box named by the word before it',13,'lb');
+  }else{
+    s+=txt(40,74,'press write a line',20,'wd');
+  }
+  s+=txt(40,186,'the boxes your verdicts have edited',13,'lb');
+  var labs=Object.keys(RM).sort(function(a,b){return total(RM[b])-total(RM[a]);}).slice(0,6);
+  s+=wallSVG(RM,40,212,820,6,6,116,52);
+  var v=f9var===null?20:f9var;
+  s+=txt(40,300,'variety: '+v+' different lines out of 20 tries'+
+     (f9var!==null&&f9top>1?', the most common one turned up '+f9top+' times':''),13,'lb');
+  s+='<rect x="40" y="310" width="400" height="10" fill="var(--paper-2)" shape-rendering="crispEdges"/>';
+  s+='<rect x="40" y="310" width="'+R(v/20*400)+'" height="10" fill="'+(v<8?'var(--risk)':'var(--safe)')+'" shape-rendering="crispEdges"/>';
+  $('f9').innerHTML=s;
+  $('f9Read').innerHTML='<b>'+f9n+'</b> verdicts given';
+}
+$('f9Write').addEventListener('click',function(){
+  f9g=gen(RM,1,0.85,11);
+  var t=0;while(f9g.words.length<3&&t<8){f9g=gen(RM,1,0.85,11);t++;}
+  f9render();
+});
+function applyVerdict(g,good){
+  g.trace.forEach(function(tr){
+    if(!tr.word||!RM[tr.label])return;
+    if(good)RM[tr.label][tr.word]+=3;
+    else{
+      var b=RM[tr.label];
+      if(Object.keys(b).length>1||b[tr.word]>1){
+        b[tr.word]-=1;
+        if(b[tr.word]<=0)delete b[tr.word];
+        if(!Object.keys(b).length)b[tr.word]=1;
+      }
+    }
+  });
+}
+function verdict(good){
+  if(!f9g)return;
+  applyVerdict(f9g,good);
+  f9n++;f9var=variety();f9render();
+}
+$('f9Good').addEventListener('click',function(){verdict(true);});
+$('f9Bad').addEventListener('click',function(){verdict(false);});
+$('f9Auto').addEventListener('click',function(){
+  for(var i=0;i<25;i++){
+    var g=gen(RM,1,0.85,11);
+    applyVerdict(g,g.words.indexOf('lamb')>=0);
+    f9n++;f9g=g;
+  }
+  f9var=variety();f9render();
+});
+$('f9Reset').addEventListener('click',rmReset);
+rmReset();
+
+/* ================= 10 · sharing ================= */
+var f10mode='apart';
+function f10render(){
+  var A=B1['the'],Bb=B1['a'],s='';
+  if(f10mode==='unseen'){
+    s+=txt(40,40,'purple',24,'wd');
+    s+='<rect x="40" y="60" width="380" height="200" rx="3" fill="none" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+=txt(230,166,'a word the rhymes never used',13,'lb','middle');
+    s+=txt(470,120,'counting machine:',13,'lb');
+    s+=txt(470,158,'no box, no output',22,'wd');
+    s+=txt(470,206,'a model with positions instead of boxes:',13,'lb');
+    s+=txt(470,244,'purple sits near black and white,',20,'wd');
+    s+=txt(470,274,'so it answers anyway',20,'wd');
+    $('f10Read').innerHTML='<b>unseen label</b> &middot; counting has nothing to say';
+    $('f10').innerHTML=s;return;
+  }
+  var ka=sortedWords(A).slice(0,10),kb=sortedWords(Bb),shared=ka.filter(function(k){return Bb[k];});
+  if(f10mode==='apart'){
+    s+=txt(40,40,'the',24,'wd');
+    s+=bx(40,60,360,200);s+=tray(40,60,360,200);
+    s+=beadGrid(A,48,68,344,178,9,24,56,null);
+    s+=txt(500,40,'a',24,'wd');
+    s+=bx(500,60,360,200);s+=tray(500,60,360,200);
+    s+=beadGrid(Bb,508,68,344,178,9,24,56,null);
+    s+='<line x1="410" y1="160" x2="490" y2="160" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+=txt(450,146,'×',22,'wd','middle');
+    s+=txt(450,196,'nothing',13,'lb','middle');
+    s+=txt(450,214,'crosses',13,'lb','middle');
+    s+=txt(40,290,'same job in English, '+shared.length+' colours in common, and neither box knows the other exists',13,'lb');
+    $('f10Read').innerHTML='separate boxes &middot; shared knowledge: <b>none</b>';
+  }else{
+    var pool={},k;
+    for(k in A)pool[k]=A[k];
+    for(k in Bb)pool[k]=(pool[k]||0)+Bb[k];
+    s+=txt(40,40,'the',22,'wd');s+=txt(120,40,'and',17,'lb');s+=txt(170,40,'a',22,'wd');
+    s+=txt(210,40,'pooled, because they behave alike',13,'lb');
+    s+=bx(40,60,820,200);s+=tray(40,60,820,200);
+    s+=beadGrid(pool,48,68,804,178,9,24,120,null);
+    s+=txt(40,290,'the thin box is now held up by the fat one, which is the whole trick',13,'lb');
+    $('f10Read').innerHTML='pooled &middot; <b>'+total(pool)+'</b> beads over '+Object.keys(pool).length+' colours';
+  }
+  $('f10').innerHTML=s;
+}
+document.querySelectorAll('[data-f10]').forEach(function(b){
+  b.addEventListener('click',function(){
+    f10mode=b.getAttribute('data-f10');
+    document.querySelectorAll('[data-f10]').forEach(function(x){x.classList.toggle('on',x===b);});
+    f10render();
+  });
+});
+f10render();
+(function(){
+  var v={},i;
+  CORPORA.rhymes.forEach(function(l){toks(l).forEach(function(w){v[w]=1;});});
+  var V=Object.keys(v).length;
+  $('vTiny').textContent=V;
+  $('vT1').textContent=V.toLocaleString();
+  $('vT3').textContent=Math.pow(V,3).toLocaleString();
+})();
+
+/* ================= playground ================= */
+var pg={corpus:'rhymes',order:1,T:0.8,model:null};
+function pgBuild(){pg.model=train(CORPORA[pg.corpus],pg.order);}
+function pgRender(){
+  pgBuild();
+  var B=pg.model,s='';
+  s+=txt(0,22,Object.keys(B).length+' boxes · '+beadsIn(B)+' beads · label of '+pg.order+' word'+(pg.order>1?'s':''),13,'lb');
+  s+=wallSVG(B,0,60,900,6,18,132,58);
+  $('pgFig').innerHTML=s;
+  $('pgRead').innerHTML=pg.corpus+' &middot; label '+pg.order+' &middot; t '+pg.T.toFixed(2);
+  $('pgTv').textContent=pg.T.toFixed(2);
+}
+function pgWrite(){
+  var out='',i;
+  for(i=0;i<5;i++){
+    var g=gen(pg.model,pg.order,pg.T,18);
+    out+='<b>'+(g.words.join(' ')||'(nothing)')+'</b><br>';
+  }
+  $('pgOut').innerHTML=out+'<i>'+pg.corpus+' &middot; label '+pg.order+' &middot; temperature '+pg.T.toFixed(2)+'</i>';
+}
+(function(){
+  var c=$('pgChips');
+  c.innerHTML=
+   '<button class="chip on" data-pgc="rhymes">rhymes</button>'+
+   '<button class="chip" data-pgc="weather">weather</button>'+
+   '<button class="chip" data-pgc="support">support replies</button>'+
+   '<span class="fig-read">&nbsp;</span>'+
+   '<button class="chip on" data-pgo="1">label 1</button>'+
+   '<button class="chip" data-pgo="2">label 2</button>'+
+   '<button class="chip" data-pgo="3">label 3</button>'+
+   '<span class="fig-read">&nbsp;</span>'+
+   '<button class="chip" data-pgp="parrot">the parrot</button>'+
+   '<button class="chip" data-pgp="lunatic">the lunatic</button>'+
+   '<button class="chip" data-pgp="sweet">the sweet spot</button>';
+  c.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    if(b.hasAttribute('data-pgc')){
+      pg.corpus=b.getAttribute('data-pgc');
+      c.querySelectorAll('[data-pgc]').forEach(function(x){x.classList.toggle('on',x===b);});
+    }else if(b.hasAttribute('data-pgo')){
+      pg.order=+b.getAttribute('data-pgo');
+      c.querySelectorAll('[data-pgo]').forEach(function(x){x.classList.toggle('on',x===b);});
+    }else{
+      var p=b.getAttribute('data-pgp');
+      if(p==='parrot'){pg.order=3;pg.T=0.1;}
+      if(p==='lunatic'){pg.order=1;pg.T=1.9;}
+      if(p==='sweet'){pg.order=2;pg.T=0.85;}
+      $('pgT').value=Math.round(pg.T*100);
+      c.querySelectorAll('[data-pgo]').forEach(function(x){
+        x.classList.toggle('on',+x.getAttribute('data-pgo')===pg.order);});
+      pgRender();pgWrite();return;
+    }
+    pgRender();
+  });
+  $('pgT').addEventListener('input',function(){pg.T=+this.value/100;pgRender();});
+  $('pgGo').addEventListener('click',function(){pgRender();pgWrite();});
+})();
+pgRender();
+
+/* ================= coupling, reveal, dial, weeds ================= */
+document.querySelectorAll('.ref').forEach(function(t){
+  var k=t.getAttribute('data-ref'),sec=t.closest('section');
+  function on(v){
+    t.classList.toggle('hot',v);
+    sec.querySelectorAll('.fig').forEach(function(f){f.classList.toggle('dimmed',v);});
+    sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){p.classList.toggle('hot',v);});
+  }
+  t.addEventListener('mouseenter',function(){on(true);});
+  t.addEventListener('mouseleave',function(){on(false);});
+  t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
+});
+
+var ro=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});
+},{threshold:0.06,rootMargin:'0px 0px -4% 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+(function(){
+  var pf=$('pf'),C=2*Math.PI*22;
+  pf.style.strokeDasharray=C;pf.style.strokeDashoffset=C;
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    pf.style.strokeDashoffset=C*(1-Math.min(1,Math.max(0,p||0)));
+  },{passive:true});
+})();
+
+(function(){
+  var weeds=$('weeds'),hint=$('weedsHint');
+  function toggle(){
+    var open=weeds.hidden;
+    weeds.hidden=!open;
+    hint.setAttribute('aria-expanded',String(open));
+    hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
+    if(open){weeds.setAttribute('tabindex','-1');weeds.focus({preventScroll:true});
+      weeds.scrollIntoView({behavior:'smooth',block:'start'});}
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='s'&&e.key!=='S')return;
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=(t.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||t.isContentEditable)return;
+    e.preventDefault();toggle();
+  });
+  hint.addEventListener('click',toggle);
+})();
+})();
+</script>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

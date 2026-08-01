@@ -43,21 +43,103 @@
     });
   }
 
-  /* ---------- filters (explorables page) ---------- */
+  /* ---------- explorables: search, filter, sort ---------- */
   var filters = document.getElementById('filters');
   if(filters){
-    var cards=[].slice.call(document.querySelectorAll('#grid .card')), count=document.getElementById('count');
+    var grid   = document.getElementById('grid'),
+        cards  = [].slice.call(grid.querySelectorAll('.card')),
+        secs   = [].slice.call(grid.querySelectorAll('.sec')),
+        count  = document.getElementById('count'),
+        qbox   = document.getElementById('q'),
+        sortEl = document.getElementById('sort'),
+        order  = cards.slice();            // the curated order, as authored
+    var topic = 'all', level = false;
+
+    /* The inline data-q on each card covers titles, headings and bold terms, so the very first
+       keystroke is instant. The complete word list of every explorable lives in a separate
+       ~150KB file, fetched once on first search, because making everyone who merely browses
+       download it would be a poor trade. Until it lands, search falls back to the inline index. */
+    var FULL = null, fetching = false;
+    function loadFullIndex(){
+      if(FULL || fetching) return;
+      fetching = true;
+      fetch('/assets/search-index.json')
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ if(j){ FULL = j; apply(); } })
+        .catch(function(){ /* stay on the inline index */ });
+    }
+
+    /* remember the page exactly as authored, headings interleaved with cards */
+    var AUTHORED = [].slice.call(grid.children).filter(function(el){
+      return el.classList.contains('card') || el.classList.contains('sec');
+    });
+
+    var empty = document.createElement('div');
+    empty.className = 'empty hide';
+    empty.textContent = 'Nothing matches that. Try a shorter word, or clear the filters.';
+    grid.appendChild(empty);
+
+    function matches(card){
+      if(topic !== 'all' && card.getAttribute('data-topic') !== topic) return false;
+      if(level && card.getAttribute('data-level') !== 'beginner') return false;
+      /* Every word in the query must appear somewhere in the card's index. Matching word by
+         word rather than as one string means "learning rate" works even though the index is
+         stored alphabetically and those two words are nowhere near each other in it. */
+      var q = (qbox && qbox.value || '').trim().toLowerCase();
+      if(q){
+        var hay = card.getAttribute('data-q') || '';
+        if(FULL){ var extra = FULL[card.getAttribute('href')]; if(extra) hay += ' ' + extra; }
+        var words = q.split(/\s+/);
+        for(var i=0;i<words.length;i++){ if(hay.indexOf(words[i]) < 0) return false; }
+      }
+      return true;
+    }
+
+    function apply(){
+      var sort = sortEl ? sortEl.value : 'curated',
+          searching = !!(qbox && qbox.value.trim()),
+          flat = searching || topic !== 'all' || level || sort !== 'curated',
+          n = 0;
+
+      cards.forEach(function(c){
+        var ok = matches(c);
+        c.classList.toggle('hide', !ok);
+        if(ok && !c.classList.contains('soon')) n++;
+      });
+
+      /* Sections only make sense in the curated view. Any filter, search or re-sort
+         flattens the page, because a heading over an arbitrary subset is a lie. */
+      secs.forEach(function(sec){ sec.classList.toggle('hide', flat); });
+
+      if(sort === 'curated' && !flat){
+        AUTHORED.forEach(function(node){ grid.appendChild(node); });   // headings back in place
+      } else {
+        var seq = order.slice();
+        if(sort === 'new')      seq.sort(function(a,b){ return (b.getAttribute('data-date')||'').localeCompare(a.getAttribute('data-date')||''); });
+        else if(sort === 'old') seq.sort(function(a,b){ return (a.getAttribute('data-date')||'zzz').localeCompare(b.getAttribute('data-date')||'zzz'); });
+        else if(sort === 'az')  seq.sort(function(a,b){ return (a.getAttribute('data-title')||'').localeCompare(b.getAttribute('data-title')||''); });
+        seq.forEach(function(c){ grid.appendChild(c); });
+      }
+      grid.appendChild(empty);
+
+      empty.classList.toggle('hide', n > 0);
+      if(count) count.textContent = n + (n === 1 ? ' explorable' : ' explorables');
+    }
+
     filters.querySelectorAll('.chip').forEach(function(c){
       c.addEventListener('click', function(){
-        filters.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');}); c.classList.add('on');
-        var f=c.getAttribute('data-f'), n=0;
-        cards.forEach(function(card){
-          var show = f==='all' || (' '+card.getAttribute('data-cat')+' ').indexOf(' '+f+' ')>=0;
-          card.classList.toggle('hide', !show); if(show && !card.classList.contains('soon')) n++;
-        });
-        if(count) count.textContent = n+' explorable'+(n===1?'':'s');
+        if(c.hasAttribute('data-l')){                       // beginner is an independent toggle
+          level = !level; c.classList.toggle('on', level);
+        } else {
+          filters.querySelectorAll('.chip:not(.lvl)').forEach(function(x){ x.classList.remove('on'); });
+          c.classList.add('on'); topic = c.getAttribute('data-f');
+        }
+        apply();
       });
     });
+    if(qbox)   qbox.addEventListener('input', function(){ loadFullIndex(); apply(); });
+    if(sortEl) sortEl.addEventListener('change', apply);
+    apply();
   }
 
   /* ---------- ambient blobs (hero) ---------- */
