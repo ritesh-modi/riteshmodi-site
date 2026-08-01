@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How data becomes an equation: supervised learning, clustering, reinforcement learning</title>
+<link rel="canonical" href="https://www.loopingly.com/explorables/how-data-becomes-an-equation.html">
+<style>
+:root{
+  --paper:#EDEFE4; --paper-2:#E2E5D6; --ink:#171B12; --ink-soft:#414636;
+  --ink-faint:#727866; --rule:#C9CEB9;
+  --accent:#4A6B1F; --ent-b:#7A4A72; --ent-c:#3D6070;
+  --risk:#B3462F; --warn:#B07A22;
+  --panel:#161A11; --panel-ink:#E4E7DA;
+  --maxw:680px; --wide:1080px; --pad:26px;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --disp:Georgia,"Times New Roman",serif;
+  --t:.5s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
+
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+h1,h2{font-family:var(--disp);font-weight:400;line-height:1.06;margin:0;letter-spacing:-.015em}
+h2{font-size:clamp(30px,4.6vw,44px);margin:0 0 24px}
+p{margin:0 0 22px}
+a{color:var(--accent)}
+strong{color:var(--ink)}
+
+.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+.bleed{width:100%;margin:0}
+section{padding:clamp(72px,9vw,128px) 0}
+.divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
+
+.lede{font-family:var(--disp);font-size:clamp(21px,2.6vw,30px);line-height:1.36;color:var(--ink-soft)}
+.cap{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--ink-faint);
+  line-height:1.55;margin:14px 0 0}
+.cap b{color:var(--ink-soft);font-weight:500}
+
+/* hero: a table whose answer column holds the headline */
+.hero{padding:clamp(46px,7vw,84px) 0 clamp(40px,6vw,72px)}
+.hero .grid{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:clamp(18px,4vw,44px);
+  align-items:start}
+.hero h1{font-size:clamp(46px,9vw,76px);line-height:1.0;max-width:13ch}
+.hero .lede{margin:26px 0 0;max-width:44ch}
+.hero .cap{font-family:var(--mono);font-size:12px;color:var(--ink-faint);letter-spacing:.08em;
+  text-transform:uppercase;border-right:1px solid var(--rule);padding-right:14px;text-align:right}
+@media(max-width:760px){.hero .grid{grid-template-columns:1fr}
+  .hero .cap{border-right:0;border-left:1px solid var(--rule);text-align:left;padding:0 0 0 14px}}
+
+.intu{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;
+  padding:20px 24px;margin:30px 0;background:var(--paper-2);font-size:17px;line-height:1.62}
+.intu i{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:block;margin-bottom:9px;font-style:normal}
+.note{background:var(--paper-2);border-radius:5px;padding:18px 22px;margin:28px 0;
+  font-size:17px;color:var(--ink-soft)}
+.try{border-left:2px solid var(--ent-b);padding:4px 0 4px 22px;margin:28px 0;font-size:17px}
+
+.fig{border:1px solid var(--rule);background:var(--paper);border-radius:6px;margin:34px 0;
+  padding:30px 32px}
+.fig svg{display:block;width:100%;height:auto;touch-action:none}
+.fig .row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:0 0 18px}
+.fig .row.b{margin:18px 0 0}
+.panel{background:var(--panel);color:var(--panel-ink);border-radius:5px;padding:16px 18px;
+  font-family:var(--mono);font-size:14px;line-height:1.7;margin:18px 0 0;overflow-x:auto}
+.panel s{color:var(--warn);text-decoration:none}
+
+.chip{font-family:var(--mono);font-size:12px;padding:8px 13px;border:1px solid var(--rule);
+  border-radius:18px;background:var(--paper);cursor:pointer;transition:background var(--t),color var(--t);
+  color:var(--ink-soft)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.b.on{background:var(--ent-b);border-color:var(--ent-b)}
+.btn{font-family:var(--mono);font-size:12px;padding:9px 15px;border:1px solid var(--ink-soft);
+  border-radius:4px;background:var(--ink);color:var(--paper);cursor:pointer}
+.btn.g{background:transparent;color:var(--ink-soft)}
+label.cap{margin:0;display:flex;align-items:center;gap:10px;flex:1 1 240px}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+/* scrollytelling */
+.bleed.scrolly{position:relative;display:grid;gap:4vw;
+  grid-template-columns:minmax(0,460px) minmax(0,1fr);max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.bleed.scrolly > *{min-width:0}
+.wide.sg{position:sticky;top:0;height:100vh;max-width:none;padding:0;order:2;
+  display:flex;align-items:center;justify-content:center}
+.wide.sg > *{width:100%;max-width:560px;min-width:0}
+.col.ss{padding:34vh 0 38vh;max-width:none}
+.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;
+  max-width:none;padding:0;opacity:.3;transition:opacity .35s;cursor:pointer}
+.col.stp.on{opacity:1}
+[data-gel]{opacity:.1;transition:opacity .5s ease}
+[data-gel].show{opacity:1}
+@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.col.stp{opacity:1}}
+@media(max-width:900px){
+  .bleed.scrolly{grid-template-columns:1fr;gap:0}
+  .wide.sg{order:-1;width:100%;height:44vh;background:var(--paper);
+    border-bottom:1px solid var(--rule);z-index:5}
+  .col.ss{padding:4vh 0 12vh}
+  .col.stp{min-height:auto;padding:26px 0}
+}
+@media(max-width:760px){
+  .fig{padding:20px 14px}
+  .fig svg{min-width:560px}
+  .fig .sc{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wide.sg svg{min-width:0}
+}
+
+/* progress: corner dial */
+.rail{position:fixed;right:20px;bottom:20px;width:52px;height:52px;z-index:60;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--paper-2);
+  box-shadow:0 4px 18px rgba(23,27,18,.18)}
+.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.rail span{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
+@media(max-width:600px){.rail{display:none}}
+
+.hint{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink-faint);
+  text-align:center;cursor:pointer;padding:30px 0;margin:0}
+.hint kbd{border:1px solid var(--rule);border-radius:3px;padding:1px 5px;color:var(--ink-soft)}
+.hint:hover,.hint:focus-visible{color:var(--accent)}
+.weeds[hidden]{display:none}
+.weeds{background:var(--paper-2);padding:60px 0;border-top:1px solid var(--rule)}
+.weeds details{border-bottom:1px solid var(--rule);padding:14px 0}
+.weeds summary{cursor:pointer;font-family:var(--mono);font-size:14px;color:var(--accent)}
+.weeds p{font-size:17px;margin:14px 0 0}
+
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="rail"><svg viewBox="0 0 52 52" aria-hidden="true">
+  <circle cx="26" cy="26" r="22" fill="none" stroke="var(--rule)" stroke-width="3"/>
+  <circle id="pf" cx="26" cy="26" r="22" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+</svg><span id="pt">0%</span></div>
+
+<header class="hero wide" data-hero="headline-in-the-answer-column">
+  <div class="grid">
+    <div class="cap">temp&nbsp;°C<br>weekend<br><br>known<br>columns</div>
+    <div>
+      <h1>How data becomes an equation</h1>
+      <p class="lede">Supervised learning, clustering and reinforcement learning, worked by hand on eight days of a lemonade stand, then run live in your browser.</p>
+    </div>
+  </div>
+  <div class="fig" style="margin-top:34px"><div class="sc">
+    <svg id="heroFig" viewBox="0 0 720 220" role="img" aria-label="Eight rows of two input columns and one answer column"></svg>
+  </div>
+  <p class="cap"><b>Figure 1.</b> Eight days of trading. Click any row to hide its answer, and the fitted rule guesses it back.</p></div>
+</header>
+
+<div class="divider"></div>
+
+<section data-ch="01" data-defines="row,feature,label">
+  <div class="col">
+    <h2>Three columns on a napkin already contain a rule</h2>
+    <p>Here are three days from a lemonade stand. Twenty two degrees, a Tuesday, fifty cups. Thirty degrees, a Saturday, one hundred and thirteen cups. Thirty three degrees, a Sunday, one hundred and nineteen cups.</p>
+    <p>Now answer this before reading on. Tomorrow is forecast at twenty six degrees and it falls on a Saturday. How many cups?</p>
+    <p>Whatever number you said, you did not pull it out of the air. You noticed that hotter days sell more, that weekends sell more, and that both effects stack. You did arithmetic on a pattern you extracted from three rows. Anything near a hundred is defensible, and the model trained further down this page settles on ninety four.</p>
+    <div class="intu"><i>picture it</i>Each day is an index card. Two facts are printed on the front, the <b>columns you get to see</b>, and one number is written on the back, the <b>answer you want</b>. A stack of cards with both sides filled in is the entire raw material of supervised learning.</div>
+    <p>The two front facts have a name worth learning now, because it appears everywhere: they are the <b>features</b>. The number on the back is the <b>label</b>. One card is a <b>row</b>. That is the whole vocabulary for the next few screens.</p>
+  </div>
+  <div class="wide">
+    <div class="fig"><div class="sc">
+      <svg id="f-rows" viewBox="0 0 720 320" role="img" aria-label="Table of eight rows beside a scatter plot"></svg>
+    </div>
+    <p class="cap"><b>Figure 2.</b> Click a row on the left to drop that day onto the grid on the right. Two are placed already.</p></div>
+  </div>
+  <div class="col">
+    <p>Drop all eight on and the shape gives itself away. The points climb left to right, and the weekend days sit as a second band above the weekday ones, roughly parallel. Two effects, stacked, exactly as your gut said.</p>
+    <p>Seeing the band is not the same as being able to state it. A guess of "ninety-ish" cannot be checked, cannot be argued with, and cannot be handed to a machine that has never smelled a lemon.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="02" data-uses="row,feature,label" data-defines="weight,error">
+  <div class="col">
+    <h2>A rule you can draw is a rule you can write down</h2>
+    <p>Take a pencil to the grid and lay a straight edge through the middle of the points. You have just committed to a rule. Every straight line through that space says the same kind of thing: start from a base number of cups, then add so many cups for every degree above mild.</p>
+    <p>Written out, with mild fixed at twenty six degrees:</p>
+    <div class="panel">cups = <s>w</s> &times; (temp &minus; 26) + <s>b</s></div>
+    <p>Two numbers decide everything. The <b>slope</b> w is how many extra cups one degree buys. The <b>intercept</b> b is what a mild day sells on its own. Change the pair and you have a different rule; there are no other choices to make.</p>
+    <div class="intu"><i>picture it</i>A ruler pinned to the paper by two thumbtacks. One tack sets its height, the other sets its tilt. <b>Fitting a model is nothing more exotic than sliding those two tacks</b> until the ruler runs through the crowd of points.</div>
+    <p>Slide them yourself. The red sticks are the misses: for each day, the gap between the cups the line claims and the cups actually sold.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <label class="cap">slope w <input type="range" id="lw" min="0" max="9" step="0.1" value="1.5"><b id="lwv">1.5</b></label>
+        <label class="cap">intercept b <input type="range" id="lb" min="30" max="130" step="1" value="55"><b id="lbv">55</b></label>
+      </div>
+      <div class="sc"><svg id="f-line" viewBox="0 0 720 340" role="img" aria-label="Line through the eight days with error sticks"></svg></div>
+      <div class="row b"><button class="btn" id="lbest">put it where the error is smallest</button>
+        <button class="btn g" id="lreset">back to a bad guess</button></div>
+      <p class="cap"><b>Figure 3.</b> Drag either slider, or click anywhere on the grid to pull the line through that point. The bar under the plot is the average squared miss.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>One number is doing the scoring: square every miss, take the mean. Squaring matters. It makes misses in both directions count the same, and it punishes one catastrophic day far more than five slightly-off days. That number has a name, the <b>loss</b>, and shrinking it is the only goal the machine is ever given.</p>
+    <p>The button labelled smallest error does not search. It solves a two-unknown equation and lands on w near 4.3, b near 79. That shortcut exists for straight lines and almost nothing else, which is why the rest of machine learning looks the way it does.</p>
+    <div class="note">The line still ignores the weekend column entirely, so every Saturday sits stubbornly above it and every Tuesday below. Watch the red sticks: they are not random. Structured leftovers are the signature of a column you have not used yet.</div>
+    <p>So there are two numbers to find, a score that says how bad the current pair is, and no formula to reach for once the model gets any more complicated than a ruler. Something has to walk the tacks into place.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="03" data-uses="weight,error" data-defines="loss,gradient,learning rate">
+  <div class="col">
+    <h2>The misses point at their own fix</h2>
+    <p>Stand at the bad line and look at the sticks. If nearly every point sits above the line, the line is too low, and you know to lift it without being told. If the points on the right sit above while the points on the left sit below, the line is too flat, and you know to tilt it.</p>
+    <p>That is the whole training algorithm. The direction of the misses is the instruction.</p>
+    <div class="intu"><i>picture it</i>Fog on a hillside. You cannot see the valley floor, but you can feel which way the ground falls under your boots, and you can step that way. Step, feel, step again. <b>Nobody needs a map of the valley to reach the bottom of it</b>, only the slope underfoot.</div>
+  </div>
+
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg"><div class="sc">
+      <svg id="f-gd" viewBox="0 0 560 400" role="img" aria-label="A line moving toward the data as training steps run"></svg>
+    </div></div>
+    <div class="col ss">
+      <div class="col stp on" data-step="0"><p><b>Start anywhere.</b> The weights begin at zero, so the first line is flat and far too low. Its average squared miss is over seven thousand cups. No knowledge, no problem: this is the honest starting point.</p></div>
+      <div class="col stp" data-step="1"><p><b>Measure every miss.</b> For each of the eight days, subtract what the line claims from what actually sold. Eight numbers, all large and all in the same direction, which is already a message.</p></div>
+      <div class="col stp" data-step="2"><p><b>Turn the misses into a direction.</b> Multiply each miss by the day's temperature and average them, and you get how much the slope should move. Average the plain misses and you get how much the height should move. That pair of numbers is the <b>gradient</b>.</p></div>
+      <div class="col stp" data-step="3"><p><b>Take a small step.</b> Not the whole way. Move each weight a fraction of the distance the gradient suggests, then recompute from scratch. Five steps in, the line has visibly lifted and the loss is down from 7,379 to 4,344.</p></div>
+      <div class="col stp" data-step="4"><p><b>Repeat until it stops paying.</b> Two hundred steps in, the line has settled into the crowd and the loss has dropped from seven thousand to single digits. Nothing here was solved. It was walked to.</p></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>One detail decides whether that walk works: how big a step to take. Too timid and two hundred steps leaves you halfway up the hill. Too bold and each step overshoots the bottom, lands higher than it started, and the next step overshoots further. The number that sets the step size is the <b>learning rate</b>, and it is the one dial worth turning by hand.</p>
+    <p>The model below uses both columns at last, so it has three numbers to find rather than two: cups per degree, cups for a weekend, and the base.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <label class="cap">learning rate <input type="range" id="tlr" min="1" max="60" step="1" value="30"><b id="tlrv">0.030</b></label>
+        <button class="btn" id="trun">run 200 steps</button>
+        <button class="btn g" id="treset">reset weights to zero</button>
+      </div>
+      <div class="sc"><svg id="f-train" viewBox="0 0 720 330" role="img" aria-label="Training curve and the two fitted lines"></svg></div>
+      <div class="panel" id="teq">cups = 0.00 &times; (temp &minus; 26) + 0.00 &times; weekend + 0.00</div>
+      <p class="cap"><b>Figure 4.</b> Set the rate, then run. Below about 0.005 the walk crawls; above about 0.05 it throws the weights off the chart and the loss climbs instead of falling.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Leave it at 0.03 and run twice. The loss lands near 6.2, and the equation reads four cups per degree, about thirty cups for being a weekend, sixty four as a base. Those three numbers are the model. Not the code, not the training loop, not the eight rows: three numbers in a text box, which you could copy onto a napkin and use for the rest of the summer.</p>
+    <div class="note">Turn the rate to its maximum and run. The loss column shoots upward, the equation fills with implausible numbers, and the lines leave the plot. That failure is not exotic, it is the ordinary way training dies, and the fix is almost always the same dial.</div>
+    <p>Every model on this page trains the same way. What changes from here is not the walking. It is what the misses are measured against, and whether anyone bothered to write the answer column at all.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="04" data-uses="loss,gradient,weight" data-defines="class,boundary,probability">
+  <div class="col">
+    <h2>A pass or fail label is the same equation with a cut-off bolted on</h2>
+    <p>Swap the napkin. Now each row is a student sitting an exam: hours revised, score on the last mock, and on the back of the card a single word, passed or failed. Two columns again, but the answer is no longer a quantity. It is one of two words.</p>
+    <p>Subtraction is meaningless here. There is no gap between "passed" and "failed" to square. So the arithmetic gets one extra move: keep the same weighted sum, then squash it into a number between zero and one and read that as a probability.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row"><label class="cap">weighted sum <input type="range" id="sz" min="-60" max="60" step="1" value="-18"><b id="szv">-1.8</b></label></div>
+      <div class="sc"><svg id="f-sig" viewBox="0 0 720 200" role="img" aria-label="The squashing curve from weighted sum to probability"></svg></div>
+      <p class="cap"><b>Figure 5.</b> Drag the sum. Large and positive reads as almost certainly passed, large and negative as almost certainly failed, zero as a coin toss.</p>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i>The weighted sum is a see-saw. Hours revised push one end down, a weak mock score pushes the other. The squash is just the rule for reading the see-saw out loud: <b>lean far enough one way and you call it, sit near level and you admit you do not know</b>.</div>
+    <p>Training changes by one line. Instead of squaring the miss, the loss asks how much confidence the model put on the wrong word, and punishes confident mistakes hardest. The walk downhill is identical, and it still ends with a handful of numbers.</p>
+    <p>Those numbers draw a line, but the line means something new. It is the <b>boundary</b>: on one side the model says passed, on the other failed, and it sits where the probability is exactly a half.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <span class="chip on" data-cls="1">add a pass</span>
+        <span class="chip b" data-cls="0">add a fail</span>
+        <button class="btn g" id="creset">start over</button>
+      </div>
+      <div class="sc"><svg id="f-clf" viewBox="0 0 720 380" role="img" aria-label="Students plotted by hours revised and mock score with a decision boundary"></svg></div>
+      <div class="panel" id="ceq"></div>
+      <p class="cap"><b>Figure 6.</b> Click anywhere in the plot to add a student of the chosen kind. The boundary retrains on every click. Try adding a fail deep in pass territory.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Put one stubborn failure at nine hours and a strong mock score, and watch the boundary tilt to accommodate it. One row moved the rule for everybody. With eighteen rows that is what a single odd case is worth; with eighteen thousand it would barely register, which is most of the practical argument for collecting more data.</p>
+    <div class="note">The equation is still readable. As it stands, one more hour of revision moves the lean by about 4.5, and ten more points on the mock by about 9.2. You can disagree with a model you can read, which is exactly why regulators keep asking for models you can read.</div>
+    <p>Both napkins so far had something written on the back of the card. Somebody sat down and marked each student, each day. Take that person away and the arithmetic has nothing to be wrong about.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="05" data-uses="loss,row" data-defines="cluster,centroid">
+  <div class="col">
+    <h2>With the answer column gone, distance is the only teacher left</h2>
+    <p>Eighteen customers of the same lemonade stand, two columns each: visits per month, and average spend per visit. No third column. Nobody has ever labelled these people, and nobody is going to.</p>
+    <p>Look at them plotted anyway and your eye does something the previous sections needed a loss function for. It finds groups. A knot of frequent small spenders, a knot of rare big spenders, a knot in between. You did not have a target to be right about; you used nothing but which points sit near which.</p>
+    <div class="intu"><i>picture it</i>Drop three drawing pins on the map, give every town to its nearest pin, then slide each pin to the middle of the towns it just collected. Repeat. <b>The pins stop moving when no town wants to change hands</b>, and where they stop is the answer.</div>
+    <p>That loop has two lines and no derivatives. Assign every point to the nearest pin. Move every pin to the average of its points. The pins are called <b>centroids</b>, the groups are <b>clusters</b>, and the score being minimised is the total squared distance from points to their own pin. Same shape of goal as before, measured against the data itself rather than against an answer.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <span class="chip" data-k="2">2 groups</span>
+        <span class="chip on" data-k="3">3 groups</span>
+        <span class="chip" data-k="4">4 groups</span>
+        <button class="btn" id="kstep">assign, then move</button>
+        <button class="btn g" id="knew">scatter the pins again</button>
+      </div>
+      <div class="sc"><svg id="f-km" viewBox="0 0 720 380" role="img" aria-label="Customers grouped around moving centroids"></svg></div>
+      <p class="cap"><b>Figure 7.</b> Press assign twice and watch the pins jump to the middle of their catch. Press scatter to start from a different random set of pins, sometimes with a different ending.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Press scatter a few times and read the score at the bottom. Most starts settle at 236, the three obvious knots. Roughly one start in four settles near 890 instead: two pins land inside the same knot and split it, while the third swallows the other two groups whole. The algorithm has no way to notice, because from where it now stands nothing is moving any more.</p>
+    <div class="note">Ask for four groups and it will give you four, cheerfully, by slicing a real group in half. The method cannot tell you how many groups exist. It can only tell you the best arrangement for the number you demanded, which makes the choice of that number a judgement call dressed as a setting.</div>
+    <p>Nothing here was predicted and nothing was labelled. But at least the rows arrived. In the last setting, even that stops being true.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="06" data-uses="cluster,loss" data-defines="reward,policy,value">
+  <div class="col">
+    <h2>When no rows arrive, the machine has to go and collect its own</h2>
+    <p>A delivery robot in a five by five stockroom. It starts at the top left, the crate is at the bottom right, and nobody has ever shown it a route. Each move costs one point. Reaching the crate pays ten. That is the entire specification, and it says nothing whatsoever about turning right.</p>
+    <p>So the robot flails. It moves at random, bumps walls, wanders, and eventually stumbles onto the crate. That single lucky arrival is the first real information in the system, and it gets used in a specific way: the square the robot was standing on when it stepped into the crate is now known to be worth something. Next time round, the square before that one inherits a share of it.</p>
+    <div class="intu"><i>picture it</i>Scent on a trail. The crate smells strongest, and every square that leads to a good-smelling square picks up a little of the smell itself. <b>After enough wandering the whole floor is a gradient the robot can simply walk up</b>, and none of it was designed by anyone.</div>
+    <p>Two quantities do the bookkeeping. The <b>value</b> of a square is how much reward the robot expects to collect from there onward. The <b>policy</b> is the arrow it would follow: whichever neighbour looks worth the most.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <button class="btn" id="rrun">run 20 episodes</button>
+        <button class="btn g" id="rreset">forget everything</button>
+        <span class="cap" id="rstat">episodes 0 &middot; last run 0 steps</span>
+      </div>
+      <div class="sc"><svg id="f-rl" viewBox="0 0 720 340" role="img" aria-label="Stockroom grid shaded by value with policy arrows"></svg></div>
+      <p class="cap"><b>Figure 8.</b> Press run and watch the shading spread backwards from the crate. Click any square to move the crate there, which wipes what the robot knew.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Press run once and the readout says the arrows do not reach the crate yet: the shading is a smear in the bottom corner and the rest of the floor is still blank. Press it again, forty episodes in, and the arrows have joined up into a staircase that walks from the start to the crate in eight steps, which is the shortest route the room allows. Every press after that changes nothing except the wandering, because the answer is already found.</p>
+    <p>Notice what never existed: a table of correct moves. The robot generated every row it learned from by acting, and the only ground truth in the building was ten points for a crate.</p>
+    <div class="note">Move the crate and the knowledge is worthless in one click. Everything the robot learned was about the old goal, and there is no partial credit. Brittleness of exactly this kind is why so much reinforcement learning stays in simulators, where a wasted lifetime costs a few seconds of compute.</div>
+    <p>Three settings, three sources of instruction: a marked answer, the shape of the data, a number arriving late and rarely. Underneath, the machinery has been the same one every time.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="07" data-uses="policy,centroid,boundary,learning rate">
+  <div class="col">
+    <h2>All three are the same loop with a different judge</h2>
+    <p>Line up what actually happened in each case and the differences shrink to one slot. Start with adjustable numbers. Produce something. Get told how bad it was. Nudge the numbers. Repeat.</p>
+    <p>Only the third box changes.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <span class="chip on" data-cmp="sup">supervised</span>
+        <span class="chip" data-cmp="clu">clustering</span>
+        <span class="chip" data-cmp="rl">reinforcement</span>
+      </div>
+      <div class="sc"><svg id="f-cmp" viewBox="0 0 720 300" role="img" aria-label="The same four-stage loop with one stage swapped per setting"></svg></div>
+      <p class="cap"><b>Figure 9.</b> Switch settings. The layout never changes, which is the point: only the judge and the thing being adjusted swap out.</p>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i>One kitchen, three critics. A recipe card with the right answer printed on it, a room of diners seated by taste, and a food writer who eats in silence and posts a score a week later. <b>The cooking never changes, the feedback does</b>, and everything difficult about each setting follows from how late and how thin its feedback is.</div>
+    <p>Written as equations, the family resemblance is closer still. Supervised regression predicts a weighted sum. Supervised classification squashes the same sum. Clustering compares a point to a handful of centre points, which is a weighted sum in disguise. The robot scores each move with a stored number per square, which for a bigger stockroom would itself be predicted by, of all things, a weighted sum.</p>
+    <p>That resemblance is also the trap. Four boxes and a nudge will happily fit numbers to anything, including patterns that do not exist.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="08" data-uses="weight,boundary">
+  <div class="col">
+    <h2>The equation only knows the days it was shown</h2>
+    <p>The lemonade model was fitted on days between eighteen and thirty five degrees. Ask it about a mild spring morning at eight degrees and it answers with confidence. Ask it about a heatwave at forty five and it answers with equal confidence. It has no idea it has left the room.</p>
+    <p>And it has never met a festival. Add one, a Saturday in a heatwave with three hundred cups sold, and watch what a single unusual row does to a rule fitted on eight.</p>
+    <div class="intu"><i>picture it</i>A tide table written from one week of measurements at one harbour. Inside that week it is accurate to the minute. <b>Carry it to a different coast and it will still print times, in the same confident font</b>, and every one of them will be wrong.</div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="row">
+        <label class="cap">predict at <input type="range" id="xt" min="5" max="50" step="1" value="26"><b id="xtv">26 °C</b></label>
+        <button class="btn" id="xout">add the festival day</button>
+        <button class="btn g" id="xreset">remove it</button>
+      </div>
+      <div class="sc"><svg id="f-ext" viewBox="0 0 720 340" role="img" aria-label="The fitted line extended beyond the range of the training days"></svg></div>
+      <p class="cap"><b>Figure 10.</b> Drag the prediction point outside the shaded band and the model keeps answering. Add the festival and the whole line pivots under it.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Two failures, both ordinary. Outside the shaded band the model is extrapolating, and a straight line extended far enough will predict negative cups on a cold morning. Inside the band, one extreme row drags the fit toward itself because squared error punishes large misses so hard that the model would rather be slightly wrong about seven days than badly wrong about one.</p>
+    <div class="note">Neither failure shows up in the loss. The number on screen stays small and keeps falling while the rule quietly becomes useless outside its band. Every serious pipeline holds back rows the model never trains on, precisely because a loss computed on the training rows cannot see this.</div>
+    <p>The same holds for the other two. Clustering will hand you groups in data that has none. The robot will learn a perfect route to a crate that has moved.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="col" style="text-align:center">
+  <p class="lede">Three settings, one habit: guess with numbers, measure how wrong the guess was, nudge the numbers, and keep the ones that survive contact with days you have not seen.</p>
+</section>
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<section class="weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h2>Into the weeds</h2>
+    <details><summary>Why subtract 26 from the temperature</summary>
+      <p>Centring a column on its rough middle makes the walk downhill far better behaved. Uncentred, the slope and the intercept fight each other on every step and the same learning rate that works here would either crawl or explode. Real pipelines do this to every numeric column, usually by subtracting the mean and dividing by the spread, and it is the least glamorous reason a model trains at all.</p></details>
+    <details><summary>Squared error versus absolute error</summary>
+      <p>Squaring is what makes the festival day so destructive. Absolute error treats a miss of a hundred as a hundred times a miss of one; squared error treats it as ten thousand times. Fit the same eight days with absolute error and the line barely moves when the outlier arrives, at the cost of a loss surface with corners in it, which is harder to walk down.</p></details>
+    <details><summary>What the classification loss actually is</summary>
+      <p>It is the negative logarithm of the probability assigned to the correct word. Give the right answer a probability of 0.99 and the penalty is about 0.01. Give it 0.01 and the penalty is about 4.6. That asymmetry is the whole design: a model is allowed to be unsure, and punished for being sure and wrong.</p></details>
+    <details><summary>Why k-means can settle in the wrong place</summary>
+      <p>Each step can only lower the score, so it always stops, but where it stops depends on where the pins began. Standard practice is to run it ten times from different starts and keep whichever ending scores best. A smarter initialisation, k-means++, spreads the first pins out on purpose and cuts the bad endings down sharply.</p></details>
+    <details><summary>The discount factor in the stockroom</summary>
+      <p>The robot values a reward one step away slightly more than the same reward two steps away, by a factor near 0.95 per step. Without that shrinkage the values in a loop of squares would grow without bound. With it, the arithmetic settles, and the robot develops a mild preference for arriving sooner, which is where its impatience comes from.</p></details>
+    <details><summary>Where neural networks fit into this</summary>
+      <p>Everything above stayed with a weighted sum, which can only draw straight lines and flat boundaries. Stack several weighted sums with a squash between each pair and the model can bend. Nothing else in the loop changes: same misses, same gradient, same small steps, the same learning rate causing the same trouble. It is this page with more numbers.</p></details>
+  </div>
+</section>
+
+<footer class="col cap" style="padding:40px 0 60px;text-align:center">
+  Every number on this page is computed in your browser from the rows shown. The eight trading days,
+  eighteen students, eighteen customers and the stockroom are invented for teaching, and the arithmetic
+  run on them is the ordinary kind. Built August 2026.
+</footer>
+<script>
+(function(){
+var E=function(id){return document.getElementById(id);};
+var A=function(o){var s='';for(var k in o){s+=' '+k+'="'+o[k]+'"';}return s;};
+var R=Math.round;
+var CA='var(--accent)',CB='var(--ent-b)',CC='var(--ent-c)',CR='var(--risk)',CW='var(--warn)',
+    CF='var(--ink-faint)',CS='var(--ink-soft)',CU='var(--rule)',CI='var(--ink)';
+var FM='ui-monospace,Menlo,monospace';
+function txt(x,y,s,o){o=o||{};return '<text x="'+R(x)+'" y="'+R(y)+'" font-family="'+FM+'" font-size="'+(o.sz||12)+'" fill="'+(o.fill||CF)+'" text-anchor="'+(o.a||'start')+'">'+s+'</text>';}
+function rect(x,y,w,h,o){return '<rect x="'+R(x)+'" y="'+R(y)+'" width="'+R(w)+'" height="'+R(h)+'"'+A(o||{})+' shape-rendering="crispEdges"/>';}
+function line(x1,y1,x2,y2,o){return '<line x1="'+R(x1)+'" y1="'+R(y1)+'" x2="'+R(x2)+'" y2="'+R(y2)+'"'+A(o||{})+'/>';}
+/* the atom: one 16-unit cell, four states */
+function cell(x,y,s,st,sz){sz=sz||16;
+  var f={raw:'none',data:'var(--paper-2)',hot:CA,alt:CB,cool:CC,bad:CR}[st]||'none';
+  var stroke=(st==='raw')?CU:'none', dash=(st==='raw')?'3 3':'0';
+  return rect(x,y,sz,sz,{fill:f,stroke:stroke,'stroke-width':1.5,'stroke-dasharray':dash,rx:2})+
+    (s!==''&&s!=null?txt(x+sz/2,y+sz*0.75,s,{a:'middle',sz:11,fill:(st==='hot'||st==='alt'||st==='cool'||st==='bad')?'#fff':CS}):'');
+}
+/* least squares by normal equations + gaussian elimination */
+function lstsq(X,y){
+  var m=X[0].length,i,j,k,M=[],v=[];
+  for(i=0;i<m;i++){M.push([]);v.push(0);for(j=0;j<m;j++)M[i].push(0);}
+  for(k=0;k<X.length;k++){for(i=0;i<m;i++){v[i]+=X[k][i]*y[k];for(j=0;j<m;j++)M[i][j]+=X[k][i]*X[k][j];}}
+  for(i=0;i<m;i++){
+    var p=i;for(k=i+1;k<m;k++)if(Math.abs(M[k][i])>Math.abs(M[p][i]))p=k;
+    var t=M[i];M[i]=M[p];M[p]=t;var tv=v[i];v[i]=v[p];v[p]=tv;
+    if(Math.abs(M[i][i])<1e-12)continue;
+    for(k=0;k<m;k++){if(k===i)continue;var f=M[k][i]/M[i][i];
+      for(j=i;j<m;j++)M[k][j]-=f*M[i][j];v[k]-=f*v[i];}
+  }
+  var out=[];for(i=0;i<m;i++)out.push(v[i]/M[i][i]);return out;
+}
+
+/* ---------- the lemonade rows ---------- */
+var ROWS=[[18,0,31],[22,0,50],[25,1,88],[28,0,70],[30,1,113],[33,1,119],[20,1,72],[35,0,104]];
+var X3=ROWS.map(function(r){return [r[0]-26,r[1],1];}), Y=ROWS.map(function(r){return r[2];});
+var BEST3=lstsq(X3,Y);
+var X2=ROWS.map(function(r){return [r[0]-26,1];});
+var BEST2=lstsq(X2,Y);
+function mse(w,X){var s=0;for(var i=0;i<X.length;i++){var p=0;for(var j=0;j<w.length;j++)p+=w[j]*X[i][j];s+=(p-Y[i])*(p-Y[i]);}return s/X.length;}
+
+/* ---------- HERO ---------- */
+(function(){
+  var svg=E('heroFig'),hid=[];
+  function draw(){
+    var s='',x0=20,y0=26,rh=22;
+    s+=txt(x0,y0-10,'temp °C')+txt(x0+120,y0-10,'weekend')+txt(x0+250,y0-10,'cups sold',{fill:CA});
+    s+=line(x0+238,y0-24,x0+238,y0+rh*8+4,{stroke:CU,'stroke-width':1.5});
+    ROWS.forEach(function(r,i){
+      var y=y0+i*rh;
+      s+=cell(x0,y,r[0],'data')+cell(x0+120,y,r[1]?'1':'0','data');
+      if(hid.indexOf(i)>=0){
+        var g=BEST3[0]*(r[0]-26)+BEST3[1]*r[1]+BEST3[2];
+        s+=cell(x0+250,y,'','hot',16)+txt(x0+276,y+12,'guessed '+g.toFixed(0),{fill:CA});
+      } else {
+        s+=cell(x0+250,y,'','raw',16)+txt(x0+276,y+12,r[2],{fill:CS});
+      }
+      s+=rect(x0-6,y-3,420,rh,{fill:'rgba(0,0,0,0)','data-r':i,style:'cursor:pointer'});
+    });
+    s+=txt(470,60,'the rule the machine found',{fill:CF});
+    s+=txt(470,84,'cups = '+BEST3[0].toFixed(2)+' × (temp − 26)',{fill:CI,sz:13});
+    s+=txt(470,104,'  + '+BEST3[1].toFixed(1)+' × weekend + '+BEST3[2].toFixed(1),{fill:CI,sz:13});
+    s+=txt(470,140,'average miss: '+(ROWS.reduce(function(a,r){
+        return a+Math.abs(BEST3[0]*(r[0]-26)+BEST3[1]*r[1]+BEST3[2]-r[2]);},0)/8).toFixed(1)+' cups',{fill:CF});
+    s+=txt(470,164,hid.length?(hid.length+' answer'+(hid.length>1?'s':'')+' hidden'):'click a row to hide its answer',{fill:CA});
+    svg.innerHTML=s;
+  }
+  svg.addEventListener('click',function(e){
+    var t=e.target.getAttribute('data-r');if(t===null)return;
+    var i=+t,k=hid.indexOf(i);if(k>=0)hid.splice(k,1);else hid.push(i);draw();
+  });
+  draw();
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var seq=[3,6,1];seq.forEach(function(i,n){setTimeout(function(){hid.push(i);draw();},500+n*450);});
+  }
+})();
+
+/* ---------- FIG 2: rows to points ---------- */
+(function(){
+  var svg=E('f-rows'),on=[true,true,false,false,false,false,false,false];
+  var PX=[380,700],PY=[280,40];
+  function px(t){return PX[0]+(t-16)/(37-16)*(PX[1]-PX[0]);}
+  function py(c){return PY[0]+(c-20)/(130-20)*(PY[1]-PY[0]);}
+  function draw(){
+    var s='',x0=14,y0=52,rh=26;
+    s+=txt(x0,30,'temp °C')+txt(x0+96,30,'weekend')+txt(x0+196,30,'cups',{fill:CA});
+    ROWS.forEach(function(r,i){
+      var y=y0+i*rh;
+      s+=cell(x0,y,r[0],on[i]?'data':'raw')+cell(x0+96,y,r[1]?'1':'0',on[i]?'data':'raw')
+        +cell(x0+196,y,'',on[i]?(r[1]?'alt':'hot'):'raw')+txt(x0+222,y+12,r[2],{fill:on[i]?CI:CF});
+      s+=rect(x0-6,y-4,300,rh-2,{fill:'rgba(0,0,0,0)','data-r':i,style:'cursor:pointer'});
+    });
+    s+=txt(x0,y0+8*rh+22,on.filter(Boolean).length+' of 8 placed',{fill:CA});
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [20,25,30,35].forEach(function(t){s+=txt(px(t),PY[0]+20,t+'°',{a:'middle'});});
+    [40,80,120].forEach(function(c){s+=txt(PX[0]-8,py(c)+4,c,{a:'end'});});
+    s+=txt(PX[1],PY[1]-14,'weekday',{a:'end',fill:CA})+txt(PX[1],PY[1]+2,'weekend',{a:'end',fill:CB});
+    ROWS.forEach(function(r,i){if(!on[i])return;
+      s+=cell(px(r[0])-8,py(r[2])-8,'',r[1]?'alt':'hot');});
+    svg.innerHTML=s;
+  }
+  svg.addEventListener('click',function(e){
+    var t=e.target.getAttribute('data-r');if(t===null)return;on[+t]=!on[+t];draw();});
+  draw();
+})();
+
+/* ---------- FIG 3: the ruler ---------- */
+(function(){
+  var svg=E('f-line'),sw=E('lw'),sb=E('lb');
+  var PX=[70,700],PY=[270,30];
+  function px(t){return PX[0]+(t-16)/(37-16)*(PX[1]-PX[0]);}
+  function py(c){return PY[0]+(c-10)/(140-10)*(PY[1]-PY[0]);}
+  function draw(){
+    var w=+sw.value,b=+sb.value,s='';
+    E('lwv').textContent=w.toFixed(1);E('lbv').textContent=b;
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [20,25,30,35].forEach(function(t){s+=txt(px(t),PY[0]+20,t+'°',{a:'middle'});});
+    [40,80,120].forEach(function(c){s+=txt(PX[0]-8,py(c)+4,c,{a:'end'});});
+    var f=function(t){return w*(t-26)+b;};
+    s+=line(px(16),py(f(16)),px(37),py(f(37)),{stroke:CI,'stroke-width':3});
+    var tot=0;
+    ROWS.forEach(function(r){
+      var p=f(r[0]),e=r[2]-p;tot+=e*e;
+      s+=line(px(r[0]),py(p),px(r[0]),py(r[2]),{stroke:CR,'stroke-width':1.5});
+    });
+    ROWS.forEach(function(r){s+=cell(px(r[0])-8,py(r[2])-8,'',r[1]?'alt':'hot');});
+    var m=tot/8;
+    s+=txt(PX[0],326,'average squared miss',{fill:CF});
+    s+=txt(PX[0]+232,326,m.toFixed(1),{a:'end',fill:CI,sz:15});
+    s+=rect(PX[0]+244,314,386,14,{fill:'var(--paper-2)',rx:2});
+    s+=rect(PX[0]+244,314,Math.max(3,Math.min(1,m/900)*386),14,{fill:m<40?CA:CR,rx:2});
+    s+=rect(PX[0],PY[1]-20,1,1,{fill:'none'});
+    svg.innerHTML=s;
+  }
+  sw.addEventListener('input',draw);sb.addEventListener('input',draw);
+  E('lbest').addEventListener('click',function(){sw.value=BEST2[0].toFixed(1);sb.value=R(BEST2[1]);draw();});
+  E('lreset').addEventListener('click',function(){sw.value=1.5;sb.value=55;draw();});
+  svg.addEventListener('pointerdown',function(e){
+    var r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;
+    var x=(e.clientX-r.left)/r.width*vb.width,y=(e.clientY-r.top)/r.height*vb.height;
+    if(x<PX[0]||x>PX[1]||y>PY[0]||y<PY[1])return;
+    var t=16+(x-PX[0])/(PX[1]-PX[0])*21, c=10+(y-PY[0])/(PY[1]-PY[0])*130;
+    sb.value=R(Math.max(30,Math.min(130,c-(+sw.value)*(t-26))));draw();
+  });
+  draw();
+})();
+
+/* ---------- FIG 4a: the scrolly graphic ---------- */
+var GDSTATES=(function(){
+  var w=[0,0,0],out=[w.slice()],want=[1,5,40,200],k=0;
+  for(var i=1;i<=200;i++){
+    var g=[0,0,0];
+    for(var n=0;n<8;n++){var p=w[0]*X3[n][0]+w[1]*X3[n][1]+w[2],e=p-Y[n];
+      g[0]+=e*X3[n][0];g[1]+=e*X3[n][1];g[2]+=e;}
+    for(var j=0;j<3;j++)w[j]-=0.03*g[j]/8;
+    if(want.indexOf(i)>=0)out.push(w.slice());
+  }
+  return out;
+})();
+(function(){
+  var svg=E('f-gd');
+  var PX=[70,530],PY=[300,40];
+  function px(t){return PX[0]+(t-16)/(37-16)*(PX[1]-PX[0]);}
+  function py(c){return PY[0]+(c-0)/(140-0)*(PY[1]-PY[0]);}
+  function draw(i){
+    var w=GDSTATES[i],s='',f=function(t,wk){return w[0]*(t-26)+w[1]*wk+w[2];};
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [20,25,30,35].forEach(function(t){s+=txt(px(t),PY[0]+20,t+'°',{a:'middle'});});
+    [40,80,120].forEach(function(c){s+=txt(PX[0]-8,py(c)+4,c,{a:'end'});});
+    s+='<g data-gel="line">'+line(px(16),py(f(16,0)),px(37),py(f(37,0)),{stroke:CA,'stroke-width':3})
+      +line(px(16),py(f(16,1)),px(37),py(f(37,1)),{stroke:CB,'stroke-width':3,'stroke-dasharray':'7 5'})+'</g>';
+    var st='';
+    ROWS.forEach(function(r){st+=line(px(r[0]),py(f(r[0],r[1])),px(r[0]),py(r[2]),{stroke:CR,'stroke-width':1.5});});
+    s+='<g data-gel="sticks">'+st+'</g>';
+    ROWS.forEach(function(r){s+=cell(px(r[0])-8,py(r[2])-8,'',r[1]?'alt':'hot');});
+    s+='<g data-gel="grad">'+txt(PX[0]+16,PY[1]+6,'tilt the slope up, lift the base',{fill:CI})
+      +line(PX[0]+16,PY[1]+18,PX[0]+150,PY[1]+18,{stroke:CI,'stroke-width':1.5})
+      +'<path d="M'+(PX[0]+150)+' '+(PY[1]+13)+' l10 5 l-10 5 z" fill="'+CI+'"/></g>';
+    var m=mse(w,X3);
+    s+='<g data-gel="loss">'+txt(PX[0],364,'average squared miss',{fill:CF})
+      +txt(PX[0]+238,364,m.toFixed(1),{a:'end',fill:CI,sz:15})
+      +rect(PX[0]+250,352,210,14,{fill:'var(--paper-2)',rx:2})
+      +rect(PX[0]+250,352,Math.max(3,Math.min(1,m/7500)*210),14,{fill:m<40?CA:CR,rx:2})+'</g>';
+    svg.innerHTML=s;
+  }
+  var MAP={0:['line'],1:['line','sticks'],2:['line','sticks','grad'],3:['line','sticks','loss'],4:['line','loss']};
+  var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
+  function set(i){
+    draw(i);
+    svg.querySelectorAll('[data-gel]').forEach(function(g){
+      g.classList.toggle('show',MAP[i].indexOf(g.getAttribute('data-gel'))>=0);});
+    steps.forEach(function(s){s.classList.toggle('on',+s.getAttribute('data-step')===i);});
+  }
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting)set(+e.target.getAttribute('data-step'));});},
+    {rootMargin:'-45% 0px -45% 0px',threshold:0});
+  steps.forEach(function(s){io.observe(s);s.addEventListener('click',function(){set(+s.getAttribute('data-step'));});});
+  set(0);
+})();
+
+/* ---------- FIG 4b: train it yourself ---------- */
+(function(){
+  var svg=E('f-train'),sl=E('tlr'),W=[0,0,0],HIST=[mse([0,0,0],X3)],dead=false;
+  var LX=[60,330],LY=[260,40],PX=[430,700],PY=[260,40];
+  function px(t){return PX[0]+(t-16)/(37-16)*(PX[1]-PX[0]);}
+  function py(c){return PY[0]+c/140*(PY[1]-PY[0]);}
+  function ly(v){var l=Math.log10(Math.max(1e-2,Math.min(1e6,v)));return LY[0]+(l+2)/8*(LY[1]-LY[0]);}
+  function lr(){return (+sl.value)/1000;}
+  function step(){
+    var g=[0,0,0];
+    for(var n=0;n<8;n++){var p=W[0]*X3[n][0]+W[1]*X3[n][1]+W[2],e=p-Y[n];
+      g[0]+=e*X3[n][0];g[1]+=e*X3[n][1];g[2]+=e;}
+    for(var j=0;j<3;j++)W[j]-=lr()*g[j]/8;
+    var m=mse(W,X3);
+    if(!isFinite(m)||m>1e12){dead=true;}
+    HIST.push(m);if(HIST.length>1200)HIST.splice(0,HIST.length-1200);
+  }
+  function draw(){
+    E('tlrv').textContent=lr().toFixed(3);
+    var s='';
+    s+=line(LX[0],LY[0],LX[1],LY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(LX[0],LY[0],LX[0],LY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=txt(LX[0],LY[1]-14,'average squared miss, by step',{fill:CF});
+    [[1,'1'],[100,'100'],[10000,'10k'],[1000000,'1M']].forEach(function(t){
+      s+=txt(LX[0]-8,ly(t[0])+4,t[1],{a:'end'});});
+    var pth='',n=HIST.length;
+    for(var i=0;i<n;i++){
+      var x=LX[0]+(n<2?0:i/(n-1))*(LX[1]-LX[0]),v=HIST[i];
+      pth+=(i?'L':'M')+R(x)+' '+R(isFinite(v)?ly(v):LY[1]);
+    }
+    s+='<path d="'+pth+'" fill="none" stroke="'+(dead?CR:CA)+'" stroke-width="3"/>';
+    s+=txt(LX[1],LY[0]+20,(n-1)+' steps',{a:'end'});
+    var last=HIST[n-1];
+    s+=txt(LX[0],LY[0]+20,isFinite(last)?('now '+(last>1e6?last.toExponential(1):last.toFixed(1))):'off the chart',
+      {fill:dead?CR:CI,sz:15});
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [20,25,30,35].forEach(function(t){s+=txt(px(t),PY[0]+20,t+'°',{a:'middle'});});
+    [40,80,120].forEach(function(c){s+=txt(PX[0]-8,py(c)+4,c,{a:'end'});});
+    var f=function(t,wk){return W[0]*(t-26)+W[1]*wk+W[2];};
+    function seg(wk,col,dash){
+      var y1=py(f(16,wk)),y2=py(f(37,wk));
+      if(!isFinite(y1)||!isFinite(y2))return '';
+      y1=Math.max(-200,Math.min(500,y1));y2=Math.max(-200,Math.min(500,y2));
+      return line(px(16),y1,px(37),y2,{stroke:col,'stroke-width':3,'stroke-dasharray':dash});
+    }
+    s+=seg(0,CA,'0')+seg(1,CB,'7 5');
+    ROWS.forEach(function(r){s+=cell(px(r[0])-8,py(r[2])-8,'',r[1]?'alt':'hot');});
+    s+=txt(PX[1],PY[1]-14,'weekday',{a:'end',fill:CA})+txt(PX[1],PY[1]+2,'weekend',{a:'end',fill:CB});
+    s+=txt(PX[0],310,'lines redrawn from the three weights',{fill:CF});
+    svg.innerHTML=s;
+    E('teq').innerHTML=dead?'the weights ran off the chart. press reset, then lower the rate.'
+      :('cups = '+W[0].toFixed(2)+' × (temp − 26) + '+W[1].toFixed(2)+' × weekend + '+W[2].toFixed(2));
+  }
+  E('trun').addEventListener('click',function(){for(var i=0;i<200;i++){if(dead)break;step();}draw();});
+  E('treset').addEventListener('click',function(){W=[0,0,0];HIST=[mse(W,X3)];dead=false;draw();});
+  sl.addEventListener('input',draw);
+  draw();
+})();
+
+/* ---------- FIG 5: the squash ---------- */
+(function(){
+  var svg=E('f-sig'),sl=E('sz');
+  var PX=[60,420],PY=[170,30];
+  function px(z){return PX[0]+(z+6)/12*(PX[1]-PX[0]);}
+  function py(p){return PY[0]+p*(PY[1]-PY[0]);}
+  function sig(z){return 1/(1+Math.exp(-z));}
+  function draw(){
+    var z=(+sl.value)/10,p=sig(z),s='';
+    E('szv').textContent=z.toFixed(1);
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(px(0),PY[0],px(0),PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=txt(PX[0],PY[0]+20,'sum −6',{a:'start'})+txt(PX[1],PY[0]+20,'sum +6',{a:'end'});
+    s+=txt(PX[0]-8,py(1)+4,'1',{a:'end'})+txt(PX[0]-8,py(0)+4,'0',{a:'end'});
+    var d='';for(var i=0;i<=120;i++){var zz=-6+i*0.1;d+=(i?'L':'M')+R(px(zz))+' '+R(py(sig(zz)));}
+    s+='<path d="'+d+'" fill="none" stroke="'+CI+'" stroke-width="3"/>';
+    s+=line(px(z),PY[0],px(z),py(p),{stroke:CU,'stroke-width':1.5});
+    s+=cell(px(z)-8,py(p)-8,'',p>0.5?'hot':'alt');
+    s+=txt(470,70,'probability of passing',{fill:CF});
+    s+=rect(470,84,220,18,{fill:'var(--paper-2)',rx:2});
+    s+=rect(470,84,Math.max(2,p*220),18,{fill:p>0.5?CA:CB,rx:2});
+    s+=txt(470,128,(p*100).toFixed(1)+'%',{fill:CI,sz:15});
+    s+=txt(560,128,p>0.66?'call it a pass':(p<0.34?'call it a fail':'too close to call'),{fill:CS});
+    svg.innerHTML=s;
+  }
+  sl.addEventListener('input',draw);draw();
+})();
+
+/* ---------- FIG 6: the boundary ---------- */
+(function(){
+  var svg=E('f-clf'),cls=1;
+  var BASE=[[1,45,0],[2,52,0],[2,70,0],[3,40,0],[3,62,0],[4,55,0],[4,75,1],[5,48,0],[5,68,1],
+            [6,60,1],[6,82,1],[7,55,1],[7,78,1],[8,65,1],[9,58,1],[9,88,1],[2,88,1],[8,42,0]];
+  var P=BASE.map(function(r){return r.slice();}),W=[0,0,0];
+  var PX=[70,700],PY=[300,30];
+  function px(h){return PX[0]+h/10*(PX[1]-PX[0]);}
+  function py(s){return PY[0]+(s-30)/65*(PY[1]-PY[0]);}
+  function fx(x){return (x-PX[0])/(PX[1]-PX[0])*10;}
+  function fy(y){return 30+(y-PY[0])/(PY[1]-PY[0])*65;}
+  function train(){
+    W=[0,0,0];
+    for(var it=0;it<3000;it++){
+      var g=[0,0,0];
+      for(var i=0;i<P.length;i++){
+        var a=P[i][0]-5,b=(P[i][1]-62)/10;
+        var p=1/(1+Math.exp(-(W[0]*a+W[1]*b+W[2]))),e=p-P[i][2];
+        g[0]+=e*a;g[1]+=e*b;g[2]+=e;
+      }
+      for(var j=0;j<3;j++)W[j]-=0.5*g[j]/P.length;
+    }
+  }
+  function draw(){
+    var s='';
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [0,2,4,6,8,10].forEach(function(h){s+=txt(px(h),PY[0]+20,h+'h',{a:'middle'});});
+    [40,60,80].forEach(function(v){s+=txt(PX[0]-8,py(v)+4,v,{a:'end'});});
+    s+=txt(PX[0],PY[0]+40,'hours revised',{fill:CF});
+    s+=txt(PX[0]-46,PY[1]-10,'mock score',{fill:CF});
+    if(Math.abs(W[1])>1e-6){
+      var ys=[],hs=[0,10];
+      hs.forEach(function(h){ys.push(62+10*(-(W[0]*(h-5)+W[2]))/W[1]);});
+      s+=line(px(0),Math.max(PY[1]-30,Math.min(PY[0]+30,py(ys[0]))),
+              px(10),Math.max(PY[1]-30,Math.min(PY[0]+30,py(ys[1]))),{stroke:CI,'stroke-width':3});
+    }
+    P.forEach(function(r){s+=cell(px(r[0])-8,py(r[1])-8,'',r[2]?'hot':'alt');});
+    s+=txt(PX[1],PY[1]-14,'passed',{a:'end',fill:CA})+txt(PX[1],PY[1]+2,'failed',{a:'end',fill:CB});
+    s+=rect(PX[0],PY[1]-24,1,1,{fill:'none'});
+    svg.innerHTML=s;
+    var ok=0;
+    P.forEach(function(r){
+      var p=1/(1+Math.exp(-(W[0]*(r[0]-5)+W[1]*(r[1]-62)/10+W[2])));
+      if((p>0.5?1:0)===r[2])ok++;});
+    E('ceq').innerHTML='lean = '+W[0].toFixed(2)+' × (hours − 5) + '+W[1].toFixed(2)+
+      ' × (score − 62)/10 + '+W[2].toFixed(2)+'<br>pass if the squash of lean is above 0.5 &middot; '+
+      'right on '+ok+' of '+P.length+' rows';
+  }
+  document.querySelectorAll('[data-cls]').forEach(function(c){
+    c.addEventListener('click',function(){
+      cls=+c.getAttribute('data-cls');
+      document.querySelectorAll('[data-cls]').forEach(function(o){o.classList.toggle('on',o===c);});
+    });
+  });
+  svg.addEventListener('pointerdown',function(e){
+    var r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;
+    var x=(e.clientX-r.left)/r.width*vb.width,y=(e.clientY-r.top)/r.height*vb.height;
+    if(x<PX[0]||x>PX[1]||y>PY[0]||y<PY[1])return;
+    P.push([+fx(x).toFixed(1),R(fy(y)),cls]);train();draw();
+  });
+  E('creset').addEventListener('click',function(){P=BASE.map(function(r){return r.slice();});train();draw();});
+  train();draw();
+})();
+
+/* ---------- FIG 7: k-means ---------- */
+(function(){
+  var svg=E('f-km'),k=3,iter=0;
+  var PTS=[[2,8],[3,11],[2.5,9],[4,12],[3.5,7],[9,34],[11,40],[10,30],[12,44],[8,38],
+           [18,12],[20,9],[17,15],[21,11],[19,17],[16,8],[10,36],[3,13]];
+  var C=[],asg=PTS.map(function(){return -1;});
+  var PX=[70,700],PY=[300,30],COL=[CA,CB,CC,CW];
+  function px(v){return PX[0]+v/24*(PX[1]-PX[0]);}
+  function py(v){return PY[0]+v/50*(PY[1]-PY[0]);}
+  function seed(){
+    var idx=[],i;while(idx.length<k){var r=Math.floor(Math.random()*PTS.length);if(idx.indexOf(r)<0)idx.push(r);}
+    C=idx.map(function(i){return PTS[i].slice();});
+    asg=PTS.map(function(){return -1;});iter=0;
+  }
+  function stepK(){
+    asg=PTS.map(function(p){
+      var b=0,bd=1e9;C.forEach(function(c,j){var d=(p[0]-c[0])*(p[0]-c[0])+(p[1]-c[1])*(p[1]-c[1]);
+        if(d<bd){bd=d;b=j;}});return b;});
+    C.forEach(function(c,j){
+      var sx=0,sy=0,n=0;
+      PTS.forEach(function(p,i){if(asg[i]===j){sx+=p[0];sy+=p[1];n++;}});
+      if(n){c[0]=sx/n;c[1]=sy/n;}
+    });
+    iter++;
+  }
+  function score(){
+    var s=0;PTS.forEach(function(p,i){if(asg[i]<0)return;var c=C[asg[i]];
+      s+=(p[0]-c[0])*(p[0]-c[0])+(p[1]-c[1])*(p[1]-c[1]);});return s;
+  }
+  function draw(){
+    var s='';
+    s+=line(PX[0],PY[0],PX[1],PY[0],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [0,6,12,18,24].forEach(function(v){s+=txt(px(v),PY[0]+20,v,{a:'middle'});});
+    [10,25,40].forEach(function(v){s+=txt(PX[0]-8,py(v)+4,'£'+v,{a:'end'});});
+    s+=txt(PX[0],PY[0]+40,'visits per month',{fill:CF});
+    s+=txt(PX[0]-46,PY[1]-10,'average basket',{fill:CF});
+    PTS.forEach(function(p,i){
+      if(asg[i]<0){s+=cell(px(p[0])-8,py(p[1])-8,'','raw');}
+      else{s+=rect(px(p[0])-8,py(p[1])-8,16,16,{fill:COL[asg[i]],rx:2});}
+    });
+    C.forEach(function(c,j){
+      s+='<g><circle cx="'+R(px(c[0]))+'" cy="'+R(py(c[1]))+'" r="13" fill="none" stroke="'+COL[j]+'" stroke-width="3"/>'
+        +line(px(c[0])-6,py(c[1]),px(c[0])+6,py(c[1]),{stroke:COL[j],'stroke-width':3})
+        +line(px(c[0]),py(c[1])-6,px(c[0]),py(c[1])+6,{stroke:COL[j],'stroke-width':3})+'</g>';
+    });
+    s+=txt(PX[0],370,'round '+iter+(iter?' · total squared distance to own pin '+score().toFixed(0):' · pins dropped, nothing assigned yet'),{fill:CA});
+    svg.innerHTML=s;
+  }
+  document.querySelectorAll('[data-k]').forEach(function(c){
+    c.addEventListener('click',function(){
+      k=+c.getAttribute('data-k');
+      document.querySelectorAll('[data-k]').forEach(function(o){o.classList.toggle('on',o===c);});
+      seed();draw();});
+  });
+  E('kstep').addEventListener('click',function(){stepK();draw();});
+  E('knew').addEventListener('click',function(){seed();draw();});
+  seed();stepK();draw();
+})();
+
+/* ---------- FIG 8: the stockroom ---------- */
+(function(){
+  var svg=E('f-rl'),N=5,goal=[4,4],Q=null,eps=0,last=0;
+  var MOV=[[-1,0],[1,0],[0,-1],[0,1]],S=58,X0=40,Y0=26;
+  function reset(){Q=[];for(var r=0;r<N;r++){Q.push([]);for(var c=0;c<N;c++)Q[r][c]=[0,0,0,0];}eps=0;last=0;}
+  function run(n){
+    for(var e=0;e<n;e++){
+      var r=0,c=0,t=0;
+      for(;t<200;t++){
+        var a=Math.random()<0.25?Math.floor(Math.random()*4):
+          Q[r][c].indexOf(Math.max.apply(null,Q[r][c]));
+        var nr=Math.min(N-1,Math.max(0,r+MOV[a][0])),nc=Math.min(N-1,Math.max(0,c+MOV[a][1]));
+        var done=(nr===goal[0]&&nc===goal[1]),rew=done?10:-1;
+        var fut=done?0:0.95*Math.max.apply(null,Q[nr][nc]);
+        Q[r][c][a]+=0.5*(rew+fut-Q[r][c][a]);
+        r=nr;c=nc;if(done)break;
+      }
+      last=t+1;eps++;
+    }
+  }
+  function greedy(){
+    var r=0,c=0,seen={},n=0;
+    while(n<40){
+      if(r===goal[0]&&c===goal[1])return n;
+      var key=r+','+c;if(seen[key])return null;seen[key]=1;
+      var q=Q[r][c];if(Math.max.apply(null,q)<=0.02)return null;
+      var a=q.indexOf(Math.max.apply(null,q));
+      r=Math.min(N-1,Math.max(0,r+MOV[a][0]));c=Math.min(N-1,Math.max(0,c+MOV[a][1]));n++;
+    }
+    return null;
+  }
+  function draw(){
+    var s='',mx=0.01,gp=greedy();
+    for(var r=0;r<N;r++)for(var c=0;c<N;c++)mx=Math.max(mx,Math.max.apply(null,Q[r][c]));
+    for(r=0;r<N;r++)for(c=0;c<N;c++){
+      var x=X0+c*S,y=Y0+r*S,v=Math.max(0,Math.max.apply(null,Q[r][c])),o=Math.min(1,v/mx);
+      var isG=(r===goal[0]&&c===goal[1]);
+      s+=rect(x,y,S-4,S-4,{fill:isG?CW:CA,'fill-opacity':isG?1:(0.06+0.72*o),stroke:CU,'stroke-width':1.5,rx:3});
+      if(isG){s+=txt(x+(S-4)/2,y+(S-4)/2+5,'crate',{a:'middle',sz:12,fill:'#fff'});}
+      else if(v>0.02){
+        var a=Q[r][c].indexOf(Math.max.apply(null,Q[r][c])),cx=x+(S-4)/2,cy=y+(S-4)/2;
+        var dx=MOV[a][1]*15,dy=MOV[a][0]*15;
+        s+=line(cx-dx,cy-dy,cx+dx*0.5,cy+dy*0.5,{stroke:'#fff','stroke-width':3,'stroke-opacity':0.85})
+          +'<path d="M'+R(cx+dx)+' '+R(cy+dy)+' L'+R(cx+dx*0.5-dy*0.35)+' '+R(cy+dy*0.5-dx*0.35)
+          +' L'+R(cx+dx*0.5+dy*0.35)+' '+R(cy+dy*0.5+dx*0.35)+' z" fill="#fff" fill-opacity="0.85"/>';
+      }
+      s+=rect(x,y,S-4,S-4,{fill:'rgba(0,0,0,0)','data-g':r+','+c,style:'cursor:pointer'});
+    }
+    s+=txt(X0,Y0+N*S+18,'start',{fill:CF});
+    s+=txt(376,60,'what the robot worked out',{fill:CF});
+    s+=txt(376,84,'shading: how good a square looks',{fill:CS});
+    s+=txt(376,106,'arrow: where it would step next',{fill:CS});
+    s+=txt(376,148,'episodes run: '+eps,{fill:CI,sz:15});
+    s+=txt(376,176,gp===null?'the arrows stop short':('the arrows give a '+gp+' step route'),
+      {fill:gp===null?CR:CI,sz:15});
+    s+=txt(376,200,'shortest possible: '+(goal[0]+goal[1])+' steps',{fill:CF});
+    s+=txt(376,224,eps?('last episode, still exploring: '+last):'',{fill:CF});
+    svg.innerHTML=s;
+    E('rstat').textContent='episodes '+eps+' · '+(gp===null?'no route yet':('route '+gp+' steps'));
+  }
+  svg.addEventListener('click',function(e){
+    var g=e.target.getAttribute('data-g');if(!g)return;
+    var p=g.split(',');if(+p[0]===0&&+p[1]===0)return;
+    goal=[+p[0],+p[1]];reset();draw();
+  });
+  E('rrun').addEventListener('click',function(){run(20);draw();});
+  E('rreset').addEventListener('click',function(){reset();draw();});
+  reset();draw();
+})();
+
+/* ---------- FIG 9: one loop, three judges ---------- */
+(function(){
+  var svg=E('f-cmp'),cur='sup';
+  var D={
+    sup:{a:['rows with an','answer column','temp, weekend → cups'],
+         b:['three weights','in one equation'],
+         c:['squared gap between','guess and answer'],
+         d:['nudge weights','downhill, 200 times'],col:CA},
+    clu:{a:['rows with no','answer at all','visits, basket → nothing'],
+         b:['the pin','positions'],
+         c:['distance from a point','to its own pin'],
+         d:['reassign, then slide','every pin to the middle'],col:CB},
+    rl:{a:['no rows until','the robot acts','a square, a move, a score'],
+        b:['a number stored','for every square'],
+        c:['reward now, plus what','the next square is worth'],
+        d:['update the square','it just left'],col:CC}
+  };
+  function draw(){
+    var d=D[cur],s='',bw=152,gap=22,x=16,y=70,h=140;
+    var t=['what it is given','what it can change','what says it is wrong','what it does next'];
+    var body=[d.a,d.b,d.c,d.d];
+    for(var i=0;i<4;i++){
+      var bx=x+i*(bw+gap);
+      s+=txt(bx,y-16,t[i],{fill:CF});
+      s+=rect(bx,y,bw,h,{fill:i===2?'var(--paper-2)':'none',stroke:i===2?d.col:CU,'stroke-width':i===2?3:1.5,rx:4});
+      body[i].forEach(function(ln,j){s+=txt(bx+14,y+34+j*22,ln,{fill:i===2?CI:CS});});
+      if(i<3){var ax=bx+bw+6;
+        s+=line(ax,y+h/2,ax+12,y+h/2,{stroke:CU,'stroke-width':3})
+          +'<path d="M'+R(ax+12)+' '+R(y+h/2-5)+' l8 5 l-8 5 z" fill="'+CU+'"/>';}
+    }
+    s+=line(x+3*(bw+gap)+bw/2,y+h+10,x+3*(bw+gap)+bw/2,y+h+30,{stroke:CU,'stroke-width':3});
+    s+=line(x+bw/2,y+h+30,x+3*(bw+gap)+bw/2,y+h+30,{stroke:CU,'stroke-width':3});
+    s+=line(x+bw/2,y+h+10,x+bw/2,y+h+30,{stroke:CU,'stroke-width':3});
+    s+='<path d="M'+R(x+bw/2)+' '+R(y+h+8)+' l-5 8 l10 0 z" fill="'+CU+'"/>';
+    s+=txt(x+bw/2+14,y+h+52,'and round again',{fill:CF});
+    s+=txt(20,34,{sup:'a marked answer for every row',clu:'no answer anywhere, only positions',
+      rl:'one number, arriving late'}[cur],{fill:d.col,sz:15});
+    svg.innerHTML=s;
+  }
+  document.querySelectorAll('[data-cmp]').forEach(function(c){
+    c.addEventListener('click',function(){
+      cur=c.getAttribute('data-cmp');
+      document.querySelectorAll('[data-cmp]').forEach(function(o){o.classList.toggle('on',o===c);});
+      draw();});
+  });
+  draw();
+})();
+
+/* ---------- FIG 10: outside the band ---------- */
+(function(){
+  var svg=E('f-ext'),sl=E('xt'),fest=false;
+  var PX=[70,700],PY=[276,30];
+  function rows(){var r=ROWS.map(function(x){return x.slice();});if(fest)r.push([21,1,300]);return r;}
+  function fit(){
+    var r=rows(),Xa=r.map(function(x){return [x[0]-26,1];}),ya=r.map(function(x){return x[2];});
+    return lstsq(Xa,ya);
+  }
+  function draw(){
+    var w=fit(),top=fest?320:150,s='';
+    function px(t){return PX[0]+(t-3)/49*(PX[1]-PX[0]);}
+    function py(c){return PY[0]+(c+40)/(top+40)*(PY[1]-PY[0]);}
+    var t=+sl.value,pred=w[0]*(t-26)+w[1];
+    E('xtv').textContent=t+' °C';
+    s+=rect(px(18),PY[1],px(35)-px(18),PY[0]-PY[1],{fill:'var(--paper-2)'});
+    s+=txt((px(18)+px(35))/2,PY[1]+16,'days it was trained on',{a:'middle',fill:CF});
+    s+=line(PX[0],py(0),PX[1],py(0),{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    s+=line(PX[0],PY[0],PX[0],PY[1],{stroke:CU,'stroke-width':1.5,'shape-rendering':'crispEdges'});
+    [10,20,30,40,50].forEach(function(v){s+=txt(px(v),PY[0]+18,v+'°',{a:'middle'});});
+    [0,100,200,300].forEach(function(v){if(v<=top)s+=txt(PX[0]-8,py(v)+4,v,{a:'end'});});
+    s+=line(px(3),py(w[0]*(3-26)+w[1]),px(50),py(w[0]*(50-26)+w[1]),{stroke:CI,'stroke-width':3});
+    rows().forEach(function(r,i){s+=cell(px(r[0])-8,py(r[2])-8,'',(fest&&i===8)?'bad':(r[1]?'alt':'hot'));});
+    s+=line(px(t),py(0),px(t),py(pred),{stroke:CR,'stroke-width':1.5,'stroke-dasharray':'4 4'});
+    s+='<circle cx="'+R(px(t))+'" cy="'+R(py(pred))+'" r="7" fill="'+CR+'"/>';
+    s+=txt(PX[0],330,'the rule says '+pred.toFixed(0)+' cups at '+t+' °C'+
+      ((t<18||t>35)?'  ·  outside the days it has seen':'')+(pred<0?'  ·  fewer than none':''),
+      {fill:(t<18||t>35||pred<0)?CR:CI,sz:15});
+    svg.innerHTML=s;
+  }
+  sl.addEventListener('input',draw);
+  E('xout').addEventListener('click',function(){fest=true;draw();});
+  E('xreset').addEventListener('click',function(){fest=false;draw();});
+  draw();
+})();
+
+/* ---------- page furniture ---------- */
+(function(){
+  var ro=new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});},
+    {threshold:0.08,rootMargin:'0px 0px -4% 0px'});
+  document.querySelectorAll('section > div, header, .weeds').forEach(function(el){
+    el.classList.add('reveal');ro.observe(el);});
+  var pf=E('pf'),pt=E('pt'),C=2*Math.PI*22;
+  pf.style.strokeDasharray=C;pf.style.strokeDashoffset=C;
+  addEventListener('scroll',function(){
+    var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    p=Math.min(1,Math.max(0,p||0));
+    pf.style.strokeDashoffset=C*(1-p);pt.textContent=R(p*100)+'%';
+  },{passive:true});
+  var weeds=E('weeds'),hint=E('weedsHint');
+  function toggle(){
+    var open=weeds.hidden;weeds.hidden=!open;
+    hint.setAttribute('aria-expanded',String(open));
+    hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
+    if(open){weeds.setAttribute('tabindex','-1');weeds.focus({preventScroll:true});
+      weeds.scrollIntoView({behavior:'smooth',block:'start'});}
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='s'&&e.key!=='S')return;
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=(t.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||t.isContentEditable)return;
+    e.preventDefault();toggle();
+  });
+  hint.addEventListener('click',toggle);
+  hint.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+})();
+})();
+</script>
+
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
