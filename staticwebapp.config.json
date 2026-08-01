@@ -12,6 +12,20 @@
     "cache-control": "public, max-age=600, must-revalidate"
   },
   "responseOverrides": {
-    "404": { "rewrite": "/404.html", "statusCode": 404 }
-  }
+    "404": {
+      "rewrite": "/404.html",
+      "statusCode": 404
+    }
+  },
+  "routes": [
+    {
+      "route": "/explorables/tokenization-03A",
+      "redirect": "/explorables/tokenization",
+      "statusCode": 301
+    },
+    {
+      "route": "/tools/*",
+      "statusCode": 404
+    }
+  ]
 }

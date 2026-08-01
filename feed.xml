@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Ritesh Modi — Explorables</title>
+  <subtitle>Interactive explainers you learn by messing with.</subtitle>
+  <link href="https://www.loopingly.com/feed.xml" rel="self"/>
+  <link href="https://www.loopingly.com/explorables"/>
+  <id>https://www.loopingly.com/</id>
+  <updated>2026-08-01T00:00:00Z</updated>
+  <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>What is intelligence?</title>
+    <link href="https://www.loopingly.com/explorables/what-is-intelligence"/>
+    <id>https://www.loopingly.com/explorables/what-is-intelligence</id>
+    <updated>2026-08-01T00:00:00Z</updated>
+    <published>2026-08-01T00:00:00Z</published>
+    <summary>Every definition of intelligence lets in something that is not, and shuts out something that is. Break four of them yourself, then answer the harder questions.</summary>
+  </entry>
+  <entry>
+    <title>A language model made of matchboxes</title>
+    <link href="https://www.loopingly.com/explorables/matchbox-language-model"/>
+    <id>https://www.loopingly.com/explorables/matchbox-language-model</id>
+    <updated>2026-08-01T00:00:00Z</updated>
+    <published>2026-08-01T00:00:00Z</published>
+    <summary>In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point the same machine at words and train a language model by hand, bead by bead.</summary>
+  </entry>
+  <entry>
+    <title>How data becomes an equation</title>
+    <link href="https://www.loopingly.com/explorables/how-data-becomes-an-equation"/>
+    <id>https://www.loopingly.com/explorables/how-data-becomes-an-equation</id>
+    <updated>2026-08-01T00:00:00Z</updated>
+    <published>2026-08-01T00:00:00Z</published>
+    <summary>Eight days of a lemonade stand, worked by hand into a line, a cluster and a policy — supervised, unsupervised and reinforcement learning from one table.</summary>
+  </entry>
+  <entry>
+    <title>The three types of machine learning</title>
+    <link href="https://www.loopingly.com/explorables/three-types-of-machine-learning"/>
+    <id>https://www.loopingly.com/explorables/three-types-of-machine-learning</id>
+    <updated>2026-07-31T00:00:00Z</updated>
+    <published>2026-07-31T00:00:00Z</published>
+    <summary>Three ways to learn to cook, in the same order as the three kinds of machine learning. What separates them is one question: when do you find out you were wrong?</summary>
+  </entry>
+  <entry>
+    <title>How the AI words nest</title>
+    <link href="https://www.loopingly.com/explorables/the-layers-of-intelligence"/>
+    <id>https://www.loopingly.com/explorables/the-layers-of-intelligence</id>
+    <updated>2026-07-31T00:00:00Z</updated>
+    <published>2026-07-31T00:00:00Z</published>
+    <summary>AI, machine learning, neural nets and deep learning nest like India, Maharashtra, Mumbai, Bandra. Then the diagram keeps going, and GenAI stops fitting inside.</summary>
+  </entry>
+  <entry>
+    <title>When to use a rule instead of a model</title>
+    <link href="https://www.loopingly.com/explorables/never-use-ai-when-rules-will-do"/>
+    <id>https://www.loopingly.com/explorables/never-use-ai-when-rules-will-do</id>
+    <updated>2026-07-31T00:00:00Z</updated>
+    <published>2026-07-31T00:00:00Z</published>
+    <summary>When you can make the promise, do not place the bet. Slide the error tolerance until the model stops being the cheaper answer and a plain rule wins outright.</summary>
+  </entry>
+  <entry>
+    <title>How models learn</title>
+    <link href="https://www.loopingly.com/explorables/how-models-learn"/>
+    <id>https://www.loopingly.com/explorables/how-models-learn</id>
+    <updated>2026-07-31T00:00:00Z</updated>
+    <published>2026-07-31T00:00:00Z</published>
+    <summary>A model on a hillside in fog can only feel which way the ground tilts. Set the learning rate yourself and watch gradient descent converge, crawl, or diverge.</summary>
+  </entry>
+  <entry>
+    <title>AI vs machine learning vs automation</title>
+    <link href="https://www.loopingly.com/explorables/ai-vs-ml-explained"/>
+    <id>https://www.loopingly.com/explorables/ai-vs-ml-explained</id>
+    <updated>2026-07-31T00:00:00Z</updated>
+    <published>2026-07-31T00:00:00Z</published>
+    <summary>Automation, machine learning and AI all watch, decide and act. Flip one thermostat between all three and see exactly where rules stop and learning starts.</summary>
+  </entry>
+  <entry>
+    <title>What AI is good and bad at</title>
+    <link href="https://www.loopingly.com/explorables/what-ai-is-good-and-bad-at"/>
+    <id>https://www.loopingly.com/explorables/what-ai-is-good-and-bad-at</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>There is one clean line between what AI does well and badly, and it is not the one most people guess. Learn to call the green and red lights before you hit send.</summary>
+  </entry>
+  <entry>
+    <title>Tokenization</title>
+    <link href="https://www.loopingly.com/explorables/tokenization"/>
+    <id>https://www.loopingly.com/explorables/tokenization</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>A tokenizer is a frozen record of what was frequent in one pile of text. Type a sentence, watch it get cut and priced, then break it with an unusual word.</summary>
+  </entry>
+  <entry>
+    <title>The regulatory atlas</title>
+    <link href="https://www.loopingly.com/explorables/regulatory-atlas"/>
+    <id>https://www.loopingly.com/explorables/regulatory-atlas</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>GDPR to the EU AI Act: ten frameworks, who each binds, what each demands, and the controls that satisfy them. Filter by obligation to see where they overlap.</summary>
+  </entry>
+  <entry>
+    <title>How reasoning models work</title>
+    <link href="https://www.loopingly.com/explorables/reasoning-models-explainer"/>
+    <id>https://www.loopingly.com/explorables/reasoning-models-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Ask a reasoning model something hard and it pauses. Open up that pause: what it does in the gap, how it learned to, and when the extra tokens are wasted money.</summary>
+  </entry>
+  <entry>
+    <title>API rate limiting</title>
+    <link href="https://www.loopingly.com/explorables/rate-limiting-explainer"/>
+    <id>https://www.loopingly.com/explorables/rate-limiting-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, feed and flood a live token bucket, and catch the moment it starts returning 429.</summary>
+  </entry>
+  <entry>
+    <title>Prompt engineering</title>
+    <link href="https://www.loopingly.com/explorables/prompt-engineering-explainer"/>
+    <id>https://www.loopingly.com/explorables/prompt-engineering-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Climb from a plain question to ReAct agents on one stubborn problem, and watch exactly which change of wording moves the answer and which changes nothing.</summary>
+  </entry>
+  <entry>
+    <title>Postgres table partitioning</title>
+    <link href="https://www.loopingly.com/explorables/postgres-partitioning-explainer"/>
+    <id>https://www.loopingly.com/explorables/postgres-partitioning-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Drag a project id and watch the planner skip seven of eight partitions, then see why retention stops being a slow DELETE and becomes an instant DROP.</summary>
+  </entry>
+  <entry>
+    <title>Partition equal subset sum</title>
+    <link href="https://www.loopingly.com/explorables/partition-equal-subset-sum"/>
+    <id>https://www.loopingly.com/explorables/partition-equal-subset-sum</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Can a pile of numbers split into two stacks of equal weight? Tip the scale with your finger, then watch the same question solved as a subset-sum table.</summary>
+  </entry>
+  <entry>
+    <title>Multimodal AI</title>
+    <link href="https://www.loopingly.com/explorables/multimodal-explainer"/>
+    <id>https://www.loopingly.com/explorables/multimodal-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>A phone pointed at a foreign menu needs sight and language at once. Build the shared space that lets one model mix its senses, and see how multi-model differs.</summary>
+  </entry>
+  <entry>
+    <title>What an AI assistant actually does</title>
+    <link href="https://www.loopingly.com/explorables/is-it-actually-thinking"/>
+    <id>https://www.loopingly.com/explorables/is-it-actually-thinking</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Short answer: no — it is autocomplete that read the internet. See the one trick underneath, and two of the biggest beginner worries about AI fall away at once.</summary>
+  </entry>
+  <entry>
+    <title>The GRC registers an organization keeps</title>
+    <link href="https://www.loopingly.com/explorables/grc-operating-registers"/>
+    <id>https://www.loopingly.com/explorables/grc-operating-registers</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>The registers an organisation keeps on itself — risk, control, asset, incident, exception, vendor. What belongs in every row, and who has to sign it.</summary>
+  </entry>
+  <entry>
+    <title>Governing generative AI</title>
+    <link href="https://www.loopingly.com/explorables/grc-for-genai"/>
+    <id>https://www.loopingly.com/explorables/grc-for-genai</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Run governance for generative AI end to end through one organisation's real control library, risk register and compliance posture — not a checklist.</summary>
+  </entry>
+  <entry>
+    <title>Governance, risk and compliance explained</title>
+    <link href="https://www.loopingly.com/explorables/grc-explained"/>
+    <id>https://www.loopingly.com/explorables/grc-explained</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Frameworks, policies, controls, risk, mitigation, compliance — six words that sound like bureaucracy but describe one system. Trace a single rule end to end.</summary>
+  </entry>
+  <entry>
+    <title>The seven building blocks of GRC: a lesson</title>
+    <link href="https://www.loopingly.com/explorables/grc-building-blocks-lesson"/>
+    <id>https://www.loopingly.com/explorables/grc-building-blocks-lesson</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>The same seven GRC blocks, taught rather than listed — worked through one organisation in order, showing how a single failing block breaks the six others.</summary>
+  </entry>
+  <entry>
+    <title>The seven building blocks of GRC</title>
+    <link href="https://www.loopingly.com/explorables/grc-building-blocks"/>
+    <id>https://www.loopingly.com/explorables/grc-building-blocks</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>A reference for the seven pieces every GRC programme is built from: what each block is, what it is not, and the question it answers when an auditor asks.</summary>
+  </entry>
+  <entry>
+    <title>Generative AI vocabulary</title>
+    <link href="https://www.loopingly.com/explorables/genai-vocabulary-explainer"/>
+    <id>https://www.loopingly.com/explorables/genai-vocabulary-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Token, embedding, context window, RAG, agent — the GenAI vocabulary in the order the ideas depend on each other. Click any term to watch it work.</summary>
+  </entry>
+  <entry>
+    <title>Evaluating and comparing AI models</title>
+    <link href="https://www.loopingly.com/explorables/evaluating-models-explainer"/>
+    <id>https://www.loopingly.com/explorables/evaluating-models-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Two chatbots, two answers, no way to choose by gut. Build a small eval set, score both models against it, and watch a coin flip turn into a measurement.</summary>
+  </entry>
+  <entry>
+    <title>Finding and tracking AI models</title>
+    <link href="https://www.loopingly.com/explorables/discovering-models-trends-explainer"/>
+    <id>https://www.loopingly.com/explorables/discovering-models-trends-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>A new model lands every week and the announcements all sound alike. Read a model card the way engineers do, then track which releases actually mattered.</summary>
+  </entry>
+  <entry>
+    <title>Azure service principals and OAuth</title>
+    <link href="https://www.loopingly.com/explorables/azure-service-principals-explainer"/>
+    <id>https://www.loopingly.com/explorables/azure-service-principals-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Build an Azure service principal from scratch, decode the JWT it is handed, then widen its role assignment and watch the blast radius grow along with it.</summary>
+  </entry>
+  <entry>
+    <title>Leading AI transformation</title>
+    <link href="https://www.loopingly.com/explorables/ai-transformation-explainer"/>
+    <id>https://www.loopingly.com/explorables/ai-transformation-explainer</id>
+    <updated>2026-07-26T00:00:00Z</updated>
+    <published>2026-07-26T00:00:00Z</published>
+    <summary>Efficiency projects pay back once; reinvention changes what the business sells. Move the sliders to see which one your AI portfolio is really funding.</summary>
+  </entry>
+</feed>
