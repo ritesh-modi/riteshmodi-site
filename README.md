@@ -1,4 +1,4 @@
-# riteshmodi.com — static site
+# loopingly.com — static site
 
 A fast, playful, fully-static personal site. **No build step** — plain HTML/CSS/JS, so it drops
 straight onto **Azure Static Web Apps** and every interactive explorable runs untouched.
@@ -39,9 +39,18 @@ python3 -m http.server 8080     # then open http://localhost:8080
    Every push to `main` re-deploys automatically.
 4. You get a URL like `https://<name>.azurestaticapps.net`. Open it — the site is live.
 
-## Point riteshmodi.com at it
+## Point the domains at it
+`www.loopingly.com` is the **canonical domain** — every `<link rel="canonical">`, `og:url`,
+`sitemap.xml` entry and the `robots.txt` sitemap line points there. If that ever changes, it
+has to change in all four places at once or search engines get contradictory signals.
+
+`riteshmodi.com`, `armtemplate.com` and `zerosnone.com` serve the same content as aliases.
+They rank as duplicates unless the canonical tag names loopingly, which it now does on every
+page. A host-level 301 to the canonical would be cleaner still, but `staticwebapp.config.json`
+matches on path, not hostname, so that has to happen at DNS/Front Door level, not in this repo.
+
 In the Static Web App → **Custom domains → Add**:
-- Add `riteshmodi.com` and `www.riteshmodi.com`.
+- Add each domain, apex and `www.` variant.
 - Azure gives you a **CNAME/TXT** record to create at wherever your DNS lives (your registrar).
   Add them, wait for validation → Azure issues a **free managed SSL cert** automatically.
 - (Your domain registration/renewal stays wherever it is; that's separate from Azure.)
