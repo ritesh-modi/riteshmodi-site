@@ -55,6 +55,13 @@
         order  = cards.slice();            // the curated order, as authored
     var topic = 'all', level = false;
 
+    /* The placeholder quotes the collection size, so derive it rather than hard-coding a number
+       that goes stale the next time a card is added. */
+    if(qbox){
+      var live = cards.filter(function(c){ return !c.classList.contains('soon'); }).length;
+      qbox.placeholder = 'Search ' + live + ' explorables…';
+    }
+
     /* The inline data-q on each card covers titles, headings and bold terms, so the very first
        keystroke is instant. The complete word list of every explorable lives in a separate
        ~150KB file, fetched once on first search, because making everyone who merely browses
