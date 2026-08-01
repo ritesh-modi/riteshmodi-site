@@ -20,23 +20,54 @@ import io, os, re, sys, glob, colorsys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from seo_data import PAGES, EXPLORABLES
 
-from PIL import Image, ImageDraw, ImageFont
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+    sys.exit("gen_og needs Pillow:  python3 -m pip install Pillow\n"
+             "(the only third-party dependency in tools/; everything else is stdlib)")
 
 W, H = 1200, 630
 OUT = "og"
 CHECK = "--check" in sys.argv
 FORCE = "--force" in sys.argv
 
-F_TITLE = "/System/Library/Fonts/Supplemental/Georgia Bold.ttf"
-F_KICK = "/System/Library/Fonts/Supplemental/Futura.ttc"
-F_BODY = "/System/Library/Fonts/Supplemental/Georgia.ttf"
+# Resolved by existence, in order, with Linux fallbacks after the macOS paths.
+#
+# This used to be three hardcoded /System/Library paths behind a try/except that
+# fell back to ImageFont.load_default(). On any machine without them - a CI
+# runner, anyone else's laptop - every card silently rendered its headline at
+# ~10px in the top-left corner and the script still exited 0. Missing fonts now
+# stop the run instead. Note that ImageFont.truetype() searches the system font
+# directories by BASENAME when a path does not resolve, which is what hid this
+# on macOS; os.path.exists() below deliberately does not.
+FONTS = {
+    "title": ["/System/Library/Fonts/Supplemental/Georgia Bold.ttf",
+              "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf",
+              "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf"],
+    "kick":  ["/System/Library/Fonts/Supplemental/Futura.ttc",
+              "/System/Library/Fonts/Supplemental/Helvetica.ttc",
+              "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+              "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"],
+    "body":  ["/System/Library/Fonts/Supplemental/Georgia.ttf",
+              "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf",
+              "/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf"],
+}
+
+
+def resolve(role):
+    for p in FONTS[role]:
+        if os.path.exists(p):
+            return p
+    sys.exit("gen_og: no '%s' font available. Tried:\n  %s\n"
+             "Install one, or add a path to FONTS[%r]."
+             % (role, "\n  ".join(FONTS[role]), role))
+
+
+F_TITLE = F_KICK = F_BODY = None
 
 
 def font(path, size):
-    try:
-        return ImageFont.truetype(path, size)
-    except Exception:
-        return ImageFont.load_default()
+    return ImageFont.truetype(path, size)
 
 
 def hex2rgb(h):
@@ -169,10 +200,12 @@ def card(path, slug, kicker, out_png):
 
 
 def main():
+    global F_TITLE, F_KICK, F_BODY
     if not os.path.exists("explorables.html"):
         sys.exit("run me from the site root")
     if not os.path.exists(OUT):
         os.makedirs(OUT)
+    F_TITLE, F_KICK, F_BODY = resolve("title"), resolve("kick"), resolve("body")
 
     # the footer already says "Ritesh Modi"; the kicker should say what the page is
     KICK = {"index": "Interactive explorables", "explorables": "The explorables",
@@ -186,8 +219,23 @@ def main():
             continue
         dst = os.path.join(OUT, slug + ".png")
         if CHECK:
+            # Existence is not enough: the failure mode that actually happened was
+            # a card that exists, is 1200x630, and has a 10px headline in the
+            # corner. Measure the ink instead - a correctly set card covers a few
+            # per cent of the canvas, a broken one is almost entirely paper.
             if not os.path.exists(dst):
                 missing.append(dst)
+                continue
+            im = Image.open(dst)
+            if im.size != (W, H):
+                missing.append("%s is %dx%d, expected %dx%d" % ((dst,) + im.size + (W, H)))
+                continue
+            g = im.convert("L")
+            paper = max(g.getcolors(65536), key=lambda kv: kv[0])[1]
+            ink = sum(n for n, v in g.getcolors(65536) if abs(v - paper) > 60)
+            if ink / float(W * H) < 0.01:
+                missing.append("%s looks blank (%.2f%% ink) - fonts probably failed"
+                               % (dst, 100.0 * ink / (W * H)))
             continue
         if os.path.exists(dst) and not FORCE:
             continue
