@@ -16,7 +16,8 @@ Run from the site root.
 import io, json, os, re, sys, glob
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from seo_data import SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES
+from seo_data import (SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES,
+                      NOTES, NOTES_DIR)
 
 BEGIN, END = "<!-- seo:begin -->", "<!-- seo:end -->"
 CHECK = "--check" in sys.argv
@@ -85,7 +86,7 @@ def strip_unmanaged(head):
     return head
 
 
-def block(url, title, desc, short, image, ld):
+def block(url, title, desc, short, image, ld, ART=False):
     """The managed head block. og:image is absolute because scrapers do not resolve
     relative URLs - a relative og:image is the single most common reason a share
     card renders blank."""
@@ -94,7 +95,7 @@ def block(url, title, desc, short, image, ld):
          '<link rel="canonical" href="%s">' % url,
          '<link rel="alternate" type="application/atom+xml" title="%s — Explorables" href="%s/feed.xml">'
          % (esc(AUTHOR), SITE),
-         '<meta property="og:type" content="%s">' % ("article" if "/explorables/" in url else "website"),
+         '<meta property="og:type" content="%s">' % ("article" if ART else "website"),
          '<meta property="og:site_name" content="%s">' % esc(AUTHOR),
          '<meta property="og:locale" content="en_GB">',
          '<meta property="og:title" content="%s">' % esc(title),
@@ -146,7 +147,9 @@ def apply_page(path, slug, url, meta, info, drift):
 
     # 2. structured data
     ld = []
-    if "/explorables/" in url:
+    is_note = ("/%s/" % NOTES_DIR) in url
+    is_article = ("/explorables/" in url) or is_note
+    if is_article:
         date = info.get("date") or "2026-07-26"
         ld.append({
             "@context": "https://schema.org",
@@ -170,8 +173,9 @@ def apply_page(path, slug, url, meta, info, drift):
             "@type": "BreadcrumbList",
             "itemListElement": [
                 {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
-                {"@type": "ListItem", "position": 2, "name": "Explorables",
-                 "item": SITE + "/explorables"},
+                {"@type": "ListItem", "position": 2,
+                 "name": "Notes" if is_note else "Explorables",
+                 "item": SITE + ("/" + NOTES_DIR if is_note else "/explorables")},
                 {"@type": "ListItem", "position": 3,
                  "name": info.get("card_title") or title},
             ],
@@ -201,7 +205,7 @@ def apply_page(path, slug, url, meta, info, drift):
             },
         })
 
-    blk = block(url, title, desc, short, image, ld)
+    blk = block(url, title, desc, short, image, ld, ART=is_article)
 
     # 3. splice into head
     head_end = s.lower().find("</head>")
@@ -240,9 +244,20 @@ def main():
         apply_page(p, slug, "%s/explorables/%s" % (SITE, slug), meta,
                    info_all.get(slug, {}), drift)
 
+    for slug, meta in NOTES.items():
+        p = "%s/%s.html" % (NOTES_DIR, slug)
+        if not os.path.exists(p):
+            print("  ! missing %s" % p)
+            continue
+        apply_page(p, slug, "%s/%s/%s" % (SITE, NOTES_DIR, slug), meta, {}, drift)
+
     have = {os.path.basename(f)[:-5] for f in glob.glob("explorables/*.html")}
     for extra in sorted(have - set(EXPLORABLES)):
         print("  ! no metadata authored for explorables/%s.html" % extra)
+    have_n = {os.path.basename(f)[:-5] for f in glob.glob("%s/*.html" % NOTES_DIR)}
+    for extra in sorted(have_n - set(NOTES)):
+        print("  ! no metadata authored for %s/%s.html — add it to NOTES in seo_data.py"
+              % (NOTES_DIR, extra))
 
     if CHECK:
         if drift:

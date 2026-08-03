@@ -14,7 +14,7 @@ leaked into a public URL) and keeps a 301 for the old one.
 import io, os, re, sys, glob, json, subprocess
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from seo_data import RENAMES
+from seo_data import RENAMES, NOTES_DIR
 
 CHECK = "--check" in sys.argv
 
@@ -29,7 +29,7 @@ def write(p, s):
 
 def targets():
     return (sorted(glob.glob("*.html")) + sorted(glob.glob("explorables/*.html"))
-            + sorted(glob.glob("assets/*.js")))
+            + sorted(glob.glob("%s/*.html" % NOTES_DIR)) + sorted(glob.glob("assets/*.js")))
 
 
 def rewrite(s):

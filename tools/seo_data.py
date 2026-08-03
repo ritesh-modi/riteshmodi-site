@@ -220,6 +220,90 @@ EXPLORABLES = {
         about="Definitions of intelligence and machine intelligence"),
 }
 
+# Unlisted pages ---------------------------------------------------------------
+#
+# Live at /notes/<slug>. Reachable by anyone with the URL and crawlable by Google
+# (they are in sitemap.xml and carry ordinary metadata), but deliberately absent
+# from three places: the card grid on /explorables, the site's own search box, and
+# the Atom feed.
+#
+# They sit in their own directory rather than in explorables/ on purpose. Every
+# mechanism that surfaces a page - the sitemap builder, the search reindexer, the
+# metadata pass - finds its work with glob("explorables/*.html"). Keeping notes
+# outside that glob means a tool written next year cannot leak one by forgetting an
+# exclusion list. Being unlisted is a property of where the file lives, not of
+# every script remembering a rule.
+#
+# Same shape as EXPLORABLES: desc, optional short, about.
+NOTES_DIR = "notes"
+NOTES = {
+    "ai-vs-ml-explained-questions": dict(
+        desc="Forty questions on where automation ends and learning begins, following the "
+             "observe–analyse–infer–recalibrate loop. Answers stay hidden until you commit.",
+        short="Forty questions on where automation ends and learning begins.",
+        about="Difference between automation, machine learning and artificial intelligence"),
+
+    "case-studies-ai-transformation-questions": dict(
+        desc="Thirty-seven questions on nine real deployments — a public reversal, a legal "
+             "precedent, a $62m failure — and how to read any case study without being fooled.",
+        short="Nine real deployments, including a $62m failure, read honestly.",
+        about="Case studies of enterprise AI transformation"),
+
+    "coe-and-scaling-strategies-questions": dict(
+        desc="Thirty-eight questions on turning pilots into production — the three failure "
+             "modes, the 10-20-70 split, and the move from pilot to platform to portfolio.",
+        short="What turns pilots into production: three failure modes and 10-20-70.",
+        about="AI centres of excellence and scaling strategy"),
+
+    "from-use-case-to-production-questions": dict(
+        desc="Fifty questions on governance intake, the six risk domains, lifecycle gates and "
+             "assurance — plus the forces that quietly bend every GenAI business case.",
+        short="Governance intake, six risk domains, gates, and what bends a GenAI number.",
+        about="Taking generative AI from use case to production"),
+
+    "how-models-learn-questions": dict(
+        desc="Thirty questions on loss, gradient descent, the learning rate, backpropagation "
+             "and overfitting. No maths beyond subtraction; every number checks out on paper.",
+        short="Loss, gradient descent, learning rate and overfitting — checkable on paper.",
+        about="How machine learning models are trained"),
+
+    "identifying-high-value-opportunities-questions": dict(
+        desc="Thirty-five questions on finding the GenAI work worth doing — visibility bias, "
+             "picking the right altitude, the six shapes, and scoring an idea honestly.",
+        short="Visibility bias, the right altitude, and scoring an idea honestly.",
+        about="Identifying high-value generative AI opportunities"),
+
+    "never-use-ai-when-rules-will-do-questions": dict(
+        desc="Thirty-seven questions on when a plain rule beats a model — the checklist, three "
+             "worked examples, and the layered designs real systems actually ship with.",
+        short="When a plain rule beats a model: the checklist and three worked examples.",
+        about="Choosing between rule-based systems and machine learning"),
+
+    "the-layers-of-intelligence-questions": dict(
+        desc="Thirty-two questions on how AI, machine learning, deep learning, GenAI, LLM and "
+             "GPT nest — and the exact point where the usual diagram stops being true.",
+        short="How the words nest, and where the usual diagram goes wrong.",
+        about="How AI, machine learning, deep learning and generative AI relate"),
+
+    "the-method-in-one-week-questions": dict(
+        desc="Fifty-eight questions in the order a real project runs — from whether to use AI "
+             "at all, through build and launch, to the ninety-day review afterwards.",
+        short="Whether to use AI at all, through launch, to the ninety-day review.",
+        about="Running a generative AI project end to end"),
+
+    "three-types-of-machine-learning-questions": dict(
+        desc="Thirty-five questions on supervised, unsupervised and reinforcement learning — "
+             "and the one that matters most: which situation are you actually in?",
+        short="Supervised, unsupervised, reinforcement — and which one you are in.",
+        about="Supervised, unsupervised and reinforcement learning"),
+
+    "workforce-reskilling-and-leadership-questions": dict(
+        desc="Thirty-eight questions on the people half — the novice paradox, the jagged "
+             "frontier, the three layers of reskilling, shadow AI, and what changes for a manager.",
+        short="The novice paradox, the jagged frontier, shadow AI, and the manager's job.",
+        about="Workforce reskilling and leadership for AI adoption"),
+}
+
 # Renames applied by rename_slug(); old path keeps a 301 for anything already linking it.
 RENAMES = {"tokenization-03A": "tokenization"}
 

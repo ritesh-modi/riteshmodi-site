@@ -17,7 +17,7 @@ field would mean nothing, which is worse than omitting it.
 import io, os, re, sys, glob, subprocess
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from seo_data import SITE
+from seo_data import SITE, NOTES_DIR
 
 CHECK = "--check" in sys.argv
 SKIP_SUBJECTS = ("seo:", "untrack")
@@ -78,6 +78,12 @@ def main():
         slug = os.path.basename(f)[:-5]
         urls.append((SITE + "/explorables/" + slug,
                      cd.get(slug) or git_date(f) or "2026-07-26"))
+
+    # Unlisted, not hidden: notes carry no card and no search entry, but they are
+    # meant to be crawlable, so they belong in the sitemap like anything else.
+    for f in sorted(glob.glob("%s/*.html" % NOTES_DIR)):
+        slug = os.path.basename(f)[:-5]
+        urls.append((SITE + "/" + NOTES_DIR + "/" + slug, git_date(f) or "2026-08-03"))
 
     body = ['<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']

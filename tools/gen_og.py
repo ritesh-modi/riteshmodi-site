@@ -18,7 +18,7 @@ have not been written yet.
 import io, os, re, sys, glob, colorsys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from seo_data import PAGES, EXPLORABLES
+from seo_data import PAGES, EXPLORABLES, NOTES, NOTES_DIR
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -212,6 +212,7 @@ def main():
             "about": "About", "books": "Books", "talks": "Talks & recognition"}
     jobs = [(s + ".html", s, KICK.get(s, "Ritesh Modi")) for s in PAGES]
     jobs += [("explorables/%s.html" % s, s, "Interactive explorable") for s in EXPLORABLES]
+    jobs += [("%s/%s.html" % (NOTES_DIR, s), s, "Note") for s in NOTES]
 
     missing, made = [], 0
     for src, slug, kick in jobs:

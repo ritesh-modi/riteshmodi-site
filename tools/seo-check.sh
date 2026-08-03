@@ -27,10 +27,13 @@ done
 step "2. independent assertions"
 python3 - <<'PY' || fail=1
 import glob, io, json, os, re, sys
+sys.path.insert(0, "tools")
+from seo_data import NOTES_DIR
 
 SITE = "https://www.loopingly.com"
 bad = []
-pages = sorted(glob.glob("*.html")) + sorted(glob.glob("explorables/*.html"))
+pages = (sorted(glob.glob("*.html")) + sorted(glob.glob("explorables/*.html"))
+         + sorted(glob.glob("%s/*.html" % NOTES_DIR)))
 descs = {}
 
 for p in pages:
@@ -53,8 +56,14 @@ for p in pages:
 
     # the canonical must be the page's own final URL, not a neighbour's
     slug = os.path.basename(p)[:-5]
-    want = SITE + "/" if slug == "index" else SITE + (
-        "/explorables/" + slug if p.startswith("explorables/") else "/" + slug)
+    if slug == "index":
+        want = SITE + "/"
+    elif p.startswith("explorables/"):
+        want = SITE + "/explorables/" + slug
+    elif p.startswith(NOTES_DIR + "/"):
+        want = SITE + "/" + NOTES_DIR + "/" + slug
+    else:
+        want = SITE + "/" + slug
     if cans and cans[0] != want:
         bad.append("%s: canonical is %s, expected %s" % (name, cans[0], want))
 
@@ -121,6 +130,31 @@ try:
             bad.append("search index has no entry for %s" % h)
 except FileNotFoundError:
     bad.append("assets/search-index.json missing")
+
+# Unlisted must actually be unlisted. These pages are reachable by URL and crawlable,
+# but a card or a search-index entry would defeat the entire point, and both are added
+# by tools that run on every publish.
+notes = sorted(glob.glob("%s/*.html" % NOTES_DIR))
+if notes:
+    listing = io.open("explorables.html", encoding="utf-8").read()
+    try:
+        idx = json.load(io.open("assets/search-index.json", encoding="utf-8"))
+    except Exception:
+        idx = {}
+    feed = io.open("feed.xml", encoding="utf-8").read() if os.path.exists("feed.xml") else ""
+    for f in notes:
+        slug = os.path.basename(f)[:-5]
+        if slug in listing:
+            bad.append("%s is unlisted but appears on explorables.html" % f)
+        if any(slug in k for k in idx):
+            bad.append("%s is unlisted but is in the site search index" % f)
+        if slug in feed:
+            bad.append("%s is unlisted but is in feed.xml" % f)
+    sm = io.open("sitemap.xml", encoding="utf-8").read()
+    for f in notes:
+        slug = os.path.basename(f)[:-5]
+        if "/%s/%s<" % (NOTES_DIR, slug) not in sm:
+            bad.append("%s is missing from sitemap.xml (unlisted, but meant to be crawlable)" % f)
 
 if bad:
     print("   %d problem(s):" % len(bad))
