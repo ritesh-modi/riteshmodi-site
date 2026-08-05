@@ -7,135 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#F4EFE3; --paper-2:#EBE3D2; --ink:#231C12; --ink-soft:#5A4F3C;
-    --ink-faint:#8C7F66; --rule:#DAD0BB; --accent:#B07515;
-    --safe:#3E7D52; --risk:#B0432B; --warn:#C08430;
-    --panel:#221A0F; --panel-ink:#EDE3D0;
-    --maxw:680px; --wide:1040px; --pad:24px;
-    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-    --t:.5s cubic-bezier(.4,0,.2,1);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
-
-  body{margin:0;background:var(--paper);color:var(--ink);
-    font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.66;
-    -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--t),color var(--t)}
-
-  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
-  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-  .bleed{width:100%;margin:0}
-  section{padding:clamp(72px,9vw,120px) 0}
-  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
-
-  h1,h2,h3{font-family:"Baloo 2",system-ui,sans-serif;font-weight:700;line-height:1.04;margin:0;letter-spacing:-.01em}
-  h1{font-size:clamp(44px,7vw,88px);line-height:.98;letter-spacing:-.02em}
-  h2.big{font-size:clamp(30px,4.5vw,40px);margin:0 0 20px}
-  p{margin:0 0 20px}
-  .lede{font-family:"Baloo 2",sans-serif;font-weight:500;font-size:clamp(21px,3vw,28px);
-    line-height:1.32;color:var(--ink-soft)}
-
-  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--accent);display:flex;align-items:center;gap:11px;margin:0 0 20px;font-weight:500}
-  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
-
-  .pull{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:clamp(22px,3.4vw,28px);
-    line-height:1.28;color:var(--accent);border-left:3px solid var(--accent);padding-left:24px;margin:36px 0}
-  .note{background:var(--paper-2);border-radius:6px;padding:18px 22px;margin-top:24px;
-    font-size:16px;color:var(--ink-soft)}
-  .try{background:var(--paper-2);border-left:3px solid var(--accent);padding:16px 22px;margin:24px 0;
-    border-radius:0 6px 6px 0;font-size:18px}
-  .intu{border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;
-    padding:18px 24px;margin:26px 0;background:var(--paper-2);font-size:18px;line-height:1.58}
-  .intu .il{font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--accent);display:block;margin-bottom:9px;font-weight:600}
-  .intu b{color:var(--ink)}
-
-  .fig{border:1px solid var(--rule);background:var(--paper);border-radius:10px;margin:30px auto 0;
-    padding:clamp(20px,3vw,34px);overflow:hidden}
-  .fig svg{display:block;width:100%;height:auto}
-  .cap{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--ink-faint);
-    margin-top:16px;line-height:1.5}
-  .cap b{color:var(--accent);font-weight:600}
-
-  .chip{font-family:var(--mono);font-size:13px;font-weight:500;padding:8px 13px;border:1px solid var(--rule);
-    border-radius:22px;background:var(--paper);cursor:pointer;transition:all .16s;color:var(--ink-soft)}
-  .chip:hover{border-color:var(--accent);color:var(--accent)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .btn{font-family:var(--mono);font-size:13px;font-weight:600;padding:9px 16px;border:1px solid var(--accent);
-    border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;transition:all .16s}
-  .btn:hover{filter:brightness(1.06)}
-  .btn.ghost{background:var(--paper);color:var(--accent)}
-  .ctrl{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:20px}
-  input[type=range]{width:100%;accent-color:var(--accent);margin-top:6px}
-
-  .panel{background:var(--panel);color:var(--panel-ink);border-radius:10px}
-  .panel pre{margin:0;padding:22px 22px;overflow-x:auto;font-family:var(--mono);font-size:13px;
-    line-height:1.72;color:var(--panel-ink)}
-  .panel .kw{color:#E0A33D}.panel .fn{color:#7FC7A6}.panel .cm{color:#8C7F66;font-style:italic}
-  .panel .st{color:#D99A7A}.panel .nm{color:#E6C08A}
-
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
-  ::selection{background:var(--accent);color:#fff}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-
-  /* hero */
-  header{padding:clamp(40px,7vw,86px) 0 clamp(50px,7vw,90px)}
-  .hsplit{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,64px);align-items:center}
-  @media(max-width:840px){.hsplit{grid-template-columns:1fr;gap:34px}}
-
-  /* progress dial */
-  .pdial{position:fixed;right:20px;bottom:20px;width:54px;height:54px;z-index:100;display:flex;
-    align-items:center;justify-content:center;border-radius:50%;background:var(--paper-2);
-    box-shadow:0 6px 20px rgba(40,30,10,.18)}
-  .pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-  .pdial .trk{fill:none;stroke:var(--rule);stroke-width:3}
-  .pdial .fil{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round}
-  .pdial span{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink)}
-  @media(max-width:640px){.pdial{display:none}}
-
-  /* scrolly */
-  .scrolly{position:relative;display:grid;gap:4vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);
-    max-width:1180px;margin:0 auto}
-  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
-  .sg > *{width:100%;max-width:520px}
-  .ss{margin:34vh 0 40vh}
-  .stp{min-height:74vh;display:flex;flex-direction:column;justify-content:center;opacity:.3;transition:opacity .35s;cursor:pointer}
-  .stp.on{opacity:1}
-  .stp h3{font-size:24px;margin-bottom:8px}
-  @media(max-width:900px){
-    .scrolly{grid-template-columns:1fr;gap:0}
-    .sg{order:-1;position:sticky;height:46vh;background:var(--paper);border-bottom:1px solid var(--rule);z-index:5}
-    .ss{margin:3vh 0 10vh}.stp{min-height:auto;margin:26px 0}
-  }
-
-  /* svg atom + parts (fill/stroke only, no box chrome) */
-  .cell-e{fill:none;stroke:var(--rule);stroke-width:1.5;stroke-dasharray:3 3}
-  .cell-n{fill:var(--paper);stroke:var(--rule);stroke-width:1.5}
-  .cell-on{fill:var(--accent);stroke:var(--accent);stroke-width:1.5}
-  .cell-hit{fill:var(--safe);stroke:var(--safe);stroke-width:1.5}
-  .cell-bad{fill:var(--risk);stroke:var(--risk);stroke-width:1.5}
-  .glab{font-family:var(--mono);fill:var(--ink-faint)}
-  .tsel{stroke:var(--ink);stroke-width:3;fill:none}
-  .hint{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:var(--ink-faint);
-    text-align:center;cursor:pointer;margin:26px 0}
-  .hint kbd{border:1px solid var(--rule);border-radius:3px;padding:1px 6px;color:var(--ink-soft)}
-  .hint:hover,.hint:focus-visible{color:var(--accent)}
-  .weeds[hidden]{display:none}
-  #weeds details{border-top:1px solid var(--rule);padding:16px 0}
-  #weeds summary{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:18px;cursor:pointer;color:var(--ink)}
-  #weeds details p{margin:12px 0 0;font-size:16px;color:var(--ink-soft)}
-  footer{padding:60px 0;color:var(--ink-faint);font-size:16px}
-  footer .col{border-top:1px solid var(--rule);padding-top:26px}
-  a{color:var(--accent)}
-</style>
-  <!-- seo:begin -->
+<style>:root{--v9:#F4EFE3;--v10:#EBE3D2;--v1:#231C12;--v3:#5A4F3C;--v2:#8C7F66;--v12:#DAD0BB;--v0:#B07515;--v13:#3E7D52;--v11:#B0432B;--v15:#C08430;--v7:#221A0F;--v8:#EDE3D0;--v4:680px;--v16:1040px;--v6:24px;--v5:"JetBrains Mono",ui-monospace,Menlo,monospace;--v14:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v14:0s}}body{margin:0;background:var(--v9);color:var(--v1);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--v14),color var(--v14)}.col{max-width:var(--v4);margin:0 auto;padding:0 var(--v6);position:relative}.wide{max-width:var(--v16);margin:0 auto;padding:0 var(--v6)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,120px) 0}.divider{max-width:var(--v4);margin:0 auto;height:1px;background:var(--v12)}h1,h2,h3{font-family:"Baloo 2",system-ui,sans-serif;font-weight:700;line-height:1.04;margin:0;letter-spacing:-.01em}h1{font-size:clamp(44px,7vw,88px);line-height:.98;letter-spacing:-.02em}h2.big{font-size:clamp(30px,4.5vw,40px);margin:0 0 20px}p{margin:0 0 20px}.lede{font-family:"Baloo 2",sans-serif;font-weight:500;font-size:clamp(21px,3vw,28px);line-height:1.32;color:var(--v3)}.eyebrow{font-family:var(--v5);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:flex;align-items:center;gap:11px;margin:0 0 20px;font-weight:500}.eyebrow::before{content:"";width:24px;height:1px;background:var(--v0)}.pull{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:clamp(22px,3.4vw,28px);line-height:1.28;color:var(--v0);border-left:3px solid var(--v0);padding-left:24px;margin:36px 0}.note{background:var(--v10);border-radius:6px;padding:18px 22px;margin-top:24px;font-size:16px;color:var(--v3)}.try{background:var(--v10);border-left:3px solid var(--v0);padding:16px 22px;margin:24px 0;border-radius:0 6px 6px 0;font-size:18px}.intu{border:1px solid var(--v12);border-left:3px solid var(--v0);border-radius:0 8px 8px 0;padding:18px 24px;margin:26px 0;background:var(--v10);font-size:18px;line-height:1.58}.intu .il{font-family:var(--v5);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:9px;font-weight:600}.intu b{color:var(--v1)}.fig{border:1px solid var(--v12);background:var(--v9);border-radius:10px;margin:30px auto 0;padding:clamp(20px,3vw,34px);overflow:hidden}.fig svg{display:block;width:100%;height:auto}.cap{font-family:var(--v5);font-size:13px;letter-spacing:.02em;color:var(--v2);margin-top:16px;line-height:1.5}.cap b{color:var(--v0);font-weight:600}.chip{font-family:var(--v5);font-size:13px;font-weight:500;padding:8px 13px;border:1px solid var(--v12);border-radius:22px;background:var(--v9);cursor:pointer;transition:all .16s;color:var(--v3)}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}.btn{font-family:var(--v5);font-size:13px;font-weight:600;padding:9px 16px;border:1px solid var(--v0);border-radius:8px;background:var(--v0);color:#fff;cursor:pointer;transition:all .16s}.btn:hover{filter:brightness(1.06)}.btn.ghost{background:var(--v9);color:var(--v0)}.ctrl{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:20px}input[type=range]{width:100%;accent-color:var(--v0);margin-top:6px}.panel{background:var(--v7);color:var(--v8);border-radius:10px}.panel pre{margin:0;padding:22px 22px;overflow-x:auto;font-family:var(--v5);font-size:13px;line-height:1.72;color:var(--v8)}.panel .kw{color:#E0A33D}.panel .fn{color:#7FC7A6}.panel .cm{color:#8C7F66;font-style:italic}.panel .st{color:#D99A7A}.panel .nm{color:#E6C08A}.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}header{padding:clamp(40px,7vw,86px) 0 clamp(50px,7vw,90px)}.hsplit{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,5vw,64px);align-items:center}@media(max-width:840px){.hsplit{grid-template-columns:1fr;gap:34px}}.pdial{position:fixed;right:20px;bottom:20px;width:54px;height:54px;z-index:100;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v10);box-shadow:0 6px 20px rgba(40,30,10,.18)}.pdial svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.pdial .trk{fill:none;stroke:var(--v12);stroke-width:3}.pdial .fil{fill:none;stroke:var(--v0);stroke-width:3;stroke-linecap:round}.pdial span{font-family:var(--v5);font-size:13px;font-weight:600;color:var(--v1)}@media(max-width:640px){.pdial{display:none}}.scrolly{position:relative;display:grid;gap:4vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1180px;margin:0 auto}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:520px}.ss{margin:34vh 0 40vh}.stp{min-height:74vh;display:flex;flex-direction:column;justify-content:center;opacity:.3;transition:opacity .35s;cursor:pointer}.stp.on{opacity:1}.stp h3{font-size:24px;margin-bottom:8px}@media(max-width:900px){.scrolly{grid-template-columns:1fr;gap:0}.sg{order:-1;position:sticky;height:46vh;background:var(--v9);border-bottom:1px solid var(--v12);z-index:5}.ss{margin:3vh 0 10vh}.stp{min-height:auto;margin:26px 0}}.cell-e{fill:none;stroke:var(--v12);stroke-width:1.5;stroke-dasharray:3 3}.cell-n{fill:var(--v9);stroke:var(--v12);stroke-width:1.5}.cell-on{fill:var(--v0);stroke:var(--v0);stroke-width:1.5}.cell-hit{fill:var(--v13);stroke:var(--v13);stroke-width:1.5}.cell-bad{fill:var(--v11);stroke:var(--v11);stroke-width:1.5}.glab{font-family:var(--v5);fill:var(--v2)}.tsel{stroke:var(--v1);stroke-width:3;fill:none}.hint{font-family:var(--v5);font-size:13px;letter-spacing:.06em;color:var(--v2);text-align:center;cursor:pointer;margin:26px 0}.hint kbd{border:1px solid var(--v12);border-radius:3px;padding:1px 6px;color:var(--v3)}.hint:hover,.hint:focus-visible{color:var(--v0)}.weeds[hidden]{display:none}#weeds details{border-top:1px solid var(--v12);padding:16px 0}#weeds summary{font-family:"Baloo 2",sans-serif;font-weight:600;font-size:18px;cursor:pointer;color:var(--v1)}#weeds details p{margin:12px 0 0;font-size:16px;color:var(--v3)}footer{padding:60px 0;color:var(--v2);font-size:16px}footer .col{border-top:1px solid var(--v12);padding-top:26px}a{color:var(--v0)}</style></style>
+  
   <meta name="description" content="Can a pile of numbers split into two stacks of equal weight? Tip the scale with your finger, then watch the same question solved as a subset-sum table.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/partition-equal-subset-sum">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -155,29 +28,29 @@
   <meta name="twitter:image" content="https://www.loopingly.com/og/partition-equal-subset-sum.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Partition equal subset sum (LeetCode 416), explained","description":"Can a pile of numbers split into two stacks of equal weight? Tip the scale with your finger, then watch the same question solved as a subset-sum table.","url":"https://www.loopingly.com/explorables/partition-equal-subset-sum","image":"https://www.loopingly.com/og/partition-equal-subset-sum.png","datePublished":"2026-07-26","dateModified":"2026-07-26","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Partition equal subset sum, LeetCode 416"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Partition equal subset sum"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
 
 <div class="pdial"><svg viewBox="0 0 54 54"><circle class="trk" cx="27" cy="27" r="23"/><circle class="fil" id="pf" cx="27" cy="27" r="23"/></svg><span id="pt">1</span></div>
 
-<!-- HERO -->
-<header class="hero" data-hero="split">
+
+<header class="hero">
   <div class="wide hsplit">
     <div class="reveal">
       <p class="eyebrow">leetcode 416</p>
       <h1>Partition equal<br>subset sum</h1>
       <p class="lede">You are handed a pile of numbers. Can you deal them into two stacks that weigh exactly the same? People call this a hard problem. It is a scale you can tip with your finger.</p>
     </div>
-    <div class="fig reveal" style="margin:0;background:var(--paper-2)">
+    <div class="fig reveal" style="margin:0;background:var(--v10)">
       <svg id="scaleSvg" viewBox="0 0 420 300" role="img" aria-label="A balance scale you tip by moving numbers between two pans"></svg>
       <p class="cap">Tap any number to send it across. <b>Balance the two pans.</b></p>
     </div>
   </div>
 </header>
 
-<!-- CH01 -->
-<section class="col reveal" data-ch="01" data-defines="partition, subset, sum">
+
+<section class="col reveal" data-ch="01">
   <h2 class="big">Two kids, one bag of candy</h2>
   <p>Maya and Theo tip a bag of candy onto the table. The pieces weigh 1, 5, 11, and 5 grams. They want two equal piles, no piece cut in half. Try it in your head before you read on: which pieces go to Maya?</p>
   <p>You probably found it fast. The 11 goes to one kid. The 1, 5, and 5 go to the other. Eleven grams each. Nobody cries.</p>
@@ -196,8 +69,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH02 -->
-<section class="col reveal" data-ch="02" data-defines="total, target, parity" data-uses="partition, sum">
+
+<section class="col reveal" data-ch="02">
   <h2 class="big">If the whole thing is odd, go home</h2>
   <p>Add every piece in the bag. Call it the <b>total</b>. Now say you want two equal piles: each pile has to weigh exactly half of that total. Half of 22 is 11. Fine. But half of 23 is 11.5, and there is no such thing as half a candy.</p>
   <p>Push the buttons below. Drop a number in or pull one out and watch the total. The instant the total goes odd, the answer is a flat no, and you did not inspect a single subset to know it.</p>
@@ -217,8 +90,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH03 -->
-<section class="col reveal" data-ch="03" data-defines="subset sum, reachable" data-uses="subset, target">
+
+<section class="col reveal" data-ch="03">
   <h2 class="big">Two equal piles is secretly one question</h2>
   <p>Here is the move that turns this from scary to small. Forget about building two piles. Build only <b>one</b> pile, and try to make it weigh exactly the target. If you can, you are already done, because whatever you left behind is the other pile, and it weighs the total minus the target, which is the target again.</p>
   <p>Fill the pan below. Tap pieces into it and chase the line at 11. Land on it exactly and the leftovers light up on their own, already equal.</p>
@@ -232,8 +105,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH04 -->
-<section class="col reveal" data-ch="04" data-defines="brute force" data-uses="subset, subset sum">
+
+<section class="col reveal" data-ch="04">
   <h2 class="big">Trying every pile does not scale</h2>
   <p>Each number has two fates: in the pan, or out. Flip them yourself below. Every pattern of in and out is one subset to test, and the counter shows how many patterns exist. With four numbers it is sixteen. Cute. Now drag the slider.</p>
   <div class="intu"><span class="il">picture it</span>Every number doubles the number of subsets, because it can be in or out independently of all the others. That is <b>brute force</b>: check all of them. Two, four, eight, sixteen, and by the time you have a modest bag it is more subsets than seconds in your life.</div>
@@ -247,8 +120,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH05 (centerpiece scrolly) -->
-<section class="reveal" data-ch="05" data-defines="checklist, build up" data-uses="reachable, target, subset sum">
+
+<section class="reveal" data-ch="05">
   <div class="col">
     <h2 class="big">Keep a checklist of sums you can hit</h2>
     <p>Start with one honest fact: the sum 0 is reachable, by picking nothing. Now feed in the numbers one at a time. Each number, when it arrives, looks at every sum already on your checklist and adds a fresh option: that sum plus itself. Watch the strip fill as we pour in 1, 5, 11, 5. The moment the target lights up, the answer is yes.</p>
@@ -275,8 +148,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH06 -->
-<section class="col reveal" data-ch="06" data-defines="dp table, recurrence" data-uses="checklist, reachable">
+
+<section class="col reveal" data-ch="06">
   <h2 class="big">The table behind the checklist</h2>
   <p>Stack a checklist for each stage. Row 0 is before any number: only sum 0 is reachable. Each later row adds one number to the ones allowed so far. The grid below is that stack for 1, 5, 11, 5. Tap any green cell and it shows you the two cells above it that made it true.</p>
   <div class="intu"><span class="il">picture it</span>A cell in row <b>i</b>, column <b>t</b> asks: using the first i numbers, can I hit sum t? It is true in exactly two ways. Either the row above already hit t without this number, or the row above hit t minus this number and this number finishes the job. That two-way rule is the <b>recurrence</b>, and the stacked grid is the <b>dp table</b>.</div>
@@ -288,8 +161,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH07 -->
-<section class="col reveal" data-ch="07" data-defines="one row, down iteration" data-uses="dp table, recurrence">
+
+<section class="col reveal" data-ch="07">
   <h2 class="big">One row is enough</h2>
   <p>Since each row only ever reads the row directly above, throw the history away and keep a single row, updating it in place. There is exactly one trap, and it is worth feeling before you are told. Take one number, a 3, and a fresh row where only 0 is ticked. Apply the 3 two ways below.</p>
   <div class="intu"><span class="il">picture it</span>Update the row from the <b>right end back toward the start</b>, and each box reads a neighbor that still belongs to the old row, so the number is used once. That is <b>down iteration</b>. Update left to right instead and box 3 ticks box 6 ticks box 9, all from a single 3. You just used one candy three times. Keeping <b>one row</b> is fine; the direction is the whole game.</div>
@@ -302,8 +175,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH08 -->
-<section class="col reveal" data-ch="08" data-uses="one row, down iteration">
+
+<section class="col reveal" data-ch="08">
   <h2 class="big">The same idea in three languages</h2>
   <p>Step the trace on the right and watch the single row fill exactly as the code says, sweeping each number downward. Then switch languages. Python, Rust, and JavaScript disagree about semicolons and nothing else that matters here.</p>
   <div class="intu"><span class="il">picture it</span>Every version does four things: bail if the total is odd, make a row of falses with true at 0, sweep each number from the target down to itself, and read off the target box at the end. If you can see those four beats in one language, you can find them in all three.</div>
@@ -323,8 +196,8 @@
 </section>
 <div class="divider"></div>
 
-<!-- CH09 -->
-<section class="col reveal" data-ch="09" data-defines="pseudo polynomial" data-uses="one row, target">
+
+<section class="col reveal" data-ch="09">
   <h2 class="big">When the row gets too long</h2>
   <p>The row has one box per sum from 0 to the target, and the target is half the total. Small numbers, short row, instant answer. But scale every number up and the row stretches with them. Slide below and watch the work, which is bag size times target, balloon even though the count of numbers never changed.</p>
   <div class="intu"><span class="il">picture it</span>The cost is the grid area: how many numbers times how many boxes. Because the box count follows the size of the values, not just how many there are, this is called <b>pseudo polynomial</b>. It flies for everyday numbers and crawls when the values are astronomically large. That is the real edge of the trick, and it is honest to know where it is.</div>
@@ -338,7 +211,7 @@
 </section>
 <div class="divider"></div>
 
-<!-- CLOSE -->
+
 <section class="col reveal" style="text-align:center">
   <p class="eyebrow" style="justify-content:center">the whole thing</p>
   <h2 class="big" style="max-width:640px;margin:0 auto 18px">A pile splits in two exactly when some subset of it hits the halfway mark. Tick the sums you can reach, sweep each number downward once, and read the last box.</h2>
@@ -356,446 +229,11 @@
 
 <footer><div class="col">
   <p>Worked example: <b>nums = [1, 5, 11, 5]</b>, total 22, target 11. Every reachable-set and grid value on this page was computed and checked in Python. The problem is LeetCode 416, "Partition Equal Subset Sum."</p>
-  <p style="margin:0;color:var(--ink-faint)">Built as an interactive explorable. Tip the scale, feed the checklist, read the code.</p>
+  <p style="margin:0;color:var(--v2)">Built as an interactive explorable. Tip the scale, feed the checklist, read the code.</p>
 </div></footer>
 
-<script>
-(function(){
-  "use strict";
-  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-  /* reveal on scroll */
-  var ro=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
-  },{threshold:0.08,rootMargin:'0px 0px -6% 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el); });
-
-  /* progress dial */
-  var pf=document.getElementById('pf'), pt=document.getElementById('pt'), C=2*Math.PI*23;
-  pf.style.strokeDasharray=C; pf.style.strokeDashoffset=C;
-  var secs=[].slice.call(document.querySelectorAll('section[data-ch]'));
-  window.addEventListener('scroll',function(){
-    var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight||1);
-    pf.style.strokeDashoffset=C*(1-Math.min(1,Math.max(0,p||0)));
-    var idx=1; secs.forEach(function(s){ if(s.getBoundingClientRect().top<200) idx=+s.getAttribute('data-ch'); });
-    pt.textContent=idx;
-  },{passive:true});
-
-  /* ---------- shared atom: a cell ---------- */
-  function cell(x,y,w,label,state){
-    var cls={e:'cell-e',n:'cell-n',on:'cell-on',hit:'cell-hit',bad:'cell-bad'}[state]||'cell-n';
-    var tc=(state==='on'||state==='hit'||state==='bad')?'#fff':'var(--ink)';
-    var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+w+'" rx="8" class="'+cls+'" shape-rendering="geometricPrecision"/>';
-    if(label!==''&&label!=null) s+='<text x="'+(x+w/2)+'" y="'+(y+w/2+5)+'" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="15" fill="'+tc+'">'+label+'</text>';
-    return s;
-  }
-  function label(x,y,t,size,anchor){ return '<text x="'+x+'" y="'+y+'" text-anchor="'+(anchor||'start')+'" class="glab" font-size="'+(size||13)+'">'+t+'</text>'; }
-
-  /* ================= HERO: balance scale ================= */
-  (function(){
-    var svg=document.getElementById('scaleSvg'); if(!svg) return;
-    var tiles=[{v:11,side:'L'},{v:1,side:'R'},{v:5,side:'R'},{v:5,side:'R'}];
-    function sums(){var L=0,R=0;tiles.forEach(function(t){if(t.side==='L')L+=t.v;else R+=t.v;});return[L,R];}
-    function draw(){
-      var s=sums(),L=s[0],R=s[1];
-      var CX=210, tilt=Math.max(-34,Math.min(34,(L-R)*3));
-      var ly=120+tilt, ry=120-tilt;
-      var g='';
-      // stand
-      g+='<rect x="204" y="120" width="12" height="150" rx="4" fill="var(--rule)"/>';
-      g+='<path d="M180 272 L240 272 L210 240 Z" fill="var(--ink-faint)"/>';
-      // beam
-      g+='<line x1="70" y1="'+ly+'" x2="350" y2="'+ry+'" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/>';
-      g+='<circle cx="210" cy="120" r="7" fill="var(--ink)"/>';
-      // pans + tiles
-      [['L',70,ly,L],['R',350,ry,R]].forEach(function(p){
-        var px=p[1], py=p[2]+46;
-        g+='<line x1="'+p[1]+'" y1="'+p[2]+'" x2="'+p[1]+'" y2="'+(py-14)+'" stroke="var(--ink-faint)" stroke-width="2"/>';
-        g+='<path d="M'+(px-46)+' '+(py-14)+' Q'+px+' '+(py+22)+' '+(px+46)+' '+(py-14)+'" fill="none" stroke="var(--ink)" stroke-width="2.5"/>';
-        var mine=tiles.map(function(t,i){return{t:t,i:i};}).filter(function(o){return o.t.side===p[0];});
-        var tw=26, startx=px-(mine.length*tw)/2;
-        mine.forEach(function(o,k){ g+=cell(Math.round(startx+k*tw),Math.round(py-40),22,o.t.v,'on'); });
-        g+=label(px,py-52,p[3],17,'middle');
-      });
-      // verdict
-      var msg=(L===R)?'balanced':'off by '+Math.abs(L-R);
-      g+='<text x="210" y="26" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(L===R?'var(--safe)':'var(--ink-faint)')+'">'+msg+'</text>';
-      // hit targets over tiles
-      tiles.forEach(function(t,i){
-        var isL=t.side==='L', s2=sums();
-        var px=isL?70:350, py=(isL?(120+Math.max(-34,Math.min(34,(s2[0]-s2[1])*3))):(120-Math.max(-34,Math.min(34,(s2[0]-s2[1])*3))))+46;
-        var mine=tiles.map(function(tt,ii){return{t:tt,i:ii};}).filter(function(o){return o.t.side===t.side;});
-        var pos=mine.findIndex(function(o){return o.i===i;});
-        var tw=26, startx=px-(mine.length*tw)/2;
-        g+='<rect x="'+(startx+pos*tw-3)+'" y="'+(py-46)+'" width="30" height="30" fill="rgba(0,0,0,0)" style="cursor:pointer" data-tile="'+i+'"/>';
-      });
-      svg.innerHTML=g;
-      svg.querySelectorAll('[data-tile]').forEach(function(el){
-        el.addEventListener('click',function(){ var i=+el.getAttribute('data-tile'); tiles[i].side=tiles[i].side==='L'?'R':'L'; draw(); });
-      });
-    }
-    draw();
-  })();
-
-  /* ================= CH01: example verdicts ================= */
-  (function(){
-    var svg=document.getElementById('exSvg'); if(!svg) return;
-    var EX=[
-      {nums:[1,5,11,5], ok:true, split:[[11],[1,5,5]]},
-      {nums:[2,2,2,2], ok:true, split:[[2,2],[2,2]]},
-      {nums:[1,2,5], ok:false},
-      {nums:[1,2,3,5], ok:false}
-    ];
-    function draw(k){
-      var e=EX[k], g='', y=44;
-      if(e.ok){
-        g+=label(28,30,'one pile',13);
-        var x=28; e.split[0].forEach(function(v){ g+=cell(x,y,40,v,'on'); x+=48; });
-        g+=label(300,30,'other pile',13);
-        var x2=300; e.split[1].forEach(function(v){ g+=cell(x2,y,40,v,'on'); x2+=48; });
-        var half=e.nums.reduce(function(a,b){return a+b;},0)/2;
-        g+='<text x="500" y="72" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--safe)">'+half+' = '+half+'</text>';
-        g+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">yes, it splits evenly</text>';
-      } else {
-        var x=180; e.nums.forEach(function(v){ g+=cell(x,y,40,v,'n'); x+=48; });
-        var tot=e.nums.reduce(function(a,b){return a+b;},0);
-        var why=(tot%2)?('total '+tot+' is odd'):('total '+tot+', but no subset hits '+(tot/2));
-        g+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--risk)">no split: '+why+'</text>';
-      }
-      svg.innerHTML=g;
-    }
-    draw(0);
-    document.querySelectorAll('#exChips .chip').forEach(function(c){
-      c.addEventListener('click',function(){
-        document.querySelectorAll('#exChips .chip').forEach(function(x){x.classList.remove('on');});
-        c.classList.add('on'); draw(+c.getAttribute('data-ex'));
-      });
-    });
-  })();
-
-  /* ================= CH02: parity bar ================= */
-  (function(){
-    var svg=document.getElementById('parSvg'); if(!svg) return;
-    var pool=[{k:'3',v:3,on:true},{k:'1',v:1,on:true},{k:'1b',v:1,on:true},{k:'4',v:4,on:false},{k:'7',v:7,on:false}];
-    function draw(){
-      var total=pool.filter(function(p){return p.on;}).reduce(function(a,p){return a+p.v;},0);
-      var odd=(total%2)!==0, W=480, x0=40, unit=Math.min(30,W/Math.max(total,1));
-      var g='';
-      g+=label(x0,34,'the bag adds to',13);
-      g+='<text x="'+(x0+150)+'" y="34" font-family="Baloo 2" font-weight="700" font-size="20" fill="var(--ink)">'+total+'</text>';
-      // bar
-      var bx=x0, by=64;
-      for(var s=0;s<total;s++){ g+='<rect x="'+(bx+s*unit)+'" y="'+by+'" width="'+(unit-2)+'" height="30" rx="3" fill="var(--accent)" opacity="0.85"/>'; }
-      // midpoint
-      var mid=x0+(total/2)*unit;
-      g+='<line x1="'+mid+'" y1="'+(by-10)+'" x2="'+mid+'" y2="'+(by+40)+'" stroke="'+(odd?'var(--risk)':'var(--safe)')+'" stroke-width="3" stroke-dasharray="'+(odd?'4 4':'0')+'"/>';
-      if(odd){
-        g+='<text x="'+x0+'" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--risk)">odd total: the midline lands between two candies. No split. Stop.</text>';
-      } else {
-        g+='<text x="'+mid+'" y="'+(by-16)+'" text-anchor="middle" class="glab" font-size="13" fill="var(--safe)">target '+(total/2)+'</text>';
-        g+='<text x="'+x0+'" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">even total: the goal is now to build exactly '+(total/2)+'.</text>';
-      }
-      svg.innerHTML=g;
-    }
-    draw();
-    document.querySelectorAll('#parChips .chip').forEach(function(c){
-      c.addEventListener('click',function(){
-        var p=pool.filter(function(o){return o.k===c.getAttribute('data-p');})[0];
-        p.on=!p.on; c.classList.toggle('on',p.on); draw();
-      });
-    });
-  })();
-
-  /* ================= CH03: reframe, fill one pan ================= */
-  (function(){
-    var svg=document.getElementById('refSvg'); if(!svg) return;
-    var TARGET=11, nums=[{v:1,in:false},{v:5,in:false},{v:11,in:false},{v:5,in:false}];
-    function draw(){
-      var sum=nums.filter(function(n){return n.in;}).reduce(function(a,n){return a+n.v;},0);
-      var hit=sum===TARGET, g='';
-      // target line scale 0..22 across width 480
-      var x0=40, W=480, scale=W/22;
-      g+=label(x0,30,'pan total',13);
-      g+='<text x="'+(x0+92)+'" y="30" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(hit?'var(--safe)':'var(--ink)')+'">'+sum+' / '+TARGET+'</text>';
-      // gauge
-      g+='<rect x="'+x0+'" y="48" width="'+W+'" height="20" rx="6" fill="var(--paper-2)"/>';
-      g+='<rect x="'+x0+'" y="48" width="'+(Math.min(sum,22)*scale)+'" height="20" rx="6" fill="'+(hit?'var(--safe)':'var(--accent)')+'"/>';
-      var tx=x0+TARGET*scale;
-      g+='<line x1="'+tx+'" y1="40" x2="'+tx+'" y2="76" stroke="var(--ink)" stroke-width="2.5"/>';
-      g+=label(tx,92,'target 11','13','middle');
-      // number tiles
-      var x=x0;
-      nums.forEach(function(n,i){
-        g+=cell(x,120,44,n.v,n.in?'on':'n');
-        g+='<rect x="'+x+'" y="120" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-n="'+i+'"/>';
-        x+=54;
-      });
-      g+=label(x0+260,150,'tap to drop into the pan',13);
-      if(hit){
-        var rest=nums.filter(function(n){return !n.in;}).map(function(n){return n.v;});
-        g+='<text x="'+x0+'" y="206" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--safe)">leftovers '+(rest.join(' + ')||'0')+' = 11 too. Both piles equal.</text>';
-      }
-      svg.innerHTML=g;
-      svg.querySelectorAll('[data-n]').forEach(function(el){
-        el.addEventListener('click',function(){ var i=+el.getAttribute('data-n'); nums[i].in=!nums[i].in; draw(); });
-      });
-    }
-    draw();
-    document.getElementById('refReset').addEventListener('click',function(){ nums.forEach(function(n){n.in=false;}); draw(); });
-  })();
-
-  /* ================= CH04: brute force ================= */
-  (function(){
-    var svg=document.getElementById('bruteSvg'); if(!svg) return;
-    var base=[1,5,11,5], picks=[false,false,false,false];
-    function draw(){
-      var g='', x=40, sum=0;
-      base.forEach(function(v,i){
-        g+=cell(x,50,44,v,picks[i]?'on':'e');
-        g+=label(x+22,116,picks[i]?'in':'out','13','middle');
-        g+='<rect x="'+x+'" y="50" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-b="'+i+'"/>';
-        if(picks[i])sum+=v; x+=60;
-      });
-      g+=label(320,50,'this subset sums to',13);
-      g+='<text x="320" y="80" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--accent)">'+sum+'</text>';
-      g+=label(320,116,(sum===11?'that is a valid half':'not 11'),13);
-      svg.innerHTML=g;
-      svg.querySelectorAll('[data-b]').forEach(function(el){
-        el.addEventListener('click',function(){ var i=+el.getAttribute('data-b'); picks[i]=!picks[i]; draw(); });
-      });
-    }
-    draw();
-    var sl=document.getElementById('nSlider'), nOut=document.getElementById('nOut');
-    function fmt(n){ var c=Math.pow(2,n); return c>1e6?(c.toExponential(1)):c.toLocaleString('en-US'); }
-    sl.addEventListener('input',function(){
-      var n=+this.value; nOut.innerHTML=n+' numbers &rarr; '+fmt(n)+' subsets to check';
-    });
-    nOut.innerHTML='4 numbers &rarr; 16 subsets to check';
-  })();
-
-  /* ================= CH05: reachable strip (scrolly) ================= */
-  (function(){
-    var svg=document.getElementById('reachSvg'); if(!svg) return;
-    var TARGET=11, order=[1,5,11,5];
-    var SETS=[[0],[0,1],[0,1,5,6],[0,1,5,6,11],[0,1,5,6,10,11]];
-    var CAPS=['Start: only <b>0</b> is reachable.',
-      'After the <b>1</b>: reachable 0, 1.',
-      'After the <b>5</b>: reachable 0, 1, 5, 6.',
-      'After the <b>11</b>: <b>target 11 is reachable</b>. Answer is yes.',
-      'After the last <b>5</b>: 0, 1, 5, 6, 10, 11. Done.'];
-    var step=0;
-    function draw(i){
-      var set=SETS[i], g='', x0=18, w=40, gap=4;
-      g+=label(x0,26,(i===0?'before any number':'numbers used: '+order.slice(0,i).join(', ')),13);
-      for(var s=0;s<=TARGET;s++){
-        var st=set.indexOf(s)>=0?(s===TARGET?'hit':'on'):'e';
-        g+=cell(x0+s*(w+gap),40,w,s,st);
-      }
-      g+=label(x0,120,'sum',13);
-      // arrows showing copy for the just-added number
-      if(i>0){
-        var x=order[i-1];
-        g+='<text x="'+x0+'" y="150" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--accent)">each tick copies '+x+' boxes to the right</text>';
-      }
-      svg.innerHTML=g;
-      document.getElementById('reachCap').innerHTML=CAPS[i];
-    }
-    draw(0);
-    // scrolly
-    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
-    function setStep(i){ step=i; steps.forEach(function(s){ s.classList.toggle('on',+s.getAttribute('data-step')===i); }); draw(i); }
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting) setStep(+e.target.getAttribute('data-step')); });
-    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
-    steps.forEach(function(s){ io.observe(s); s.addEventListener('click',function(){ setStep(+s.getAttribute('data-step')); }); });
-    document.getElementById('reachStep').addEventListener('click',function(){ setStep(Math.min(4,step+1)); });
-    document.getElementById('reachReset').addEventListener('click',function(){ setStep(0); });
-  })();
-
-  /* ================= CH06: 2D grid ================= */
-  (function(){
-    var svg=document.getElementById('gridSvg'); if(!svg) return;
-    var nums=[1,5,11,5], T=11;
-    var DP=[]; for(var i=0;i<=4;i++){ DP.push([]); for(var t=0;t<=T;t++){ DP[i][t]=(t===0); } }
-    for(var i2=1;i2<=4;i2++){ for(var t2=1;t2<=T;t2++){ DP[i2][t2]=DP[i2-1][t2]||(t2>=nums[i2-1]&&DP[i2-1][t2-nums[i2-1]]); } }
-    var w=42, gap=4, x0=70, y0=44, sel=null;
-    function draw(){
-      var g='';
-      // column headers
-      for(var t=0;t<=T;t++){ g+=label(x0+t*(w+gap)+w/2,y0-10,t,13,'middle'); }
-      g+=label(x0-8,y0-10,'sum','13','end');
-      for(var i=0;i<=4;i++){
-        var rowlab=i===0?'{ }':'+ '+nums.slice(0,i).join(' ');
-        g+=label(x0-10,y0+i*(w+gap)+w/2+5,rowlab,13,'end');
-        for(var t3=0;t3<=T;t3++){
-          var on=DP[i][t3], st=on?(t3===T?'hit':'on'):'e';
-          var cx=x0+t3*(w+gap), cy=y0+i*(w+gap);
-          if(sel && sel.parents && sel.parents.some(function(p){return p[0]===i&&p[1]===t3;})) {
-            g+='<rect x="'+(cx-3)+'" y="'+(cy-3)+'" width="'+(w+6)+'" height="'+(w+6)+'" rx="10" class="tsel"/>';
-          }
-          g+=cell(cx,cy,w,(on?t3:''),st);
-          if(on&&i>0){ g+='<rect x="'+cx+'" y="'+cy+'" width="'+w+'" height="'+w+'" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-c="'+i+'_'+t3+'"/>'; }
-        }
-      }
-      svg.innerHTML=g;
-      svg.querySelectorAll('[data-c]').forEach(function(el){
-        el.addEventListener('click',function(){
-          var pr=el.getAttribute('data-c').split('_'), i=+pr[0], t=+pr[1], x=nums[i-1];
-          var parents=[[i-1,t]]; if(t-x>=0&&DP[i-1][t-x]) parents.push([i-1,t-x]);
-          sel={i:i,t:t,parents:parents}; draw();
-          document.getElementById('gridCap').innerHTML='sum <b>'+t+'</b> using '+i+' number'+(i===1?'':'s')+': true because the row above already hit '+t+(t-x>=0&&DP[i-1][t-x]?(' or hit '+(t-x)+', then added '+x):'')+'.';
-        });
-      });
-    }
-    draw();
-  })();
-
-  /* ================= CH07: down vs up ================= */
-  (function(){
-    var svg=document.getElementById('dirSvg'); if(!svg) return;
-    var T=9, X=3, applied=false;
-    function rowFor(dir){
-      var r=[]; for(var t=0;t<=T;t++) r[t]=(t===0);
-      if(applied){
-        if(dir==='down'){ for(var t=T;t>=X;t--){ if(r[t-X]) r[t]=true; } }
-        else { for(var t2=X;t2<=T;t2++){ if(r[t2-X]) r[t2]=true; } }
-      }
-      return r;
-    }
-    function drawRow(y,dir,title,g){
-      var r=rowFor(dir), w=40, gap=4, x0=40, out='';
-      out+=label(x0,y-14,title,13);
-      for(var t=0;t<=T;t++){
-        var st=r[t]?(t===0?'on':(dir==='up'&&t>0&&t%3===0&&t!==3?'bad':(t===X?'hit':'on'))):'e';
-        if(dir==='down') st=r[t]?(t===X?'hit':'on'):'e';
-        out+=cell(x0+t*(w+gap),y,w,t,st);
-      }
-      return out;
-    }
-    function draw(){
-      var g='';
-      g+=drawRow(60,'down','sweep down, right to left',g);
-      g+=drawRow(150,'up','sweep up, left to right',g);
-      if(applied){
-        g+='<text x="40" y="228" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--risk)">up-sweep lit 6 and 9 too: the single 3 got spent three times.</text>';
-      } else {
-        g+=label(40,228,'press apply to send one 3 through each row',13);
-      }
-      svg.innerHTML=g;
-    }
-    draw();
-    document.getElementById('dirApply').addEventListener('click',function(){ applied=true; draw(); });
-    document.getElementById('dirReset').addEventListener('click',function(){ applied=false; draw(); });
-  })();
-
-  /* ================= CH08: trace + code ================= */
-  (function(){
-    var svg=document.getElementById('traceSvg'); if(!svg) return;
-    var nums=[1,5,11,5], T=11, idx=0, row=[]; for(var t=0;t<=T;t++) row[t]=(t===0);
-    function draw(){
-      var g='', w=40, gap=4, x0=18;
-      g+=label(x0,26,(idx===0?'row = [true, false, ...], only 0 set':'after processing '+nums.slice(0,idx).join(', ')),13);
-      for(var t=0;t<=T;t++){ g+=cell(x0+t*(w+gap),40,w,t,row[t]?(t===T?'hit':'on'):'e'); }
-      svg.innerHTML=g;
-      var cap=document.getElementById('traceCap');
-      cap.textContent = idx>=nums.length ? ('done: box 11 is '+(row[T]?'true, they split':'false')) : (row[T]?'target already reachable':'sweeping '+nums[idx]+' next');
-    }
-    draw();
-    document.getElementById('traceStep').addEventListener('click',function(){
-      if(idx>=nums.length) return; var x=nums[idx];
-      for(var t=T;t>=x;t--){ if(row[t-x]) row[t]=true; } idx++; draw();
-    });
-    document.getElementById('traceReset').addEventListener('click',function(){
-      idx=0; row=[]; for(var t=0;t<=T;t++) row[t]=(t===0); draw();
-    });
-    // code
-    var CODE={
-      py:'<span class="cm"># reachable[t] = can we hit sum t?</span>\n'+
-         '<span class="kw">def</span> <span class="fn">can_partition</span>(nums):\n'+
-         '    total = <span class="fn">sum</span>(nums)\n'+
-         '    <span class="kw">if</span> total % <span class="nm">2</span>: <span class="kw">return</span> <span class="kw">False</span>\n'+
-         '    target = total // <span class="nm">2</span>\n'+
-         '    reachable = [<span class="kw">True</span>] + [<span class="kw">False</span>] * target\n'+
-         '    <span class="kw">for</span> x <span class="kw">in</span> nums:\n'+
-         '        <span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(target, x - <span class="nm">1</span>, -<span class="nm">1</span>):\n'+
-         '            <span class="kw">if</span> reachable[t - x]: reachable[t] = <span class="kw">True</span>\n'+
-         '    <span class="kw">return</span> reachable[target]',
-      rs:'<span class="cm">// one row of booleans, swept downward</span>\n'+
-         '<span class="kw">fn</span> <span class="fn">can_partition</span>(nums: &amp;[<span class="nm">i64</span>]) -&gt; <span class="nm">bool</span> {\n'+
-         '    <span class="kw">let</span> total: <span class="nm">i64</span> = nums.<span class="fn">iter</span>().<span class="fn">sum</span>();\n'+
-         '    <span class="kw">if</span> total % <span class="nm">2</span> != <span class="nm">0</span> { <span class="kw">return</span> <span class="kw">false</span>; }\n'+
-         '    <span class="kw">let</span> target = (total / <span class="nm">2</span>) <span class="kw">as</span> <span class="nm">usize</span>;\n'+
-         '    <span class="kw">let mut</span> reachable = <span class="fn">vec!</span>[<span class="kw">false</span>; target + <span class="nm">1</span>];\n'+
-         '    reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n'+
-         '    <span class="kw">for</span> &amp;x <span class="kw">in</span> nums {\n'+
-         '        <span class="kw">let</span> x = x <span class="kw">as</span> <span class="nm">usize</span>;\n'+
-         '        <span class="kw">for</span> t <span class="kw">in</span> (x..=target).<span class="fn">rev</span>() {\n'+
-         '            <span class="kw">if</span> reachable[t - x] { reachable[t] = <span class="kw">true</span>; }\n'+
-         '        }\n'+
-         '    }\n'+
-         '    reachable[target]\n}',
-      js:'<span class="cm">// same four beats, in JavaScript</span>\n'+
-         '<span class="kw">function</span> <span class="fn">canPartition</span>(nums) {\n'+
-         '  <span class="kw">const</span> total = nums.<span class="fn">reduce</span>((a, b) =&gt; a + b, <span class="nm">0</span>);\n'+
-         '  <span class="kw">if</span> (total % <span class="nm">2</span> !== <span class="nm">0</span>) <span class="kw">return</span> <span class="kw">false</span>;\n'+
-         '  <span class="kw">const</span> target = total / <span class="nm">2</span>;\n'+
-         '  <span class="kw">const</span> reachable = <span class="kw">new</span> <span class="fn">Array</span>(target + <span class="nm">1</span>).<span class="fn">fill</span>(<span class="kw">false</span>);\n'+
-         '  reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n'+
-         '  <span class="kw">for</span> (<span class="kw">const</span> x <span class="kw">of</span> nums) {\n'+
-         '    <span class="kw">for</span> (<span class="kw">let</span> t = target; t &gt;= x; t<span>--</span>) {\n'+
-         '      <span class="kw">if</span> (reachable[t - x]) reachable[t] = <span class="kw">true</span>;\n'+
-         '    }\n'+
-         '  }\n'+
-         '  <span class="kw">return</span> reachable[target];\n}'
-    };
-    var box=document.getElementById('codeBox');
-    function setLang(k){ box.innerHTML=CODE[k]; document.querySelectorAll('#langChips .chip').forEach(function(c){ c.classList.toggle('on',c.getAttribute('data-lang')===k); }); }
-    setLang('py');
-    document.querySelectorAll('#langChips .chip').forEach(function(c){ c.addEventListener('click',function(){ setLang(c.getAttribute('data-lang')); }); });
-  })();
-
-  /* ================= CH09: pseudo-poly growth ================= */
-  (function(){
-    var svg=document.getElementById('limSvg'); if(!svg) return;
-    var n=4, baseT=11;
-    function draw(k){
-      var T=baseT*k, cells=n*(T+1), g='';
-      var cols=Math.min(T+1,46), w=Math.max(3,Math.min(10,460/cols)), gap=1, x0=40, y0=40;
-      for(var i=0;i<n;i++){ for(var c=0;c<cols;c++){
-        var col=(cells>200)?'var(--risk)':(cells>90?'var(--warn)':'var(--accent)');
-        g+='<rect x="'+(x0+c*(w+gap))+'" y="'+(y0+i*(w+gap))+'" width="'+w+'" height="'+w+'" rx="1.5" fill="'+col+'" opacity="0.85"/>';
-      }}
-      if(T+1>cols) g+=label(x0+cols*(w+gap)+8,y0+ (n*(w+gap))/2,'...',16);
-      g+='<text x="40" y="'+(y0+n*(w+gap)+34)+'" font-family="Baloo 2" font-weight="600" font-size="18" fill="'+((cells>200)?'var(--risk)':'var(--ink)')+'">'+cells+' cells to fill'+(cells>200?': now it drags':'')+'</text>';
-      svg.innerHTML=g;
-      document.getElementById('kOut').textContent='x'+k;
-      document.getElementById('workOut').textContent=n+' x '+T+' cells';
-    }
-    draw(1);
-    document.getElementById('kSlider').addEventListener('input',function(){ draw(+this.value); });
-  })();
-
-  /* ================= press s: weeds ================= */
-  (function(){
-    var weeds=document.getElementById('weeds'), hint=document.getElementById('weedsHint');
-    function toggle(){
-      var open=weeds.hidden; weeds.hidden=!open;
-      hint.setAttribute('aria-expanded',String(open));
-      hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
-      if(open){ weeds.setAttribute('tabindex','-1'); weeds.focus({preventScroll:true}); weeds.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); }
-    }
-    document.addEventListener('keydown',function(e){
-      if(e.key!=='s'&&e.key!=='S') return;
-      if(e.metaKey||e.ctrlKey||e.altKey) return;
-      var tag=(e.target.tagName||'').toLowerCase();
-      if(tag==='input'||tag==='textarea'||e.target.isContentEditable) return;
-      e.preventDefault(); toggle();
-    });
-    hint.addEventListener('click',toggle);
-    hint.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); } });
-  })();
-})();
+<script>!function(){"use strict";var t=matchMedia("(prefers-reduced-motion:reduce)").matches,n=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),n.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -6% 0px"});document.querySelectorAll(".reveal").forEach(function(t){n.observe(t)});var e=document.getElementById("pf"),a=document.getElementById("pt"),s=2*Math.PI*23;e.style.strokeDasharray=s,e.style.strokeDashoffset=s;var r=[].slice.call(document.querySelectorAll("section[data-ch]"));function i(t,n,e,a,s){var r='<rect x="'+t+'" y="'+n+'" width="'+e+'" height="'+e+'" rx="8" class="'+({e:"cell-e",n:"cell-n",on:"cell-on",hit:"cell-hit",bad:"cell-bad"}[s]||"cell-n")+'" shape-rendering="geometricPrecision"/>';return""!==a&&null!=a&&(r+='<text x="'+(t+e/2)+'" y="'+(n+e/2+5)+'" text-anchor="middle" font-family="JetBrains Mono" font-weight="600" font-size="15" fill="'+("on"===s||"hit"===s||"bad"===s?"#fff":"var(--v1)")+'">'+a+"</text>"),r}function o(t,n,e,a,s){return'<text x="'+t+'" y="'+n+'" text-anchor="'+(s||"start")+'" class="glab" font-size="'+(a||13)+'">'+e+"</text>"}window.addEventListener("scroll",function(){var t=document.documentElement,n=t.scrollTop/(t.scrollHeight-t.clientHeight||1);e.style.strokeDashoffset=s*(1-Math.min(1,Math.max(0,n||0)));var i=1;r.forEach(function(t){t.getBoundingClientRect().top<200&&(i=+t.getAttribute("data-ch"))}),a.textContent=i},{passive:!0}),function(){var t=document.getElementById("scaleSvg");if(t){var n=[{v:11,side:"L"},{v:1,side:"R"},{v:5,side:"R"},{v:5,side:"R"}];!function a(){var s=e(),r=s[0],l=s[1],c=Math.max(-34,Math.min(34,3*(r-l))),f=120+c,u=120-c,p="";p+='<rect x="204" y="120" width="12" height="150" rx="4" fill="var(--v12)"/>',p+='<path d="M180 272 L240 272 L210 240 Z" fill="var(--v2)"/>',p+='<line x1="70" y1="'+f+'" x2="350" y2="'+u+'" stroke="var(--v1)" stroke-width="5" stroke-linecap="round"/>',p+='<circle cx="210" cy="120" r="7" fill="var(--v1)"/>',[["L",70,f,r],["R",350,u,l]].forEach(function(t){var e=t[1],a=t[2]+46;p+='<line x1="'+t[1]+'" y1="'+t[2]+'" x2="'+t[1]+'" y2="'+(a-14)+'" stroke="var(--v2)" stroke-width="2"/>',p+='<path d="M'+(e-46)+" "+(a-14)+" Q"+e+" "+(a+22)+" "+(e+46)+" "+(a-14)+'" fill="none" stroke="var(--v1)" stroke-width="2.5"/>';var s=n.map(function(t,n){return{t:t,i:n}}).filter(function(n){return n.t.side===t[0]}),r=e-26*s.length/2;s.forEach(function(t,n){p+=i(Math.round(r+26*n),Math.round(a-40),22,t.t.v,"on")}),p+=o(e,a-52,t[3],17,"middle")});var d=r===l?"balanced":"off by "+Math.abs(r-l);p+='<text x="210" y="26" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(r===l?"var(--v13)":"var(--v2)")+'">'+d+"</text>",n.forEach(function(t,a){var s="L"===t.side,r=e(),i=s?70:350,o=(s?120+Math.max(-34,Math.min(34,3*(r[0]-r[1]))):120-Math.max(-34,Math.min(34,3*(r[0]-r[1]))))+46,l=n.map(function(t,n){return{t:t,i:n}}).filter(function(n){return n.t.side===t.side}),c=l.findIndex(function(t){return t.i===a}),f=i-26*l.length/2;p+='<rect x="'+(f+26*c-3)+'" y="'+(o-46)+'" width="30" height="30" fill="rgba(0,0,0,0)" style="cursor:pointer" data-tile="'+a+'"/>'}),t.innerHTML=p,t.querySelectorAll("[data-tile]").forEach(function(t){t.addEventListener("click",function(){var e=+t.getAttribute("data-tile");n[e].side="L"===n[e].side?"R":"L",a()})})}()}function e(){var t=0,e=0;return n.forEach(function(n){"L"===n.side?t+=n.v:e+=n.v}),[t,e]}}(),function(){var t=document.getElementById("exSvg");if(t){var n=[{nums:[1,5,11,5],ok:!0,split:[[11],[1,5,5]]},{nums:[2,2,2,2],ok:!0,split:[[2,2],[2,2]]},{nums:[1,2,5],ok:!1},{nums:[1,2,3,5],ok:!1}];e(0),document.querySelectorAll("#exChips .chip").forEach(function(t){t.addEventListener("click",function(){document.querySelectorAll("#exChips .chip").forEach(function(t){t.classList.remove("on")}),t.classList.add("on"),e(+t.getAttribute("data-ex"))})})}function e(e){var a=n[e],s="";if(a.ok){s+=o(28,30,"one pile",13);var r=28;a.split[0].forEach(function(t){s+=i(r,44,40,t,"on"),r+=48}),s+=o(300,30,"other pile",13);var l=300;a.split[1].forEach(function(t){s+=i(l,44,40,t,"on"),l+=48});var c=a.nums.reduce(function(t,n){return t+n},0)/2;s+='<text x="500" y="72" text-anchor="middle" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--v13)">'+c+" = "+c+"</text>",s+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--v13)">yes, it splits evenly</text>'}else{r=180;a.nums.forEach(function(t){s+=i(r,44,40,t,"n"),r+=48});var f=a.nums.reduce(function(t,n){return t+n},0);s+='<text x="280" y="128" text-anchor="middle" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--v11)">no split: '+(f%2?"total "+f+" is odd":"total "+f+", but no subset hits "+f/2)+"</text>"}t.innerHTML=s}}(),function(){var t=document.getElementById("parSvg");if(t){var n=[{k:"3",v:3,on:!0},{k:"1",v:1,on:!0},{k:"1b",v:1,on:!0},{k:"4",v:4,on:!1},{k:"7",v:7,on:!1}];e(),document.querySelectorAll("#parChips .chip").forEach(function(t){t.addEventListener("click",function(){var a=n.filter(function(n){return n.k===t.getAttribute("data-p")})[0];a.on=!a.on,t.classList.toggle("on",a.on),e()})})}function e(){var e=n.filter(function(t){return t.on}).reduce(function(t,n){return t+n.v},0),a=e%2!=0,s=40,r=Math.min(30,480/Math.max(e,1)),i="";i+=o(s,34,"the bag adds to",13),i+='<text x="190" y="34" font-family="Baloo 2" font-weight="700" font-size="20" fill="var(--v1)">'+e+"</text>";for(var l=0;l<e;l++)i+='<rect x="'+(40+l*r)+'" y="64" width="'+(r-2)+'" height="30" rx="3" fill="var(--v0)" opacity="0.85"/>';var c=s+e/2*r;i+='<line x1="'+c+'" y1="54" x2="'+c+'" y2="104" stroke="'+(a?"var(--v11)":"var(--v13)")+'" stroke-width="3" stroke-dasharray="'+(a?"4 4":"0")+'"/>',a?i+='<text x="40" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--v11)">odd total: the midline lands between two candies. No split. Stop.</text>':(i+='<text x="'+c+'" y="48" text-anchor="middle" class="glab" font-size="13" fill="var(--v13)">target '+e/2+"</text>",i+='<text x="40" y="140" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--v13)">even total: the goal is now to build exactly '+e/2+".</text>"),t.innerHTML=i}}(),function(){var t=document.getElementById("refSvg");if(t){var n=[{v:1,in:!1},{v:5,in:!1},{v:11,in:!1},{v:5,in:!1}];e(),document.getElementById("refReset").addEventListener("click",function(){n.forEach(function(t){t.in=!1}),e()})}function e(){var a=n.filter(function(t){return t.in}).reduce(function(t,n){return t+n.v},0),s=11===a,r="",l=40,c=480/22;r+=o(l,30,"pan total",13),r+='<text x="132" y="30" font-family="Baloo 2" font-weight="700" font-size="20" fill="'+(s?"var(--v13)":"var(--v1)")+'">'+a+" / 11</text>",r+='<rect x="40" y="48" width="480" height="20" rx="6" fill="var(--v10)"/>',r+='<rect x="40" y="48" width="'+Math.min(a,22)*c+'" height="20" rx="6" fill="'+(s?"var(--v13)":"var(--v0)")+'"/>';r+='<line x1="280" y1="40" x2="280" y2="76" stroke="var(--v1)" stroke-width="2.5"/>',r+=o(280,92,"target 11","13","middle");var f=l;if(n.forEach(function(t,n){r+=i(f,120,44,t.v,t.in?"on":"n"),r+='<rect x="'+f+'" y="120" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-n="'+n+'"/>',f+=54}),r+=o(300,150,"tap to drop into the pan",13),s){var u=n.filter(function(t){return!t.in}).map(function(t){return t.v});r+='<text x="40" y="206" font-family="Baloo 2" font-weight="600" font-size="18" fill="var(--v13)">leftovers '+(u.join(" + ")||"0")+" = 11 too. Both piles equal.</text>"}t.innerHTML=r,t.querySelectorAll("[data-n]").forEach(function(t){t.addEventListener("click",function(){var a=+t.getAttribute("data-n");n[a].in=!n[a].in,e()})})}}(),function(){var t=document.getElementById("bruteSvg");if(t){var n=[1,5,11,5],e=[!1,!1,!1,!1];!function a(){var s="",r=40,l=0;n.forEach(function(t,n){s+=i(r,50,44,t,e[n]?"on":"e"),s+=o(r+22,116,e[n]?"in":"out","13","middle"),s+='<rect x="'+r+'" y="50" width="44" height="44" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-b="'+n+'"/>',e[n]&&(l+=t),r+=60}),s+=o(320,50,"this subset sums to",13),s+='<text x="320" y="80" font-family="Baloo 2" font-weight="700" font-size="26" fill="var(--v0)">'+l+"</text>",s+=o(320,116,11===l?"that is a valid half":"not 11",13),t.innerHTML=s,t.querySelectorAll("[data-b]").forEach(function(t){t.addEventListener("click",function(){var n=+t.getAttribute("data-b");e[n]=!e[n],a()})})}();var a=document.getElementById("nSlider"),s=document.getElementById("nOut");a.addEventListener("input",function(){var t=+this.value;s.innerHTML=t+" numbers &rarr; "+function(t){var n=Math.pow(2,t);return n>1e6?n.toExponential(1):n.toLocaleString("en-US")}(t)+" subsets to check"}),s.innerHTML="4 numbers &rarr; 16 subsets to check"}}(),function(){var t=document.getElementById("reachSvg");if(t){var n=[1,5,11,5],e=[[0],[0,1],[0,1,5,6],[0,1,5,6,11],[0,1,5,6,10,11]],a=["Start: only <b>0</b> is reachable.","After the <b>1</b>: reachable 0, 1.","After the <b>5</b>: reachable 0, 1, 5, 6.","After the <b>11</b>: <b>target 11 is reachable</b>. Answer is yes.","After the last <b>5</b>: 0, 1, 5, 6, 10, 11. Done."],s=0;c(0);var r=[].slice.call(document.querySelectorAll("#sc1 .stp")),l=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&f(+t.target.getAttribute("data-step"))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});r.forEach(function(t){l.observe(t),t.addEventListener("click",function(){f(+t.getAttribute("data-step"))})}),document.getElementById("reachStep").addEventListener("click",function(){f(Math.min(4,s+1))}),document.getElementById("reachReset").addEventListener("click",function(){f(0)})}function c(s){var r=e[s],l="";l+=o(18,26,0===s?"before any number":"numbers used: "+n.slice(0,s).join(", "),13);for(var c=0;c<=11;c++){l+=i(18+44*c,40,40,c,r.indexOf(c)>=0?11===c?"hit":"on":"e")}(l+=o(18,120,"sum",13),s>0)&&(l+='<text x="18" y="150" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--v0)">each tick copies '+n[s-1]+" boxes to the right</text>");t.innerHTML=l,document.getElementById("reachCap").innerHTML=a[s]}function f(t){s=t,r.forEach(function(n){n.classList.toggle("on",+n.getAttribute("data-step")===t)}),c(t)}}(),function(){var t=document.getElementById("gridSvg");if(t){for(var n=[1,5,11,5],e=[],a=0;a<=4;a++){e.push([]);for(var s=0;s<=11;s++)e[a][s]=0===s}for(var r=1;r<=4;r++)for(var l=1;l<=11;l++)e[r][l]=e[r-1][l]||l>=n[r-1]&&e[r-1][l-n[r-1]];var c=42,f=null;!function a(){for(var s="",r=0;r<=11;r++)s+=o(70+46*r+21,34,r,13,"middle");s+=o(62,34,"sum","13","end");for(var l=0;l<=4;l++){var u=0===l?"{ }":"+ "+n.slice(0,l).join(" ");s+=o(60,44+46*l+21+5,u,13,"end");for(var p=0;p<=11;p++){var d=e[l][p],v=d?11===p?"hit":"on":"e",h=70+46*p,m=44+46*l;f&&f.parents&&f.parents.some(function(t){return t[0]===l&&t[1]===p})&&(s+='<rect x="'+(h-3)+'" y="'+(m-3)+'" width="48" height="48" rx="10" class="tsel"/>'),s+=i(h,m,c,d?p:"",v),d&&l>0&&(s+='<rect x="'+h+'" y="'+m+'" width="'+'42" height="'+'42" rx="8" fill="rgba(0,0,0,0)" style="cursor:pointer" data-c="'+l+"_"+p+'"/>')}}t.innerHTML=s,t.querySelectorAll("[data-c]").forEach(function(t){t.addEventListener("click",function(){var s=t.getAttribute("data-c").split("_"),r=+s[0],i=+s[1],o=n[r-1],l=[[r-1,i]];i-o>=0&&e[r-1][i-o]&&l.push([r-1,i-o]),f={i:r,t:i,parents:l},a(),document.getElementById("gridCap").innerHTML="sum <b>"+i+"</b> using "+r+" number"+(1===r?"":"s")+": true because the row above already hit "+i+(i-o>=0&&e[r-1][i-o]?" or hit "+(i-o)+", then added "+o:"")+"."})})}()}}(),function(){var t=document.getElementById("dirSvg");if(t){var n=!1;a(),document.getElementById("dirApply").addEventListener("click",function(){n=!0,a()}),document.getElementById("dirReset").addEventListener("click",function(){n=!1,a()})}function e(t,e,a,s){var r=function(t){for(var e=[],a=0;a<=9;a++)e[a]=0===a;if(n)if("down"===t)for(a=9;a>=3;a--)e[a-3]&&(e[a]=!0);else for(var s=3;s<=9;s++)e[s-3]&&(e[s]=!0);return e}(e),l="";l+=o(40,t-14,a,13);for(var c=0;c<=9;c++){var f=r[c]?0===c?"on":"up"===e&&c>0&&c%3==0&&3!==c?"bad":3===c?"hit":"on":"e";"down"===e&&(f=r[c]?3===c?"hit":"on":"e"),l+=i(40+44*c,t,40,c,f)}return l}function a(){var a="";a+=e(60,"down","sweep down, right to left"),a+=e(150,"up","sweep up, left to right"),a+=n?'<text x="40" y="228" font-family="Baloo 2" font-weight="600" font-size="17" fill="var(--v11)">up-sweep lit 6 and 9 too: the single 3 got spent three times.</text>':o(40,228,"press apply to send one 3 through each row",13),t.innerHTML=a}}(),function(){var t=document.getElementById("traceSvg");if(t){for(var n=[1,5,11,5],e=11,a=0,s=[],r=0;r<=e;r++)s[r]=0===r;f(),document.getElementById("traceStep").addEventListener("click",function(){if(!(a>=n.length)){for(var t=n[a],r=e;r>=t;r--)s[r-t]&&(s[r]=!0);a++,f()}}),document.getElementById("traceReset").addEventListener("click",function(){a=0,s=[];for(var t=0;t<=e;t++)s[t]=0===t;f()});var l={py:'<span class="cm"># reachable[t] = can we hit sum t?</span>\n<span class="kw">def</span> <span class="fn">can_partition</span>(nums):\n    total = <span class="fn">sum</span>(nums)\n    <span class="kw">if</span> total % <span class="nm">2</span>: <span class="kw">return</span> <span class="kw">False</span>\n    target = total // <span class="nm">2</span>\n    reachable = [<span class="kw">True</span>] + [<span class="kw">False</span>] * target\n    <span class="kw">for</span> x <span class="kw">in</span> nums:\n        <span class="kw">for</span> t <span class="kw">in</span> <span class="fn">range</span>(target, x - <span class="nm">1</span>, -<span class="nm">1</span>):\n            <span class="kw">if</span> reachable[t - x]: reachable[t] = <span class="kw">True</span>\n    <span class="kw">return</span> reachable[target]',rs:'<span class="cm">// one row of booleans, swept downward</span>\n<span class="kw">fn</span> <span class="fn">can_partition</span>(nums: &amp;[<span class="nm">i64</span>]) -&gt; <span class="nm">bool</span> {\n    <span class="kw">let</span> total: <span class="nm">i64</span> = nums.<span class="fn">iter</span>().<span class="fn">sum</span>();\n    <span class="kw">if</span> total % <span class="nm">2</span> != <span class="nm">0</span> { <span class="kw">return</span> <span class="kw">false</span>; }\n    <span class="kw">let</span> target = (total / <span class="nm">2</span>) <span class="kw">as</span> <span class="nm">usize</span>;\n    <span class="kw">let mut</span> reachable = <span class="fn">vec!</span>[<span class="kw">false</span>; target + <span class="nm">1</span>];\n    reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n    <span class="kw">for</span> &amp;x <span class="kw">in</span> nums {\n        <span class="kw">let</span> x = x <span class="kw">as</span> <span class="nm">usize</span>;\n        <span class="kw">for</span> t <span class="kw">in</span> (x..=target).<span class="fn">rev</span>() {\n            <span class="kw">if</span> reachable[t - x] { reachable[t] = <span class="kw">true</span>; }\n        }\n    }\n    reachable[target]\n}',js:'<span class="cm">// same four beats, in JavaScript</span>\n<span class="kw">function</span> <span class="fn">canPartition</span>(nums) {\n  <span class="kw">const</span> total = nums.<span class="fn">reduce</span>((a, b) =&gt; a + b, <span class="nm">0</span>);\n  <span class="kw">if</span> (total % <span class="nm">2</span> !== <span class="nm">0</span>) <span class="kw">return</span> <span class="kw">false</span>;\n  <span class="kw">const</span> target = total / <span class="nm">2</span>;\n  <span class="kw">const</span> reachable = <span class="kw">new</span> <span class="fn">Array</span>(target + <span class="nm">1</span>).<span class="fn">fill</span>(<span class="kw">false</span>);\n  reachable[<span class="nm">0</span>] = <span class="kw">true</span>;\n  <span class="kw">for</span> (<span class="kw">const</span> x <span class="kw">of</span> nums) {\n    <span class="kw">for</span> (<span class="kw">let</span> t = target; t &gt;= x; t<span>--</span>) {\n      <span class="kw">if</span> (reachable[t - x]) reachable[t] = <span class="kw">true</span>;\n    }\n  }\n  <span class="kw">return</span> reachable[target];\n}'},c=document.getElementById("codeBox");u("py"),document.querySelectorAll("#langChips .chip").forEach(function(t){t.addEventListener("click",function(){u(t.getAttribute("data-lang"))})})}function f(){var r="";r+=o(18,26,0===a?"row = [true, false, ...], only 0 set":"after processing "+n.slice(0,a).join(", "),13);for(var l=0;l<=e;l++)r+=i(18+44*l,40,40,l,s[l]?l===e?"hit":"on":"e");t.innerHTML=r,document.getElementById("traceCap").textContent=a>=n.length?"done: box 11 is "+(s[e]?"true, they split":"false"):s[e]?"target already reachable":"sweeping "+n[a]+" next"}function u(t){c.innerHTML=l[t],document.querySelectorAll("#langChips .chip").forEach(function(n){n.classList.toggle("on",n.getAttribute("data-lang")===t)})}}(),function(){var t=document.getElementById("limSvg");if(t){n(1),document.getElementById("kSlider").addEventListener("input",function(){n(+this.value)})}function n(n){for(var e=11*n,a=4*(e+1),s="",r=Math.min(e+1,46),i=Math.max(3,Math.min(10,460/r)),l=0;l<4;l++)for(var c=0;c<r;c++){s+='<rect x="'+(40+c*(i+1))+'" y="'+(40+l*(i+1))+'" width="'+i+'" height="'+i+'" rx="1.5" fill="'+(a>200?"var(--v11)":a>90?"var(--v15)":"var(--v0)")+'" opacity="0.85"/>'}e+1>r&&(s+=o(40+r*(i+1)+8,40+4*(i+1)/2,"...",16)),s+='<text x="40" y="'+(40+4*(i+1)+34)+'" font-family="Baloo 2" font-weight="600" font-size="18" fill="'+(a>200?"var(--v11)":"var(--v1)")+'">'+a+" cells to fill"+(a>200?": now it drags":"")+"</text>",t.innerHTML=s,document.getElementById("kOut").textContent="x"+n,document.getElementById("workOut").textContent="4 x "+e+" cells"}}(),function(){var n=document.getElementById("weeds"),e=document.getElementById("weedsHint");function a(){var a=n.hidden;n.hidden=!a,e.setAttribute("aria-expanded",String(a)),e.innerHTML=a?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",a&&(n.setAttribute("tabindex","-1"),n.focus({preventScroll:!0}),n.scrollIntoView({behavior:t?"auto":"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var n=(t.target.tagName||"").toLowerCase();"input"===n||"textarea"===n||t.target.isContentEditable||(t.preventDefault(),a())}}),e.addEventListener("click",a),e.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),a())})}()}();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>

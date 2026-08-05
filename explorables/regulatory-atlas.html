@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>The regulatory atlas: mapping obligations to controls</title>
-  <!-- seo:begin -->
+  
   <meta name="description" content="GDPR to the EU AI Act: ten frameworks, who each binds, what each demands, and the controls that satisfy them. Filter by obligation to see where they overlap.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/regulatory-atlas">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -24,143 +24,10 @@
   <meta name="twitter:image" content="https://www.loopingly.com/og/regulatory-atlas.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"The regulatory atlas: mapping obligations to controls","description":"GDPR to the EU AI Act: ten frameworks, who each binds, what each demands, and the controls that satisfy them. Filter by obligation to see where they overlap.","url":"https://www.loopingly.com/explorables/regulatory-atlas","image":"https://www.loopingly.com/og/regulatory-atlas.png","datePublished":"2026-07-26","dateModified":"2026-07-26","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"AI and data protection regulatory frameworks"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"The regulatory atlas"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
-<style>
-  /* ============================================================
-     THE REGULATORY ATLAS — the 10 frameworks, explained
-     Identity: "legal field guide" — warm stone + oxblood
-     Type: serif display (legal gravitas) / sans body / mono metadata
-     ============================================================ */
-  :root{
-    --paper:#F3F2EE; --surface:#FAF9F6; --raised:#FFFFFF;
-    --ink:#211F1C; --ink-soft:#3A362F; --slate:#615C52; --slate-2:#847E72;
-    --ox:#8A3A3C; --ox-deep:#6F2B2D; --gild:#9A7A38;
-    --hair:#DEDAD1; --hair-2:#EAE7DE;
-    /* domain semantics (NOT the accent) */
-    --privacy:#3A7C82; --privacy-bg:#E3EEEF;
-    --finance:#9A7A38; --finance-bg:#F0EAD8;
-    --security:#3E5C89; --security-bg:#E4E9F2;
-    --ai:#6E4E93; --ai-bg:#EAE3F2;
-    --shadow:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18);
-    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
-    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
-    --read:44rem;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{
-      --paper:#16140F; --surface:#1B1813; --raised:#201D17; --ink:#ECE8DF; --ink-soft:#CFC9BC; --slate:#9A9385; --slate-2:#7C7566;
-      --ox:#CE8082; --ox-deep:#DE9698; --gild:#C9A857;
-      --hair:#302B22; --hair-2:#282318;
-      --privacy:#6FB4BA; --privacy-bg:#16292B; --finance:#C9A857; --finance-bg:#2A2413;
-      --security:#7C9AD0; --security-bg:#1A2233; --ai:#A585C9; --ai-bg:#241A31;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
-    }
-  }
-  :root[data-theme="light"]{
-    --paper:#F3F2EE;--surface:#FAF9F6;--raised:#FFFFFF;--ink:#211F1C;--ink-soft:#3A362F;--slate:#615C52;--slate-2:#847E72;
-    --ox:#8A3A3C;--ox-deep:#6F2B2D;--gild:#9A7A38;--hair:#DEDAD1;--hair-2:#EAE7DE;
-    --privacy:#3A7C82;--privacy-bg:#E3EEEF;--finance:#9A7A38;--finance-bg:#F0EAD8;--security:#3E5C89;--security-bg:#E4E9F2;--ai:#6E4E93;--ai-bg:#EAE3F2;
-    --shadow:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18);
-  }
-  :root[data-theme="dark"]{
-    --paper:#16140F;--surface:#1B1813;--raised:#201D17;--ink:#ECE8DF;--ink-soft:#CFC9BC;--slate:#9A9385;--slate-2:#7C7566;
-    --ox:#CE8082;--ox-deep:#DE9698;--gild:#C9A857;--hair:#302B22;--hair-2:#282318;
-    --privacy:#6FB4BA;--privacy-bg:#16292B;--finance:#C9A857;--finance-bg:#2A2413;--security:#7C9AD0;--security-bg:#1A2233;--ai:#A585C9;--ai-bg:#241A31;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
-  }
-
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-  ::selection{background:var(--ox);color:#fff;}
-  a{color:var(--ox-deep);text-underline-offset:2px;}
-  a:focus-visible,button:focus-visible{outline:2px solid var(--ox);outline-offset:2px;border-radius:2px;}
-  .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.6rem 1rem;z-index:100;}
-  .skip:focus{left:.5rem;top:.5rem;}
-
-  .wrap{max-width:54rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem) 6rem;}
-  .reading{max-width:var(--read);}
-  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.012em;text-wrap:balance;color:var(--ink);}
-  h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;margin:.1rem 0;}
-  h3{font-size:1.15rem;margin:1.4rem 0 .3rem;}
-  p{margin:.7rem 0;color:var(--ink-soft);}
-  strong{color:var(--ink);font-weight:650;}
-  ul{color:var(--ink-soft);padding-left:1.15rem;margin:.4rem 0;} li{margin:.28rem 0;} li::marker{color:var(--ox);}
-  code{font-family:var(--mono);font-size:.85em;background:var(--hair-2);padding:.08em .38em;border-radius:4px;}
-
-  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ox-deep);display:flex;align-items:center;gap:.6rem;}
-  .eyebrow::after{content:"";flex:1;height:1px;background:var(--hair);}
-
-  .toggle{position:fixed;top:1rem;right:1rem;z-index:60;background:var(--raised);border:1px solid var(--hair);color:var(--ink-soft);width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
-  .toggle:hover{color:var(--ox-deep);border-color:var(--ox);}
-
-  /* cover */
-  .cover{padding:3.2rem 0 1rem;}
-  .cover .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ox-deep);}
-  .cover h1{font-size:clamp(2.2rem,5.5vw,3.7rem);line-height:1.03;letter-spacing:-.02em;margin:.9rem 0 .5rem;max-width:16ch;}
-  .cover .lede{font-size:1.14rem;color:var(--slate);max-width:50ch;}
-
-  /* overview map grouped by domain */
-  .map{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.9rem;margin:1.8rem 0;}
-  .dom{background:var(--raised);border:1px solid var(--hair);border-radius:12px;padding:1rem 1.1rem;box-shadow:var(--shadow);}
-  .dom .dh{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem;}
-  .dom .dh::before{content:"";width:.6rem;height:.6rem;border-radius:2px;}
-  .dom.privacy .dh{color:var(--privacy);} .dom.privacy .dh::before{background:var(--privacy);}
-  .dom.finance .dh{color:var(--finance);} .dom.finance .dh::before{background:var(--finance);}
-  .dom.security .dh{color:var(--security);} .dom.security .dh::before{background:var(--security);}
-  .dom.ai .dh{color:var(--ai);} .dom.ai .dh::before{background:var(--ai);}
-  .dom a{display:block;text-decoration:none;color:var(--ink-soft);font-size:.9rem;padding:.2rem 0;border-bottom:1px solid var(--hair-2);}
-  .dom a:last-child{border-bottom:none;}
-  .dom a:hover{color:var(--ox-deep);}
-  .dom a b{color:var(--ink);font-weight:600;}
-
-  /* framework entry */
-  .fw{margin:2.4rem 0;padding-top:1.5rem;border-top:2px solid var(--ink);scroll-margin-top:1rem;}
-  .fw-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;}
-  .fw-num{font-family:var(--mono);font-size:.8rem;color:var(--slate-2);}
-  .fw-head h2{margin:0;}
-  .fw-abbr{font-family:var(--mono);font-size:.9rem;color:var(--ox-deep);background:var(--hair-2);padding:.1rem .5rem;border-radius:5px;}
-  .tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0 0;}
-  .tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.03em;padding:.16rem .55rem;border-radius:20px;border:1px solid var(--hair);color:var(--slate);background:var(--surface);}
-  .tag.privacy{background:var(--privacy-bg);color:var(--privacy);border-color:color-mix(in srgb,var(--privacy) 30%,transparent);}
-  .tag.finance{background:var(--finance-bg);color:var(--finance);border-color:color-mix(in srgb,var(--finance) 30%,transparent);}
-  .tag.security{background:var(--security-bg);color:var(--security);border-color:color-mix(in srgb,var(--security) 30%,transparent);}
-  .tag.ai{background:var(--ai-bg);color:var(--ai);border-color:color-mix(in srgb,var(--ai) 30%,transparent);}
-
-  .fields{display:grid;gap:0;margin:1.1rem 0;border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--raised);box-shadow:var(--shadow);}
-  .fields .row{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--hair-2);}
-  .fields .row:last-child{border-bottom:none;}
-  .fields .lab{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ox-deep);padding-top:.15rem;}
-  .fields .row.why{background:linear-gradient(100deg,var(--finance-bg),transparent 82%);}
-  .fields .row.why .lab{color:var(--gild);}
-  .fields .body{font-size:.92rem;color:var(--ink-soft);}
-  .fields .body b{color:var(--ink);}
-  .fields .body p{margin:.15rem 0;}
-  .fields .body ul{margin:.3rem 0;}
-  @media (max-width:640px){.fields .row{grid-template-columns:1fr;gap:.25rem;}}
-
-  .note{border:1px dashed var(--ox);border-radius:10px;padding:.75rem 1rem;margin:1rem 0;background:color-mix(in srgb,var(--ox) 7%,transparent);}
-  .note .h{font-family:var(--mono);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ox-deep);margin-bottom:.25rem;}
-  .note p{margin:.1rem 0;font-size:.88rem;}
-
-  .tbl-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--hair);border-radius:10px;}
-  table{border-collapse:collapse;width:100%;font-size:.82rem;}
-  thead th{background:var(--surface);text-align:left;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:.6rem .7rem;border-bottom:1px solid var(--hair);}
-  tbody td{padding:.55rem .7rem;border-bottom:1px solid var(--hair-2);color:var(--ink-soft);vertical-align:top;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody td b{color:var(--ink);}
-
-  .mininav{position:sticky;top:0;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);padding:.55rem 0;margin-top:1rem;z-index:40;display:flex;gap:.2rem;flex-wrap:wrap;font-family:var(--mono);font-size:.66rem;}
-  .mininav a{text-decoration:none;color:var(--slate);padding:.2rem .45rem;border-radius:5px;}
-  .mininav a:hover{background:var(--hair-2);color:var(--ink);}
-
-  .foot{margin-top:3.4rem;padding-top:1.3rem;border-top:2px solid var(--ink);font-size:.8rem;color:var(--slate);}
-  hr.rule{border:none;border-top:1px solid var(--hair);margin:2rem 0;}
-</style>
+<style>:root{--v12:#F3F2EE;--v24:#FAF9F6;--v15:#FFFFFF;--v7:#211F1C;--v8:#3A362F;--v22:#615C52;--v23:#847E72;--v10:#8A3A3C;--v11:#6F2B2D;--v4:#9A7A38;--v5:#DEDAD1;--v6:#EAE7DE;--v13:#3A7C82;--v14:#E3EEEF;--v2:#9A7A38;--v3:#F0EAD8;--v18:#3E5C89;--v19:#E4E9F2;--v0:#6E4E93;--v1:#EAE3F2;--v21:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18);--v20:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;--v17:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--v9:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;--v16:44rem}@media (prefers-color-scheme:dark){:root{--v12:#16140F;--v24:#1B1813;--v15:#201D17;--v7:#ECE8DF;--v8:#CFC9BC;--v22:#9A9385;--v23:#7C7566;--v10:#CE8082;--v11:#DE9698;--v4:#C9A857;--v5:#302B22;--v6:#282318;--v13:#6FB4BA;--v14:#16292B;--v2:#C9A857;--v3:#2A2413;--v18:#7C9AD0;--v19:#1A2233;--v0:#A585C9;--v1:#241A31;--v21:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6)}}:root[data-theme="light"]{--v12:#F3F2EE;--v24:#FAF9F6;--v15:#FFFFFF;--v7:#211F1C;--v8:#3A362F;--v22:#615C52;--v23:#847E72;--v10:#8A3A3C;--v11:#6F2B2D;--v4:#9A7A38;--v5:#DEDAD1;--v6:#EAE7DE;--v13:#3A7C82;--v14:#E3EEEF;--v2:#9A7A38;--v3:#F0EAD8;--v18:#3E5C89;--v19:#E4E9F2;--v0:#6E4E93;--v1:#EAE3F2;--v21:0 1px 2px rgba(33,31,28,.05),0 10px 26px -14px rgba(33,31,28,.18)}:root[data-theme="dark"]{--v12:#16140F;--v24:#1B1813;--v15:#201D17;--v7:#ECE8DF;--v8:#CFC9BC;--v22:#9A9385;--v23:#7C7566;--v10:#CE8082;--v11:#DE9698;--v4:#C9A857;--v5:#302B22;--v6:#282318;--v13:#6FB4BA;--v14:#16292B;--v2:#C9A857;--v3:#2A2413;--v18:#7C9AD0;--v19:#1A2233;--v0:#A585C9;--v1:#241A31;--v21:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}body{margin:0;background:var(--v12);color:var(--v7);font-family:var(--v17);font-size:17px;line-height:1.66;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}::selection{background:var(--v10);color:#fff}a{color:var(--v11);text-underline-offset:2px}a:focus-visible,button:focus-visible{outline:2px solid var(--v10);outline-offset:2px;border-radius:2px}.skip{position:absolute;left:-999px;top:0;background:var(--v7);color:var(--v12);padding:.6rem 1rem;z-index:100}.skip:focus{left:.5rem;top:.5rem}.wrap{max-width:54rem;margin:0 auto;padding:0 clamp(1.1rem,4vw,2rem) 6rem}.reading{max-width:var(--v16)}h1,h2,h3{font-family:var(--v20);font-weight:600;letter-spacing:-.012em;text-wrap:balance;color:var(--v7)}h2{font-size:clamp(1.5rem,3vw,2rem);line-height:1.1;margin:.1rem 0}h3{font-size:1.15rem;margin:1.4rem 0 .3rem}p{margin:.7rem 0;color:var(--v8)}strong{color:var(--v7);font-weight:650}ul{color:var(--v8);padding-left:1.15rem;margin:.4rem 0}li{margin:.28rem 0}li::marker{color:var(--v10)}code{font-family:var(--v9);font-size:.85em;background:var(--v6);padding:.08em .38em;border-radius:4px}.eyebrow{font-family:var(--v9);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--v11);display:flex;align-items:center;gap:.6rem}.eyebrow::after{content:"";flex:1;height:1px;background:var(--v5)}.toggle{position:fixed;top:1rem;right:1rem;z-index:60;background:var(--v15);border:1px solid var(--v5);color:var(--v8);width:2.4rem;height:2.4rem;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--v21)}.toggle:hover{color:var(--v11);border-color:var(--v10)}.cover{padding:3.2rem 0 1rem}.cover .kicker{font-family:var(--v9);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--v11)}.cover h1{font-size:clamp(2.2rem,5.5vw,3.7rem);line-height:1.03;letter-spacing:-.02em;margin:.9rem 0 .5rem;max-width:16ch}.cover .lede{font-size:1.14rem;color:var(--v22);max-width:50ch}.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.9rem;margin:1.8rem 0}.dom{background:var(--v15);border:1px solid var(--v5);border-radius:12px;padding:1rem 1.1rem;box-shadow:var(--v21)}.dom .dh{font-family:var(--v9);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}.dom .dh::before{content:"";width:.6rem;height:.6rem;border-radius:2px}.dom.privacy .dh{color:var(--v13)}.dom.privacy .dh::before{background:var(--v13)}.dom.finance .dh{color:var(--v2)}.dom.finance .dh::before{background:var(--v2)}.dom.security .dh{color:var(--v18)}.dom.security .dh::before{background:var(--v18)}.dom.ai .dh{color:var(--v0)}.dom.ai .dh::before{background:var(--v0)}.dom a{display:block;text-decoration:none;color:var(--v8);font-size:.9rem;padding:.2rem 0;border-bottom:1px solid var(--v6)}.dom a:last-child{border-bottom:none}.dom a:hover{color:var(--v11)}.dom a b{color:var(--v7);font-weight:600}.fw{margin:2.4rem 0;padding-top:1.5rem;border-top:2px solid var(--v7);scroll-margin-top:1rem}.fw-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline}.fw-num{font-family:var(--v9);font-size:.8rem;color:var(--v23)}.fw-head h2{margin:0}.fw-abbr{font-family:var(--v9);font-size:.9rem;color:var(--v11);background:var(--v6);padding:.1rem .5rem;border-radius:5px}.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0 0}.tag{font-family:var(--v9);font-size:.66rem;letter-spacing:.03em;padding:.16rem .55rem;border-radius:20px;border:1px solid var(--v5);color:var(--v22);background:var(--v24)}.tag.privacy{background:var(--v14);color:var(--v13);border-color:color-mix(in srgb,var(--v13) 30%,transparent)}.tag.finance{background:var(--v3);color:var(--v2);border-color:color-mix(in srgb,var(--v2) 30%,transparent)}.tag.security{background:var(--v19);color:var(--v18);border-color:color-mix(in srgb,var(--v18) 30%,transparent)}.tag.ai{background:var(--v1);color:var(--v0);border-color:color-mix(in srgb,var(--v0) 30%,transparent)}.fields{display:grid;gap:0;margin:1.1rem 0;border:1px solid var(--v5);border-radius:12px;overflow:hidden;background:var(--v15);box-shadow:var(--v21)}.fields .row{display:grid;grid-template-columns:7.5rem 1fr;gap:1rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--v6)}.fields .row:last-child{border-bottom:none}.fields .lab{font-family:var(--v9);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--v11);padding-top:.15rem}.fields .row.why{background:linear-gradient(100deg,var(--v3),transparent 82%)}.fields .row.why .lab{color:var(--v4)}.fields .body{font-size:.92rem;color:var(--v8)}.fields .body b{color:var(--v7)}.fields .body p{margin:.15rem 0}.fields .body ul{margin:.3rem 0}@media (max-width:640px){.fields .row{grid-template-columns:1fr;gap:.25rem}}.note{border:1px dashed var(--v10);border-radius:10px;padding:.75rem 1rem;margin:1rem 0;background:color-mix(in srgb,var(--v10) 7%,transparent)}.note .h{font-family:var(--v9);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--v11);margin-bottom:.25rem}.note p{margin:.1rem 0;font-size:.88rem}.tbl-wrap{overflow-x:auto;margin:1.2rem 0;border:1px solid var(--v5);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:.82rem}thead th{background:var(--v24);text-align:left;font-family:var(--v9);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--v22);padding:.6rem .7rem;border-bottom:1px solid var(--v5)}tbody td{padding:.55rem .7rem;border-bottom:1px solid var(--v6);color:var(--v8);vertical-align:top}tbody tr:last-child td{border-bottom:none}tbody td b{color:var(--v7)}.mininav{position:sticky;top:0;background:color-mix(in srgb,var(--v12) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--v5);padding:.55rem 0;margin-top:1rem;z-index:40;display:flex;gap:.2rem;flex-wrap:wrap;font-family:var(--v9);font-size:.66rem}.mininav a{text-decoration:none;color:var(--v22);padding:.2rem .45rem;border-radius:5px}.mininav a:hover{background:var(--v6);color:var(--v7)}.foot{margin-top:3.4rem;padding-top:1.3rem;border-top:2px solid var(--v7);font-size:.8rem;color:var(--v22)}hr.rule{border:none;border-top:1px solid var(--v5);margin:2rem 0}</style></style>
 
 <a href="#f1" class="skip">Skip to the frameworks</a>
 <button class="toggle" id="themeBtn" aria-label="Toggle light and dark theme" title="Toggle theme">◐</button>
@@ -211,7 +78,7 @@
     <a href="#f1">1·GDPR</a><a href="#f2">2·SOX</a><a href="#f3">3·HIPAA</a><a href="#f4">4·ISO 27001</a><a href="#f5">5·PCI DSS</a><a href="#f6">6·NIST CSF</a><a href="#f7">7·CCPA</a><a href="#f8">8·AI Act</a><a href="#f9">9·AICM</a><a href="#f10">10·AIEU</a><a href="#compare">★ Compare</a>
   </nav>
 
-  <!-- ===== 1 GDPR ===== -->
+  
   <article class="fw reading" id="f1">
     <div class="fw-head"><span class="fw-num">01</span><h2>General Data Protection Regulation</h2><span class="fw-abbr">GDPR</span></div>
     <div class="tags"><span class="tag privacy">Privacy</span><span class="tag">European Union</span><span class="tag">Law · Reg (EU) 2016/679</span><span class="tag">In force 2018</span></div>
@@ -229,7 +96,7 @@
     </div>
   </article>
 
-  <!-- ===== 2 SOX ===== -->
+  
   <article class="fw reading" id="f2">
     <div class="fw-head"><span class="fw-num">02</span><h2>Sarbanes-Oxley Act</h2><span class="fw-abbr">SOX</span></div>
     <div class="tags"><span class="tag finance">Financial</span><span class="tag">United States</span><span class="tag">Law · 2002</span><span class="tag">Public companies</span></div>
@@ -247,7 +114,7 @@
     </div>
   </article>
 
-  <!-- ===== 3 HIPAA ===== -->
+  
   <article class="fw reading" id="f3">
     <div class="fw-head"><span class="fw-num">03</span><h2>Health Insurance Portability &amp; Accountability Act</h2><span class="fw-abbr">HIPAA</span></div>
     <div class="tags"><span class="tag privacy">Health privacy</span><span class="tag">United States</span><span class="tag">Law · 1996</span><span class="tag">PHI</span></div>
@@ -264,7 +131,7 @@
     </div>
   </article>
 
-  <!-- ===== 4 ISO 27001 ===== -->
+  
   <article class="fw reading" id="f4">
     <div class="fw-head"><span class="fw-num">04</span><h2>ISO/IEC 27001:2022</h2><span class="fw-abbr">ISO 27001</span></div>
     <div class="tags"><span class="tag security">Security</span><span class="tag">International</span><span class="tag">Standard (certifiable)</span><span class="tag">2022 revision</span></div>
@@ -281,7 +148,7 @@
     </div>
   </article>
 
-  <!-- ===== 5 PCI DSS ===== -->
+  
   <article class="fw reading" id="f5">
     <div class="fw-head"><span class="fw-num">05</span><h2>Payment Card Industry Data Security Standard</h2><span class="fw-abbr">PCI DSS</span></div>
     <div class="tags"><span class="tag security">Security</span><span class="tag">International</span><span class="tag">Industry standard (contractual)</span><span class="tag">v4.0</span></div>
@@ -294,7 +161,7 @@
     </div>
   </article>
 
-  <!-- ===== 6 NIST CSF ===== -->
+  
   <article class="fw reading" id="f6">
     <div class="fw-head"><span class="fw-num">06</span><h2>NIST Cybersecurity Framework</h2><span class="fw-abbr">NIST CSF</span></div>
     <div class="tags"><span class="tag security">Security</span><span class="tag">United States</span><span class="tag">Voluntary framework</span><span class="tag">v2.0 (2024)</span></div>
@@ -307,7 +174,7 @@
     </div>
   </article>
 
-  <!-- ===== 7 CCPA ===== -->
+  
   <article class="fw reading" id="f7">
     <div class="fw-head"><span class="fw-num">07</span><h2>California Consumer Privacy Act</h2><span class="fw-abbr">CCPA / CPRA</span></div>
     <div class="tags"><span class="tag privacy">Privacy</span><span class="tag">California, US</span><span class="tag">Law · 2018 (CPRA 2023)</span></div>
@@ -324,7 +191,7 @@
     </div>
   </article>
 
-  <!-- ===== 8 AI Act ===== -->
+  
   <article class="fw reading" id="f8">
     <div class="fw-head"><span class="fw-num">08</span><h2>EU Artificial Intelligence Act</h2><span class="fw-abbr">AI Act</span></div>
     <div class="tags"><span class="tag ai">AI governance</span><span class="tag">European Union</span><span class="tag">Law · Reg (EU) 2024/1689</span><span class="tag">Phasing in 2025–2027</span></div>
@@ -342,7 +209,7 @@
     </div>
   </article>
 
-  <!-- ===== 9 AICM ===== -->
+  
   <article class="fw reading" id="f9">
     <div class="fw-head"><span class="fw-num">09</span><h2>AI Compliance Management</h2><span class="fw-abbr">AICM</span></div>
     <div class="tags"><span class="tag ai">AI governance</span><span class="tag">International</span><span class="tag">Management framework</span><span class="tag">Lifecycle</span></div>
@@ -360,7 +227,7 @@
     </div>
   </article>
 
-  <!-- ===== 10 AIEU ===== -->
+  
   <article class="fw reading" id="f10">
     <div class="fw-head"><span class="fw-num">10</span><h2>AI Ethics in the EU</h2><span class="fw-abbr">AIEU</span></div>
     <div class="tags"><span class="tag ai">AI governance</span><span class="tag">European Union</span><span class="tag">Ethics guidelines</span><span class="tag">Trustworthy AI</span></div>
@@ -377,7 +244,7 @@
     </div>
   </article>
 
-  <!-- ===== COMPARE ===== -->
+  
   <section id="compare">
     <hr class="rule">
     <p class="eyebrow reading">One-screen summary</p>
@@ -414,15 +281,8 @@
 
 </div>
 
-<script>
-  (function(){
-    var root=document.documentElement, btn=document.getElementById('themeBtn');
-    function cur(){var s=root.getAttribute('data-theme');return s?s:(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
-    function paint(){btn.textContent=cur()==='dark'?'☀':'☾';}
-    paint();
-    btn.addEventListener('click',function(){root.setAttribute('data-theme',cur()==='dark'?'light':'dark');paint();});
-  })();
+<script>!function(){var t=document.documentElement,e=document.getElementById("themeBtn");function n(){var e=t.getAttribute("data-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}function a(){e.textContent="dark"===n()?"☀":"☾"}a(),e.addEventListener("click",function(){t.setAttribute("data-theme","dark"===n()?"light":"dark"),a()})}();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>

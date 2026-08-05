@@ -7,175 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#E7EBE4; --paper-2:#DCE2D8; --ink:#161C17; --ink-soft:#3F4A41;
-    --ink-faint:#5F6B61; --rule:#C6CFC2; --accent:#0E6A66;
-    --panel:#121A18; --panel-ink:#DDE6DF;
-    --risk:#A8442E; --warn:#8A6A16; --safe:#37704F;
-    --maxw:680px; --wide:1080px; --pad:26px;
-    --disp:"Zilla Slab",Georgia,serif;
-    --body:"IBM Plex Sans",system-ui,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-    --f-lab:12px; --f-sm:15px; --f-bod:19px; --f-mid:24px; --f-h3:34px; --f-h2:46px; --f-hero:74px;
-    --t:.5s cubic-bezier(.4,0,.2,1);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
-    font-size:var(--f-bod);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-
-  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
-  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-  .bleed{width:100%;margin:0}
-  section{padding:clamp(72px,9vw,128px) 0}
-  section + section{border-top:1px solid var(--rule)}
-
-  h1,h2{font-family:var(--disp);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}
-  h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px}
-  h3{font-family:var(--disp);font-weight:600;font-size:clamp(23px,2.6vw,34px);
-     line-height:1.16;letter-spacing:-.015em;margin:0 0 16px}
-  p{margin:0 0 22px}
-  b,strong{font-weight:600}
-  code{font-family:var(--mono);font-size:var(--f-sm);background:var(--paper-2);
-       padding:2px 6px;border-radius:3px;color:var(--ink)}
-  a{color:var(--accent)}
-
-  .lede{font-family:var(--disp);font-weight:500;font-size:clamp(20px,2.2vw,24px);
-        line-height:1.42;letter-spacing:-.01em;color:var(--ink-soft)}
-
-  .eyebrow{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.17em;
-    text-transform:uppercase;color:var(--accent);margin:0 0 30px;
-    display:flex;align-items:center;gap:11px}
-  .eyebrow::before{content:"";width:26px;height:1px;background:var(--accent)}
-
-  /* ---- HERO: the headline is built from the atom ---- */
-  header{padding:clamp(58px,9vw,116px) 0 clamp(56px,7vw,96px)}
-  h1{font-size:clamp(34px,6.2vw,74px);display:flex;flex-wrap:wrap;gap:10px 12px;max-width:15em}
-  h1 .sort{border:1.5px solid var(--rule);background:var(--paper-2);border-radius:5px;
-    padding:2px 16px 6px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
-  h1 .sort:hover{border-color:var(--accent);color:var(--accent)}
-  h1 .sort.on{background:var(--accent);border-color:var(--accent);color:var(--paper);
-    font-family:var(--mono);font-weight:400;letter-spacing:0}
-  .hero-lede{margin:34px 0 0;max-width:26em}
-  @media(max-width:640px){h1 .sort{padding:1px 10px 4px}}
-
-  /* ---- the only figure container ---- */
-  .fig{border:1px solid var(--rule);background:var(--paper-2);border-radius:6px;
-    margin:34px 0 0;overflow:hidden}
-  .fig-head{padding:14px 20px;border-bottom:1px solid var(--rule);
-    font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.09em;
-    text-transform:uppercase;color:var(--ink-faint);
-    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-  .fig-head b{color:var(--accent);font-weight:500}
-  .fig-body{padding:32px 30px;background:var(--paper)}
-  .fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;
-    padding:16px 20px;border-top:1px solid var(--rule);background:var(--paper-2)}
-  .fig-ctl label{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.06em;
-    text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
-  .fig-cap{font-family:var(--mono);font-size:var(--f-lab);line-height:1.62;color:var(--ink-faint);
-    padding:14px 20px;border-top:1px solid var(--rule)}
-  .fig-cap b{color:var(--accent);font-weight:500}
-  .fig svg{display:block;width:100%;height:auto}
-  .fig-read{font-family:var(--mono);font-size:var(--f-sm);color:var(--ink-soft);
-    margin:20px 0 0;line-height:1.8}
-  .fig-read b{color:var(--ink);font-weight:500}
-  .fig-slider{flex:1;min-width:180px}
-  @media(max-width:640px){.fig-body{padding:22px 16px}}
-
-  /* ---- callouts ---- */
-  .intu{border-left:3px solid var(--accent);background:var(--paper-2);
-    border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.62}
-  .intu i{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.17em;
-    text-transform:uppercase;color:var(--accent);font-style:normal;display:block;margin-bottom:11px}
-  .intu p{margin:0}
-  .try{background:var(--panel);color:var(--panel-ink);border-radius:6px;
-    padding:22px 26px;margin:32px 0;font-size:var(--f-sm);line-height:1.75}
-  .try b{color:#6FC9B4;font-weight:500}
-  .note{background:var(--paper-2);border-radius:5px;padding:20px 24px;margin:30px 0 0;
-    font-size:var(--f-sm);line-height:1.72;color:var(--ink-soft)}
-  .note b{color:var(--ink);font-weight:600}
-  .note.hint{background:none;text-align:center;color:var(--ink-faint);font-family:var(--mono);
-    font-size:var(--f-lab);letter-spacing:.09em;cursor:pointer;padding:40px 0;margin:0}
-  .note.hint kbd{font-family:var(--mono);border:1px solid var(--rule);border-radius:3px;
-    padding:2px 7px;color:var(--ink-soft);background:var(--paper-2)}
-  .note.hint:hover,.note.hint:focus-visible{color:var(--accent)}
-  .pull{font-family:var(--disp);font-weight:600;font-size:clamp(23px,2.6vw,34px);
-    line-height:1.26;letter-spacing:-.015em;color:var(--accent);
-    border-left:3px solid var(--accent);padding-left:28px;margin:44px 0}
-
-  /* ---- controls ---- */
-  .chip{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.04em;
-    padding:9px 15px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
-    color:var(--ink-soft);cursor:pointer;transition:all .16s}
-  .chip:hover{border-color:var(--accent);color:var(--accent)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:var(--paper)}
-  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0;display:block}
-
-  /* ---- dark panel ---- */
-  .panel{background:var(--panel);color:var(--panel-ink);border-radius:6px;padding:26px 30px;
-    margin:32px 0 0;font-family:var(--mono);font-size:var(--f-sm);line-height:1.85;overflow-x:auto}
-  .panel b{color:#6FC9B4;font-weight:500}
-  .panel i{color:#8A9790;font-style:normal}
-  .panel.weeds{background:none;color:var(--ink);padding:0;margin:0;
-    font-family:var(--body);font-size:var(--f-bod);overflow:visible}
-  .panel.weeds[hidden]{display:none}
-  .panel.weeds details{border-top:1px solid var(--rule);padding:20px 0}
-  .panel.weeds summary{font-family:var(--disp);font-weight:600;font-size:var(--f-bod);
-    cursor:pointer;letter-spacing:-.01em}
-  .panel.weeds summary::marker{color:var(--accent)}
-  .panel.weeds p{margin:14px 0 0;font-size:var(--f-sm);line-height:1.75;color:var(--ink-soft)}
-
-  /* ---- progress: corner dial ---- */
-  .rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;
-    display:flex;align-items:center;justify-content:center;border-radius:50%;
-    background:var(--paper-2);border:1px solid var(--rule)}
-  .rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-  .rail circle{fill:none;stroke-width:2.5}
-  .rail .tk{stroke:var(--rule)}
-  .rail .fl{stroke:var(--accent);stroke-linecap:round}
-  .rail span{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-soft)}
-  @media(max-width:640px){.rail{display:none}}
-
-  /* ---- scrollytelling ---- */
-  .scrolly{position:relative;display:grid;gap:5vw;
-    grid-template-columns:minmax(0,1fr) minmax(0,430px);
-    max-width:1280px;margin:0 auto;padding:0 var(--pad)}
-  .sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
-  .sg > *{width:100%;max-width:560px}
-  .ss{padding:38vh 0 42vh}
-  .stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;
-    opacity:.26;transition:opacity .35s;cursor:pointer}
-  .stp.on{opacity:1}
-  .stp p{font-size:var(--f-mid);line-height:1.44;margin:0;color:var(--ink-soft)}
-  .stp.on p{color:var(--ink)}
-  [data-gel]{opacity:.1;transition:opacity var(--t)}
-  [data-gel].show{opacity:1}
-  @media (prefers-reduced-motion:reduce){[data-gel],.stp{transition:none}}
-  @media(max-width:900px){
-    .scrolly{grid-template-columns:1fr;gap:0}
-    .sg{order:-1;position:sticky;height:44vh;background:var(--paper);
-      border-bottom:1px solid var(--rule);z-index:5}
-    .ss{padding:4vh 0 12vh}
-    .stp{min-height:auto;padding:26px 0}
-    .stp p{font-size:var(--f-bod)}
-  }
-
-  /* ---- prose to figure coupling ---- */
-  .ref{text-decoration:underline dotted var(--accent);text-underline-offset:4px;cursor:help}
-  .ref.hot{color:var(--accent)}
-  .fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}
-
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
-  ::selection{background:var(--accent);color:var(--paper)}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-</style>
-  <!-- seo:begin -->
+<style>:root{--v18:#E7EBE4;--v19:#DCE2D8;--v10:#161C17;--v12:#3F4A41;--v11:#5F6B61;--v21:#C6CFC2;--v0:#0E6A66;--v16:#121A18;--v17:#DDE6DF;--v20:#A8442E;--v24:#8A6A16;--v22:#37704F;--v13:680px;--v25:1080px;--v15:26px;--v2:"Zilla Slab",Georgia,serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"IBM Plex Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:34px;--v4:46px;--v6:74px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px}h3{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.6vw,34px);line-height:1.16;letter-spacing:-.015em;margin:0 0 16px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px;color:var(--v10)}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:clamp(20px,2.2vw,24px);line-height:1.42;letter-spacing:-.01em;color:var(--v12)}.eyebrow{font-family:var(--v14);font-size:var(--v7);letter-spacing:.17em;text-transform:uppercase;color:var(--v0);margin:0 0 30px;display:flex;align-items:center;gap:11px}.eyebrow::before{content:"";width:26px;height:1px;background:var(--v0)}header{padding:clamp(58px,9vw,116px) 0 clamp(56px,7vw,96px)}h1{font-size:clamp(34px,6.2vw,74px);display:flex;flex-wrap:wrap;gap:10px 12px;max-width:15em}h1 .sort{border:1.5px solid var(--v21);background:var(--v19);border-radius:5px;padding:2px 16px 6px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}h1 .sort:hover{border-color:var(--v0);color:var(--v0)}h1 .sort.on{background:var(--v0);border-color:var(--v0);color:var(--v18);font-family:var(--v14);font-weight:400;letter-spacing:0}.hero-lede{margin:34px 0 0;max-width:26em}@media(max-width:640px){h1 .sort{padding:1px 10px 4px}}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:14px 20px;border-bottom:1px solid var(--v21);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;text-transform:uppercase;color:var(--v11);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v0);font-weight:500}.fig-body{padding:32px 30px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:16px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-ctl label{font-family:var(--v14);font-size:var(--v7);letter-spacing:.06em;text-transform:uppercase;color:var(--v11);white-space:nowrap}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.62;color:var(--v11);padding:14px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig svg{display:block;width:100%;height:auto}.fig-read{font-family:var(--v14);font-size:var(--v9);color:var(--v12);margin:20px 0 0;line-height:1.8}.fig-read b{color:var(--v10);font-weight:500}.fig-slider{flex:1;min-width:180px}@media(max-width:640px){.fig-body{padding:22px 16px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.62}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.17em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu p{margin:0}.try{background:var(--v16);color:var(--v17);border-radius:6px;padding:22px 26px;margin:32px 0;font-size:var(--v9);line-height:1.75}.try b{color:#6FC9B4;font-weight:500}.note{background:var(--v19);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v9);line-height:1.72;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v11);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:40px 0;margin:0}.note.hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.6vw,34px);line-height:1.26;letter-spacing:-.015em;color:var(--v0);border-left:3px solid var(--v0);padding-left:28px;margin:44px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.04em;padding:9px 15px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0;display:block}.panel{background:var(--v16);color:var(--v17);border-radius:6px;padding:26px 30px;margin:32px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:1.85;overflow-x:auto}.panel b{color:#6FC9B4;font-weight:500}.panel i{color:#8A9790;font-style:normal}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:20px 0}.panel.weeds summary{font-family:var(--v2);font-weight:600;font-size:var(--v3);cursor:pointer;letter-spacing:-.01em}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:14px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,430px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.sg{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.sg > *{width:100%;max-width:560px}.ss{padding:38vh 0 42vh}.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s;cursor:pointer}.stp.on{opacity:1}.stp p{font-size:var(--v8);line-height:1.44;margin:0;color:var(--v12)}.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.stp{transition:none}}@media(max-width:900px){.scrolly{grid-template-columns:1fr;gap:0}.sg{order:-1;position:sticky;height:44vh;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.ss{padding:4vh 0 12vh}.stp{min-height:auto;padding:26px 0}.stp p{font-size:var(--v3)}}.ref{text-decoration:underline dotted var(--v0);text-underline-offset:4px;cursor:help}.ref.hot{color:var(--v0)}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  
   <meta name="description" content="A tokenizer is a frozen record of what was frequent in one pile of text. Type a sentence, watch it get cut and priced, then break it with an unusual word.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/tokenization">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -195,7 +28,7 @@
   <meta name="twitter:image" content="https://www.loopingly.com/og/tokenization.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Tokenization: how text becomes tokens","description":"A tokenizer is a frozen record of what was frequent in one pile of text. Type a sentence, watch it get cut and priced, then break it with an unusual word.","url":"https://www.loopingly.com/explorables/tokenization","image":"https://www.loopingly.com/og/tokenization.png","datePublished":"2026-07-26","dateModified":"2026-07-26","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Tokenization in large language models"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Tokenization"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
 
@@ -204,8 +37,8 @@
   <span id="ptxt">0%</span>
 </div>
 
-<!-- ============ HERO: headline built from the atom ============ -->
-<header class="hero" data-hero="tokenizer-output-as-title">
+
+<header class="hero">
   <div class="col">
     <p class="eyebrow">byte pair encoding &middot; a 137 character corpus</p>
     <h1 id="heroH1"></h1>
@@ -213,8 +46,8 @@
   </div>
 </header>
 
-<!-- ============ 01 ============ -->
-<section data-ch="01" data-defines="token,token id" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>The model never sees your letters</h2>
     <p>Type <code>the cat sat on the mat</code> into a chat box. You are looking at twenty two characters. The model is not.</p>
@@ -239,8 +72,8 @@
   </div>
 </section>
 
-<!-- ============ 02 ============ -->
-<section data-ch="02" data-uses="token,token id" data-defines="vocabulary,unknown word" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Letters are too small and words are too many</h2>
     <p>Answer fast, gut reaction: if you had to give every piece of English its own number, what would you number? Individual letters, or whole words?</p>
@@ -265,8 +98,8 @@
   </div>
 </section>
 
-<!-- ============ 03 ============ -->
-<section data-ch="03" data-uses="vocabulary,unknown word" data-defines="subword" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>The useful pieces sit between the two</h2>
     <div class="try">Say these out loud, slowly, and listen for the seam.<br><b>walk &nbsp; walked &nbsp; walking &nbsp; walkable</b></div>
@@ -292,8 +125,8 @@
   </div>
 </section>
 
-<!-- ============ 04 ============ -->
-<section data-ch="04" data-uses="subword" data-defines="pair count" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Count every neighbouring pair, then fuse the winner</h2>
     <p>Here is the corpus this page trains on. Seven words, repeated the number of times shown, 137 characters in total. Small enough that you can check every number below by hand.</p>
@@ -319,8 +152,8 @@
   </div>
 </section>
 
-<!-- ============ 05 : SCROLLY ============ -->
-<section data-ch="05" data-uses="pair count" data-defines="merge,merge rule" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Run it six times and English grammar falls out</h2>
     <p>The loop is four lines long: count the pairs, take the most frequent, fuse it everywhere, write down what you did. Each fusion is a <span class="ref" data-ref="mg">merge</span>, and the record of it is a <span class="ref" data-ref="mr">merge rule</span>. Scroll through the first six.</p>
@@ -351,8 +184,8 @@
   </div>
 </section>
 
-<!-- ============ 06 : THE KNOB ============ -->
-<section data-ch="06" data-uses="merge,merge rule" data-defines="vocabulary size" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Vocabulary size is the dial, and it cuts both ways</h2>
     <p>The loop will happily run forever. Every extra turn adds one compartment to the drawer and removes some pieces from the list. When you stop, the number of compartments you have is the <span class="ref" data-ref="vs">vocabulary size</span>, and it is very nearly the only tokenizer setting anyone chooses.</p>
@@ -378,8 +211,8 @@
   </div>
 </section>
 
-<!-- ============ 07 ============ -->
-<section data-ch="07" data-uses="vocabulary size,merge rule" data-defines="encoding" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>New text replays the old merges, in order</h2>
     <p>The corpus never contained <code>walkable</code>. The tokenizer has no compartment for it and never will. It still handles it, and the way it does so is the reason this whole approach won.</p>
@@ -407,8 +240,8 @@
   </div>
 </section>
 
-<!-- ============ 08 ============ -->
-<section data-ch="08" data-uses="encoding,token id" data-defines="embedding row" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>The integer is an address, not a meaning</h2>
     <p>Token 4,102 is not larger than token 17. It is not more positive, more recent, or more anything. The number is a row index, nothing else.</p>
@@ -429,8 +262,8 @@
   </div>
 </section>
 
-<!-- ============ 09 ============ -->
-<section data-ch="09" data-uses="encoding,vocabulary size,embedding row" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Spaces, digits and Devanagari are where it goes wrong</h2>
     <p>Ask a model how many r's are in <code>strawberry</code> and it has a decent chance of getting it wrong. This is usually reported as a reasoning failure. It is mostly a tokenization failure, and once you have built the cutter you can see exactly why.</p>
@@ -458,7 +291,7 @@
   </div>
 </section>
 
-<!-- ============ CLOSE ============ -->
+
 <section class="reveal">
   <div class="col">
     <p class="lede" style="text-align:center;max-width:22em;margin:0 auto">A tokenizer is a frozen record of what was frequent in one pile of text, and every prompt you write is priced and cut by it.</p>
@@ -477,578 +310,13 @@
   </div>
 </section>
 
-<footer class="col" style="padding:0 var(--pad) 90px;font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--ink-faint)">
+<footer class="col" style="padding:0 var(--v15) 90px;font-family:var(--v14);font-size:12px;line-height:1.9;color:var(--v11)">
   <p>Every merge, count and split on this page is computed in your browser from the seven word corpus shown in Figure 4. Nothing is precomputed or animated from a recording. Figure 9 is drawn to shape and labelled as illustrative.<br>
   Byte pair encoding: Gage 1994; adapted for text by Sennrich, Haddow and Birch, 2016. Vocabulary sizes quoted as approximate ranges for GPT era tokenizers. Snapshot July 2026.</p>
 </footer>
 
-<script>
-(function(){
-  "use strict";
-
-  /* ============================================================
-     THE ATOM: a sort. One geometry, four states.
-       raw  dashed outline            a character not yet fused
-       tok  solid outline, tinted     a settled piece
-       hot  accent fill               the piece under discussion
-       id   dark fill, mono number    the piece as its integer
-     Every figure on this page is built from this one function.
-     ============================================================ */
-  var C={paper:'#E7EBE4',paper2:'#DCE2D8',ink:'#161C17',soft:'#3F4A41',faint:'#5F6B61',
-         rule:'#C6CFC2',accent:'#0E6A66',panel:'#121A18',pink:'#DDE6DF',
-         risk:'#A8442E',warn:'#8A6A16',safe:'#37704F'};
-  var R=Math.round;
-
-  function sort(x,y,w,h,state,label){
-    x=R(x);y=R(y);w=R(w);h=R(h);
-    var fill=C.paper, stroke=C.rule, dash='4 3', sw=1.5, tx=C.soft;
-    if(state==='tok'){fill=C.paper2;dash='none';}
-    else if(state==='hot'){fill=C.accent;stroke=C.accent;dash='none';sw=3;tx=C.paper;}
-    else if(state==='id'){fill=C.panel;stroke=C.panel;dash='none';tx=C.pink;}
-    else if(state==='ghost'){fill='none';stroke=C.rule;tx=C.faint;}
-    var s='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="4" fill="'+fill+
-          '" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-dasharray="'+dash+
-          '" shape-rendering="crispEdges"/>';
-    if(label!==undefined&&label!==null&&w>13)
-      s+='<text x="'+R(x+w/2)+'" y="'+R(y+h/2+5)+'" text-anchor="middle" fill="'+tx+
-         '" font-family="IBM Plex Mono,monospace" font-size="15">'+label+'</text>';
-    return s;
-  }
-  function lab(x,y,t,col,anchor){
-    return '<text x="'+R(x)+'" y="'+R(y)+'" text-anchor="'+(anchor||'start')+'" fill="'+(col||C.faint)+
-           '" font-family="IBM Plex Mono,monospace" font-size="12" letter-spacing=".02em">'+t+'</text>';
-  }
-  function bar(x,y,w,h,frac,col){
-    frac=Math.max(0,Math.min(1,frac));
-    return '<rect x="'+R(x)+'" y="'+R(y)+'" width="'+R(w)+'" height="'+R(h)+'" fill="'+C.paper2+
-           '" shape-rendering="crispEdges"/><rect x="'+R(x)+'" y="'+R(y)+'" width="'+R(w*frac)+
-           '" height="'+R(h)+'" fill="'+(col||C.accent)+'" shape-rendering="crispEdges"/>';
-  }
-  function put(id,inner){var e=document.getElementById(id); if(e) e.innerHTML=inner;}
-  function set(id,t){var e=document.getElementById(id); if(e) e.textContent=t;}
-  function ch(w){return String(w).split('');}
-
-  /* ---------------- the real BPE, trained live ---------------- */
-  var CORPUS=[['walk',5],['walked',4],['walking',4],['talked',3],['talking',3],['jumped',2],['jumping',2]];
-  var BASE=[]; CORPUS.forEach(function(r){ch(r[0]).forEach(function(c){if(BASE.indexOf(c)<0)BASE.push(c);});});
-
-  function fuse(sy,a,b){
-    var o=[],i=0;
-    while(i<sy.length){
-      if(i<sy.length-1&&sy[i]===a&&sy[i+1]===b){o.push(a+b);i+=2;} else {o.push(sy[i]);i++;}
-    }
-    return o;
-  }
-  function countPairs(state){
-    var m={},order=[];
-    state.forEach(function(r){
-      for(var i=0;i<r.sy.length-1;i++){
-        var k=r.sy[i]+'\u0000'+r.sy[i+1];
-        if(!(k in m)){m[k]=0;order.push(k);}
-        m[k]+=r.n;
-      }
-    });
-    return {map:m,order:order};
-  }
-  function best(state){
-    var c=countPairs(state),top=null;
-    c.order.forEach(function(k){ if(!top||c.map[k]>c.map[top]) top=k; });
-    if(!top) return null;
-    var p=top.split('\u0000');
-    return {a:p[0],b:p[1],n:c.map[top]};
-  }
-  function freshState(){
-    return CORPUS.map(function(r){return {w:r[0],n:r[1],sy:ch(r[0])};});
-  }
-  /* train: 14 merges, and record the corpus state after each one */
-  var MERGES=[], SNAP=[], TOTALS=[];
-  (function(){
-    var st=freshState();
-    SNAP.push(st.map(function(r){return r.sy.slice();}));
-    TOTALS.push(st.reduce(function(t,r){return t+r.sy.length*r.n;},0));
-    for(var k=0;k<14;k++){
-      var m=best(st); if(!m) break;
-      MERGES.push(m);
-      st.forEach(function(r){ r.sy=fuse(r.sy,m.a,m.b); });
-      SNAP.push(st.map(function(r){return r.sy.slice();}));
-      TOTALS.push(st.reduce(function(t,r){return t+r.sy.length*r.n;},0));
-    }
-  })();
-  function encode(word,upto){
-    var sy=ch(word);
-    for(var i=0;i<Math.min(upto===undefined?MERGES.length:upto,MERGES.length);i++)
-      sy=fuse(sy,MERGES[i].a,MERGES[i].b);
-    return sy;
-  }
-  /* stable id table: base letters first, then merge products in learned order */
-  var IDS={}; BASE.forEach(function(c,i){IDS[c]=i+1;});
-  MERGES.forEach(function(m,i){ IDS[m.a+m.b]=BASE.length+i+1; });
-  function idOf(t){ if(t in IDS) return IDS[t]; var h=0; for(var i=0;i<t.length;i++) h=(h*31+t.charCodeAt(i))%900; return 100+h; }
-
-  /* ---------------- row layout helper (used by 4, 5, 6) ---------------- */
-  function drawRows(rows,opt){
-    var s='',y=opt.y0,cw=opt.cw||34,gap=opt.gap||5,h=opt.h||30;
-    rows.forEach(function(r,ri){
-      s+=lab(opt.x0-14,y+h/2+4,'\u00d7'+r.n,C.faint,'end');
-      var x=opt.x0;
-      r.sy.forEach(function(t,ti){
-        var w=Math.max(cw,t.length*15+14);
-        var st=opt.state?opt.state(ri,ti,t):(t.length>1?'tok':'raw');
-        s+=sort(x,y,w,h,st,t);
-        if(opt.gapHit) s+=opt.gapHit(ri,ti,x+w,y,h);
-        x+=w+gap;
-      });
-      y+=h+(opt.vgap||9);
-    });
-    return s;
-  }
-
-  /* ---------------- progress dial ---------------- */
-  (function(){
-    var pf=document.getElementById('pfill'),pt=document.getElementById('ptxt'),CIRC=2*Math.PI*23;
-    if(!pf) return;
-    pf.style.strokeDasharray=CIRC; pf.style.strokeDashoffset=CIRC;
-    addEventListener('scroll',function(){
-      var h=document.documentElement,d=h.scrollHeight-h.clientHeight;
-      var p=d>0?h.scrollTop/d:0; p=Math.min(1,Math.max(0,p));
-      pf.style.strokeDashoffset=CIRC*(1-p);
-      pt.textContent=Math.round(p*100)+'%';
-    },{passive:true});
-  })();
-
-  /* ---------------- reveal on scroll ---------------- */
-  var ro=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
-  },{threshold:.06,rootMargin:'0px 0px -4% 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
-  addEventListener('scroll',function(){
-    document.querySelectorAll('.reveal:not(.in)').forEach(function(el){
-      if(el.getBoundingClientRect().top<innerHeight*0.94) el.classList.add('in');
-    });
-  },{passive:true});
-
-  /* ---------------- HERO: headline made of sorts ---------------- */
-  (function(){
-    var h1=document.getElementById('heroH1'); if(!h1) return;
-    var words=['How', 'text', 'becomes', 'tokens'];
-    h1.innerHTML=words.map(function(w,i){
-      return '<span class="sort" data-hw="'+i+'" role="button" tabindex="0">'+w+'</span>';
-    }).join('');
-    h1.querySelectorAll('.sort').forEach(function(el,i){
-      var word=words[i];
-      function flip(){
-        var on=el.classList.toggle('on');
-        el.textContent=on?String(1000+idOf(word.toLowerCase())):word;
-      }
-      el.addEventListener('click',flip);
-      el.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();flip();} });
-    });
-  })();
-
-  /* ---------------- FIGURE 1 ---------------- */
-  (function(){
-    var svg=document.getElementById('f1'); if(!svg) return;
-    var W=['the','cat','sat','on','the','mat'], flipped=W.map(function(){return false;});
-    function draw(){
-      var s='',x=40,y=64,h=52;
-      s+=lab(40,36,'what you typed');
-      W.forEach(function(w,i){
-        var cw=Math.max(74,w.length*20+40);
-        var f=flipped[i];
-        s+=sort(x,y,cw,h,f?'id':'tok',f?String(1000+idOf(w)):w);
-        s+='<rect x="'+x+'" y="'+y+'" width="'+cw+'" height="'+h+'" fill="rgba(0,0,0,0)" '+
-           'data-f1="'+i+'" style="cursor:pointer"/>';
-        x+=cw+10;
-      });
-      s+=lab(40,y+h+34,'what the model receives',C.accent);
-      var n=flipped.filter(Boolean).length;
-      s+=lab(40,y+h+62,n===0?'still text: nothing here is a number yet'
-        :n<W.length?(n+' of 6 pieces swapped')
-        :'6 integers, in that order. the letters are gone.',n===W.length?C.accent:C.faint);
-      svg.innerHTML=s;
-      set('f1Read',W.length+' tokens');
-    }
-    svg.addEventListener('click',function(e){
-      var t=e.target.getAttribute&&e.target.getAttribute('data-f1');
-      if(t!==null&&t!==undefined){ flipped[+t]=!flipped[+t]; draw(); }
-    });
-    document.getElementById('f1All').addEventListener('click',function(){
-      flipped=W.map(function(){return true;}); draw();
-    });
-    document.getElementById('f1Reset').addEventListener('click',function(){
-      flipped=W.map(function(){return false;}); draw();
-    });
-    draw();
-  })();
-
-  /* ---------------- FIGURE 2 ---------------- */
-  (function(){
-    var svg=document.getElementById('f2'); if(!svg) return;
-    var mode='char', S='the cat sat on the mat';
-    function draw(){
-      var s='',x=40,y=52,h=34,units,vocab,vocabTxt;
-      if(mode==='char'){ units=ch(S); vocab=27; vocabTxt='27 compartments'; }
-      else { units=S.split(' '); vocab=170000; vocabTxt='about 170,000 compartments'; }
-      units.forEach(function(u){
-        var w=mode==='char'?26:Math.max(52,u.length*15+22);
-        s+=sort(x,y,w,h,'tok',u===' '?'\u2423':u);
-        x+=w+5;
-      });
-      s+=lab(40,38,mode==='char'?'22 pieces':'6 pieces',C.accent);
-      var by=y+h+52;
-      s+=lab(40,by-10,'list length');
-      s+=bar(40,by,760,16,units.length/22,C.accent);
-      s+=lab(806,by+13,String(units.length),C.soft);
-      s+=lab(40,by+50,'drawer size');
-      s+=bar(40,by+60,760,16,Math.min(1,vocab/170000),mode==='char'?C.safe:C.risk);
-      s+=lab(40,by+98,vocabTxt,mode==='char'?C.safe:C.risk);
-      if(mode==='word') s+=lab(806,by+98,'and any new word has none',C.risk,'end');
-      else s+=lab(806,by+98,'never missing a piece',C.safe,'end');
-      svg.innerHTML=s;
-      set('f2Read',mode==='char'?'one number per letter':'one number per word');
-    }
-    document.querySelectorAll('[data-f2]').forEach(function(b){
-      b.addEventListener('click',function(){
-        mode=b.getAttribute('data-f2');
-        document.querySelectorAll('[data-f2]').forEach(function(o){o.classList.toggle('on',o===b);});
-        draw();
-      });
-    });
-    draw();
-  })();
-
-  /* ---------------- FIGURE 3 ---------------- */
-  (function(){
-    var svg=document.getElementById('f3'); if(!svg) return;
-    var mode='char';
-    var SPLITS={char:{seen:ch('walking'),unseen:ch('walkable'),note:'every word is spellable, nothing is shared'},
-                sub:{seen:['walk','ing'],unseen:['walk','a','b','l','e'],note:'the stem is reused, the rest falls back to letters'},
-                word:{seen:['walking'],unseen:null,note:'no compartment exists for it, so there is nothing to send'}};
-    function row(y,items,label,st){
-      var s=lab(40,y-12,label),x=40;
-      if(items===null){
-        s+=sort(x,y,220,36,'ghost','unknown');
-        return s;
-      }
-      items.forEach(function(t){
-        var w=Math.max(34,t.length*15+22);
-        s+=sort(x,y,w,36,st,t); x+=w+6;
-      });
-      s+=lab(x+10,y+24,items.length+(items.length===1?' piece':' pieces'),C.faint);
-      return s;
-    }
-    function draw(){
-      var d=SPLITS[mode],s='';
-      s+=row(60,d.seen,'walking, which the corpus contained','tok');
-      s+='<line x1="40" y1="130" x2="860" y2="130" stroke="'+C.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
-      s+=row(160,d.unseen,'walkable, which it never contained',d.unseen?'hot':'ghost');
-      s+=lab(40,232,d.note,d.unseen?C.accent:C.risk);
-      svg.innerHTML=s;
-      set('f3Read',mode==='char'?'letters':mode==='sub'?'subwords':'whole words');
-    }
-    document.querySelectorAll('[data-f3]').forEach(function(b){
-      b.addEventListener('click',function(){
-        mode=b.getAttribute('data-f3');
-        document.querySelectorAll('[data-f3]').forEach(function(o){o.classList.toggle('on',o===b);});
-        draw();
-      });
-    });
-    draw();
-  })();
-
-  /* ---------------- FIGURE 4 ---------------- */
-  (function(){
-    var svg=document.getElementById('f4'); if(!svg) return;
-    var st=freshState(), sel=null, ranked=false;
-    function pairCount(a,b){
-      var n=0;
-      st.forEach(function(r){
-        for(var i=0;i<r.sy.length-1;i++) if(r.sy[i]===a&&r.sy[i+1]===b) n+=r.n;
-      });
-      return n;
-    }
-    function draw(){
-      var s='',y=24,h=28,cw=26,gap=4;
-      st.forEach(function(r,ri){
-        var x=64;
-        s+=lab(56,y+h/2+4,'\u00d7'+r.n,C.faint,'end');
-        r.sy.forEach(function(t,ti){
-          var isHot=sel&&ti<r.sy.length-1&&r.sy[ti]===sel.a&&r.sy[ti+1]===sel.b;
-          var isHot2=sel&&ti>0&&r.sy[ti-1]===sel.a&&r.sy[ti]===sel.b;
-          s+=sort(x,y,cw,h,(isHot||isHot2)?'hot':'raw',t);
-          if(ti<r.sy.length-1)
-            s+='<rect x="'+(x+cw-6)+'" y="'+y+'" width="'+(gap+12)+'" height="'+h+
-               '" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f4a="'+r.sy[ti]+'" data-f4b="'+r.sy[ti+1]+'"/>';
-          x+=cw+gap;
-        });
-        y+=h+7;
-      });
-      if(ranked){
-        var c=countPairs(st),arr=c.order.map(function(k){var p=k.split('\u0000');return {a:p[0],b:p[1],n:c.map[k]};});
-        arr.sort(function(p,q){return q.n-p.n;});
-        s+=lab(520,32,'top five pairs',C.accent);
-        arr.slice(0,5).forEach(function(p,i){
-          var yy=52+i*32;
-          s+=sort(520,yy,54,26,i===0?'hot':'tok',p.a+p.b);
-          s+=bar(586,yy+7,180,12,p.n/arr[0].n,i===0?C.accent:C.rule);
-          s+=lab(776,yy+18,String(p.n),C.soft);
-        });
-        s+=lab(520,232,'the winner is fused everywhere',C.faint);
-      }
-      svg.innerHTML=s;
-      set('f4Read',sel?(sel.a+sel.b+' occurs '+pairCount(sel.a,sel.b)+' times'):'click a pair');
-    }
-    svg.addEventListener('click',function(e){
-      var a=e.target.getAttribute&&e.target.getAttribute('data-f4a');
-      if(a){ sel={a:a,b:e.target.getAttribute('data-f4b')}; draw(); }
-    });
-    document.getElementById('f4Rank').addEventListener('click',function(){ranked=true;sel=null;draw();});
-    document.getElementById('f4Clear').addEventListener('click',function(){ranked=false;sel=null;draw();});
-    draw();
-  })();
-
-  /* ---------------- FIGURE 5: scrolly ---------------- */
-  (function(){
-    var svg=document.getElementById('sc1fig'); if(!svg) return;
-    function render(i){
-      i=Math.max(0,Math.min(5,i));
-      var snap=SNAP[i],s='',y=20,h=26,gap=4;
-      snap.forEach(function(sy,ri){
-        var x=52;
-        s+=lab(44,y+h/2+4,'\u00d7'+CORPUS[ri][1],C.faint,'end');
-        sy.forEach(function(t){
-          var w=Math.max(24,t.length*13+12);
-          var justMade=i>0&&t===(MERGES[i-1].a+MERGES[i-1].b);
-          s+='<g data-gel="r'+ri+'" class="show">'+sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t)+'</g>';
-          x+=w+gap;
-        });
-        y+=h+8;
-      });
-      var by=268;
-      s+=lab(44,by-12,'merge rules learned so far',C.accent);
-      for(var k=0;k<6;k++){
-        var xx=44+k*78;
-        if(k<i) s+='<g data-gel="m'+k+'" class="show">'+sort(xx,by,68,28,k===i-1?'hot':'tok',MERGES[k].a+MERGES[k].b)+'</g>';
-        else s+='<g data-gel="m'+k+'">'+sort(xx,by,68,28,'ghost','')+'</g>';
-      }
-      svg.innerHTML=s;
-      set('sc1Read',i+(i===1?' merge \u00b7 ':' merges \u00b7 ')+TOTALS[i]+' tokens');
-    }
-    var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
-    function activate(i){
-      steps.forEach(function(s){s.classList.toggle('on',+s.getAttribute('data-step')===i);});
-      render(i);
-    }
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting) activate(+e.target.getAttribute('data-step')); });
-    },{rootMargin:'-45% 0px -45% 0px',threshold:0});
-    steps.forEach(function(s){
-      io.observe(s);
-      s.addEventListener('click',function(){activate(+s.getAttribute('data-step'));});
-    });
-    activate(0);
-  })();
-
-  /* ---------------- FIGURE 6: THE KNOB ---------------- */
-  (function(){
-    var svg=document.getElementById('f6'),sl=document.getElementById('f6Slider'); if(!svg||!sl) return;
-    function draw(m){
-      var snap=SNAP[m],s='',y=22,h=28,gap=5;
-      snap.forEach(function(sy,ri){
-        var x=70;
-        s+=lab(62,y+h/2+4,'\u00d7'+CORPUS[ri][1],C.faint,'end');
-        sy.forEach(function(t){
-          var w=Math.max(26,t.length*14+14);
-          var justMade=m>0&&t===(MERGES[m-1].a+MERGES[m-1].b);
-          s+=sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t);
-          x+=w+gap;
-        });
-        s+=lab(x+12,y+h/2+4,String(sy.length*CORPUS[ri][1]),C.faint);
-        y+=h+8;
-      });
-      var by=278;
-      s+=lab(70,by-14,'drawer size');
-      s+=bar(70,by-4,300,14,(BASE.length+m)/28,C.warn);
-      s+=lab(382,by+8,(BASE.length+m)+' compartments',C.soft);
-      s+=lab(540,by-14,'corpus token count');
-      s+=bar(540,by-4,240,14,TOTALS[m]/TOTALS[0],C.accent);
-      s+=lab(792,by+8,TOTALS[m]+' tokens',C.soft);
-      if(m>=8) s+=lab(70,by+44,'walked and walking no longer share a visible stem',C.risk);
-      else if(m>=4) s+=lab(70,by+44,'ed and ing are now pieces in their own right',C.safe);
-      else s+=lab(70,by+44,'still mostly letters',C.faint);
-      svg.innerHTML=s;
-      set('f6Read',m+(m===1?' merge':' merges')+(m>0?' \u00b7 last was '+MERGES[m-1].a+'+'+MERGES[m-1].b:''));
-    }
-    sl.addEventListener('input',function(){draw(+sl.value);});
-    draw(0);
-  })();
-
-  /* ---------------- FIGURE 7 ---------------- */
-  (function(){
-    var svg=document.getElementById('f7'); if(!svg) return;
-    var word='walkable',applied=0;
-    function draw(){
-      var sy=encode(word,applied),s='',x=50,y=52,h=38;
-      s+=lab(50,32,'"'+word+'", after '+applied+' of 14 rules');
-      sy.forEach(function(t){
-        var w=Math.max(34,t.length*16+22);
-        var justMade=applied>0&&t===(MERGES[applied-1].a+MERGES[applied-1].b);
-        s+=sort(x,y,w,h,justMade?'hot':(t.length>1?'tok':'raw'),t);
-        x+=w+7;
-      });
-      s+=lab(x+14,y+24,sy.length+' pieces',C.faint);
-      var by=136;
-      s+=lab(50,by-12,'the rule list, applied in order',C.accent);
-      for(var k=0;k<14;k++){
-        var xx=50+(k%7)*116, yy=by+Math.floor(k/7)*38;
-        var fired=k<applied&&SNAP[0]&&encode(word,k+1).length<encode(word,k).length;
-        s+=sort(xx,yy,104,28,k<applied?(fired?'hot':'tok'):'ghost',MERGES[k].a+'+'+MERGES[k].b);
-      }
-      svg.innerHTML=s;
-      set('f7Read','rule '+applied+' of 14');
-    }
-    document.querySelectorAll('[data-f7w]').forEach(function(b){
-      b.addEventListener('click',function(){
-        word=b.getAttribute('data-f7w'); applied=0;
-        document.querySelectorAll('[data-f7w]').forEach(function(o){o.classList.toggle('on',o===b);});
-        draw();
-      });
-    });
-    document.getElementById('f7Step').addEventListener('click',function(){
-      applied=applied>=14?0:applied+1; draw();
-    });
-    document.getElementById('f7Run').addEventListener('click',function(){ applied=14; draw(); });
-    draw();
-  })();
-
-  /* ---------------- FIGURE 8 ---------------- */
-  (function(){
-    var svg=document.getElementById('f8'); if(!svg) return;
-    var open=0;
-    var PIECES=['walk','ing',' home'];
-    var VEC=[[.82,.14,.61,.30],[.09,.77,.22,.68],[.44,.51,.90,.12]];
-    function draw(){
-      var s='',x=60,y=40;
-      var STAGES=['your text','pieces','integers','rows of learned numbers'];
-      STAGES.forEach(function(name,i){
-        var yy=40+i*62;
-        s+=sort(40,yy,196,44,open===i?'hot':'tok',name);
-        s+='<rect x="40" y="'+yy+'" width="196" height="44" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f8="'+i+'"/>';
-        if(i<3) s+='<line x1="138" y1="'+(yy+44)+'" x2="138" y2="'+(yy+62)+'" stroke="'+C.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
-      });
-      var px=290,py=40+open*62;
-      if(open===0){
-        s+=sort(px,py,300,44,'tok','walking home');
-        s+=lab(px,py+70,'twelve characters, one string');
-      } else if(open===1){
-        var xx=px;
-        PIECES.forEach(function(t){ var w=Math.max(48,t.length*16+22); s+=sort(xx,py,w,44,'tok',t.replace(' ','\u2423')); xx+=w+8; });
-        s+=lab(px,py+70,'three pieces. the space belongs to the piece after it.');
-      } else if(open===2){
-        var xx2=px;
-        PIECES.forEach(function(t){ s+=sort(xx2,py,86,44,'id',String(1000+idOf(t.trim()))); xx2+=94; });
-        s+=lab(px,py+70,'three addresses. nothing about them is ordered or numeric.');
-      } else {
-        VEC.forEach(function(v,vi){
-          var yy=py+vi*46-46, xx3=px;
-          if(yy<40) yy=40+vi*46;
-          s+=lab(px-8,yy+26,PIECES[vi].trim(),C.faint,'end');
-          v.forEach(function(val){
-            s+=sort(xx3,yy,58,38,'tok',val.toFixed(2)); xx3+=62;
-          });
-        });
-        s+=lab(px,py+96,'four numbers each, so you can read them. real rows hold hundreds.');
-      }
-      svg.innerHTML=s;
-      set('f8Read',STAGES[open]);
-    }
-    svg.addEventListener('click',function(e){
-      var i=e.target.getAttribute&&e.target.getAttribute('data-f8');
-      if(i!==null&&i!==undefined){ open=+i; draw(); }
-    });
-    draw();
-  })();
-
-  /* ---------------- FIGURE 9 ---------------- */
-  (function(){
-    var svg=document.getElementById('f9'); if(!svg) return;
-    var mode='letters';
-    var CASES={
-      letters:{txt:'strawberry',pieces:['str','aw','berry'],
-        note:'the model is asked to count r characters it cannot see inside three opaque pieces',col:C.risk},
-      space:{txt:'walk vs \u2423walk',pieces:['walk','|','\u2423walk'],
-        note:'same four letters, two different compartments with separately learned rows',col:C.warn},
-      number:{txt:'1024 and 1025',pieces:['10','24','|','102','5'],
-        note:'chunked by frequency, so consecutive numbers need not share a boundary',col:C.risk},
-      script:{txt:'\u0928\u092e\u0938\u094d\u0924\u0947',pieces:['\u0928','\u092e','\u0938','\u094d','\u0924','\u0947'],
-        note:'one short greeting, six pieces. the same meaning in English costs one or two.',col:C.risk}
-    };
-    function draw(){
-      var d=CASES[mode],s='',x=50,y=64;
-      s+=lab(50,40,'the string');
-      s+=sort(50,56,300,44,'tok',d.txt);
-      s+=lab(50,150,'how it splits',C.accent);
-      x=50; y=166;
-      d.pieces.forEach(function(t){
-        if(t==='|'){ s+=lab(x+8,y+28,'and',C.faint); x+=54; return; }
-        var w=Math.max(52,t.length*16+30);
-        s+=sort(x,y,w,42,'hot',t); x+=w+8;
-      });
-      s+=lab(50,236,d.note,d.col);
-      svg.innerHTML=s;
-      set('f9Read',mode);
-    }
-    document.querySelectorAll('[data-f9]').forEach(function(b){
-      b.addEventListener('click',function(){
-        mode=b.getAttribute('data-f9');
-        document.querySelectorAll('[data-f9]').forEach(function(o){o.classList.toggle('on',o===b);});
-        draw();
-      });
-    });
-    draw();
-  })();
-
-  /* ---------------- prose to figure coupling ---------------- */
-  document.querySelectorAll('.ref').forEach(function(t){
-    var k=t.getAttribute('data-ref'),sec=t.closest('section');
-    function on(v){
-      t.classList.toggle('hot',v);
-      if(!sec) return;
-      sec.querySelectorAll('.fig').forEach(function(f){f.classList.toggle('dimmed',v);});
-      sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){p.classList.toggle('hot',v);});
-    }
-    t.addEventListener('mouseenter',function(){on(true);});
-    t.addEventListener('mouseleave',function(){on(false);});
-    t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
-  });
-
-  /* ---------------- hidden appendix ---------------- */
-  (function(){
-    var weeds=document.getElementById('weeds'),hint=document.getElementById('weedsHint');
-    if(!weeds||!hint) return;
-    function toggle(){
-      var open=weeds.hidden;
-      weeds.hidden=!open;
-      hint.setAttribute('aria-expanded',String(open));
-      hint.innerHTML=open?`press <kbd>s</kbd> to hide the deeper cuts`:`press <kbd>s</kbd> for the deeper cuts`;
-      if(open){ weeds.setAttribute('tabindex','-1'); weeds.focus({preventScroll:true});
-                weeds.scrollIntoView({behavior:'smooth',block:'start'}); }
-    }
-    document.addEventListener('keydown',function(e){
-      if(e.key!=='s'&&e.key!=='S') return;
-      if(e.metaKey||e.ctrlKey||e.altKey) return;
-      var t=e.target,tag=(t.tagName||'').toLowerCase();
-      if(tag==='input'||tag==='textarea'||t.isContentEditable) return;
-      e.preventDefault(); toggle();
-    });
-    hint.addEventListener('click',toggle);
-    hint.addEventListener('keydown',function(e){
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}
-    });
-  })();
-
-})();
+<script>!function(){"use strict";var e="#E7EBE4",t="#DCE2D8",n="#3F4A41",r="#5F6B61",a="#C6CFC2",o="#0E6A66",i="#121A18",c="#DDE6DF",s="#A8442E",l="#8A6A16",u="#37704F",f=Math.round;function d(s,l,u,d,h,g){s=f(s),l=f(l),u=f(u),d=f(d);var m=e,v=a,p="4 3",y=1.5,E=n;"tok"===h?(m=t,p="none"):"hot"===h?(m=o,v=o,p="none",y=3,E=e):"id"===h?(m=i,v=i,p="none",E=c):"ghost"===h&&(m="none",v=a,E=r);var k='<rect x="'+s+'" y="'+l+'" width="'+u+'" height="'+d+'" rx="4" fill="'+m+'" stroke="'+v+'" stroke-width="'+y+'" stroke-dasharray="'+p+'" shape-rendering="crispEdges"/>';return null!=g&&u>13&&(k+='<text x="'+f(s+u/2)+'" y="'+f(l+d/2+5)+'" text-anchor="middle" fill="'+E+'" font-family="IBM Plex Mono,monospace" font-size="15">'+g+"</text>"),k}function h(e,t,n,a,o){return'<text x="'+f(e)+'" y="'+f(t)+'" text-anchor="'+(o||"start")+'" fill="'+(a||r)+'" font-family="IBM Plex Mono,monospace" font-size="12" letter-spacing=".02em">'+n+"</text>"}function g(e,n,r,a,i,c){return i=Math.max(0,Math.min(1,i)),'<rect x="'+f(e)+'" y="'+f(n)+'" width="'+f(r)+'" height="'+f(a)+'" fill="'+t+'" shape-rendering="crispEdges"/><rect x="'+f(e)+'" y="'+f(n)+'" width="'+f(r*i)+'" height="'+f(a)+'" fill="'+(c||o)+'" shape-rendering="crispEdges"/>'}function m(e,t){var n=document.getElementById(e);n&&(n.textContent=t)}function v(e){return String(e).split("")}var p=[["walk",5],["walked",4],["walking",4],["talked",3],["talking",3],["jumped",2],["jumping",2]],y=[];function E(e,t,n){for(var r=[],a=0;a<e.length;)a<e.length-1&&e[a]===t&&e[a+1]===n?(r.push(t+n),a+=2):(r.push(e[a]),a++);return r}function k(e){var t={},n=[];return e.forEach(function(e){for(var r=0;r<e.sy.length-1;r++){var a=e.sy[r]+"\0"+e.sy[r+1];a in t||(t[a]=0,n.push(a)),t[a]+=e.n}}),{map:t,order:n}}function w(e){var t=k(e),n=null;if(t.order.forEach(function(e){(!n||t.map[e]>t.map[n])&&(n=e)}),!n)return null;var r=n.split("\0");return{a:r[0],b:r[1],n:t.map[n]}}function b(){return p.map(function(e){return{w:e[0],n:e[1],sy:v(e[0])}})}p.forEach(function(e){v(e[0]).forEach(function(e){y.indexOf(e)<0&&y.push(e)})});var x=[],L=[],A=[];function M(e,t){for(var n=v(e),r=0;r<Math.min(void 0===t?x.length:t,x.length);r++)n=E(n,x[r].a,x[r].b);return n}!function(){var e=b();L.push(e.map(function(e){return e.sy.slice()})),A.push(e.reduce(function(e,t){return e+t.sy.length*t.n},0));for(var t=0;t<14;t++){var n=w(e);if(!n)break;x.push(n),e.forEach(function(e){e.sy=E(e.sy,n.a,n.b)}),L.push(e.map(function(e){return e.sy.slice()})),A.push(e.reduce(function(e,t){return e+t.sy.length*t.n},0))}}();var I,B,S,q={};function H(e){if(e in q)return q[e];for(var t=0,n=0;n<e.length;n++)t=(31*t+e.charCodeAt(n))%900;return 100+t}y.forEach(function(e,t){q[e]=t+1}),x.forEach(function(e,t){q[e.a+e.b]=y.length+t+1}),I=document.getElementById("pfill"),B=document.getElementById("ptxt"),S=2*Math.PI*23,I&&(I.style.strokeDasharray=S,I.style.strokeDashoffset=S,addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollHeight-e.clientHeight,n=t>0?e.scrollTop/t:0;n=Math.min(1,Math.max(0,n)),I.style.strokeDashoffset=S*(1-n),B.textContent=Math.round(100*n)+"%"},{passive:!0}));var C=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),C.unobserve(e.target))})},{threshold:.06,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(e){C.observe(e)}),addEventListener("scroll",function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(e){e.getBoundingClientRect().top<.94*innerHeight&&e.classList.add("in")})},{passive:!0}),function(){var e=document.getElementById("heroH1");if(e){var t=["How","text","becomes","tokens"];e.innerHTML=t.map(function(e,t){return'<span class="sort" data-hw="'+t+'" role="button" tabindex="0">'+e+"</span>"}).join(""),e.querySelectorAll(".sort").forEach(function(e,n){var r=t[n];function a(){var t=e.classList.toggle("on");e.textContent=t?String(1e3+H(r.toLowerCase())):r}e.addEventListener("click",a),e.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),a())})})}}(),function(){var e=document.getElementById("f1");if(e){var t=["the","cat","sat","on","the","mat"],n=t.map(function(){return!1});e.addEventListener("click",function(e){var t=e.target.getAttribute&&e.target.getAttribute("data-f1");null!=t&&(n[+t]=!n[+t],a())}),document.getElementById("f1All").addEventListener("click",function(){n=t.map(function(){return!0}),a()}),document.getElementById("f1Reset").addEventListener("click",function(){n=t.map(function(){return!1}),a()}),a()}function a(){var a="",i=40;a+=h(40,36,"what you typed"),t.forEach(function(e,t){var r=Math.max(74,20*e.length+40),o=n[t];a+=d(i,64,r,52,o?"id":"tok",o?String(1e3+H(e)):e),a+='<rect x="'+i+'" y="64" width="'+r+'" height="52" fill="rgba(0,0,0,0)" data-f1="'+t+'" style="cursor:pointer"/>',i+=r+10}),a+=h(40,150,"what the model receives",o);var c=n.filter(Boolean).length;a+=h(40,178,0===c?"still text: nothing here is a number yet":c<t.length?c+" of 6 pieces swapped":"6 integers, in that order. the letters are gone.",c===t.length?o:r),e.innerHTML=a,m("f1Read",t.length+" tokens")}}(),function(){var e=document.getElementById("f2");if(e){var t="char",r="the cat sat on the mat";document.querySelectorAll("[data-f2]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f2"),document.querySelectorAll("[data-f2]").forEach(function(t){t.classList.toggle("on",t===e)}),a()})}),a()}function a(){var a,i,c,l="",f=40;"char"===t?(a=v(r),i=27,c="27 compartments"):(a=r.split(" "),i=17e4,c="about 170,000 compartments"),a.forEach(function(e){var n="char"===t?26:Math.max(52,15*e.length+22);l+=d(f,52,n,34,"tok"," "===e?"␣":e),f+=n+5}),l+=h(40,38,"char"===t?"22 pieces":"6 pieces",o);var p=138;l+=h(40,128,"list length"),l+=g(40,p,760,16,a.length/22,o),l+=h(806,151,String(a.length),n),l+=h(40,188,"drawer size"),l+=g(40,198,760,16,Math.min(1,i/17e4),"char"===t?u:s),l+=h(40,236,c,"char"===t?u:s),l+="word"===t?h(806,236,"and any new word has none",s,"end"):h(806,236,"never missing a piece",u,"end"),e.innerHTML=l,m("f2Read","char"===t?"one number per letter":"one number per word")}}(),function(){var e=document.getElementById("f3");if(e){var t="char",n={char:{seen:v("walking"),unseen:v("walkable"),note:"every word is spellable, nothing is shared"},sub:{seen:["walk","ing"],unseen:["walk","a","b","l","e"],note:"the stem is reused, the rest falls back to letters"},word:{seen:["walking"],unseen:null,note:"no compartment exists for it, so there is nothing to send"}};document.querySelectorAll("[data-f3]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f3"),document.querySelectorAll("[data-f3]").forEach(function(t){t.classList.toggle("on",t===e)}),c()})}),c()}function i(e,t,n,a){var o=h(40,e-12,n),i=40;return null===t?o+=d(i,e,220,36,"ghost","unknown"):(t.forEach(function(t){var n=Math.max(34,15*t.length+22);o+=d(i,e,n,36,a,t),i+=n+6}),o+=h(i+10,e+24,t.length+(1===t.length?" piece":" pieces"),r))}function c(){var r=n[t],c="";c+=i(60,r.seen,"walking, which the corpus contained","tok"),c+='<line x1="40" y1="130" x2="860" y2="130" stroke="'+a+'" stroke-width="1.5" shape-rendering="crispEdges"/>',c+=i(160,r.unseen,"walkable, which it never contained",r.unseen?"hot":"ghost"),c+=h(40,232,r.note,r.unseen?o:s),e.innerHTML=c,m("f3Read","char"===t?"letters":"sub"===t?"subwords":"whole words")}}(),function(){var e=document.getElementById("f4");if(e){var t=b(),i=null,c=!1;e.addEventListener("click",function(e){var t=e.target.getAttribute&&e.target.getAttribute("data-f4a");t&&(i={a:t,b:e.target.getAttribute("data-f4b")},s())}),document.getElementById("f4Rank").addEventListener("click",function(){c=!0,i=null,s()}),document.getElementById("f4Clear").addEventListener("click",function(){c=!1,i=null,s()}),s()}function s(){var s,l,u,f="",v=24;if(t.forEach(function(e,t){var n=64;f+=h(56,v+14+4,"×"+e.n,r,"end"),e.sy.forEach(function(t,r){var a=i&&r<e.sy.length-1&&e.sy[r]===i.a&&e.sy[r+1]===i.b,o=i&&r>0&&e.sy[r-1]===i.a&&e.sy[r]===i.b;f+=d(n,v,26,28,a||o?"hot":"raw",t),r<e.sy.length-1&&(f+='<rect x="'+(n+26-6)+'" y="'+v+'" width="16" height="28" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f4a="'+e.sy[r]+'" data-f4b="'+e.sy[r+1]+'"/>'),n+=30}),v+=35}),c){var p=k(t),y=p.order.map(function(e){var t=e.split("\0");return{a:t[0],b:t[1],n:p.map[e]}});y.sort(function(e,t){return t.n-e.n}),f+=h(520,32,"top five pairs",o),y.slice(0,5).forEach(function(e,t){var r=52+32*t;f+=d(520,r,54,26,0===t?"hot":"tok",e.a+e.b),f+=g(586,r+7,180,12,e.n/y[0].n,0===t?o:a),f+=h(776,r+18,String(e.n),n)}),f+=h(520,232,"the winner is fused everywhere",r)}e.innerHTML=f,m("f4Read",i?i.a+i.b+" occurs "+(s=i.a,l=i.b,u=0,t.forEach(function(e){for(var t=0;t<e.sy.length-1;t++)e.sy[t]===s&&e.sy[t+1]===l&&(u+=e.n)}),u+" times"):"click a pair")}}(),function(){var e=document.getElementById("sc1fig");if(e){var t=[].slice.call(document.querySelectorAll("#sc1 .stp")),n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&a(+e.target.getAttribute("data-step"))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});t.forEach(function(e){n.observe(e),e.addEventListener("click",function(){a(+e.getAttribute("data-step"))})}),a(0)}function a(n){t.forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-step")===n)}),function(t){t=Math.max(0,Math.min(5,t));var n=L[t],a="",i=20;n.forEach(function(e,n){var o=52;a+=h(44,i+13+4,"×"+p[n][1],r,"end"),e.forEach(function(e){var r=Math.max(24,13*e.length+12),c=t>0&&e===x[t-1].a+x[t-1].b;a+='<g data-gel="r'+n+'" class="show">'+d(o,i,r,26,c?"hot":e.length>1?"tok":"raw",e)+"</g>",o+=r+4}),i+=34}),a+=h(44,256,"merge rules learned so far",o);for(var c=0;c<6;c++){var s=44+78*c;a+=c<t?'<g data-gel="m'+c+'" class="show">'+d(s,268,68,28,c===t-1?"hot":"tok",x[c].a+x[c].b)+"</g>":'<g data-gel="m'+c+'">'+d(s,268,68,28,"ghost","")+"</g>"}e.innerHTML=a,m("sc1Read",t+(1===t?" merge · ":" merges · ")+A[t]+" tokens")}(n)}}(),function(){var e=document.getElementById("f6"),t=document.getElementById("f6Slider");function a(t){var a=L[t],i="",c=22;a.forEach(function(e,n){var a=70;i+=h(62,c+14+4,"×"+p[n][1],r,"end"),e.forEach(function(e){var n=Math.max(26,14*e.length+14),r=t>0&&e===x[t-1].a+x[t-1].b;i+=d(a,c,n,28,r?"hot":e.length>1?"tok":"raw",e),a+=n+5}),i+=h(a+12,c+14+4,String(e.length*p[n][1]),r),c+=36});i+=h(70,264,"drawer size"),i+=g(70,274,300,14,(y.length+t)/28,l),i+=h(382,286,y.length+t+" compartments",n),i+=h(540,264,"corpus token count"),i+=g(540,274,240,14,A[t]/A[0],o),i+=h(792,286,A[t]+" tokens",n),i+=t>=8?h(70,322,"walked and walking no longer share a visible stem",s):t>=4?h(70,322,"ed and ing are now pieces in their own right",u):h(70,322,"still mostly letters",r),e.innerHTML=i,m("f6Read",t+(1===t?" merge":" merges")+(t>0?" · last was "+x[t-1].a+"+"+x[t-1].b:""))}e&&t&&(t.addEventListener("input",function(){a(+t.value)}),a(0))}(),function(){var e=document.getElementById("f7");if(e){var t="walkable",n=0;document.querySelectorAll("[data-f7w]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f7w"),n=0,document.querySelectorAll("[data-f7w]").forEach(function(t){t.classList.toggle("on",t===e)}),a()})}),document.getElementById("f7Step").addEventListener("click",function(){n=n>=14?0:n+1,a()}),document.getElementById("f7Run").addEventListener("click",function(){n=14,a()}),a()}function a(){var a=M(t,n),i="",c=50;i+=h(50,32,'"'+t+'", after '+n+" of 14 rules"),a.forEach(function(e){var t=Math.max(34,16*e.length+22),r=n>0&&e===x[n-1].a+x[n-1].b;i+=d(c,52,t,38,r?"hot":e.length>1?"tok":"raw",e),c+=t+7}),i+=h(c+14,76,a.length+" pieces",r);i+=h(50,124,"the rule list, applied in order",o);for(var s=0;s<14;s++){var l=50+s%7*116,u=136+38*Math.floor(s/7),f=s<n&&L[0]&&M(t,s+1).length<M(t,s).length;i+=d(l,u,104,28,s<n?f?"hot":"tok":"ghost",x[s].a+"+"+x[s].b)}e.innerHTML=i,m("f7Read","rule "+n+" of 14")}}(),function(){var e=document.getElementById("f8");if(e){var t=0,n=["walk","ing"," home"],o=[[.82,.14,.61,.3],[.09,.77,.22,.68],[.44,.51,.9,.12]];e.addEventListener("click",function(e){var n=e.target.getAttribute&&e.target.getAttribute("data-f8");null!=n&&(t=+n,i())}),i()}function i(){var i="",c=["your text","pieces","integers","rows of learned numbers"];c.forEach(function(e,n){var r=40+62*n;i+=d(40,r,196,44,t===n?"hot":"tok",e),i+='<rect x="40" y="'+r+'" width="196" height="44" fill="rgba(0,0,0,0)" style="cursor:pointer" data-f8="'+n+'"/>',n<3&&(i+='<line x1="138" y1="'+(r+44)+'" x2="138" y2="'+(r+62)+'" stroke="'+a+'" stroke-width="1.5" shape-rendering="crispEdges"/>')});var s=290,l=40+62*t;if(0===t)i+=d(s,l,300,44,"tok","walking home"),i+=h(s,l+70,"twelve characters, one string");else if(1===t){var u=s;n.forEach(function(e){var t=Math.max(48,16*e.length+22);i+=d(u,l,t,44,"tok",e.replace(" ","␣")),u+=t+8}),i+=h(s,l+70,"three pieces. the space belongs to the piece after it.")}else if(2===t){var f=s;n.forEach(function(e){i+=d(f,l,86,44,"id",String(1e3+H(e.trim()))),f+=94}),i+=h(s,l+70,"three addresses. nothing about them is ordered or numeric.")}else o.forEach(function(e,t){var a=l+46*t-46,o=s;a<40&&(a=40+46*t),i+=h(282,a+26,n[t].trim(),r,"end"),e.forEach(function(e){i+=d(o,a,58,38,"tok",e.toFixed(2)),o+=62})}),i+=h(s,l+96,"four numbers each, so you can read them. real rows hold hundreds.");e.innerHTML=i,m("f8Read",c[t])}}(),function(){var e=document.getElementById("f9");if(e){var t="letters",n={letters:{txt:"strawberry",pieces:["str","aw","berry"],note:"the model is asked to count r characters it cannot see inside three opaque pieces",col:s},space:{txt:"walk vs ␣walk",pieces:["walk","|","␣walk"],note:"same four letters, two different compartments with separately learned rows",col:l},number:{txt:"1024 and 1025",pieces:["10","24","|","102","5"],note:"chunked by frequency, so consecutive numbers need not share a boundary",col:s},script:{txt:"नमस्ते",pieces:["न","म","स","्","त","े"],note:"one short greeting, six pieces. the same meaning in English costs one or two.",col:s}};document.querySelectorAll("[data-f9]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f9"),document.querySelectorAll("[data-f9]").forEach(function(t){t.classList.toggle("on",t===e)}),a()})}),a()}function a(){var a=n[t],i="",c=50;i+=h(50,40,"the string"),i+=d(50,56,300,44,"tok",a.txt),i+=h(50,150,"how it splits",o),c=50,a.pieces.forEach(function(e){if("|"===e)return i+=h(c+8,194,"and",r),void(c+=54);var t=Math.max(52,16*e.length+30);i+=d(c,166,t,42,"hot",e),c+=t+8}),i+=h(50,236,a.note,a.col),e.innerHTML=i,m("f9Read",t)}}(),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),n=e.closest("section");function r(r){e.classList.toggle("hot",r),n&&(n.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",r)}),n.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",r)}))}e.addEventListener("mouseenter",function(){r(!0)}),e.addEventListener("mouseleave",function(){r(!1)}),e.addEventListener("click",function(){r(!e.classList.contains("hot"))})}),function(){var e=document.getElementById("weeds"),t=document.getElementById("weedsHint");function n(){var n=e.hidden;e.hidden=!n,t.setAttribute("aria-expanded",String(n)),t.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}e&&t&&(document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,r=(t.tagName||"").toLowerCase();"input"===r||"textarea"===r||t.isContentEditable||(e.preventDefault(),n())}}),t.addEventListener("click",n),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),n())}))}()}();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>

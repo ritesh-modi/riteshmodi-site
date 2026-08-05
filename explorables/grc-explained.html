@@ -7,276 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#ECEEF0;
-    --paper-2:#E3E6E9;
-    --ink:#14202B;
-    --ink-soft:#3C4C5A;
-    --ink-faint:#6B7986;
-    --steel:#4A6D8C;
-    --steel-deep:#2F4A64;
-    --amber:#D98A2B;
-    --red:#C0392B;
-    --teal:#2E8B74;
-    --rule:#C7CDD3;
-    --rule-soft:#D6DBDF;
-    --panel:#182634;
-    --panel-ink:#DDE3E8;
-    --maxw:720px;
-    --wide:1120px;
-  }
-
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
-
-  body{
-    margin:0;
-    background:var(--paper);
-    color:var(--ink);
-    font-family:"IBM Plex Sans",system-ui,sans-serif;
-    font-size:19px;
-    line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    overflow-x:hidden;
-  }
-
-  /* ---------- progress bar ---------- */
-  .progress{
-    position:fixed;top:0;left:0;height:3px;width:0%;
-    background:linear-gradient(90deg,var(--steel),var(--teal));
-    z-index:100;transition:width .1s linear;
-  }
-
-  /* ---------- shared layout ---------- */
-  .col{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-  .eyebrow{
-    font-family:"IBM Plex Mono",monospace;
-    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--steel);font-weight:500;
-    display:flex;align-items:center;gap:10px;margin:0 0 18px;
-  }
-  .eyebrow::before{content:"";width:26px;height:1px;background:var(--steel);display:inline-block}
-
-  h1,h2,h3{font-family:"Newsreader",serif;font-weight:500;letter-spacing:-.01em;line-height:1.08}
-  .lede{font-family:"Newsreader",serif;font-size:23px;line-height:1.5;color:var(--ink-soft);font-weight:400}
-  p{margin:0 0 22px}
-  .prose p{max-width:640px}
-  em{font-style:italic}
-  strong{font-weight:600}
-  .mono{font-family:"IBM Plex Mono",monospace;font-size:.82em;letter-spacing:.02em}
-
-  a.src{color:var(--steel-deep);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
-
-  /* ---------- reveal ---------- */
-  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none} }
-
-  /* ================= HERO ================= */
-  .hero{
-    min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-    position:relative;padding:80px 24px 40px;overflow:hidden;
-  }
-  .hero-grid{
-    position:absolute;inset:0;z-index:0;opacity:.55;
-    background-image:linear-gradient(var(--rule-soft) 1px,transparent 1px),linear-gradient(90deg,var(--rule-soft) 1px,transparent 1px);
-    background-size:44px 44px;
-    -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%);
-            mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%);
-  }
-  .hero-inner{position:relative;z-index:2;max-width:900px;margin:0 auto;width:100%}
-  .hero h1{
-    font-size:clamp(42px,8.2vw,86px);letter-spacing:-.025em;margin:0 0 26px;font-weight:500;
-  }
-  .hero h1 .i{font-style:italic;color:var(--steel-deep)}
-  .hero .lede{max-width:600px;font-size:clamp(18px,2.6vw,24px)}
-  .kicker{
-    font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--ink-faint);margin:0 0 30px;
-  }
-  .scrollcue{
-    position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;
-    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);
-    display:flex;flex-direction:column;align-items:center;gap:8px;
-  }
-  .scrollcue .bar{width:1px;height:40px;background:var(--ink-faint);position:relative;overflow:hidden}
-  .scrollcue .bar::after{content:"";position:absolute;top:-40px;left:0;width:1px;height:40px;background:var(--ink);animation:drop 1.8s ease-in-out infinite}
-  @keyframes drop{0%{top:-40px}60%,100%{top:40px}}
-  @media (prefers-reduced-motion: reduce){ .scrollcue .bar::after{animation:none;top:0} }
-
-  /* ---------- section frame ---------- */
-  section.chapter{padding:96px 0}
-  .divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
-
-  h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.02em}
-  h3.sub{font-size:24px;margin:38px 0 12px;color:var(--ink)}
-
-  .pull{
-    font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.32;
-    color:var(--steel-deep);font-weight:400;font-style:italic;
-    border-left:2px solid var(--steel);padding:6px 0 6px 26px;margin:44px 0;
-  }
-
-  /* ---------- three pillars ---------- */
-  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:40px}
-  .pillar{background:var(--paper);padding:30px 26px;}
-  .pillar .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
-  .pillar h4{font-family:"Newsreader",serif;font-weight:500;font-size:26px;margin:0 0 10px}
-  .pillar p{font-size:16px;color:var(--ink-soft);margin:0}
-  .pillar .verb{font-style:italic;color:var(--ink)}
-  @media(max-width:720px){.pillars{grid-template-columns:1fr}}
-
-  /* ================ STICKY SCROLLY: THE MACHINE ================ */
-  .scrolly{position:relative;max-width:var(--wide);margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:40px}
-  .scrolly-graphic{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}
-  .scrolly-steps{padding:34vh 0 40vh}
-  .step{min-height:66vh;display:flex;flex-direction:column;justify-content:center}
-  .step .num{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;color:var(--steel);margin-bottom:12px}
-  .step h3{font-size:30px;margin:0 0 14px;font-weight:500}
-  .step p{font-size:17.5px;color:var(--ink-soft);max-width:420px}
-  .step.on h3{color:var(--ink)}
-
-  .machine{width:100%;max-width:520px}
-  .layer{transition:opacity .5s ease,transform .5s ease}
-  .layer.dim{opacity:.16}
-  .layer.hot text{font-weight:600}
-  .flow-arrow{opacity:0;transition:opacity .5s ease}
-  .flow-arrow.show{opacity:1}
-  @media (prefers-reduced-motion: reduce){ .layer,.flow-arrow{transition:none} }
-
-  @media(max-width:860px){
-    .scrolly{grid-template-columns:1fr;gap:0}
-    .scrolly-graphic{position:sticky;top:0;height:52vh;background:var(--paper);z-index:5;border-bottom:1px solid var(--rule)}
-    .scrolly-steps{padding:6vh 0 20vh}
-    .step{min-height:auto;padding:40px 0}
-    .machine{max-width:340px}
-  }
-
-  /* ---------- chain diagram inline ---------- */
-  .chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:40px 0;border:1px solid var(--rule);background:var(--rule)}
-  .chain .node{flex:1 1 140px;background:var(--paper);padding:18px 16px;min-width:120px;position:relative}
-  .chain .node .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
-  .chain .node .v{font-family:"Newsreader",serif;font-size:19px;line-height:1.2}
-  .chain .node small{display:block;font-size:13px;color:var(--ink-faint);margin-top:6px;line-height:1.4}
-
-  /* ---------- framework cards ---------- */
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:34px}
-  .card{border:1px solid var(--rule);background:var(--paper);padding:22px 20px;transition:transform .2s ease,border-color .2s ease}
-  .card:hover{transform:translateY(-3px);border-color:var(--steel)}
-  .card .id{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--steel);letter-spacing:.06em}
-  .card h4{font-family:"Newsreader",serif;font-size:22px;font-weight:500;margin:8px 0 8px}
-  .card p{font-size:14.5px;color:var(--ink-soft);margin:0;line-height:1.5}
-
-  /* ---------- control type toggle ---------- */
-  .ctrl-demo{border:1px solid var(--rule);background:var(--paper);margin-top:34px}
-  .ctrl-tabs{display:flex;border-bottom:1px solid var(--rule)}
-  .ctrl-tab{flex:1;padding:16px 12px;background:none;border:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);border-right:1px solid var(--rule);transition:background .2s,color .2s}
-  .ctrl-tab:last-child{border-right:none}
-  .ctrl-tab[aria-selected="true"]{background:var(--ink);color:#fff}
-  .ctrl-body{padding:26px 24px;min-height:150px}
-  .ctrl-body h4{font-family:"Newsreader",serif;font-size:23px;font-weight:500;margin:0 0 6px}
-  .ctrl-body .when{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--steel);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}
-  .ctrl-body p{font-size:16px;color:var(--ink-soft);margin:0 0 16px}
-  .ctrl-eg{background:var(--paper-2);border-left:2px solid var(--steel);padding:12px 16px;font-size:15px}
-  .ctrl-eg .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:4px}
-
-  /* ---------- risk matrix ---------- */
-  .matrix-wrap{margin-top:34px;display:grid;grid-template-columns:1fr;gap:26px}
-  .matrix-panel{background:var(--panel);color:var(--panel-ink);padding:28px;border-radius:2px}
-  .matrix-panel .eyebrow{color:#7FA8C9}
-  .matrix-panel .eyebrow::before{background:#7FA8C9}
-  .matrix-flex{display:flex;gap:26px;flex-wrap:wrap;align-items:center}
-  .matrix{position:relative;display:grid;grid-template-columns:34px repeat(5,1fr);grid-template-rows:repeat(5,52px) 34px;gap:3px;flex:1 1 320px;min-width:300px}
-  .cell{border-radius:2px;position:relative;cursor:default;transition:filter .15s}
-  .cell:hover{filter:brightness(1.18)}
-  .axis-y,.axis-x{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;color:#9FB3C4;display:flex;align-items:center;justify-content:center;text-align:center}
-  .axis-y{writing-mode:vertical-rl;transform:rotate(180deg)}
-  .corner{}
-  .dot{position:absolute;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--ink);top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;transition:all .8s cubic-bezier(.6,.05,.2,1);box-shadow:0 3px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;color:var(--ink)}
-  .matrix-side{flex:1 1 240px;min-width:230px}
-  .matrix-side h4{font-family:"Newsreader",serif;font-weight:500;font-size:24px;margin:0 0 12px;color:#fff}
-  .matrix-side p{font-size:15px;color:#B9C6D2;margin:0 0 18px;line-height:1.55}
-  .rr{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;font-size:14px}
-  .rr .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;width:78px;flex:none}
-  .rr .val{font-family:"Newsreader",serif;font-size:18px}
-  .btn{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;cursor:pointer;background:var(--teal);color:#fff;border:none;border-radius:2px;margin-top:14px;transition:opacity .2s}
-  .btn:hover{opacity:.88}
-  .btn.ghost{background:transparent;border:1px solid #3E5568;color:#B9C6D2;margin-left:8px}
-  .legend{display:flex;gap:16px;margin-top:16px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#9FB3C4;flex-wrap:wrap}
-  .legend span{display:flex;align-items:center;gap:6px}
-  .legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
-
-  /* ---------- four T's ---------- */
-  .tees{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:34px}
-  .tee{background:var(--paper);padding:26px 24px}
-  .tee .t{font-family:"Newsreader",serif;font-size:15px;color:var(--steel);font-style:italic;margin-bottom:4px}
-  .tee h4{font-family:"Newsreader",serif;font-size:26px;font-weight:500;margin:0 0 10px}
-  .tee p{font-size:15.5px;color:var(--ink-soft);margin:0 0 10px;line-height:1.5}
-  .tee .eg{font-size:13.5px;color:var(--ink-faint);font-family:"IBM Plex Mono",monospace}
-  @media(max-width:620px){.tees{grid-template-columns:1fr}}
-
-  /* ---------- compliance split ---------- */
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--rule);border:1px solid var(--rule);margin-top:34px}
-  .split > div{background:var(--paper);padding:28px 26px}
-  .split h4{font-family:"Newsreader",serif;font-size:24px;font-weight:500;margin:0 0 6px}
-  .split .who{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel);margin-bottom:14px}
-  .split ul{margin:0;padding-left:18px}
-  .split li{font-size:15.5px;color:var(--ink-soft);margin-bottom:8px}
-  @media(max-width:620px){.split{grid-template-columns:1fr}}
-
-  /* ================ GENAI ================ */
-  .genai{background:var(--panel);color:var(--panel-ink)}
-  .genai .col{color:var(--panel-ink)}
-  .genai .eyebrow{color:#E0A85F}
-  .genai .eyebrow::before{background:#E0A85F}
-  .genai h2.big{color:#fff}
-  .genai .lede{color:#B9C6D2}
-  .genai p{color:#B9C6D2}
-  .genai .pull{color:#E7B570;border-left-color:#E0A85F}
-  .genai h3.sub{color:#fff}
-  .genai .divider{background:#2A3B4A}
-
-  .risk-row{display:grid;grid-template-columns:1fr;gap:2px;background:#243441;border:1px solid #243441;margin-top:30px}
-  .risk-item{background:var(--panel);padding:26px 24px;display:grid;grid-template-columns:150px 1fr;gap:24px}
-  .risk-item .lft{font-family:"Newsreader",serif}
-  .risk-item .lft .nm{font-size:26px;color:#fff;font-weight:500;line-height:1.1}
-  .risk-item .lft .cat{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#E0A85F;margin-top:8px;font-weight:400}
-  .risk-item .rgt p{margin:0 0 14px;font-size:15.5px}
-  .risk-item .rgt .ctrl{font-size:14px;color:#8DA3B5}
-  .risk-item .rgt .ctrl b{color:var(--teal);font-weight:500;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
-  @media(max-width:620px){.risk-item{grid-template-columns:1fr;gap:12px}}
-
-  /* ---------- hallucination demo ---------- */
-  .hallu{border:1px solid #2E4150;background:#101A24;margin-top:34px;border-radius:3px;overflow:hidden}
-  .hallu-head{padding:16px 22px;border-bottom:1px solid #2E4150;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;display:flex;justify-content:space-between;align-items:center}
-  .hallu-body{padding:24px 22px}
-  .qline{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#7FA8C9;margin-bottom:10px}
-  .aline{font-size:17px;color:#DDE3E8;line-height:1.55;margin-bottom:6px}
-  .flag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:10px}
-  .flag.bad{background:rgba(192,57,43,.2);color:#E8897E;border:1px solid #C0392B}
-  .flag.good{background:rgba(46,139,116,.18);color:#5FC5A8;border:1px solid var(--teal)}
-  .hallu-controls{display:flex;gap:10px;padding:0 22px 22px;flex-wrap:wrap}
-  .toggle{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border:1px solid #3E5568;background:transparent;color:#B9C6D2;cursor:pointer;border-radius:2px;transition:all .2s}
-  .toggle[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:#fff}
-  .hl-wrong{color:#E8897E;border-bottom:1px dashed #C0392B}
-  .hl-right{color:#5FC5A8}
-  .cite{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#6B8296}
-
-  /* ---------- closing ---------- */
-  .close-wrap{text-align:center;padding:20px 0 10px}
-  .close-wrap h2{font-size:clamp(28px,4.6vw,42px);max-width:640px;margin:0 auto 22px;font-weight:500}
-  .close-wrap .lede{max-width:560px;margin:0 auto}
-
-  footer{border-top:1px solid var(--rule);padding:40px 24px 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:"IBM Plex Mono",monospace;letter-spacing:.03em;line-height:1.9}
-  footer a{color:var(--steel-deep)}
-
-  ::selection{background:var(--steel);color:#fff}
-  :focus-visible{outline:2px solid var(--steel);outline-offset:2px}
-</style>
-  <!-- seo:begin -->
+<style>:root{--v7:#ECEEF0;--v8:#E3E6E9;--v1:#14202B;--v3:#3C4C5A;--v2:#6B7986;--v12:#4A6D8C;--v13:#2F4A64;--v0:#D98A2B;--v9:#C0392B;--v14:#2E8B74;--v10:#C7CDD3;--v11:#D6DBDF;--v5:#182634;--v6:#DDE3E8;--v4:720px;--v15:1120px}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v7);color:var(--v1);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:19px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}.progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--v12),var(--v14));z-index:100;transition:width .1s linear}.col{max-width:var(--v4);margin:0 auto;padding:0 24px}.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--v12);font-weight:500;display:flex;align-items:center;gap:10px;margin:0 0 18px}.eyebrow::before{content:"";width:26px;height:1px;background:var(--v12);display:inline-block}h1,h2,h3{font-family:"Newsreader",serif;font-weight:500;letter-spacing:-.01em;line-height:1.08}.lede{font-family:"Newsreader",serif;font-size:23px;line-height:1.5;color:var(--v3);font-weight:400}p{margin:0 0 22px}.prose p{max-width:640px}em{font-style:italic}strong{font-weight:600}.mono{font-family:"IBM Plex Mono",monospace;font-size:.82em;letter-spacing:.02em}a.src{color:var(--v13);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;padding:80px 24px 40px;overflow:hidden}.hero-grid{position:absolute;inset:0;z-index:0;opacity:.55;background-image:linear-gradient(var(--v11) 1px,transparent 1px),linear-gradient(90deg,var(--v11) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%);mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 78%)}.hero-inner{position:relative;z-index:2;max-width:900px;margin:0 auto;width:100%}.hero h1{font-size:clamp(42px,8.2vw,86px);letter-spacing:-.025em;margin:0 0 26px;font-weight:500}.hero h1 .i{font-style:italic;color:var(--v13)}.hero .lede{max-width:600px;font-size:clamp(18px,2.6vw,24px)}.kicker{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--v2);margin:0 0 30px}.scrollcue{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--v2);display:flex;flex-direction:column;align-items:center;gap:8px}.scrollcue .bar{width:1px;height:40px;background:var(--v2);position:relative;overflow:hidden}.scrollcue .bar::after{content:"";position:absolute;top:-40px;left:0;width:1px;height:40px;background:var(--v1);animation:drop 1.8s ease-in-out infinite}@keyframes drop{0%{top:-40px}60%,100%{top:40px}}@media (prefers-reduced-motion: reduce){.scrollcue .bar::after{animation:none;top:0}}section.chapter{padding:96px 0}.divider{max-width:var(--v4);margin:0 auto;height:1px;background:var(--v10)}h2.big{font-size:clamp(30px,5vw,46px);margin:0 0 22px;letter-spacing:-.02em}h3.sub{font-size:24px;margin:38px 0 12px;color:var(--v1)}.pull{font-family:"Newsreader",serif;font-size:clamp(24px,3.6vw,34px);line-height:1.32;color:var(--v13);font-weight:400;font-style:italic;border-left:2px solid var(--v12);padding:6px 0 6px 26px;margin:44px 0}.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--v10);border:1px solid var(--v10);margin-top:40px}.pillar{background:var(--v7);padding:30px 26px}.pillar .tag{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--v12);margin-bottom:14px}.pillar h4{font-family:"Newsreader",serif;font-weight:500;font-size:26px;margin:0 0 10px}.pillar p{font-size:16px;color:var(--v3);margin:0}.pillar .verb{font-style:italic;color:var(--v1)}@media(max-width:720px){.pillars{grid-template-columns:1fr}}.scrolly{position:relative;max-width:var(--v15);margin:0 auto;padding:0 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:40px}.scrolly-graphic{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center}.scrolly-steps{padding:34vh 0 40vh}.step{min-height:66vh;display:flex;flex-direction:column;justify-content:center}.step .num{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;color:var(--v12);margin-bottom:12px}.step h3{font-size:30px;margin:0 0 14px;font-weight:500}.step p{font-size:17.5px;color:var(--v3);max-width:420px}.step.on h3{color:var(--v1)}.machine{width:100%;max-width:520px}.layer{transition:opacity .5s ease,transform .5s ease}.layer.dim{opacity:.16}.layer.hot text{font-weight:600}.flow-arrow{opacity:0;transition:opacity .5s ease}.flow-arrow.show{opacity:1}@media (prefers-reduced-motion: reduce){.layer,.flow-arrow{transition:none}}@media(max-width:860px){.scrolly{grid-template-columns:1fr;gap:0}.scrolly-graphic{position:sticky;top:0;height:52vh;background:var(--v7);z-index:5;border-bottom:1px solid var(--v10)}.scrolly-steps{padding:6vh 0 20vh}.step{min-height:auto;padding:40px 0}.machine{max-width:340px}}.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;margin:40px 0;border:1px solid var(--v10);background:var(--v10)}.chain .node{flex:1 1 140px;background:var(--v7);padding:18px 16px;min-width:120px;position:relative}.chain .node .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--v12);margin-bottom:6px}.chain .node .v{font-family:"Newsreader",serif;font-size:19px;line-height:1.2}.chain .node small{display:block;font-size:13px;color:var(--v2);margin-top:6px;line-height:1.4}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:34px}.card{border:1px solid var(--v10);background:var(--v7);padding:22px 20px;transition:transform .2s ease,border-color .2s ease}.card:hover{transform:translateY(-3px);border-color:var(--v12)}.card .id{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--v12);letter-spacing:.06em}.card h4{font-family:"Newsreader",serif;font-size:22px;font-weight:500;margin:8px 0 8px}.card p{font-size:14.5px;color:var(--v3);margin:0;line-height:1.5}.ctrl-demo{border:1px solid var(--v10);background:var(--v7);margin-top:34px}.ctrl-tabs{display:flex;border-bottom:1px solid var(--v10)}.ctrl-tab{flex:1;padding:16px 12px;background:none;border:none;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--v2);border-right:1px solid var(--v10);transition:background .2s,color .2s}.ctrl-tab:last-child{border-right:none}.ctrl-tab[aria-selected="true"]{background:var(--v1);color:#fff}.ctrl-body{padding:26px 24px;min-height:150px}.ctrl-body h4{font-family:"Newsreader",serif;font-size:23px;font-weight:500;margin:0 0 6px}.ctrl-body .when{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--v12);letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px}.ctrl-body p{font-size:16px;color:var(--v3);margin:0 0 16px}.ctrl-eg{background:var(--v8);border-left:2px solid var(--v12);padding:12px 16px;font-size:15px}.ctrl-eg .lbl{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--v2);display:block;margin-bottom:4px}.matrix-wrap{margin-top:34px;display:grid;grid-template-columns:1fr;gap:26px}.matrix-panel{background:var(--v5);color:var(--v6);padding:28px;border-radius:2px}.matrix-panel .eyebrow{color:#7FA8C9}.matrix-panel .eyebrow::before{background:#7FA8C9}.matrix-flex{display:flex;gap:26px;flex-wrap:wrap;align-items:center}.matrix{position:relative;display:grid;grid-template-columns:34px repeat(5,1fr);grid-template-rows:repeat(5,52px) 34px;gap:3px;flex:1 1 320px;min-width:300px}.cell{border-radius:2px;position:relative;cursor:default;transition:filter .15s}.cell:hover{filter:brightness(1.18)}.axis-y,.axis-x{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.05em;color:#9FB3C4;display:flex;align-items:center;justify-content:center;text-align:center}.axis-y{writing-mode:vertical-rl;transform:rotate(180deg)}.corner{}.dot{position:absolute;width:26px;height:26px;border-radius:50%;background:#fff;border:3px solid var(--v1);top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;transition:all .8s cubic-bezier(.6,.05,.2,1);box-shadow:0 3px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;color:var(--v1)}.matrix-side{flex:1 1 240px;min-width:230px}.matrix-side h4{font-family:"Newsreader",serif;font-weight:500;font-size:24px;margin:0 0 12px;color:#fff}.matrix-side p{font-size:15px;color:#B9C6D2;margin:0 0 18px;line-height:1.55}.rr{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;font-size:14px}.rr .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;width:78px;flex:none}.rr .val{font-family:"Newsreader",serif;font-size:18px}.btn{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;cursor:pointer;background:var(--v14);color:#fff;border:none;border-radius:2px;margin-top:14px;transition:opacity .2s}.btn:hover{opacity:.88}.btn.ghost{background:transparent;border:1px solid #3E5568;color:#B9C6D2;margin-left:8px}.legend{display:flex;gap:16px;margin-top:16px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:#9FB3C4;flex-wrap:wrap}.legend span{display:flex;align-items:center;gap:6px}.legend i{width:12px;height:12px;border-radius:2px;display:inline-block}.tees{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:var(--v10);border:1px solid var(--v10);margin-top:34px}.tee{background:var(--v7);padding:26px 24px}.tee .t{font-family:"Newsreader",serif;font-size:15px;color:var(--v12);font-style:italic;margin-bottom:4px}.tee h4{font-family:"Newsreader",serif;font-size:26px;font-weight:500;margin:0 0 10px}.tee p{font-size:15.5px;color:var(--v3);margin:0 0 10px;line-height:1.5}.tee .eg{font-size:13.5px;color:var(--v2);font-family:"IBM Plex Mono",monospace}@media(max-width:620px){.tees{grid-template-columns:1fr}}.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--v10);border:1px solid var(--v10);margin-top:34px}.split > div{background:var(--v7);padding:28px 26px}.split h4{font-family:"Newsreader",serif;font-size:24px;font-weight:500;margin:0 0 6px}.split .who{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--v12);margin-bottom:14px}.split ul{margin:0;padding-left:18px}.split li{font-size:15.5px;color:var(--v3);margin-bottom:8px}@media(max-width:620px){.split{grid-template-columns:1fr}}.genai{background:var(--v5);color:var(--v6)}.genai .col{color:var(--v6)}.genai .eyebrow{color:#E0A85F}.genai .eyebrow::before{background:#E0A85F}.genai h2.big{color:#fff}.genai .lede{color:#B9C6D2}.genai p{color:#B9C6D2}.genai .pull{color:#E7B570;border-left-color:#E0A85F}.genai h3.sub{color:#fff}.genai .divider{background:#2A3B4A}.risk-row{display:grid;grid-template-columns:1fr;gap:2px;background:#243441;border:1px solid #243441;margin-top:30px}.risk-item{background:var(--v5);padding:26px 24px;display:grid;grid-template-columns:150px 1fr;gap:24px}.risk-item .lft{font-family:"Newsreader",serif}.risk-item .lft .nm{font-size:26px;color:#fff;font-weight:500;line-height:1.1}.risk-item .lft .cat{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#E0A85F;margin-top:8px;font-weight:400}.risk-item .rgt p{margin:0 0 14px;font-size:15.5px}.risk-item .rgt .ctrl{font-size:14px;color:#8DA3B5}.risk-item .rgt .ctrl b{color:var(--v14);font-weight:500;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase}@media(max-width:620px){.risk-item{grid-template-columns:1fr;gap:12px}}.hallu{border:1px solid #2E4150;background:#101A24;margin-top:34px;border-radius:3px;overflow:hidden}.hallu-head{padding:16px 22px;border-bottom:1px solid #2E4150;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8DA3B5;display:flex;justify-content:space-between;align-items:center}.hallu-body{padding:24px 22px}.qline{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#7FA8C9;margin-bottom:10px}.aline{font-size:17px;color:#DDE3E8;line-height:1.55;margin-bottom:6px}.flag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:2px;margin-top:10px}.flag.bad{background:rgba(192,57,43,.2);color:#E8897E;border:1px solid #C0392B}.flag.good{background:rgba(46,139,116,.18);color:#5FC5A8;border:1px solid var(--v14)}.hallu-controls{display:flex;gap:10px;padding:0 22px 22px;flex-wrap:wrap}.toggle{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:11px 16px;border:1px solid #3E5568;background:transparent;color:#B9C6D2;cursor:pointer;border-radius:2px;transition:all .2s}.toggle[aria-pressed="true"]{background:var(--v14);border-color:var(--v14);color:#fff}.hl-wrong{color:#E8897E;border-bottom:1px dashed #C0392B}.hl-right{color:#5FC5A8}.cite{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#6B8296}.close-wrap{text-align:center;padding:20px 0 10px}.close-wrap h2{font-size:clamp(28px,4.6vw,42px);max-width:640px;margin:0 auto 22px;font-weight:500}.close-wrap .lede{max-width:560px;margin:0 auto}footer{border-top:1px solid var(--v10);padding:40px 24px 70px;text-align:center;color:var(--v2);font-size:13.5px;font-family:"IBM Plex Mono",monospace;letter-spacing:.03em;line-height:1.9}footer a{color:var(--v13)}::selection{background:var(--v12);color:#fff}:focus-visible{outline:2px solid var(--v12);outline-offset:2px}</style></style>
+  
   <meta name="description" content="Frameworks, policies, controls, risk, mitigation, compliance — six words that sound like bureaucracy but describe one system. Trace a single rule end to end.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/grc-explained">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -296,12 +28,12 @@
   <meta name="twitter:image" content="https://www.loopingly.com/og/grc-explained.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Governance, risk and compliance, explained","description":"Frameworks, policies, controls, risk, mitigation, compliance — six words that sound like bureaucracy but describe one system. Trace a single rule end to end.","url":"https://www.loopingly.com/explorables/grc-explained","image":"https://www.loopingly.com/og/grc-explained.png","datePublished":"2026-07-26","dateModified":"2026-07-26","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Governance, risk and compliance"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Governance, risk and compliance explained"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
 <div class="progress" id="progress"></div>
 
-<!-- ========================= HERO ========================= -->
+
 <header class="hero">
   <div class="hero-grid"></div>
   <div class="hero-inner">
@@ -312,7 +44,7 @@
   <div class="scrollcue"><span>Scroll</span><span class="bar"></span></div>
 </header>
 
-<!-- ========================= WHY ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Why any of this exists</p>
@@ -326,7 +58,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= THREE PILLARS ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">The three letters</p>
@@ -356,7 +88,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= THE MACHINE (STICKY SCROLLY) ========================= -->
+
 <section class="chapter" style="padding-bottom:0">
   <div class="col prose reveal" style="margin-bottom:10px">
     <p class="eyebrow">How the pieces connect</p>
@@ -367,7 +99,7 @@
   <div class="scrolly" id="scrolly">
     <div class="scrolly-graphic">
       <svg class="machine" viewBox="0 0 400 460" id="machine" aria-hidden="true">
-        <!-- FRAMEWORK -->
+        
         <g class="layer" data-layer="framework">
           <rect x="40" y="20" width="320" height="60" rx="4" fill="none" stroke="#4A6D8C" stroke-width="1.5" stroke-dasharray="5 4"/>
           <text x="200" y="46" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#4A6D8C">FRAMEWORK</text>
@@ -375,7 +107,7 @@
         </g>
         <line class="flow-arrow" data-arrow="0" x1="200" y1="80" x2="200" y2="100" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
 
-        <!-- POLICY -->
+        
         <g class="layer" data-layer="policy">
           <rect x="60" y="100" width="280" height="58" rx="4" fill="#E3E6E9" stroke="#3C4C5A" stroke-width="1.5"/>
           <text x="200" y="125" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#3C4C5A">POLICY</text>
@@ -383,7 +115,7 @@
         </g>
         <line class="flow-arrow" data-arrow="1" x1="200" y1="158" x2="200" y2="178" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
 
-        <!-- CONTROL -->
+        
         <g class="layer" data-layer="control">
           <rect x="80" y="178" width="240" height="58" rx="4" fill="#14202B"/>
           <text x="200" y="203" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="11" letter-spacing="2" fill="#7FA8C9">CONTROL</text>
@@ -391,7 +123,7 @@
         </g>
         <line class="flow-arrow" data-arrow="2" x1="200" y1="236" x2="200" y2="262" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
 
-        <!-- RISK (shield being reduced) -->
+        
         <g class="layer" data-layer="risk">
           <path d="M200 262 L248 278 L248 316 Q248 348 200 366 Q152 348 152 316 L152 278 Z" fill="none" stroke="#D98A2B" stroke-width="1.5"/>
           <text x="200" y="308" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="10" letter-spacing="1.5" fill="#D98A2B">RISK</text>
@@ -399,7 +131,7 @@
         </g>
         <line class="flow-arrow" data-arrow="3" x1="200" y1="366" x2="200" y2="386" stroke="#6B7986" stroke-width="1.5" marker-end="url(#ah)"/>
 
-        <!-- COMPLIANCE (checkmark) -->
+        
         <g class="layer" data-layer="compliance">
           <rect x="90" y="386" width="220" height="54" rx="4" fill="none" stroke="#2E8B74" stroke-width="1.5"/>
           <path d="M120 413 l8 8 l16 -18" fill="none" stroke="#2E8B74" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -454,7 +186,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= FRAMEWORKS ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link one — Frameworks</p>
@@ -487,7 +219,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= POLICIES ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link two — Policies</p>
@@ -504,7 +236,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= CONTROLS ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link three — Controls</p>
@@ -519,7 +251,7 @@
         <button class="ctrl-tab" role="tab" aria-selected="false" data-t="corr">Corrective</button>
       </div>
       <div class="ctrl-body" id="ctrlBody">
-        <!-- filled by JS -->
+        
       </div>
     </div>
     <div class="col prose reveal" style="padding:34px 0 0;max-width:100%">
@@ -530,19 +262,19 @@
 
 <div class="divider"></div>
 
-<!-- ========================= RISK MATRIX ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link four — Risk</p>
     <h2 class="big">Two questions, one grid</h2>
     <p>You can't fix everything, so risk work forces a ruthless prioritization down to two questions: <em>how likely is this?</em> and <em>how badly would it hurt?</em> Plot every threat on those two axes and the grid tells you where to spend your limited attention. Red isn't "bad luck" — it's "deal with this first."</p>
   </div>
-  <div class="col reveal" style="max-width:var(--wide)">
+  <div class="col reveal" style="max-width:var(--v15)">
     <div class="matrix-panel">
       <p class="eyebrow">Live — the risk register, visualized</p>
       <div class="matrix-flex">
         <div class="matrix" id="matrix" aria-hidden="true">
-          <!-- built by JS -->
+          
         </div>
         <div class="matrix-side">
           <h4>Inherent vs. residual risk</h4>
@@ -565,7 +297,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= MITIGATION — FOUR T's ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link five — Mitigation</p>
@@ -602,7 +334,7 @@
 
 <div class="divider"></div>
 
-<!-- ========================= COMPLIANCE ========================= -->
+
 <section class="chapter">
   <div class="col prose reveal">
     <p class="eyebrow">Link six — Compliance</p>
@@ -634,7 +366,7 @@
   </div>
 </section>
 
-<!-- ========================= GENAI ========================= -->
+
 <section class="chapter genai">
   <div class="col prose reveal">
     <p class="eyebrow">The hardest thing the machine has held</p>
@@ -693,7 +425,7 @@
   </div>
 </section>
 
-<!-- ========================= CLOSE ========================= -->
+
 <section class="chapter">
   <div class="col close-wrap reveal">
     <p class="eyebrow" style="justify-content:center">The whole machine, running</p>
@@ -708,210 +440,8 @@
   Frameworks &amp; standards referenced: NIST CSF · ISO/IEC 27001 · SOC 2 · NIST AI RMF · ISO/IEC 42001 · EU AI Act.
 </footer>
 
-<script>
-(function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* progress bar */
-  var progress = document.getElementById('progress');
-  function onScroll(){
-    var h = document.documentElement;
-    var scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
-    progress.style.width = (scrolled*100) + '%';
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-
-  /* reveal on scroll */
-  var revObs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); revObs.unobserve(e.target);} });
-  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
-  document.querySelectorAll('.reveal').forEach(function(el){ revObs.observe(el); });
-
-  /* ---------- sticky machine stepper ---------- */
-  var layers = {
-    framework: document.querySelector('[data-layer="framework"]'),
-    policy: document.querySelector('[data-layer="policy"]'),
-    control: document.querySelector('[data-layer="control"]'),
-    risk: document.querySelector('[data-layer="risk"]'),
-    compliance: document.querySelector('[data-layer="compliance"]')
-  };
-  var arrows = document.querySelectorAll('.flow-arrow');
-  var order = ['framework','policy','control','risk','compliance'];
-
-  function setActive(name){
-    var idx = order.indexOf(name);
-    order.forEach(function(k,i){
-      var L = layers[k];
-      if(!L) return;
-      L.classList.toggle('dim', i > idx);
-      L.classList.toggle('hot', i === idx);
-    });
-    arrows.forEach(function(a){
-      var ai = parseInt(a.getAttribute('data-arrow'),10);
-      a.classList.toggle('show', ai < idx);
-    });
-  }
-  // start with only framework lit
-  setActive('framework');
-
-  var steps = document.querySelectorAll('.step');
-  var stepObs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        steps.forEach(function(s){ s.classList.remove('on'); });
-        e.target.classList.add('on');
-        setActive(e.target.getAttribute('data-step'));
-      }
-    });
-  }, {threshold:0.5});
-  steps.forEach(function(s){ stepObs.observe(s); });
-
-  /* ---------- control type tabs ---------- */
-  var ctrlData = {
-    prev: {
-      title:'Preventive controls',
-      when:'Act before the event',
-      body:'Stop the bad thing from happening in the first place. They\u2019re your first and cheapest line of defense \u2014 a locked door beats an alarm.',
-      egLbl:'In practice',
-      eg:'Multi-factor authentication \u00b7 encryption \u00b7 role-based access \u00b7 input validation \u00b7 mandatory approvals before a payment goes out.'
-    },
-    det: {
-      title:'Detective controls',
-      when:'Act during or after',
-      body:'Notice that something has gone wrong \u2014 or is going wrong right now \u2014 quickly enough to respond. They assume prevention will sometimes fail, and make sure you find out.',
-      egLbl:'In practice',
-      eg:'Log monitoring \u00b7 intrusion detection \u00b7 anomaly alerts \u00b7 the quarterly access review that catches the account nobody deactivated.'
-    },
-    corr: {
-      title:'Corrective controls',
-      when:'Act after the event',
-      body:'Limit the damage and restore normal once something has already happened. This is the difference between an incident and a catastrophe.',
-      egLbl:'In practice',
-      eg:'Backups and restore \u00b7 incident-response runbooks \u00b7 patching the exploited flaw \u00b7 revoking the compromised credential.'
-    }
-  };
-  var ctrlBody = document.getElementById('ctrlBody');
-  function renderCtrl(key){
-    var d = ctrlData[key];
-    ctrlBody.innerHTML =
-      '<div class="when">'+d.when+'</div>'+
-      '<h4>'+d.title+'</h4>'+
-      '<p>'+d.body+'</p>'+
-      '<div class="ctrl-eg"><span class="lbl">'+d.egLbl+'</span>'+d.eg+'</div>';
-  }
-  renderCtrl('prev');
-  document.querySelectorAll('.ctrl-tab').forEach(function(tab){
-    tab.addEventListener('click', function(){
-      document.querySelectorAll('.ctrl-tab').forEach(function(t){ t.setAttribute('aria-selected','false'); });
-      tab.setAttribute('aria-selected','true');
-      renderCtrl(tab.getAttribute('data-t'));
-    });
-  });
-
-  /* ---------- risk matrix ---------- */
-  var matrix = document.getElementById('matrix');
-  // color by score (likelihood*impact), 1..25
-  function scoreColor(s){
-    if(s <= 6) return '#2E8B74';
-    if(s <= 12) return '#7BA23F';
-    if(s <= 15) return '#D98A2B';
-    if(s <= 19) return '#CF6B2A';
-    return '#C0392B';
-  }
-  // build grid: top row is likelihood 5 (high) down to 1; we render rows high->low
-  var html = '';
-  // We'll place cells; add y-axis label spanning via first column per row
-  for(var row=0; row<5; row++){
-    var likelihood = 5 - row; // top row = highest likelihood
-    // y-axis cell
-    html += '<div class="axis-y" style="grid-row:'+(row+1)+';grid-column:1">'+(row===0?'LIKELY \u2191':(row===4?'\u2193 RARE':''))+'</div>';
-    for(var col=0; col<5; col++){
-      var impact = col+1;
-      var s = likelihood*impact;
-      html += '<div class="cell" data-l="'+likelihood+'" data-i="'+impact+'" style="grid-row:'+(row+1)+';grid-column:'+(col+2)+';background:'+scoreColor(s)+'" title="Likelihood '+likelihood+' \u00d7 Impact '+impact+' = '+s+'"></div>';
-    }
-  }
-  // x-axis row
-  html += '<div class="corner" style="grid-row:6;grid-column:1"></div>';
-  html += '<div class="axis-x" style="grid-row:6;grid-column:2 / span 5">LOW IMPACT &nbsp;\u2192&nbsp; SEVERE</div>';
-  // the moving dot
-  html += '<div class="dot" id="riskDot">R1</div>';
-  matrix.innerHTML = html;
-
-  var dot = document.getElementById('riskDot');
-  var rState = document.getElementById('rState');
-  var rScore = document.getElementById('rScore');
-  var applyBtn = document.getElementById('applyBtn');
-  var resetBtn = document.getElementById('resetBtn');
-
-  // inherent: likelihood 5 (top row=0), impact 4 (col index 3) -> high
-  // residual: likelihood 2, impact 3 -> medium/low
-  var positions = {
-    inherent: {row:0, col:3, l:5, i:4}, // top-ish, high
-    residual: {row:3, col:2, l:2, i:3}
-  };
-  function placeDot(state){
-    var p = positions[state];
-    // grid columns: col index 0 => grid-column 2. rows: row 0 => grid-row 1
-    // We position dot absolutely inside the matched cell using its bounding box.
-    var selector = '.cell[data-l="'+p.l+'"][data-i="'+p.i+'"]';
-    var cell = matrix.querySelector(selector);
-    if(!cell) return;
-    var mRect = matrix.getBoundingClientRect();
-    var cRect = cell.getBoundingClientRect();
-    var x = cRect.left - mRect.left + cRect.width/2;
-    var y = cRect.top - mRect.top + cRect.height/2;
-    dot.style.left = x + 'px';
-    dot.style.top = y + 'px';
-    dot.style.transform = 'translate(-50%,-50%)';
-    var s = p.l * p.i;
-    rState.textContent = state.charAt(0).toUpperCase()+state.slice(1);
-    rScore.textContent = s + ' / 25';
-    dot.style.borderColor = (state==='residual') ? '#2E8B74' : '#14202B';
-  }
-  var currentState = 'inherent';
-  function refresh(){ placeDot(currentState); }
-  applyBtn.addEventListener('click', function(){ currentState='residual'; refresh(); });
-  resetBtn.addEventListener('click', function(){ currentState='inherent'; refresh(); });
-  // place once matrix is laid out & on resize
-  var placed=false;
-  var mObs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting && !placed){ placed=true; setTimeout(refresh,60); } });
-  }, {threshold:0.2});
-  mObs.observe(matrix);
-  window.addEventListener('resize', function(){ if(placed) refresh(); });
-
-  /* ---------- hallucination demo ---------- */
-  var tGround = document.getElementById('tGround');
-  var tHuman = document.getElementById('tHuman');
-  var huAnswer = document.getElementById('huAnswer');
-  var huFlag = document.getElementById('huFlag');
-  var huStatus = document.getElementById('huStatus');
-  var g=false, h=false;
-  function renderHallu(){
-    if(!g && !h){
-      huStatus.textContent='Unguarded'; huStatus.style.color='#E8897E';
-      huAnswer.innerHTML='Our refund window is <span class="hl-wrong">45 days</span>, established in the <span class="hl-wrong">2019 Consumer Fairness Act, section&nbsp;12(b)</span>.';
-      huFlag.innerHTML='<span class="flag bad">\u26a0 Shipped as-is \u00b7 plausible, specific, and false</span>';
-    } else if(g && !h){
-      huStatus.textContent='Grounded'; huStatus.style.color='#5FC5A8';
-      huAnswer.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md \u00a72]</span> I couldn\u2019t find any law by that name, so I\u2019ve left it out.';
-      huFlag.innerHTML='<span class="flag good">\u2713 Answer tied to a real source \u00b7 the invented law is gone</span>';
-    } else if(!g && h){
-      huStatus.textContent='Held for review'; huStatus.style.color='#E0A85F';
-      huAnswer.innerHTML='<span style="opacity:.6">Our refund window is 45 days, established in the 2019 Consumer Fairness Act\u2026</span>';
-      huFlag.innerHTML='<span class="flag bad" style="border-color:#E0A85F;color:#E7B570;background:rgba(224,168,95,.15)">\u23f8 Paused \u00b7 a human must approve before this reaches the customer</span>';
-    } else {
-      huStatus.textContent='Grounded + reviewed'; huStatus.style.color='#5FC5A8';
-      huAnswer.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md \u00a72, approved by an agent]</span>';
-      huFlag.innerHTML='<span class="flag good">\u2713 Grounded, then checked by a person \u00b7 safe to send</span>';
-    }
-  }
-  tGround.addEventListener('click', function(){ g=!g; tGround.setAttribute('aria-pressed', g); renderHallu(); });
-  tHuman.addEventListener('click', function(){ h=!h; tHuman.setAttribute('aria-pressed', h); renderHallu(); });
-})();
+<script>!function(){window.matchMedia("(prefers-reduced-motion: reduce)").matches;var e=document.getElementById("progress");function t(){var t=document.documentElement,n=t.scrollTop/(t.scrollHeight-t.clientHeight);e.style.width=100*n+"%"}window.addEventListener("scroll",t,{passive:!0}),t();var n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),n.unobserve(e.target))})},{threshold:.12,rootMargin:"0px 0px -8% 0px"});document.querySelectorAll(".reveal").forEach(function(e){n.observe(e)});var r={framework:document.querySelector('[data-layer="framework"]'),policy:document.querySelector('[data-layer="policy"]'),control:document.querySelector('[data-layer="control"]'),risk:document.querySelector('[data-layer="risk"]'),compliance:document.querySelector('[data-layer="compliance"]')},o=document.querySelectorAll(".flow-arrow"),a=["framework","policy","control","risk","compliance"];function i(e){var t=a.indexOf(e);a.forEach(function(e,n){var o=r[e];o&&(o.classList.toggle("dim",n>t),o.classList.toggle("hot",n===t))}),o.forEach(function(e){var n=parseInt(e.getAttribute("data-arrow"),10);e.classList.toggle("show",n<t)})}i("framework");var s=document.querySelectorAll(".step"),c=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(s.forEach(function(e){e.classList.remove("on")}),e.target.classList.add("on"),i(e.target.getAttribute("data-step")))})},{threshold:.5});s.forEach(function(e){c.observe(e)});var l={prev:{title:"Preventive controls",when:"Act before the event",body:"Stop the bad thing from happening in the first place. They’re your first and cheapest line of defense — a locked door beats an alarm.",egLbl:"In practice",eg:"Multi-factor authentication · encryption · role-based access · input validation · mandatory approvals before a payment goes out."},det:{title:"Detective controls",when:"Act during or after",body:"Notice that something has gone wrong — or is going wrong right now — quickly enough to respond. They assume prevention will sometimes fail, and make sure you find out.",egLbl:"In practice",eg:"Log monitoring · intrusion detection · anomaly alerts · the quarterly access review that catches the account nobody deactivated."},corr:{title:"Corrective controls",when:"Act after the event",body:"Limit the damage and restore normal once something has already happened. This is the difference between an incident and a catastrophe.",egLbl:"In practice",eg:"Backups and restore · incident-response runbooks · patching the exploited flaw · revoking the compromised credential."}},d=document.getElementById("ctrlBody");function u(e){var t=l[e];d.innerHTML='<div class="when">'+t.when+"</div><h4>"+t.title+"</h4><p>"+t.body+'</p><div class="ctrl-eg"><span class="lbl">'+t.egLbl+"</span>"+t.eg+"</div>"}u("prev"),document.querySelectorAll(".ctrl-tab").forEach(function(e){e.addEventListener("click",function(){document.querySelectorAll(".ctrl-tab").forEach(function(e){e.setAttribute("aria-selected","false")}),e.setAttribute("aria-selected","true"),u(e.getAttribute("data-t"))})});var p=document.getElementById("matrix");function g(e){return e<=6?"#2E8B74":e<=12?"#7BA23F":e<=15?"#D98A2B":e<=19?"#CF6B2A":"#C0392B"}for(var h="",m=0;m<5;m++){var f=5-m;h+='<div class="axis-y" style="grid-row:'+(m+1)+';grid-column:1">'+(0===m?"LIKELY ↑":4===m?"↓ RARE":"")+"</div>";for(var y=0;y<5;y++){var v=y+1,w=f*v;h+='<div class="cell" data-l="'+f+'" data-i="'+v+'" style="grid-row:'+(m+1)+";grid-column:"+(y+2)+";background:"+g(w)+'" title="Likelihood '+f+" × Impact "+v+" = "+w+'"></div>'}}h+='<div class="corner" style="grid-row:6;grid-column:1"></div>',h+='<div class="axis-x" style="grid-row:6;grid-column:2 / span 5">LOW IMPACT &nbsp;→&nbsp; SEVERE</div>',h+='<div class="dot" id="riskDot">R1</div>',p.innerHTML=h;var b=document.getElementById("riskDot"),E=document.getElementById("rState"),L=document.getElementById("rScore"),A=document.getElementById("applyBtn"),I=document.getElementById("resetBtn"),B={inherent:{row:0,col:3,l:5,i:4},residual:{row:3,col:2,l:2,i:3}};var k="inherent";function C(){!function(e){var t=B[e],n='.cell[data-l="'+t.l+'"][data-i="'+t.i+'"]',r=p.querySelector(n);if(r){var o=p.getBoundingClientRect(),a=r.getBoundingClientRect(),i=a.left-o.left+a.width/2,s=a.top-o.top+a.height/2;b.style.left=i+"px",b.style.top=s+"px",b.style.transform="translate(-50%,-50%)";var c=t.l*t.i;E.textContent=e.charAt(0).toUpperCase()+e.slice(1),L.textContent=c+" / 25",b.style.borderColor="residual"===e?"#2E8B74":"#14202B"}}(k)}A.addEventListener("click",function(){k="residual",C()}),I.addEventListener("click",function(){k="inherent",C()});var x=!1;new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&!x&&(x=!0,setTimeout(C,60))})},{threshold:.2}).observe(p),window.addEventListener("resize",function(){x&&C()});var S=document.getElementById("tGround"),T=document.getElementById("tHuman"),H=document.getElementById("huAnswer"),M=document.getElementById("huFlag"),q=document.getElementById("huStatus"),F=!1,O=!1;function R(){F||O?F&&!O?(q.textContent="Grounded",q.style.color="#5FC5A8",H.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md §2]</span> I couldn’t find any law by that name, so I’ve left it out.',M.innerHTML='<span class="flag good">✓ Answer tied to a real source · the invented law is gone</span>'):!F&&O?(q.textContent="Held for review",q.style.color="#E0A85F",H.innerHTML='<span style="opacity:.6">Our refund window is 45 days, established in the 2019 Consumer Fairness Act…</span>',M.innerHTML='<span class="flag bad" style="border-color:#E0A85F;color:#E7B570;background:rgba(224,168,95,.15)">⏸ Paused · a human must approve before this reaches the customer</span>'):(q.textContent="Grounded + reviewed",q.style.color="#5FC5A8",H.innerHTML='Our refund window is <span class="hl-right">30 days</span> from delivery. <span class="cite">[source: refund-policy.md §2, approved by an agent]</span>',M.innerHTML='<span class="flag good">✓ Grounded, then checked by a person · safe to send</span>'):(q.textContent="Unguarded",q.style.color="#E8897E",H.innerHTML='Our refund window is <span class="hl-wrong">45 days</span>, established in the <span class="hl-wrong">2019 Consumer Fairness Act, section&nbsp;12(b)</span>.',M.innerHTML='<span class="flag bad">⚠ Shipped as-is · plausible, specific, and false</span>')}S.addEventListener("click",function(){F=!F,S.setAttribute("aria-pressed",F),R()}),T.addEventListener("click",function(){O=!O,T.setAttribute("aria-pressed",O),R()})}();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>

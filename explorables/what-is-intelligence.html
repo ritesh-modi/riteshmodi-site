@@ -7,128 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Faustina:ital,wght@0,500;0,600;0,700;1,500&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --paper:#F6F3EF; --paper-2:#EBE5DE; --card:#FCFAF7;
-  --ink:#1E1A1C; --ink-soft:#4A4247; --ink-faint:#83787D; --rule:#DBD2CA;
-  --accent:#9C3A5F; --accent-soft:#C0728E;
-  --yes:#3A6F53; --no:#A8452F; --grey:#6E6B78;
-  --maxw:680px; --wide:1080px; --pad:26px;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
-.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-section{padding:86px 0}
-h1,h2,h3{font-family:"Faustina",Georgia,serif;line-height:1.14;margin:0}
-h2{font-size:clamp(28px,4.2vw,42px);font-weight:700;letter-spacing:-.018em;margin:0 0 22px;text-wrap:balance}
-h3{font-size:21px;font-weight:700;margin:0 0 10px}
-p{margin:0 0 22px}
-strong{font-weight:600}
-a{color:var(--accent)}
-.divider{max-width:var(--maxw);margin:0 auto;height:1px;background:var(--rule)}
-.lede{font-size:clamp(20px,2.5vw,25px);line-height:1.5;color:var(--ink-soft)}
-
-/* ---------- hero: a definition on trial ----------
-   data-hero="definitions-that-fail-both-ways". The piece's atom is the failing test: every
-   definition of intelligence admits something that passes it without being intelligent, and
-   excludes something that is. So the opening hands the reader four definitions and shows,
-   for each, the false positive and the false negative that break it. */
-.hero{padding:84px 0 70px}
-.hero .hmeta{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin:0 0 22px}
-.hero h1{font-size:clamp(34px,6vw,68px);font-weight:700;letter-spacing:-.028em}
-.hero h1 span{display:block}
-.hero .lede{margin:26px 0 0;max-width:620px}
-.trial{max-width:600px;margin:0 0 30px;border:1px solid var(--rule);border-radius:10px;background:var(--card);overflow:hidden}
-.trial .tdef{padding:20px 22px 6px;font-family:"Faustina",serif;font-size:22px;line-height:1.35;font-weight:600}
-.trial .tdef em{font-style:italic;color:var(--accent)}
-.tsplit{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border-top:1px solid var(--rule);margin-top:16px}
-@media(max-width:560px){.tsplit{grid-template-columns:1fr}}
-.tcell{background:var(--card);padding:15px 18px}
-.tcell h4{margin:0 0 6px;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:400}
-.tcell .tv{font-size:16px;line-height:1.45}
-.tcell.fp .tv{color:var(--no)} .tcell.fn .tv{color:var(--grey)}
-.tctl{padding:12px 18px;border-top:1px solid var(--rule);display:flex;gap:7px;flex-wrap:wrap}
-
-/* ---------- shared ---------- */
-.fig{background:var(--card);border:1px solid var(--rule);border-radius:10px;margin:30px 0;overflow:hidden}
-.fig-h{padding:13px 20px;border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.fig-b{padding:24px 22px}
-.cap{font-size:14.5px;color:var(--ink-faint);margin-top:14px;line-height:1.55}
-.btn{font-family:var(--mono);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--accent);color:#fff;border:none;border-radius:5px;transition:opacity .2s}
-.btn:hover{opacity:.88}
-.btn:disabled{opacity:.4;cursor:default}
-.btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--ink-soft)}
-.btn.sm{font-size:11.5px;padding:7px 12px}
-.note{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}
-.note b{color:var(--ink)}
-.pull{font-family:"Faustina",serif;font-weight:600;font-size:clamp(22px,3.1vw,30px);line-height:1.3;border-left:3px solid var(--accent);padding-left:24px;margin:36px 0;text-wrap:balance}
-table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px}
-th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);border-bottom:1px solid var(--rule);padding:9px 11px;font-weight:400}
-td{padding:11px;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.5}
-tr:last-child td{border-bottom:none}
-.chips{display:flex;gap:7px;flex-wrap:wrap}
-.chip{font-family:var(--mono);font-size:11.5px;padding:7px 12px;border:1px solid var(--rule);border-radius:5px;background:var(--paper);cursor:pointer;color:var(--ink-soft);transition:all .16s}
-.chip:hover{border-color:var(--accent)}
-.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.out{margin-top:16px;padding:17px 19px;border-radius:8px;background:var(--paper-2);font-size:16px;line-height:1.56;min-height:80px}
-.out .ol{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:7px}
-.big{font-family:"Faustina",serif;font-weight:700;font-size:36px;line-height:1;letter-spacing:-.02em}
-.slider{width:100%;accent-color:var(--accent)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:640px){.two{grid-template-columns:1fr}}
-.card2{border:1px solid var(--rule);border-radius:8px;padding:16px 18px;background:var(--paper)}
-.card2 h4{margin:0 0 8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:400}
-.rows{display:flex;flex-direction:column;gap:7px}
-.row{display:grid;grid-template-columns:186px 1fr 104px;gap:11px;align-items:center;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft)}
-@media(max-width:640px){.row{grid-template-columns:112px 1fr 78px;font-size:11.5px}}
-.row .rk{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .rb{height:14px;background:var(--paper-2);border-radius:3px;overflow:hidden}
-.row .rb i{display:block;height:100%;width:0;border-radius:3px;background:var(--rule);transition:width .5s cubic-bezier(.4,0,.2,1)}
-.row .rv{text-align:right;font-variant-numeric:tabular-nums}
-.row.top .rk{color:var(--accent);font-weight:500}
-.row.top .rb i{background:var(--accent)} .row.top .rv{color:var(--accent)}
-.row.bad .rb i{background:var(--no)} .row.bad .rv,.row.bad .rk{color:var(--no)}
-.row.gd .rb i{background:var(--yes)} .row.gd .rv,.row.gd .rk{color:var(--yes)}
-
-/* ---------- the hidden-answer question, the signature element ---------- */
-.q{border:2px solid var(--rule);border-radius:12px;background:var(--card);margin:32px 0;overflow:hidden}
-.q .qh{padding:10px 20px;font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--rule);background:var(--paper-2)}
-.q .qb{padding:20px 22px}
-.q .qt{font-family:"Faustina",serif;font-size:22px;font-weight:600;line-height:1.35;margin:0 0 6px}
-.q .qs{font-size:15.5px;color:var(--ink-faint);line-height:1.5;margin:0 0 16px}
-.q .qopts{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-.qo{border:1px solid var(--rule);border-radius:7px;background:var(--paper);padding:11px 15px;cursor:pointer;font:inherit;text-align:left;font-size:16px;line-height:1.4;transition:all .16s}
-.qo:hover{border-color:var(--accent)}
-.qo.picked{background:var(--accent);border-color:var(--accent);color:#fff}
-.q .qa{display:none;border-top:1px dashed var(--rule);padding-top:16px;font-size:16.5px;line-height:1.6}
-.q.open .qa{display:block}
-.q.open .qopts{opacity:.55;pointer-events:none}
-.q .qa .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px}
-.q .qhint{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
-
-/* ---------- quadrant ---------- */
-.quad{position:relative;border:1px solid var(--rule);border-radius:8px;background:var(--paper);aspect-ratio:1.35;min-height:280px}
-.quad .ax{position:absolute;background:var(--rule)}
-.quad .axh{left:0;right:0;top:50%;height:1px}
-.quad .axv{top:0;bottom:0;left:50%;width:1px}
-.quad .lbl{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
-.quad .dot{position:absolute;transform:translate(-50%,-50%);background:var(--accent);color:#fff;border-radius:999px;padding:5px 11px;font-size:12.5px;font-family:var(--mono);white-space:nowrap;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1)}
-.quad .dot.dim{background:var(--paper-2);color:var(--ink-faint)}
-
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-footer{border-top:1px solid var(--rule);padding:40px var(--pad) 70px;text-align:center;color:var(--ink-faint);font-size:13.5px;font-family:var(--mono);line-height:1.9}
-footer a{color:var(--accent)}
-::selection{background:var(--accent);color:#fff}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media(max-width:640px){body{font-size:17.5px}section{padding:64px 0}}
-</style>
-  <!-- seo:begin -->
+<style>:root{--v11:#F6F3EF;--v12:#EBE5DE;--v2:#FCFAF7;--v4:#1E1A1C;--v6:#4A4247;--v5:#83787D;--v13:#DBD2CA;--v0:#9C3A5F;--v1:#C0728E;--v15:#3A6F53;--v9:#A8452F;--v3:#6E6B78;--v7:680px;--v14:1080px;--v10:26px;--v8:"JetBrains Mono",ui-monospace,Menlo,monospace}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v11);color:var(--v4);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v7);margin:0 auto;padding:0 var(--v10);position:relative}.wide{max-width:var(--v14);margin:0 auto;padding:0 var(--v10)}section{padding:86px 0}h1,h2,h3{font-family:"Faustina",Georgia,serif;line-height:1.14;margin:0}h2{font-size:clamp(28px,4.2vw,42px);font-weight:700;letter-spacing:-.018em;margin:0 0 22px;text-wrap:balance}h3{font-size:21px;font-weight:700;margin:0 0 10px}p{margin:0 0 22px}strong{font-weight:600}a{color:var(--v0)}.divider{max-width:var(--v7);margin:0 auto;height:1px;background:var(--v13)}.lede{font-size:clamp(20px,2.5vw,25px);line-height:1.5;color:var(--v6)}.hero{padding:84px 0 70px}.hero .hmeta{font-family:var(--v8);font-size:12px;color:var(--v5);margin:0 0 22px}.hero h1{font-size:clamp(34px,6vw,68px);font-weight:700;letter-spacing:-.028em}.hero h1 span{display:block}.hero .lede{margin:26px 0 0;max-width:620px}.trial{max-width:600px;margin:0 0 30px;border:1px solid var(--v13);border-radius:10px;background:var(--v2);overflow:hidden}.trial .tdef{padding:20px 22px 6px;font-family:"Faustina",serif;font-size:22px;line-height:1.35;font-weight:600}.trial .tdef em{font-style:italic;color:var(--v0)}.tsplit{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--v13);border-top:1px solid var(--v13);margin-top:16px}@media(max-width:560px){.tsplit{grid-template-columns:1fr}}.tcell{background:var(--v2);padding:15px 18px}.tcell h4{margin:0 0 6px;font-family:var(--v8);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--v5);font-weight:400}.tcell .tv{font-size:16px;line-height:1.45}.tcell.fp .tv{color:var(--v9)}.tcell.fn .tv{color:var(--v3)}.tctl{padding:12px 18px;border-top:1px solid var(--v13);display:flex;gap:7px;flex-wrap:wrap}.fig{background:var(--v2);border:1px solid var(--v13);border-radius:10px;margin:30px 0;overflow:hidden}.fig-h{padding:13px 20px;border-bottom:1px solid var(--v13);font-family:var(--v8);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--v5);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.fig-b{padding:24px 22px}.cap{font-size:14.5px;color:var(--v5);margin-top:14px;line-height:1.55}.btn{font-family:var(--v8);font-size:12.5px;padding:10px 16px;cursor:pointer;background:var(--v0);color:#fff;border:none;border-radius:5px;transition:opacity .2s}.btn:hover{opacity:.88}.btn:disabled{opacity:.4;cursor:default}.btn.ghost{background:transparent;border:1px solid var(--v13);color:var(--v6)}.btn.sm{font-size:11.5px;padding:7px 12px}.note{background:var(--v12);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:19px 22px;margin:28px 0;font-size:17.5px;line-height:1.6}.note b{color:var(--v4)}.pull{font-family:"Faustina",serif;font-weight:600;font-size:clamp(22px,3.1vw,30px);line-height:1.3;border-left:3px solid var(--v0);padding-left:24px;margin:36px 0;text-wrap:balance}table{width:100%;border-collapse:collapse;margin:24px 0;font-size:15.5px}th{text-align:left;font-family:var(--v8);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--v5);border-bottom:1px solid var(--v13);padding:9px 11px;font-weight:400}td{padding:11px;border-bottom:1px solid var(--v13);vertical-align:top;line-height:1.5}tr:last-child td{border-bottom:none}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{font-family:var(--v8);font-size:11.5px;padding:7px 12px;border:1px solid var(--v13);border-radius:5px;background:var(--v11);cursor:pointer;color:var(--v6);transition:all .16s}.chip:hover{border-color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}.out{margin-top:16px;padding:17px 19px;border-radius:8px;background:var(--v12);font-size:16px;line-height:1.56;min-height:80px}.out .ol{font-family:var(--v8);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:7px}.big{font-family:"Faustina",serif;font-weight:700;font-size:36px;line-height:1;letter-spacing:-.02em}.slider{width:100%;accent-color:var(--v0)}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:640px){.two{grid-template-columns:1fr}}.card2{border:1px solid var(--v13);border-radius:8px;padding:16px 18px;background:var(--v11)}.card2 h4{margin:0 0 8px;font-family:var(--v8);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--v5);font-weight:400}.rows{display:flex;flex-direction:column;gap:7px}.row{display:grid;grid-template-columns:186px 1fr 104px;gap:11px;align-items:center;font-family:var(--v8);font-size:12.5px;color:var(--v6)}@media(max-width:640px){.row{grid-template-columns:112px 1fr 78px;font-size:11.5px}}.row .rk{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row .rb{height:14px;background:var(--v12);border-radius:3px;overflow:hidden}.row .rb i{display:block;height:100%;width:0;border-radius:3px;background:var(--v13);transition:width .5s cubic-bezier(.4,0,.2,1)}.row .rv{text-align:right;font-variant-numeric:tabular-nums}.row.top .rk{color:var(--v0);font-weight:500}.row.top .rb i{background:var(--v0)}.row.top .rv{color:var(--v0)}.row.bad .rb i{background:var(--v9)}.row.bad .rv,.row.bad .rk{color:var(--v9)}.row.gd .rb i{background:var(--v15)}.row.gd .rv,.row.gd .rk{color:var(--v15)}.q{border:2px solid var(--v13);border-radius:12px;background:var(--v2);margin:32px 0;overflow:hidden}.q .qh{padding:10px 20px;font-family:var(--v8);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--v0);border-bottom:1px solid var(--v13);background:var(--v12)}.q .qb{padding:20px 22px}.q .qt{font-family:"Faustina",serif;font-size:22px;font-weight:600;line-height:1.35;margin:0 0 6px}.q .qs{font-size:15.5px;color:var(--v5);line-height:1.5;margin:0 0 16px}.q .qopts{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}.qo{border:1px solid var(--v13);border-radius:7px;background:var(--v11);padding:11px 15px;cursor:pointer;font:inherit;text-align:left;font-size:16px;line-height:1.4;transition:all .16s}.qo:hover{border-color:var(--v0)}.qo.picked{background:var(--v0);border-color:var(--v0);color:#fff}.q .qa{display:none;border-top:1px dashed var(--v13);padding-top:16px;font-size:16.5px;line-height:1.6}.q.open .qa{display:block}.q.open .qopts{opacity:.55;pointer-events:none}.q .qa .lab{font-family:var(--v8);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:8px}.q .qhint{font-family:var(--v8);font-size:11.5px;color:var(--v5)}.quad{position:relative;border:1px solid var(--v13);border-radius:8px;background:var(--v11);aspect-ratio:1.35;min-height:280px}.quad .ax{position:absolute;background:var(--v13)}.quad .axh{left:0;right:0;top:50%;height:1px}.quad .axv{top:0;bottom:0;left:50%;width:1px}.quad .lbl{position:absolute;font-family:var(--v8);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--v5)}.quad .dot{position:absolute;transform:translate(-50%,-50%);background:var(--v0);color:#fff;border-radius:999px;padding:5px 11px;font-size:12.5px;font-family:var(--v8);white-space:nowrap;cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1)}.quad .dot.dim{background:var(--v12);color:var(--v5)}.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}footer{border-top:1px solid var(--v13);padding:40px var(--v10) 70px;text-align:center;color:var(--v5);font-size:13.5px;font-family:var(--v8);line-height:1.9}footer a{color:var(--v0)}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media(max-width:640px){body{font-size:17.5px}section{padding:64px 0}}</style></style>
+  
   <meta name="description" content="Every definition of intelligence lets in something that is not, and shuts out something that is. Break four of them yourself, then answer the harder questions.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/what-is-intelligence">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -148,11 +28,11 @@ footer a{color:var(--accent)}
   <meta name="twitter:image" content="https://www.loopingly.com/og/what-is-intelligence.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"What is intelligence, and does AI have any of it?","description":"Every definition of intelligence lets in something that is not, and shuts out something that is. Break four of them yourself, then answer the harder questions.","url":"https://www.loopingly.com/explorables/what-is-intelligence","image":"https://www.loopingly.com/og/what-is-intelligence.png","datePublished":"2026-08-01","dateModified":"2026-08-01","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Definitions of intelligence and machine intelligence"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"What is intelligence?"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
 
-<header class="hero" data-hero="definitions-that-fail-both-ways">
+<header class="hero">
   <div class="col">
     <p class="hmeta">a question with no settled answer &middot; and it matters more every year</p>
     <div class="trial">
@@ -178,7 +58,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>what the crow had to do</span><span id="crowLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>what the crow had to do</span><span id="crowLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="rows" id="crowRows"></div>
         <div class="out" id="crowOut"></div>
@@ -225,7 +105,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>hold a definition and see what it lets in</span><span id="defLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>hold a definition and see what it lets in</span><span id="defLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="chips" id="defChips"></div>
         <div class="two" style="margin-top:18px">
@@ -275,7 +155,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>what a test can and cannot reach</span><span id="testLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>what a test can and cannot reach</span><span id="testLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="chips" id="testChips"></div>
         <div class="rows" id="testRows" style="margin-top:18px"></div>
@@ -317,7 +197,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>things that required intelligence, until they didn&rsquo;t</span><span id="effLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>things that required intelligence, until they didn&rsquo;t</span><span id="effLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="rows" id="effRows"></div>
         <div class="out" id="effOut"></div>
@@ -366,7 +246,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>hard for a person, or hard for a machine?</span><span id="movLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>hard for a person, or hard for a machine?</span><span id="movLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="chips" id="movChips"></div>
         <div class="rows" id="movRows" style="margin-top:18px"></div>
@@ -393,7 +273,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>a claim, and what the evidence does to it</span><span id="aiLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>a claim, and what the evidence does to it</span><span id="aiLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="chips" id="aiChips"></div>
         <div class="out" id="aiFor"></div>
@@ -436,7 +316,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>capable, and conscious, are different axes</span><span id="qdLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>capable, and conscious, are different axes</span><span id="qdLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="quad" id="quad">
           <div class="ax axh"></div><div class="ax axv"></div>
@@ -501,7 +381,7 @@ footer a{color:var(--accent)}
   </div>
   <div class="wide reveal">
     <div class="fig">
-      <div class="fig-h"><span>the question you cannot answer, and the ones you can</span><span id="swLab" style="font-family:var(--mono);font-size:12px;color:var(--ink-faint)"></span></div>
+      <div class="fig-h"><span>the question you cannot answer, and the ones you can</span><span id="swLab" style="font-family:var(--v8);font-size:12px;color:var(--v5)"></span></div>
       <div class="fig-b">
         <div class="chips" id="swChips"></div>
         <div class="two" style="margin-top:18px">
@@ -538,250 +418,9 @@ footer a{color:var(--accent)}
   <div><a href="/explorables">&larr; more explorables</a></div>
 </footer>
 
-<script>
-(function(){
-"use strict";
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});
-document.querySelectorAll(".reveal").forEach(function(e){io.observe(e)});
-function el(id){return document.getElementById(id)}
-function chips(host,items,onPick,start){
-  host.innerHTML="";
-  items.forEach(function(t){var b=document.createElement("button");b.className="chip";b.type="button";b.innerHTML=t;host.appendChild(b)});
-  var all=[].slice.call(host.querySelectorAll(".chip"));
-  all.forEach(function(b,i){b.addEventListener("click",function(){
-    all.forEach(function(x){x.classList.remove("on")});b.classList.add("on");onPick(i);
-  })});
-  var k=start||0;all[k].classList.add("on");onPick(k);
-}
-/* forced reflow, never rAF: rAF is suspended in a hidden tab and bars would stick at zero */
-function bars(host,rows){
-  host.innerHTML="";
-  var max=Math.max.apply(null,rows.map(function(r){return r[1]}))||1;
-  var fills=rows.map(function(r){
-    var d=document.createElement("div");
-    d.className="row"+(r[2]===1?" top":r[2]===2?" bad":r[2]===3?" gd":"");
-    d.innerHTML='<span class="rk">'+r[0]+'</span><span class="rb"><i></i></span><span class="rv">'+r[3]+'</span>';
-    host.appendChild(d);return [d.querySelector("i"),r[1]/max*100];
-  });
-  void host.offsetWidth;
-  fills.forEach(function(f){f[0].style.width=f[1]+"%"});
-}
-
-/* ---------- the hidden-answer questions ---------- */
-document.querySelectorAll(".q").forEach(function(q){
-  q.querySelectorAll(".qo").forEach(function(o){
-    o.addEventListener("click",function(){
-      q.querySelectorAll(".qo").forEach(function(x){x.classList.remove("picked")});
-      o.classList.add("picked");
-      var n=q.querySelector("#q7note");
-      if(n) n.textContent="noted. that one is yours to keep.";
-    });
-  });
-  var btn=q.querySelector("[data-reveal]");
-  if(btn) btn.addEventListener("click",function(){
-    q.classList.add("open");
-    btn.disabled=true;
-    btn.textContent="revealed";
-  });
-});
-
-/* ---------- hero: a definition on trial ---------- */
-(function(){
-  var D=[
-   ["solving a problem you have never seen before",
-    "A calculator handed an arithmetic problem no human has ever typed before. Genuinely novel, genuinely solved, and nobody thinks it counts.",
-    "A person who is deeply, obviously intelligent but is asleep. Solving nothing at all, right now."],
-   ["learning from experience",
-    "A spam filter. It learns continuously from millions of corrections and nobody would call it intelligent.",
-    "Someone who cannot form new memories. Their reasoning in the moment can be excellent, and they learn nothing from it."],
-   ["using language",
-    "A language model, fluent across every register and topic. Which is precisely the thing being argued about.",
-    "A person who has lost the use of language after a stroke, whose reasoning about the world is entirely intact."],
-   ["pursuing goals and adapting to reach them",
-    "A bacterium swimming up a nutrient gradient. Goal, adaptation, feedback. Also: a thermostat.",
-    "Someone doing pure mathematics for its own sake, adapting to nothing and pursuing no outcome at all."]
-  ];
-  chips(el("trChips"),D.map(function(d,i){return ["novelty","learning","language","goals"][i]}),function(i){
-    el("trDef").textContent=D[i][0];
-    el("trFP").textContent=D[i][1];
-    el("trFN").textContent=D[i][2];
-  });
-})();
-
-/* ---------- the crow ---------- */
-(function(){
-  var S=[
-   ["see the food is out of reach",25,"The situation has to be represented as a problem at all &mdash; a gap between how things are and how they could be."],
-   ["notice the wire is relevant",45,"Nothing about a piece of wire announces itself as a tool. It has to be seen as a candidate for a job it has never done."],
-   ["work out that straight will not do",65,"This requires modelling a thing that does not yet exist: the wire in a shape it is not currently in."],
-   ["bend it into a hook",80,"Physical execution, first attempt, with no practice and no demonstration."],
-   ["retrieve the food",100,"And the whole sequence has to hold together long enough to finish, with the goal maintained throughout."]
-  ];
-  var at=0;
-  function paint(){
-    bars(el("crowRows"),S.slice(0,at+1).map(function(s,i){return [s[0],s[1],i===at?1:0,i===at?"now":"done"]}));
-    el("crowLab").textContent="step "+(at+1)+" of "+S.length;
-    el("crowOut").innerHTML='<span class="ol">'+S[at][0]+'</span>'+S[at][2];
-    el("crowNext").disabled=at>=S.length-1;
-  }
-  el("crowNext").addEventListener("click",function(){if(at<S.length-1){at++;paint()}});
-  el("crowReset").addEventListener("click",function(){at=0;paint()});
-  paint();
-})();
-
-/* ---------- four definitions ---------- */
-(function(){
-  var D=[
-   ["novelty","Intelligence is solving problems you have not seen before.",
-    "It captures what impressed us about the crow exactly: no training, no demonstration, a new situation handled. It is also the definition most AI benchmarks are built around, which is not a coincidence.",
-    "Any search algorithm handed a new input. Novelty is cheap &mdash; every arithmetic problem a calculator solves is new to it.",
-    "The moment you add &ldquo;but the problem has to be genuinely hard&rdquo; you are defining intelligence in terms of intelligence, and the definition has quietly eaten itself."],
-   ["learning","Intelligence is learning from experience.",
-    "It explains development, expertise and the difference between a novice and a master. It also matches what we build: every modern AI system is defined by learning from data.",
-    "A thermostat with a schedule. A spam filter. Any system with a feedback loop, however trivial &mdash; and there are billions of them.",
-    "And it excludes the wrong people. Someone unable to form new memories has not stopped being intelligent, which means learning cannot be the thing itself."],
-   ["language","Intelligence is the capacity for language and abstraction.",
-    "It is the strongest single candidate for what makes humans unusual, and much of what we mean by thought does seem to run on it.",
-    "A language model. This is the entire argument in one line: fluent, abstract, wide-ranging language, produced by something most people are unwilling to call intelligent.",
-    "And it excludes people with aphasia, whose reasoning about the world can be entirely unimpaired. Also every non-human animal, which makes the crow inexplicable."],
-   ["goals","Intelligence is pursuing goals and adapting to achieve them.",
-    "It is the most operational definition available, which is why economics and AI research both lean on it. It also scales: you can measure how well a goal is achieved.",
-    "A bacterium. A thermostat. A guided missile. Every homeostatic process in your own body, none of which you would call intelligent.",
-    "And it excludes play, curiosity, and pure mathematics &mdash; activities with no external goal that we consider among the highest expressions of the thing."]
-  ];
-  chips(el("defChips"),D.map(function(d){return d[0]}),function(i){
-    var d=D[i];
-    el("defFor").innerHTML=d[2];
-    el("defIn").innerHTML=d[3];
-    el("defOut").innerHTML='<span class="ol">and what it wrongly excludes</span>'+d[4];
-    el("defLab").textContent=d[1];
-  });
-})();
-
-/* ---------- what a test reaches ---------- */
-(function(){
-  var T=[
-   ["what it measures well",[["pattern completion",92,3,"reliable"],["working memory",86,3,"reliable"],["processing speed",88,3,"reliable"],["vocabulary",80,3,"reliable"]],
-    "These are genuinely measurable, stable within a person, and correlated with each other. That correlation is real and it needs explaining. Nothing here is fraudulent."],
-   ["what it measures poorly",[["practical judgement",34,0,"weak"],["creativity",26,0,"weak"],["social reasoning",30,0,"weak"],["knowing which problem matters",14,2,"barely"]],
-    "Each of these is something we unhesitatingly call intelligence in a person. None is well captured, and the last one &mdash; choosing what is worth working on &mdash; may be the single most consequential cognitive act there is."],
-   ["what it cannot reach at all",[["understanding",4,2,"no"],["experience",4,2,"no"],["whether it means anything to the thing",4,2,"no"]],
-    "Not &ldquo;difficult to measure&rdquo;. Not reachable in principle by a test of behaviour, because every one of these is a claim about the inside, and a test only ever sees the outside."]
-  ];
-  chips(el("testChips"),T.map(function(t){return t[0]}),function(i){
-    bars(el("testRows"),T[i][1]);
-    el("testOut").innerHTML='<span class="ol">'+T[i][0]+'</span>'+T[i][2];
-    el("testLab").textContent=T[i][0];
-  });
-})();
-
-/* ---------- the AI effect ---------- */
-(function(){
-  var E=[
-   ["arithmetic","before mechanical calculators","Doing long division was once a paid profession and a mark of a trained mind. It stopped counting so long ago that it is hard to believe it ever did."],
-   ["chess","1997","Held for decades as the exemplar of pure reasoning. A machine beat the world champion, and within a few years chess was reclassified as &ldquo;just search&rdquo; &mdash; which it always had been."],
-   ["Go","2016","Said to be safe for decades because it needed intuition rather than calculation. It fell, and the same reclassification followed within about a year."],
-   ["fluent language","the 2020s","Long treated as the clearest line between us and everything else. Now produced at will, and the argument has moved to whether producing it requires understanding it."],
-   ["whatever is next","&mdash;","The pattern has held every single time. It would be strange to assume it stops now, and stranger to assume you would notice from inside it."]
-  ];
-  var at=0;
-  function paint(){
-    bars(el("effRows"),E.slice(0,at+1).map(function(e,i){return [e[0],(i+1)*20,i===at?1:0,e[1]]}));
-    el("effLab").textContent=E[at][1];
-    el("effOut").innerHTML='<span class="ol">'+E[at][0]+'</span>'+E[at][2];
-    el("effNext").disabled=at>=E.length-1;
-  }
-  el("effNext").addEventListener("click",function(){if(at<E.length-1){at++;paint()}});
-  el("effReset").addEventListener("click",function(){at=0;paint()});
-  paint();
-})();
-
-/* ---------- Moravec inversion ---------- */
-(function(){
-  var M=[
-   ["how hard it feels to a person",[["proving a theorem",100,2,"very hard"],["playing chess well",84,2,"hard"],["passing an exam",70,2,"hard"],["holding a conversation",30,0,"easy"],["recognising a face",10,3,"effortless"],["picking up a mug",6,3,"effortless"]],
-    "This is the ranking our definition of intelligence was built from &mdash; and it is a ranking of how much conscious effort a task costs, which is a fact about our introspection rather than about the task."],
-   ["how hard it turned out to be for a machine",[["picking up a mug",100,2,"still hard"],["recognising a face",62,0,"solved recently"],["holding a conversation",58,0,"solved recently"],["passing an exam",30,3,"solved"],["playing chess well",14,3,"solved 1997"],["proving a theorem",22,3,"largely solved"]],
-    "Almost exactly inverted. The prestigious, effortful tasks fell first and cheaply. The ones a two-year-old does without noticing are still, in the general case, unsolved."]
-  ];
-  chips(el("movChips"),M.map(function(m){return m[0]}),function(i){
-    bars(el("movRows"),M[i][1]);
-    el("movOut").innerHTML='<span class="ol">'+M[i][0]+'</span>'+M[i][2];
-    el("movLab").textContent=i===0?"our intuition":"reality";
-  });
-})();
-
-/* ---------- claims about AI ---------- */
-(function(){
-  var C=[
-   ["it is just predicting the next word",
-    "True as a description of the training objective, and it does explain a great deal &mdash; including the confident errors, which are exactly what next-token prediction produces when the plausible answer is wrong.",
-    "And it may prove less than it seems. &ldquo;It is just neurons firing&rdquo; is equally true of you, and nobody accepts it as an argument that you do not understand anything. A mechanism being simple to state does not bound what it can do."],
-   ["it does not really understand",
-    "Supported by how the failures look. Competence that vanishes one step from where it worked is not what understanding usually looks like, and the errors often reveal no model of the thing being discussed.",
-    "But the claim needs a test, and nobody has one. Every behavioural test proposed has either been passed, or would also be failed by some person we consider to understand perfectly well."],
-   ["it is superhuman in places",
-    "Straightforwardly true, and getting truer. Breadth of recall, speed, and performance on many specific tasks exceed any individual person by a wide margin.",
-    "And it is oddly shaped. Superhuman here, below a child one step away, with no correlation between the two &mdash; which is itself strong evidence against intelligence being a single general quantity."],
-   ["it cannot be intelligent, it has no body",
-    "A serious position. Much of human cognition is built out of acting in a physical world, and a system trained only on descriptions may have learned the shadow rather than the thing.",
-    "But the same argument once ruled out a machine ever playing Go well, on the grounds that it needed intuition. Arguments from what a system lacks have a poor track record here."]
-  ];
-  chips(el("aiChips"),C.map(function(c,i){return "claim "+(i+1)}),function(i){
-    el("aiFor").innerHTML='<span class="ol">&ldquo;'+C[i][0]+'&rdquo; &mdash; the case for</span>'+C[i][1];
-    el("aiAgainst").innerHTML='<span class="ol">and the case against</span>'+C[i][2];
-    el("aiLab").textContent="claim "+(i+1)+" of 4";
-  });
-})();
-
-/* ---------- the capable / conscious quadrant ---------- */
-(function(){
-  var THINGS=[
-   ["a thermostat",8,6,"Nobody argues about this one, in either direction. It is the fixed point everyone agrees on."],
-   ["a bacterium",14,20,"Pursues goals, adapts, responds. Almost nobody grants it experience &mdash; but ask why, and the answer is usually about size and similarity."],
-   ["an insect",30,38,"Navigates, learns, solves small problems. Whether anything is happening from the inside is genuinely contested among people who study it."],
-   ["a crow",58,72,"The one this page opened with. Most people place it high on both axes without hesitation, and cannot say what evidence settles the second."],
-   ["a dog",52,80,"Placed high on experience by almost everyone, and lower on capability than the crow. Notice that the horizontal position tracks how much we live alongside it."],
-   ["a language model",86,10,"Far right on capability. Placed at the extreme left on experience by most people &mdash; and this is the placement with the least defensible justification on the whole grid."],
-   ["another person",74,98,"You cannot observe the inside of this one either. You infer it from similarity, the same tool you refused to accept for everything else on this grid."]
-  ];
-  var quad=el("quad"),dots=[];
-  THINGS.forEach(function(t,i){
-    var d=document.createElement("button");
-    d.className="dot dim"; d.type="button"; d.textContent=t[0];
-    d.style.left=t[2]+"%"; d.style.top=(100-t[1])+"%";
-    quad.appendChild(d); dots.push(d);
-  });
-  chips(el("qdChips"),THINGS.map(function(t){return t[0]}),function(i){
-    dots.forEach(function(d,j){d.classList.toggle("dim",j!==i)});
-    el("qdOut").innerHTML='<span class="ol">'+THINGS[i][0]+'</span>'+THINGS[i][3];
-    el("qdLab").textContent=THINGS[i][0];
-  });
-})();
-
-/* ---------- what survives ---------- */
-(function(){
-  var S=[
-   ["capability","What can it do, and under exactly what conditions does it stop working?",
-    "This is answerable, and it is what you needed. &ldquo;Is it intelligent&rdquo; never told you whether to deploy something; the shape of its competence does.",
-    "Notice that this question has an answer for the crow, the slime mould, the language model and the person, without any of them needing to be sorted into a category first."],
-   ["reliability","How do we know when it is wrong, and how quickly do we find out?",
-    "The failures on this page &mdash; confident falsehoods, competence that vanishes one step away &mdash; are all reliability questions wearing philosophical clothes.",
-    "A system you can check is safer than a more capable one you cannot, whatever either of them turns out to be."],
-   ["consequence","Who is affected when it is wrong, and what recourse do they have?",
-    "This is the only one of the three that is genuinely urgent, and it is entirely independent of the definitional question.",
-    "You do not need to know whether a system is intelligent to know that it declined someone&rsquo;s loan and nobody can say why. The philosophy can stay unresolved; that cannot."]
-  ];
-  chips(el("swChips"),S.map(function(s){return s[0]}),function(i){
-    el("swAsk").innerHTML=S[i][1];
-    el("swWhy").innerHTML=S[i][2];
-    el("swOut").innerHTML='<span class="ol">'+S[i][0]+'</span>'+S[i][3];
-    el("swLab").textContent=S[i][0];
-  });
-})();
-})();
+<script>!function(){"use strict";var e,t,n,a,o,i,s,r,l=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),l.unobserve(e.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});function h(e){return document.getElementById(e)}function d(e,t,n,a){e.innerHTML="",t.forEach(function(t){var n=document.createElement("button");n.className="chip",n.type="button",n.innerHTML=t,e.appendChild(n)});var o=[].slice.call(e.querySelectorAll(".chip"));o.forEach(function(e,t){e.addEventListener("click",function(){o.forEach(function(e){e.classList.remove("on")}),e.classList.add("on"),n(t)})});var i=a||0;o[i].classList.add("on"),n(i)}function c(e,t){e.innerHTML="";var n=Math.max.apply(null,t.map(function(e){return e[1]}))||1,a=t.map(function(t){var a=document.createElement("div");return a.className="row"+(1===t[2]?" top":2===t[2]?" bad":3===t[2]?" gd":""),a.innerHTML='<span class="rk">'+t[0]+'</span><span class="rb"><i></i></span><span class="rv">'+t[3]+"</span>",e.appendChild(a),[a.querySelector("i"),t[1]/n*100]});e.offsetWidth,a.forEach(function(e){e[0].style.width=e[1]+"%"})}document.querySelectorAll(".reveal").forEach(function(e){l.observe(e)}),document.querySelectorAll(".q").forEach(function(e){e.querySelectorAll(".qo").forEach(function(t){t.addEventListener("click",function(){e.querySelectorAll(".qo").forEach(function(e){e.classList.remove("picked")}),t.classList.add("picked");var n=e.querySelector("#q7note");n&&(n.textContent="noted. that one is yours to keep.")})});var t=e.querySelector("[data-reveal]");t&&t.addEventListener("click",function(){e.classList.add("open"),t.disabled=!0,t.textContent="revealed"})}),e=[["solving a problem you have never seen before","A calculator handed an arithmetic problem no human has ever typed before. Genuinely novel, genuinely solved, and nobody thinks it counts.","A person who is deeply, obviously intelligent but is asleep. Solving nothing at all, right now."],["learning from experience","A spam filter. It learns continuously from millions of corrections and nobody would call it intelligent.","Someone who cannot form new memories. Their reasoning in the moment can be excellent, and they learn nothing from it."],["using language","A language model, fluent across every register and topic. Which is precisely the thing being argued about.","A person who has lost the use of language after a stroke, whose reasoning about the world is entirely intact."],["pursuing goals and adapting to reach them","A bacterium swimming up a nutrient gradient. Goal, adaptation, feedback. Also: a thermostat.","Someone doing pure mathematics for its own sake, adapting to nothing and pursuing no outcome at all."]],d(h("trChips"),e.map(function(e,t){return["novelty","learning","language","goals"][t]}),function(t){h("trDef").textContent=e[t][0],h("trFP").textContent=e[t][1],h("trFN").textContent=e[t][2]}),function(){var e=[["see the food is out of reach",25,"The situation has to be represented as a problem at all &mdash; a gap between how things are and how they could be."],["notice the wire is relevant",45,"Nothing about a piece of wire announces itself as a tool. It has to be seen as a candidate for a job it has never done."],["work out that straight will not do",65,"This requires modelling a thing that does not yet exist: the wire in a shape it is not currently in."],["bend it into a hook",80,"Physical execution, first attempt, with no practice and no demonstration."],["retrieve the food",100,"And the whole sequence has to hold together long enough to finish, with the goal maintained throughout."]],t=0;function n(){c(h("crowRows"),e.slice(0,t+1).map(function(e,n){return[e[0],e[1],n===t?1:0,n===t?"now":"done"]})),h("crowLab").textContent="step "+(t+1)+" of "+e.length,h("crowOut").innerHTML='<span class="ol">'+e[t][0]+"</span>"+e[t][2],h("crowNext").disabled=t>=e.length-1}h("crowNext").addEventListener("click",function(){t<e.length-1&&(t++,n())}),h("crowReset").addEventListener("click",function(){t=0,n()}),n()}(),function(){var e=[["novelty","Intelligence is solving problems you have not seen before.","It captures what impressed us about the crow exactly: no training, no demonstration, a new situation handled. It is also the definition most AI benchmarks are built around, which is not a coincidence.","Any search algorithm handed a new input. Novelty is cheap &mdash; every arithmetic problem a calculator solves is new to it.","The moment you add &ldquo;but the problem has to be genuinely hard&rdquo; you are defining intelligence in terms of intelligence, and the definition has quietly eaten itself."],["learning","Intelligence is learning from experience.","It explains development, expertise and the difference between a novice and a master. It also matches what we build: every modern AI system is defined by learning from data.","A thermostat with a schedule. A spam filter. Any system with a feedback loop, however trivial &mdash; and there are billions of them.","And it excludes the wrong people. Someone unable to form new memories has not stopped being intelligent, which means learning cannot be the thing itself."],["language","Intelligence is the capacity for language and abstraction.","It is the strongest single candidate for what makes humans unusual, and much of what we mean by thought does seem to run on it.","A language model. This is the entire argument in one line: fluent, abstract, wide-ranging language, produced by something most people are unwilling to call intelligent.","And it excludes people with aphasia, whose reasoning about the world can be entirely unimpaired. Also every non-human animal, which makes the crow inexplicable."],["goals","Intelligence is pursuing goals and adapting to achieve them.","It is the most operational definition available, which is why economics and AI research both lean on it. It also scales: you can measure how well a goal is achieved.","A bacterium. A thermostat. A guided missile. Every homeostatic process in your own body, none of which you would call intelligent.","And it excludes play, curiosity, and pure mathematics &mdash; activities with no external goal that we consider among the highest expressions of the thing."]];d(h("defChips"),e.map(function(e){return e[0]}),function(t){var n=e[t];h("defFor").innerHTML=n[2],h("defIn").innerHTML=n[3],h("defOut").innerHTML='<span class="ol">and what it wrongly excludes</span>'+n[4],h("defLab").textContent=n[1]})}(),t=[["what it measures well",[["pattern completion",92,3,"reliable"],["working memory",86,3,"reliable"],["processing speed",88,3,"reliable"],["vocabulary",80,3,"reliable"]],"These are genuinely measurable, stable within a person, and correlated with each other. That correlation is real and it needs explaining. Nothing here is fraudulent."],["what it measures poorly",[["practical judgement",34,0,"weak"],["creativity",26,0,"weak"],["social reasoning",30,0,"weak"],["knowing which problem matters",14,2,"barely"]],"Each of these is something we unhesitatingly call intelligence in a person. None is well captured, and the last one &mdash; choosing what is worth working on &mdash; may be the single most consequential cognitive act there is."],["what it cannot reach at all",[["understanding",4,2,"no"],["experience",4,2,"no"],["whether it means anything to the thing",4,2,"no"]],"Not &ldquo;difficult to measure&rdquo;. Not reachable in principle by a test of behaviour, because every one of these is a claim about the inside, and a test only ever sees the outside."]],d(h("testChips"),t.map(function(e){return e[0]}),function(e){c(h("testRows"),t[e][1]),h("testOut").innerHTML='<span class="ol">'+t[e][0]+"</span>"+t[e][2],h("testLab").textContent=t[e][0]}),function(){var e=[["arithmetic","before mechanical calculators","Doing long division was once a paid profession and a mark of a trained mind. It stopped counting so long ago that it is hard to believe it ever did."],["chess","1997","Held for decades as the exemplar of pure reasoning. A machine beat the world champion, and within a few years chess was reclassified as &ldquo;just search&rdquo; &mdash; which it always had been."],["Go","2016","Said to be safe for decades because it needed intuition rather than calculation. It fell, and the same reclassification followed within about a year."],["fluent language","the 2020s","Long treated as the clearest line between us and everything else. Now produced at will, and the argument has moved to whether producing it requires understanding it."],["whatever is next","&mdash;","The pattern has held every single time. It would be strange to assume it stops now, and stranger to assume you would notice from inside it."]],t=0;function n(){c(h("effRows"),e.slice(0,t+1).map(function(e,n){return[e[0],20*(n+1),n===t?1:0,e[1]]})),h("effLab").textContent=e[t][1],h("effOut").innerHTML='<span class="ol">'+e[t][0]+"</span>"+e[t][2],h("effNext").disabled=t>=e.length-1}h("effNext").addEventListener("click",function(){t<e.length-1&&(t++,n())}),h("effReset").addEventListener("click",function(){t=0,n()}),n()}(),n=[["how hard it feels to a person",[["proving a theorem",100,2,"very hard"],["playing chess well",84,2,"hard"],["passing an exam",70,2,"hard"],["holding a conversation",30,0,"easy"],["recognising a face",10,3,"effortless"],["picking up a mug",6,3,"effortless"]],"This is the ranking our definition of intelligence was built from &mdash; and it is a ranking of how much conscious effort a task costs, which is a fact about our introspection rather than about the task."],["how hard it turned out to be for a machine",[["picking up a mug",100,2,"still hard"],["recognising a face",62,0,"solved recently"],["holding a conversation",58,0,"solved recently"],["passing an exam",30,3,"solved"],["playing chess well",14,3,"solved 1997"],["proving a theorem",22,3,"largely solved"]],"Almost exactly inverted. The prestigious, effortful tasks fell first and cheaply. The ones a two-year-old does without noticing are still, in the general case, unsolved."]],d(h("movChips"),n.map(function(e){return e[0]}),function(e){c(h("movRows"),n[e][1]),h("movOut").innerHTML='<span class="ol">'+n[e][0]+"</span>"+n[e][2],h("movLab").textContent=0===e?"our intuition":"reality"}),a=[["it is just predicting the next word","True as a description of the training objective, and it does explain a great deal &mdash; including the confident errors, which are exactly what next-token prediction produces when the plausible answer is wrong.","And it may prove less than it seems. &ldquo;It is just neurons firing&rdquo; is equally true of you, and nobody accepts it as an argument that you do not understand anything. A mechanism being simple to state does not bound what it can do."],["it does not really understand","Supported by how the failures look. Competence that vanishes one step from where it worked is not what understanding usually looks like, and the errors often reveal no model of the thing being discussed.","But the claim needs a test, and nobody has one. Every behavioural test proposed has either been passed, or would also be failed by some person we consider to understand perfectly well."],["it is superhuman in places","Straightforwardly true, and getting truer. Breadth of recall, speed, and performance on many specific tasks exceed any individual person by a wide margin.","And it is oddly shaped. Superhuman here, below a child one step away, with no correlation between the two &mdash; which is itself strong evidence against intelligence being a single general quantity."],["it cannot be intelligent, it has no body","A serious position. Much of human cognition is built out of acting in a physical world, and a system trained only on descriptions may have learned the shadow rather than the thing.","But the same argument once ruled out a machine ever playing Go well, on the grounds that it needed intuition. Arguments from what a system lacks have a poor track record here."]],d(h("aiChips"),a.map(function(e,t){return"claim "+(t+1)}),function(e){h("aiFor").innerHTML='<span class="ol">&ldquo;'+a[e][0]+"&rdquo; &mdash; the case for</span>"+a[e][1],h("aiAgainst").innerHTML='<span class="ol">and the case against</span>'+a[e][2],h("aiLab").textContent="claim "+(e+1)+" of 4"}),o=[["a thermostat",8,6,"Nobody argues about this one, in either direction. It is the fixed point everyone agrees on."],["a bacterium",14,20,"Pursues goals, adapts, responds. Almost nobody grants it experience &mdash; but ask why, and the answer is usually about size and similarity."],["an insect",30,38,"Navigates, learns, solves small problems. Whether anything is happening from the inside is genuinely contested among people who study it."],["a crow",58,72,"The one this page opened with. Most people place it high on both axes without hesitation, and cannot say what evidence settles the second."],["a dog",52,80,"Placed high on experience by almost everyone, and lower on capability than the crow. Notice that the horizontal position tracks how much we live alongside it."],["a language model",86,10,"Far right on capability. Placed at the extreme left on experience by most people &mdash; and this is the placement with the least defensible justification on the whole grid."],["another person",74,98,"You cannot observe the inside of this one either. You infer it from similarity, the same tool you refused to accept for everything else on this grid."]],i=h("quad"),s=[],o.forEach(function(e,t){var n=document.createElement("button");n.className="dot dim",n.type="button",n.textContent=e[0],n.style.left=e[2]+"%",n.style.top=100-e[1]+"%",i.appendChild(n),s.push(n)}),d(h("qdChips"),o.map(function(e){return e[0]}),function(e){s.forEach(function(t,n){t.classList.toggle("dim",n!==e)}),h("qdOut").innerHTML='<span class="ol">'+o[e][0]+"</span>"+o[e][3],h("qdLab").textContent=o[e][0]}),r=[["capability","What can it do, and under exactly what conditions does it stop working?","This is answerable, and it is what you needed. &ldquo;Is it intelligent&rdquo; never told you whether to deploy something; the shape of its competence does.","Notice that this question has an answer for the crow, the slime mould, the language model and the person, without any of them needing to be sorted into a category first."],["reliability","How do we know when it is wrong, and how quickly do we find out?","The failures on this page &mdash; confident falsehoods, competence that vanishes one step away &mdash; are all reliability questions wearing philosophical clothes.","A system you can check is safer than a more capable one you cannot, whatever either of them turns out to be."],["consequence","Who is affected when it is wrong, and what recourse do they have?","This is the only one of the three that is genuinely urgent, and it is entirely independent of the definitional question.","You do not need to know whether a system is intelligent to know that it declined someone&rsquo;s loan and nobody can say why. The philosophy can stay unresolved; that cannot."]],d(h("swChips"),r.map(function(e){return e[0]}),function(e){h("swAsk").innerHTML=r[e][1],h("swWhy").innerHTML=r[e][2],h("swOut").innerHTML='<span class="ol">'+r[e][0]+"</span>"+r[e][3],h("swLab").textContent=r[e][0]})}();
 </script>
 
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>

@@ -7,196 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Chivo:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --paper:#E8E2CE; --paper-2:#DCD5BB; --ink:#1A1C14; --ink-soft:#454838;
-    --ink-faint:#6A6C58; --rule:#C9C2A6; --accent:#2C6142;
-    --panel:#171A14; --panel-ink:#E2DFCB;
-    --risk:#9E3B26; --warn:#A9781C; --safe:#2C6142;
-    --b1:#3A6B4A; --b2:#8A5A18; --b3:#9E3B26; --b4:#6B4A7A;
-    --b5:#2F5A78; --b6:#7A6A24; --b7:#1F6B6B; --b8:#8C3A5A;
-    --maxw:680px; --wide:1080px; --pad:26px;
-    --disp:"Bitter",Georgia,serif;
-    --body:"Chivo",system-ui,sans-serif;
-    --mono:"DM Mono",ui-monospace,Menlo,monospace;
-    --f-lab:12px; --f-sm:15px; --f-bod:19px; --f-mid:24px; --f-h3:32px; --f-h2:46px; --f-hero:88px;
-    --t:.5s cubic-bezier(.4,0,.2,1);
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
-
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
-    font-size:var(--f-bod);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-
-  /* ---- width tiers ---- */
-  .col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
-  .wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-  .wide-hero{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
-  .bleed{width:100%;margin:0}
-  section{padding:clamp(72px,9vw,128px) 0}
-  section + section{border-top:1px solid var(--rule)}
-
-  h1,h2{font-family:var(--disp);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}
-  h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px;max-width:15em}
-  h3{font-family:var(--disp);font-weight:500;font-size:clamp(23px,2.6vw,32px);
-     line-height:1.16;letter-spacing:-.012em;margin:0 0 16px}
-  p{margin:0 0 22px}
-  b,strong{font-weight:600}
-  code{font-family:var(--mono);font-size:var(--f-sm);background:var(--paper-2);
-       padding:2px 6px;border-radius:3px;color:var(--ink)}
-  a{color:var(--accent)}
-
-  .lede{font-family:var(--body);font-weight:400;font-size:clamp(20px,2.2vw,24px);
-        line-height:1.44;color:var(--ink-soft);max-width:26em}
-  .lede-meta{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.14em;
-        text-transform:uppercase;color:var(--ink-faint);margin:26px 0 0}
-
-  /* ---- HERO: the machine writes a line, beads shown under each word ---- */
-  header{padding:clamp(60px,9vw,116px) 0 clamp(40px,6vw,72px)}
-  h1{font-size:clamp(42px,8vw,88px);max-width:11em}
-  .wide-hero .lede{margin:34px 0 0}
-
-  /* ---- figure frame: the only figure container ---- */
-  .fig{border:1px solid var(--rule);background:var(--paper-2);border-radius:5px;
-    margin:34px 0 0;overflow:hidden}
-  .fig-head{padding:13px 20px;border-bottom:1px solid var(--rule);
-    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-  .fig-body{padding:30px 30px;background:var(--paper)}
-  .fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;
-    padding:15px 20px;border-top:1px solid var(--rule);background:var(--paper-2)}
-  .fig-ctl label{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.06em;
-    color:var(--ink-faint);white-space:nowrap}
-  .fig-cap{font-family:var(--mono);font-size:var(--f-lab);line-height:1.66;color:var(--ink-faint);
-    padding:13px 20px;border-top:1px solid var(--rule)}
-  .fig-cap b{color:var(--accent);font-weight:500}
-  .fig-read{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-faint);
-    letter-spacing:.06em;text-align:right}
-  .fig-read b{color:var(--accent);font-weight:500}
-  .fig-out{font-family:var(--mono);font-size:var(--f-sm);line-height:1.9;color:var(--ink-soft);
-    background:var(--paper-2);border-radius:4px;padding:16px 18px;margin:22px 0 0}
-  .fig-out b{color:var(--ink);font-weight:500}
-  .fig-out i{color:var(--ink-faint);font-style:normal}
-  .fig svg{display:block;width:100%;height:auto;touch-action:none}
-  .fig-slide{flex:1;min-width:180px;display:flex;align-items:center;gap:12px}
-  @media(max-width:760px){
-    .fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-    .fig-body svg{min-width:600px}
-    .fig-body::-webkit-scrollbar{height:6px}
-    .fig-body::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}
-  }
-
-  /* ---- callouts ---- */
-  .fig-lab{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.1em;
-    text-transform:uppercase;color:var(--ink-faint)}
-  .intu{border-left:3px solid var(--accent);background:var(--paper-2);
-    border-radius:0 5px 5px 0;padding:22px 26px;margin:32px 0;line-height:1.6}
-  .intu i{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);font-style:normal;display:block;margin-bottom:11px}
-  .intu p{margin:0}
-  .intu b{font-weight:600}
-  .note{background:var(--paper-2);border-radius:4px;padding:20px 24px;margin:30px 0 0;
-    font-size:var(--f-sm);line-height:1.7;color:var(--ink-soft)}
-  .note b{color:var(--ink);font-weight:600}
-  .note-hint{background:none;text-align:center;color:var(--ink-faint);border:0;width:100%;
-    font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.09em;cursor:pointer;
-    padding:40px 0;margin:0}
-  .note-hint kbd{font-family:var(--mono);border:1px solid var(--rule);border-radius:3px;
-    padding:2px 7px;color:var(--ink-soft);background:var(--paper-2)}
-  .note-hint:hover,.note-hint:focus-visible{color:var(--accent)}
-  .pull{font-family:var(--disp);font-weight:500;font-size:clamp(23px,2.6vw,32px);
-    line-height:1.26;letter-spacing:-.014em;color:var(--accent);
-    border-left:3px solid var(--accent);padding-left:28px;margin:44px 0}
-
-  /* ---- controls ---- */
-  .chip{font-family:var(--mono);font-size:var(--f-lab);letter-spacing:.03em;
-    padding:9px 14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);
-    color:var(--ink-soft);cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t)}
-  .chip:hover{border-color:var(--accent);color:var(--accent)}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:var(--paper)}
-  .chip.up{border-color:var(--safe);color:var(--safe)}
-  .chip.down{border-color:var(--risk);color:var(--risk)}
-  input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:0}
-
-  /* ---- dark panel ---- */
-  .panel{background:var(--panel);color:var(--panel-ink);border-radius:5px;
-    padding:28px 30px;margin:32px 0 0;font-family:var(--mono);font-size:var(--f-sm);
-    line-height:1.85;overflow-x:auto}
-  .panel b{color:#C8A54E;font-weight:500}
-  .panel i{color:#8E8C74;font-style:normal}
-  .panel.weeds{background:none;color:var(--ink);padding:0;margin:0;
-    font-family:var(--body);font-size:var(--f-bod);overflow:visible}
-  .panel.weeds[hidden]{display:none}
-  .panel.weeds details{border-top:1px solid var(--rule);padding:20px 0}
-  .panel.weeds summary{font-family:var(--disp);font-weight:500;font-size:var(--f-bod);
-    cursor:pointer;letter-spacing:-.01em}
-  .panel.weeds summary::marker{color:var(--accent)}
-  .panel.weeds p{margin:16px 0 0;font-size:var(--f-sm);line-height:1.75;color:var(--ink-soft)}
-
-  /* ---- progress: corner dial ---- */
-  .rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;
-    display:flex;align-items:center;justify-content:center;border-radius:50%;
-    background:var(--paper-2);border:1px solid var(--rule)}
-  .rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-  .rail circle{fill:none;stroke-width:2.5}
-  .rail .tk{stroke:var(--rule)}
-  .rail .fl{stroke:var(--accent);stroke-linecap:round}
-  .rail span{font-family:var(--mono);font-size:var(--f-lab);color:var(--ink-soft)}
-  @media(max-width:640px){.rail{display:none}}
-
-  /* ---- scrollytelling (width tier + modifier, no new frames) ---- */
-  .bleed.scrolly{position:relative;display:grid;gap:5vw;
-    grid-template-columns:minmax(0,1fr) minmax(0,420px);
-    max-width:1280px;margin:0 auto;padding:0 var(--pad)}
-  .wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;
-    display:flex;align-items:center;justify-content:center}
-  .bleed.scrolly > *{min-width:0}
-  .wide.sg > *{width:100%;max-width:600px;min-width:0}
-  .col.ss{padding:38vh 0 42vh;max-width:none}
-  .col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;
-    opacity:.26;transition:opacity .35s;cursor:pointer;max-width:none;padding:0}
-  .col.stp.on{opacity:1}
-  .col.stp p{font-size:var(--f-mid);line-height:1.42;margin:0;color:var(--ink-soft)}
-  .col.stp.on p{color:var(--ink)}
-  [data-gel]{opacity:.1;transition:opacity var(--t)}
-  [data-gel].show{opacity:1}
-  @media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}
-  @media(max-width:900px){
-    .bleed.scrolly{grid-template-columns:1fr;gap:0}
-    .wide.sg{order:-1;width:100%;height:44vh;background:var(--paper);
-      border-bottom:1px solid var(--rule);z-index:5}
-    .col.ss{padding:4vh 0 12vh}
-    .col.stp{min-height:auto;margin:28px 0}
-    .col.stp p{font-size:var(--f-bod)}
-  }
-
-  /* ---- prose to figure coupling ---- */
-  .ref{border-bottom:1px dotted var(--accent);cursor:help}
-  .ref.hot{background:var(--paper-2)}
-  .fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}
-
-  /* ---- the atom: a bead ---- */
-  .bd{transition:opacity var(--t)}
-  .bd.drawn{stroke:var(--ink);stroke-width:2.5}
-  .bd.fresh{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:3 2.5}
-  .bd.gone{fill:none;stroke:var(--rule);stroke-width:1.5;opacity:.55}
-  .bx{fill:var(--paper);stroke:var(--rule);stroke-width:1.5}
-  .bx.sel{stroke:var(--accent);stroke-width:3}
-  .lb{font-family:var(--mono);fill:var(--ink-faint);letter-spacing:.03em}
-  .vl{font-family:var(--mono);fill:var(--ink)}
-  .wd{font-family:var(--disp);font-weight:500;fill:var(--ink);letter-spacing:-.01em}
-  .tgt{fill:rgba(0,0,0,0);cursor:pointer}
-
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
-  .reveal.in{opacity:1;transform:none}
-  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
-
-  footer{padding:70px 0 90px;color:var(--ink-faint);font-size:var(--f-sm);line-height:1.8}
-  footer a{color:var(--ink-soft)}
-  ::selection{background:var(--accent);color:var(--paper)}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-</style>
-  <!-- seo:begin -->
+<style>:root{--v26:#E8E2CE;--v27:#DCD5BB;--v18:#1A1C14;--v20:#454838;--v19:#6A6C58;--v29:#C9C2A6;--v0:#2C6142;--v24:#171A14;--v25:#E2DFCB;--v28:#9E3B26;--v32:#A9781C;--v30:#2C6142;--v1:#3A6B4A;--v2:#8A5A18;--v3:#9E3B26;--v4:#6B4A7A;--v5:#2F5A78;--v6:#7A6A24;--v7:#1F6B6B;--v8:#8C3A5A;--v21:680px;--v33:1080px;--v23:26px;--v10:"Bitter",Georgia,serif;--v9:"Chivo",system-ui,sans-serif;--v22:"DM Mono",ui-monospace,Menlo,monospace;--v15:12px;--v17:15px;--v11:19px;--v16:24px;--v13:32px;--v12:46px;--v14:88px;--v31:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v31:0s}}body{margin:0;background:var(--v26);color:var(--v18);font-family:var(--v9);font-size:var(--v11);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v21);margin:0 auto;padding:0 var(--v23);position:relative}.wide{max-width:var(--v33);margin:0 auto;padding:0 var(--v23)}.wide-hero{max-width:var(--v33);margin:0 auto;padding:0 var(--v23)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v29)}h1,h2{font-family:var(--v10);font-weight:700;line-height:1.04;letter-spacing:-.02em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px;max-width:15em}h3{font-family:var(--v10);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.16;letter-spacing:-.012em;margin:0 0 16px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v22);font-size:var(--v17);background:var(--v27);padding:2px 6px;border-radius:3px;color:var(--v18)}a{color:var(--v0)}.lede{font-family:var(--v9);font-weight:400;font-size:clamp(20px,2.2vw,24px);line-height:1.44;color:var(--v20);max-width:26em}.lede-meta{font-family:var(--v22);font-size:var(--v15);letter-spacing:.14em;text-transform:uppercase;color:var(--v19);margin:26px 0 0}header{padding:clamp(60px,9vw,116px) 0 clamp(40px,6vw,72px)}h1{font-size:clamp(42px,8vw,88px);max-width:11em}.wide-hero .lede{margin:34px 0 0}.fig{border:1px solid var(--v29);background:var(--v27);border-radius:5px;margin:34px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v29);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-body{padding:30px 30px;background:var(--v26)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:15px 20px;border-top:1px solid var(--v29);background:var(--v27)}.fig-ctl label{font-family:var(--v22);font-size:var(--v15);letter-spacing:.06em;color:var(--v19);white-space:nowrap}.fig-cap{font-family:var(--v22);font-size:var(--v15);line-height:1.66;color:var(--v19);padding:13px 20px;border-top:1px solid var(--v29)}.fig-cap b{color:var(--v0);font-weight:500}.fig-read{font-family:var(--v22);font-size:var(--v15);color:var(--v19);letter-spacing:.06em;text-align:right}.fig-read b{color:var(--v0);font-weight:500}.fig-out{font-family:var(--v22);font-size:var(--v17);line-height:1.9;color:var(--v20);background:var(--v27);border-radius:4px;padding:16px 18px;margin:22px 0 0}.fig-out b{color:var(--v18);font-weight:500}.fig-out i{color:var(--v19);font-style:normal}.fig svg{display:block;width:100%;height:auto;touch-action:none}.fig-slide{flex:1;min-width:180px;display:flex;align-items:center;gap:12px}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:600px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v29);border-radius:3px}}.fig-lab{font-family:var(--v22);font-size:var(--v15);letter-spacing:.1em;text-transform:uppercase;color:var(--v19)}.intu{border-left:3px solid var(--v0);background:var(--v27);border-radius:0 5px 5px 0;padding:22px 26px;margin:32px 0;line-height:1.6}.intu i{font-family:var(--v22);font-size:var(--v15);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu p{margin:0}.intu b{font-weight:600}.note{background:var(--v27);border-radius:4px;padding:20px 24px;margin:30px 0 0;font-size:var(--v17);line-height:1.7;color:var(--v20)}.note b{color:var(--v18);font-weight:600}.note-hint{background:none;text-align:center;color:var(--v19);border:0;width:100%;font-family:var(--v22);font-size:var(--v15);letter-spacing:.09em;cursor:pointer;padding:40px 0;margin:0}.note-hint kbd{font-family:var(--v22);border:1px solid var(--v29);border-radius:3px;padding:2px 7px;color:var(--v20);background:var(--v27)}.note-hint:hover,.note-hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v10);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.26;letter-spacing:-.014em;color:var(--v0);border-left:3px solid var(--v0);padding-left:28px;margin:44px 0}.chip{font-family:var(--v22);font-size:var(--v15);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v29);border-radius:3px;background:var(--v26);color:var(--v20);cursor:pointer;transition:background var(--v31),color var(--v31),border-color var(--v31)}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v26)}.chip.up{border-color:var(--v30);color:var(--v30)}.chip.down{border-color:var(--v28);color:var(--v28)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v24);color:var(--v25);border-radius:5px;padding:28px 30px;margin:32px 0 0;font-family:var(--v22);font-size:var(--v17);line-height:1.85;overflow-x:auto}.panel b{color:#C8A54E;font-weight:500}.panel i{color:#8E8C74;font-style:normal}.panel.weeds{background:none;color:var(--v18);padding:0;margin:0;font-family:var(--v9);font-size:var(--v11);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v29);padding:20px 0}.panel.weeds summary{font-family:var(--v10);font-weight:500;font-size:var(--v11);cursor:pointer;letter-spacing:-.01em}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:16px 0 0;font-size:var(--v17);line-height:1.75;color:var(--v20)}.rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v27);border:1px solid var(--v29)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v29)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v22);font-size:var(--v15);color:var(--v20)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v23)}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.bleed.scrolly > *{min-width:0}.wide.sg > *{width:100%;max-width:600px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;opacity:.26;transition:opacity .35s;cursor:pointer;max-width:none;padding:0}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v16);line-height:1.42;margin:0;color:var(--v20)}.col.stp.on p{color:var(--v18)}[data-gel]{opacity:.1;transition:opacity var(--v31)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly{grid-template-columns:1fr;gap:0}.wide.sg{order:-1;width:100%;height:44vh;background:var(--v26);border-bottom:1px solid var(--v29);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;margin:28px 0}.col.stp p{font-size:var(--v11)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v27)}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}.bd{transition:opacity var(--v31)}.bd.drawn{stroke:var(--v18);stroke-width:2.5}.bd.fresh{stroke:var(--v0);stroke-width:2.5;stroke-dasharray:3 2.5}.bd.gone{fill:none;stroke:var(--v29);stroke-width:1.5;opacity:.55}.bx{fill:var(--v26);stroke:var(--v29);stroke-width:1.5}.bx.sel{stroke:var(--v0);stroke-width:3}.lb{font-family:var(--v22);fill:var(--v19);letter-spacing:.03em}.vl{font-family:var(--v22);fill:var(--v18)}.wd{font-family:var(--v10);font-weight:500;fill:var(--v18);letter-spacing:-.01em}.tgt{fill:rgba(0,0,0,0);cursor:pointer}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}footer{padding:70px 0 90px;color:var(--v19);font-size:var(--v17);line-height:1.8}footer a{color:var(--v20)}::selection{background:var(--v0);color:var(--v26)}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}</style></style>
+  
   <meta name="description" content="In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point the same machine at words and train a language model by hand, bead by bead.">
   <link rel="canonical" href="https://www.loopingly.com/explorables/matchbox-language-model">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
@@ -216,14 +28,14 @@
   <meta name="twitter:image" content="https://www.loopingly.com/og/matchbox-language-model.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Build a language model out of matchboxes","description":"In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point the same machine at words and train a language model by hand, bead by bead.","url":"https://www.loopingly.com/explorables/matchbox-language-model","image":"https://www.loopingly.com/og/matchbox-language-model.png","datePublished":"2026-08-01","dateModified":"2026-08-01","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"How language models learn from examples"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"A language model made of matchboxes"}]}</script>
-  <!-- seo:end -->
+  
 </head>
 <body>
 <div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
   <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
 </svg><span id="pt">i</span></div>
 
-<header class="wide-hero" data-hero="beads-drawn-under-the-written-line">
+<header class="wide-hero">
   <h1>Build a language model out of matchboxes</h1>
   <p class="lede">In 1960 Donald Michie taught a stack of matchboxes to play noughts and crosses, using nothing but coloured beads and a rule for when to add them. Point the same machine at words and you get the thing sitting under every chatbot you have ever used.</p>
   <p class="lede-meta">304 matchboxes &middot; one bead per move &middot; no electricity</p>
@@ -234,8 +46,8 @@
   </div>
 </header>
 
-<!-- ============ 01 ============ -->
-<section data-ch="01" data-defines="box,bead,draw,reward" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Three hundred and four matchboxes learned to play noughts and crosses</h2>
     <p>Play a game against a filing cabinet. You go first, you put a cross in the middle. Now your opponent has to reply, and your opponent is a stack of matchboxes on a table.</p>
@@ -263,8 +75,8 @@
   </div>
 </section>
 
-<!-- ============ 02 ============ -->
-<section data-ch="02" data-uses="box,bead,draw" data-defines="label,context,vocabulary" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>A sentence is a position, and the next word is a move</h2>
     <p>Finish this, out loud, before you read on: <b>&ldquo;humpty dumpty sat on a ___&rdquo;</b></p>
@@ -287,8 +99,8 @@
   </div>
 </section>
 
-<!-- ============ 03 : SCROLLY, graphic left ============ -->
-<section data-ch="03" data-uses="label,box,bead" data-defines="corpus,training" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Training is counting, and there is no second step</h2>
     <p>Here is the part that sounds like it must be more than it is. Take some text. Slide a window along it. Every time you see one word follow another, drop a bead in the appropriate box. Stop when you run out of text.</p>
@@ -317,8 +129,8 @@
   </div>
 </section>
 
-<!-- ============ 04 ============ -->
-<section data-ch="04" data-uses="corpus,training,box,bead" data-defines="probability,distribution" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>A pile of beads is a probability</h2>
     <p>Open the box marked <code>little</code> and tip it out on the table. Ten beads in five colours, and one of those colours has four of them.</p>
@@ -340,8 +152,8 @@
   </div>
 </section>
 
-<!-- ============ 05 ============ -->
-<section data-ch="05" data-uses="probability,distribution,draw" data-defines="generation,sampling" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Writing means pulling beads with your eyes shut</h2>
     <p>The machine writes like this. Look at the last word. Find its box. Shake, pull one bead, write down the word on it. That word is now the last word, so find <em>its</em> box, and go again. Stop when you pull the bead that means stop.</p>
@@ -367,8 +179,8 @@
   </div>
 </section>
 
-<!-- ============ 06 : THE KNOB ============ -->
-<section data-ch="06" data-uses="sampling,generation,distribution" data-defines="temperature,greedy" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>One dial sits between a parrot and a lunatic</h2>
     <p>You do not have to draw fairly. You could cheat towards the fat piles by feeling for the colour there is most of, or you could cheat the other way and deliberately ignore how many there are of each.</p>
@@ -397,8 +209,8 @@
   </div>
 </section>
 
-<!-- ============ 07 ============ -->
-<section data-ch="07" data-uses="label,corpus,box" data-defines="context window,sparsity,memorisation" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Longer labels buy sense and cost beads</h2>
     <p>The machine has been reading one word off the front of the box. That is why it wanders: after <code>ran</code> it cannot tell whether it is in the rhyme about the mouse or the one about the dish.</p>
@@ -421,8 +233,8 @@
   </div>
 </section>
 
-<!-- ============ 08 ============ -->
-<section data-ch="08" data-uses="generation,context window" data-defines="continuation,unseen context" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>It cannot answer you, it can only continue you</h2>
     <p>Ask it something. Type a question into the machine and watch what it does with it, which is nothing whatsoever question shaped.</p>
@@ -443,8 +255,8 @@
   </div>
 </section>
 
-<!-- ============ 09 ============ -->
-<section data-ch="09" data-uses="reward,generation,box" data-defines="preference training,mode collapse" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>Reward it and it starts telling you what you want to hear</h2>
     <p>Back to the bead rule from the very first box. The machine writes a line. You judge it. If you liked it, every bead it drew gets three copies dropped back into its box. If you did not, the beads it drew are removed.</p>
@@ -476,8 +288,8 @@
   </div>
 </section>
 
-<!-- ============ 10 ============ -->
-<section data-ch="10" data-uses="sparsity,box,label" data-defines="embedding,generalisation" class="reveal">
+
+<section class="reveal">
   <div class="col">
     <h2>The one thing beads cannot do is notice that two boxes are alike</h2>
     <p>The box for <code>the</code> and the box for <code>a</code> are doing the same job in English. Both sit in front of a noun, both take roughly the same kinds of word next. A person sees that instantly. The machine cannot see it in principle, because a box has no way to look at another box.</p>
@@ -510,8 +322,8 @@
   </div>
 </section>
 
-<!-- ============ CLOSE ============ -->
-<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--rule)">
+
+<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--v29)">
   <div class="col">
     <h3>You have been holding it this whole time</h3>
     <p>A language model is a very large set of boxes you never see, filled by counting, reached into with a dial, and reshaped by whoever rates the output. The beads on this page are the whole apparatus at a scale you can put on a table, and the parts that got left out are about capacity, not about kind.</p>
@@ -519,7 +331,7 @@
   </div>
 </div>
 
-<!-- ============ PLAYGROUND ============ -->
+
 <section class="reveal">
   <div class="col">
     <h2>Now break it</h2>
@@ -571,830 +383,9 @@
   </div>
 </footer>
 
-<script>
-(function(){
-'use strict';
-var $=function(id){return document.getElementById(id);};
-
-/* ================= corpora ================= */
-var CORPORA={
-rhymes:[
-'the cat and the fiddle the cow jumped over the moon',
-'the little dog laughed to see such fun',
-'and the dish ran away with the spoon',
-'hickory dickory dock',
-'the mouse ran up the clock',
-'the clock struck one and the mouse ran down',
-'hickory dickory dock',
-'mary had a little lamb little lamb little lamb',
-'mary had a little lamb its fleece was white as snow',
-'and everywhere that mary went the lamb was sure to go',
-'jack and jill went up the hill',
-'to fetch a pail of water',
-'jack fell down and broke his crown',
-'and jill came tumbling after',
-'twinkle twinkle little star',
-'how i wonder what you are',
-'up above the world so high',
-'like a diamond in the sky',
-'humpty dumpty sat on a wall',
-'humpty dumpty had a great fall',
-'all the kings horses and all the kings men',
-'could not put humpty together again',
-'little miss muffet sat on a tuffet',
-'eating her curds and whey',
-'there came a big spider who sat down beside her',
-'and frightened little miss muffet away',
-'baa baa black sheep have you any wool',
-'yes sir yes sir three bags full',
-'one for the master and one for the dame',
-'and one for the little boy who lives down the lane',
-'row row row your boat gently down the stream',
-'merrily merrily merrily merrily life is but a dream',
-'rain rain go away come again another day',
-'the little dog laughed to see the cat and the fiddle'
-],
-weather:[
-'rain in the morning turning to sun by the afternoon',
-'a cold start with frost on the hills and fog in the valleys',
-'showers moving in from the west later in the day',
-'sun in the south and heavy rain in the north',
-'wind from the west easing by the evening',
-'a dry day with cloud building through the afternoon',
-'frost in the morning and a cold wind by the evening',
-'heavy rain moving east with a risk of thunder',
-'cloud and drizzle in the north with sun in the south',
-'a mild day with light wind and long spells of sun'
-],
-support:[
-'thanks for getting in touch we are looking into it now',
-'sorry for the delay in getting back to you',
-'i have escalated this to the team and will update you shortly',
-'could you send us a screenshot of the error you are seeing',
-'this should be fixed in the latest release please try again',
-'happy to help let me know if anything else comes up',
-'we have refunded the charge and you should see it within five days',
-'i understand the frustration and i am sorry for the trouble',
-'thanks for your patience while we looked into this',
-'let me know if that works for you'
-]};
-
-var END='end.', START='start.';
-function toks(l){return l.toLowerCase().split(/\s+/).filter(Boolean);}
-
-/* stable colour per word */
-var HUES=['--b1','--b2','--b3','--b4','--b5','--b6','--b7','--b8'],hc={};
-function hue(w){
-  if(w===END||w===START)return 'var(--ink-faint)';
-  if(hc[w])return hc[w];
-  var h=0;for(var i=0;i<w.length;i++)h=(h*33+w.charCodeAt(i))>>>0;
-  hc[w]='var('+HUES[h%8]+')';return hc[w];
-}
-
-/* ================= the model ================= */
-function trainTokens(lines,order,addEnd){
-  var B={};
-  lines.forEach(function(w){
-    var s=addEnd===false?w.slice():w.concat([END]);
-    var ctx=[],k;
-    for(k=0;k<order;k++)ctx.push(START);
-    for(var i=0;i<s.length;i++){
-      var lab=ctx.join(' ');
-      if(!B[lab])B[lab]={};
-      B[lab][s[i]]=(B[lab][s[i]]||0)+1;
-      ctx.push(s[i]);ctx.shift();
-    }
-  });
-  return B;
-}
-function train(lines,order){return trainTokens(lines.map(toks),order,true);}
-function total(box){var t=0;for(var k in box)t+=box[k];return t;}
-function beadsIn(B){var t=0;for(var l in B)t+=total(B[l]);return t;}
-function sortedWords(box){
-  return Object.keys(box).sort(function(a,b){return box[b]-box[a]||(a<b?-1:1);});
-}
-function pick(box,T){
-  var ks=sortedWords(box),i,mx=box[ks[0]];
-  if(T<=0.12)return ks[0];
-  var wts=[],tot=0;
-  for(i=0;i<ks.length;i++){var v=Math.pow(box[ks[i]]/mx,1/T);wts.push(v);tot+=v;}
-  var r=Math.random()*tot;
-  for(i=0;i<ks.length;i++){r-=wts[i];if(r<=0)return ks[i];}
-  return ks[ks.length-1];
-}
-function gen(B,order,T,maxw,seed){
-  var ctx=(seed||[]).slice(),k;
-  while(ctx.length<order)ctx.unshift(START);
-  ctx=ctx.slice(-order);
-  var out=[],trace=[];
-  for(k=0;k<(maxw||16);k++){
-    var lab=ctx.join(' '),box=B[lab];
-    if(!box){trace.push({label:lab,word:null});break;}
-    var w=pick(box,T);
-    trace.push({label:lab,word:w,total:total(box),count:box[w]});
-    if(w===END)break;
-    out.push(w);ctx.push(w);ctx.shift();
-  }
-  return {words:out,trace:trace};
-}
-
-/* ================= svg helpers ================= */
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function R(n){return Math.round(n);}
-function bead(x,y,r,fill,cls,extra){
-  return '<circle class="bd'+(cls?' '+cls:'')+'" cx="'+R(x)+'" cy="'+R(y)+'" r="'+r+'" fill="'+fill+'"'+(extra||'')+'/>';
-}
-function txt(x,y,s,size,cls,anchor){
-  return '<text class="'+(cls||'lb')+'" x="'+R(x)+'" y="'+R(y)+'" font-size="'+size+'"'+
-         (anchor?' text-anchor="'+anchor+'"':'')+'>'+esc(s)+'</text>';
-}
-function bx(x,y,w,h,cls){
-  return '<rect class="bx'+(cls?' '+cls:'')+'" x="'+R(x)+'" y="'+R(y)+'" width="'+R(w)+'" height="'+R(h)+
-         '" rx="3" shape-rendering="crispEdges"/>';
-}
-function tray(x,y,w,h){
-  return '<line x1="'+R(x+6)+'" y1="'+R(y+h-9)+'" x2="'+R(x+w-6)+'" y2="'+R(y+h-9)+
-         '" stroke="var(--rule)" stroke-width="1.5" shape-rendering="crispEdges"/>';
-}
-/* beads of a box laid out as a grid inside x,y,w,h */
-function beadGrid(box,x,y,w,h,r,gap,cap,sel){
-  var ks=sortedWords(box),flat=[],i;
-  ks.forEach(function(k){for(i=0;i<box[k];i++)flat.push(k);});
-  var per=Math.max(1,Math.floor((w-gap)/gap)),rows=Math.max(1,Math.floor(h/gap));
-  var room=Math.min(cap,per*rows),more=0,s='';
-  if(flat.length>room){
-    var keep=rows>1?Math.min(room,per*(rows-1)):Math.max(1,Math.min(room,per)-2);
-    more=flat.length-keep;flat=flat.slice(0,keep);
-  }
-  for(i=0;i<flat.length;i++){
-    var cx=x+gap/2+(i%per)*gap, cy=y+gap/2+Math.floor(i/per)*gap;
-    s+=bead(cx,cy,r,hue(flat[i]),sel&&sel===flat[i]?'drawn':'',' data-w="'+esc(flat[i])+'"');
-  }
-  if(more>0){
-    var lx=rows>1?x+2:x+gap/2+Math.max(0,per-2)*gap-6;
-    var ly=y+gap/2+(rows>1?(rows-1):0)*gap+4;
-    s+=txt(lx,ly,'+'+more,13,'lb');
-  }
-  return s;
-}
-function wrapWords(ws,maxch){
-  var lines=[],cur='';
-  ws.forEach(function(w){
-    if(cur&&(cur+' '+w).length>maxch){lines.push(cur);cur=w;}else cur=cur?cur+' '+w:w;
-  });
-  if(cur)lines.push(cur);
-  return lines;
-}
-
-/* ================= hero ================= */
-var HB=train(CORPORA.rhymes,1),heroTimer=null;
-function heroDraw(g,upto){
-  var n=Math.max(1,g.words.length),W=900,slot=W/n,s='',i;
-  for(i=0;i<g.words.length;i++){
-    if(i>=upto)break;
-    var cx=slot*(i+0.5),w=g.words[i],tr=g.trace[i];
-    s+=txt(cx,64,w,22,'wd','middle');
-    s+=bx(cx-30,118,60,80);
-    s+=tray(cx-30,118,60,80);
-    var box=HB[tr.label]||{};
-    var ks=sortedWords(box).slice(0,6),j;
-    for(j=0;j<ks.length;j++){
-      var bxp=cx-18+(j%2)*22, byp=136+Math.floor(j/2)*22;
-      s+=bead(bxp,byp,7,hue(ks[j]),ks[j]===w?'gone':'');
-    }
-    s+=bead(cx,100,10,hue(w),'drawn');
-    s+=txt(cx,212,tr.label===START?'start':tr.label,13,'lb','middle');
-  }
-  $('hSvg').innerHTML=s;
-}
-function heroRun(){
-  if(heroTimer)clearInterval(heroTimer);
-  var g=gen(HB,1,0.85,7);
-  while(g.words.length<4)g=gen(HB,1,0.85,7);
-  var i=0,red=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  $('hRead').innerHTML='<b>'+g.words.length+'</b> words &middot; <b>'+g.words.length+'</b> beads drawn';
-  if(red){heroDraw(g,g.words.length);return;}
-  heroDraw(g,0);
-  heroTimer=setInterval(function(){
-    i++;heroDraw(g,i);
-    if(i>=g.words.length){clearInterval(heroTimer);heroTimer=null;}
-  },420);
-}
-$('hGo').addEventListener('click',heroRun);
-heroRun();
-
-/* ================= 01 · MENACE box ================= */
-var F1BASE={1:4,2:4,3:4,5:4,6:4,7:4},f1={},f1drawn=null,f1msg='';
-function f1reset(){f1={};for(var k in F1BASE)f1[k]=F1BASE[k];f1drawn=null;f1msg='';f1render();}
-function f1render(){
-  var s='',keys=Object.keys(f1),i,j;
-  s+=txt(40,74,'the box for this position',13,'lb');
-  s+=bx(40,88,370,200);s+=tray(40,88,370,200);
-  for(i=0;i<keys.length;i++){
-    var k=keys[i],cx=78+i*55,n=f1[k],shown=Math.min(n,8);
-    s+='<rect x="'+R(cx-13)+'" y="300" width="26" height="13" fill="'+hue('sq'+k)+'" opacity=".9" shape-rendering="crispEdges"/>';
-    for(j=0;j<shown;j++)s+=bead(cx,266-j*20,9,hue('sq'+k),'');
-    if(n>shown)s+=txt(cx,112,'+'+(n-shown),13,'lb','middle');
-    if(n===0)s+=txt(cx,266,'0',13,'lb','middle');
-  }
-  if(f1drawn!==null){
-    s+=txt(650,26,'drawn',13,'lb','middle');
-    s+=bead(650,52,12,hue('sq'+f1drawn),'drawn');
-  }
-  var BX=530,BY=84,C=76;
-  for(i=0;i<9;i++){
-    var r=Math.floor(i/3),c=i%3,x=BX+c*C,y=BY+r*C;
-    var occupied=(i===4||i===0)?'x':(i===8?'o':null);
-    s+='<rect x="'+x+'" y="'+y+'" width="'+C+'" height="'+C+'" fill="'+
-       (occupied?'var(--paper)':hue('sq'+i))+'" opacity="'+(occupied?'1':'.16')+
-       '" stroke="var(--rule)" stroke-width="1.5" shape-rendering="crispEdges"/>';
-    if(occupied==='x'){
-      s+='<line x1="'+(x+22)+'" y1="'+(y+22)+'" x2="'+(x+C-22)+'" y2="'+(y+C-22)+'" stroke="var(--ink)" stroke-width="3"/>'+
-         '<line x1="'+(x+C-22)+'" y1="'+(y+22)+'" x2="'+(x+22)+'" y2="'+(y+C-22)+'" stroke="var(--ink)" stroke-width="3"/>';
-    }else if(occupied==='o'){
-      s+='<circle cx="'+(x+C/2)+'" cy="'+(y+C/2)+'" r="19" fill="none" stroke="var(--ink)" stroke-width="3"/>';
-    }else if(f1drawn!==null&&+f1drawn===i){
-      s+='<circle cx="'+(x+C/2)+'" cy="'+(y+C/2)+'" r="19" fill="none" stroke="var(--accent)" stroke-width="4"/>';
-    }
-  }
-  s+=txt(530,332,'a colour on a bead is a square on the board',13,'lb');
-  $('f1').innerHTML='<g data-part="beads">'+s+'</g>';
-  var tot=0;for(var q in f1)tot+=f1[q];
-  $('f1Read').innerHTML='<b>'+tot+'</b> beads in the box'+(f1msg?' &middot; '+f1msg:'');
-}
-$('f1Shake').addEventListener('click',function(){
-  var pool=[],k,i;
-  for(k in f1)for(i=0;i<f1[k];i++)pool.push(k);
-  if(!pool.length){f1msg='box empty, it resigns';f1render();return;}
-  f1drawn=pool[Math.floor(Math.random()*pool.length)];
-  f1msg='now judge the game';f1render();
-});
-document.querySelectorAll('[data-f1]').forEach(function(b){
-  b.addEventListener('click',function(){
-    var a=b.getAttribute('data-f1');
-    if(a==='reset'){f1reset();return;}
-    if(f1drawn===null){f1msg='shake first';f1render();return;}
-    if(a==='win'){f1[f1drawn]+=3;f1msg='+3 beads of that colour';}
-    if(a==='draw'){f1[f1drawn]+=1;f1msg='+1 bead of that colour';}
-    if(a==='loss'){f1[f1drawn]=Math.max(0,f1[f1drawn]-1);f1msg='that bead is gone';}
-    f1drawn=null;f1render();
-  });
-});
-f1reset();
-
-/* ================= 02 · fill a box by hand ================= */
-var F2WORDS=['mouse','cat','moon','clock','wall','spoon','sky','kings'],f2={},f2last=null;
-function f2render(){
-  var s='',tot=total(f2);
-  s+=txt(250,40,'the',26,'wd');
-  s+=txt(292,40,'← written on the front',13,'lb');
-  s+=bx(250,60,400,200);s+=tray(250,60,400,200);
-  s+=beadGrid(f2,258,70,384,172,11,30,60,f2last);
-  if(tot===0)s+=txt(450,168,'empty. nothing has happened yet.',13,'lb','middle');
-  $('f2').innerHTML=s;
-  if(!tot){$('f2Read').textContent='empty';return;}
-  var p=f2last?Math.round(f2[f2last]/tot*100):0;
-  $('f2Read').innerHTML=f2last?('<b>'+tot+'</b> beads &middot; the '+f2last+' = '+f2[f2last]+' of '+tot+' ('+p+'%)'):('<b>'+tot+'</b> beads');
-}
-(function(){
-  var c=$('f2Chips'),s='';
-  F2WORDS.forEach(function(w){
-    s+='<button class="chip" data-f2w="'+w+'" style="border-color:'+hue(w)+';color:'+hue(w)+'">'+w+'</button>';
-  });
-  s+='<button class="chip" data-f2w="__reset">empty the box</button>';
-  c.innerHTML=s;
-  c.addEventListener('click',function(e){
-    var b=e.target.closest('[data-f2w]');if(!b)return;
-    var w=b.getAttribute('data-f2w');
-    if(w==='__reset'){f2={};f2last=null;}
-    else{f2[w]=(f2[w]||0)+1;f2last=w;}
-    f2render();
-  });
-})();
-f2render();
-
-/* ================= 03 · scrolly, pouring text in ================= */
-var L0=toks(CORPORA.rhymes[0]);
-var STEPS=[
-  {model:{},win:-1,words:L0},
-  {model:trainTokens([L0.slice(0,2)],1,false),win:1,words:L0},
-  {model:trainTokens([L0.slice(0,5)],1,false),win:4,words:L0},
-  {model:trainTokens([L0],1,true),win:-1,words:L0},
-  {model:train(CORPORA.rhymes,1),win:-1,words:L0}
-];
-function labText(l,maxch){
-  var s=l.split(' ').map(function(t){return t===START?'start':t;}).join(' ');
-  return s.length>maxch?s.slice(0,Math.max(1,maxch-1))+'\u2026':s;
-}
-function wallSVG(B,x,y,w,cols,cap,bw,bh){
-  var labs=Object.keys(B).sort(function(a,b){return total(B[b])-total(B[a])||(a<b?-1:1);}).slice(0,cap);
-  var gapx=(w-cols*bw)/Math.max(1,cols-1),s='';
-  labs.forEach(function(l,i){
-    var cx=x+(i%cols)*(bw+gapx), cy=y+Math.floor(i/cols)*(bh+34);
-    s+=txt(cx,cy-6,labText(l,Math.floor(bw/8.6)),13,'lb');
-    s+=bx(cx,cy,bw,bh);s+=tray(cx,cy,bw,bh);
-    s+=beadGrid(B[l],cx+4,cy+4,bw-8,bh-14,4.5,12,24,null);
-  });
-  return s;
-}
-function sc1render(i){
-  var st=STEPS[i]||STEPS[0],s='',j;
-  s+=txt(0,22,'the text',13,'lb');
-  var x=0,y=48;
-  for(j=0;j<st.words.length;j++){
-    var wd=st.words[j],wdt=wd.length*11+14;
-    if(x+wdt>612){x=0;y+=40;}
-    var on=(st.win===j||st.win===j-1);
-    s+='<rect x="'+R(x)+'" y="'+R(y-22)+'" width="'+R(wdt)+'" height="30" rx="3" fill="'+
-       (on?'var(--accent)':'var(--paper-2)')+'" opacity="'+(on?'.16':'1')+'" shape-rendering="crispEdges"/>';
-    s+=txt(x+7,y,wd,17,on?'vl':'lb');
-    x+=wdt+7;
-  }
-  if(st.win>=0)s+=txt(0,y+34,'the window sits on a pair, so one bead drops',13,'lb');
-  s+=txt(0,y+80,'the boxes',13,'lb');
-  s+=wallSVG(st.model,0,y+106,612,4,20,140,58);
-  $('sc1fig').innerHTML=s;
-  var nb=Object.keys(st.model).length;
-  $('sc1Read').innerHTML='<b>'+nb+'</b> boxes &middot; <b>'+beadsIn(st.model)+'</b> beads';
-}
-(function(){
-  var steps=[].slice.call(document.querySelectorAll('#sc1 .stp'));
-  function setStep(el){
-    steps.forEach(function(s){s.classList.toggle('on',s===el);});
-    sc1render(+el.getAttribute('data-step'));
-  }
-  var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){if(e.isIntersecting)setStep(e.target);});
-  },{rootMargin:'-45% 0px -45% 0px',threshold:0});
-  steps.forEach(function(s){io.observe(s);s.addEventListener('click',function(){setStep(s);});});
-  sc1render(0);
-})();
-
-/* ================= 04 · two representations ================= */
-var B1=train(CORPORA.rhymes,1),f4lab='little',f4sel=null;
-function f4render(){
-  var box=B1[f4lab]||{},tot=total(box),ks=sortedWords(box).slice(0,9),s='',i;
-  s+=txt(40,40,f4lab,24,'wd');
-  s+=bx(40,60,380,250);s+=tray(40,60,380,250);
-  s+=beadGrid(box,48,70,364,222,10,26,72,f4sel);
-  s+=txt(470,40,'the same counts, as chances',13,'lb');
-  var y=76,W=252;
-  for(i=0;i<ks.length;i++){
-    var k=ks[i],p=box[k]/tot,bw=Math.max(3,p*W),kl=(k===END?'end':k);
-    if(kl.length>11)kl=kl.slice(0,10)+'\u2026';
-    s+='<g data-part="dist">';
-    s+='<rect x="470" y="'+R(y-14)+'" width="'+R(bw)+'" height="18" fill="'+hue(k)+'" opacity="'+
-       (f4sel===k?'1':'.75')+'" shape-rendering="crispEdges"/>';
-    s+=txt(738,y,kl,15,f4sel===k?'vl':'lb');
-    s+=txt(884,y,Math.round(p*100)+'%',15,'lb','end');
-    s+='<rect class="tgt" x="466" y="'+R(y-18)+'" width="424" height="26" data-w="'+esc(k)+'"/>';
-    s+='</g>';
-    y+=27;
-  }
-  $('f4').innerHTML=s;
-  if(f4sel&&box[f4sel])
-    $('f4Read').innerHTML=f4lab+' → <b>'+(f4sel===END?'end':f4sel)+'</b> &middot; '+box[f4sel]+' of '+tot+' beads &middot; '+Math.round(box[f4sel]/tot*100)+'%';
-  else $('f4Read').innerHTML='<b>'+tot+'</b> beads &middot; '+ks.length+' colours';
-}
-(function(){
-  var labs=['little','the','and','a','up','hickory'],s='';
-  labs.forEach(function(l,i){s+='<button class="chip'+(i===0?' on':'')+'" data-f4l="'+l+'">'+l+'</button>';});
-  var c=$('f4Chips');c.innerHTML=s;
-  c.addEventListener('click',function(e){
-    var b=e.target.closest('[data-f4l]');if(!b)return;
-    f4lab=b.getAttribute('data-f4l');f4sel=null;
-    c.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});
-    f4render();
-  });
-  $('f4').addEventListener('click',function(e){
-    var t=e.target.closest('[data-w]');if(!t)return;
-    var w=t.getAttribute('data-w');f4sel=(f4sel===w?null:w);f4render();
-  });
-})();
-f4render();
-
-/* ================= 05 · the writing loop ================= */
-var f5={ctx:[START],words:[],last:null,lab:START};
-function f5render(){
-  var s='',box=B1[f5.lab]||{},i;
-  s+=txt(40,34,'the line so far',13,'lb');
-  var line=f5.words.length?f5.words.join(' '):'(nothing yet)';
-  s+=txt(40,68,line,22,'wd');
-  s+=txt(40,116,'the box on the front of which is written',13,'lb');
-  s+=txt(40,152,f5.lab===START?'start':f5.lab,22,'wd');
-  s+=bx(40,170,420,110);s+=tray(40,170,420,110);
-  s+=beadGrid(box,48,178,404,88,9,24,60,f5.last);
-  s+='<line x1="500" y1="222" x2="560" y2="222" stroke="var(--rule)" stroke-width="1.5"/>';
-  s+='<path d="M560 222 l-10 -5 v10 z" fill="var(--rule)"/>';
-  if(f5.last){
-    s+=bead(600,222,14,hue(f5.last),'drawn');
-    s+=txt(630,229,f5.last===END?'end of line':f5.last,22,'wd');
-    s+=txt(630,196,'the bead you pulled',13,'lb');
-  }else{
-    s+=txt(600,229,'pull a bead',13,'lb');
-  }
-  $('f5').innerHTML=s;
-  $('f5Read').innerHTML='<b>'+f5.words.length+'</b> words &middot; '+(Object.keys(box).length||0)+' colours in this box';
-}
-function f5step(){
-  var box=B1[f5.lab];
-  if(!box||f5.last===END){return false;}
-  var w=pick(box,0.85);
-  f5.last=w;
-  if(w!==END){f5.words.push(w);f5.lab=w;}
-  f5render();return w!==END;
-}
-$('f5One').addEventListener('click',function(){if(f5.last===END)f5reset();f5step();});
-$('f5All').addEventListener('click',function(){
-  f5reset();var n=0;
-  while(f5step()&&n<15)n++;
-});
-function f5reset(){f5={ctx:[START],words:[],last:null,lab:START};f5render();}
-$('f5Reset').addEventListener('click',f5reset);
-f5reset();
-
-/* ================= 06 · temperature ================= */
-var F6LAB='little';
-function effective(box,T){
-  var ks=sortedWords(box),mx=box[ks[0]],out={},tot=0,i;
-  for(i=0;i<ks.length;i++){var v=T<=0.12?(box[ks[i]]===mx?1:0):Math.pow(box[ks[i]]/mx,1/T);out[ks[i]]=v;tot+=v;}
-  for(i=0;i<ks.length;i++)out[ks[i]]=out[ks[i]]/tot;
-  return out;
-}
-function f6render(){
-  var T=+$('f6T').value/100,box=B1[F6LAB],ks=sortedWords(box).slice(0,7),eff=effective(box,T),s='',i,j;
-  s+=txt(40,34,'what is in the box for "'+F6LAB+'"',13,'lb');
-  s+=txt(500,34,'what it behaves as if it holds',13,'lb');
-  var base=Math.max(1,box[ks[0]]);
-  for(i=0;i<ks.length;i++){
-    var k=ks[i],cx=70+i*58;
-    for(j=0;j<box[k];j++)s+=bead(cx,250-j*20,8.5,hue(k),'');
-    s+=txt(cx,278,k===END?'end':k.slice(0,6),13,'lb','middle');
-  }
-  s+='<g data-part="temp">';
-  for(i=0;i<ks.length;i++){
-    var k2=ks[i],cx2=530+i*52,n=Math.max(0,Math.round(eff[k2]*20));
-    for(j=0;j<n;j++)s+=bead(cx2,250-j*20,8.5,hue(k2),'');
-    if(n===0)s+=txt(cx2,250,'·',13,'lb','middle');
-    s+=txt(cx2,278,Math.round(eff[k2]*100)+'%',13,'lb','middle');
-  }
-  s+='</g>';
-  s+=txt(40,306,'raw bead counts, never change',13,'lb');
-  s+=txt(500,306,'chances after the dial, out of 20',13,'lb');
-  $('f6').innerHTML=s;
-  $('f6Read').innerHTML='temperature <b>'+T.toFixed(2)+'</b>'+(T<=0.12?' &middot; greedy':'');
-}
-$('f6T').addEventListener('input',f6render);
-$('f6Go').addEventListener('click',function(){
-  var T=+$('f6T').value/100,out='',i;
-  for(i=0;i<3;i++){
-    var g=gen(B1,1,T,16);
-    out+='<b>'+(g.words.join(' ')||'(nothing)')+'</b><br>';
-  }
-  $('f6Out').innerHTML=out+'<i>temperature '+T.toFixed(2)+'</i>';
-});
-f6render();
-
-/* ================= 07 · label length ================= */
-var f7order=1,ORD={};
-function ordModel(n){if(!ORD[n])ORD[n]=train(CORPORA.rhymes,n);return ORD[n];}
-function f7render(){
-  var B=ordModel(f7order),labs=Object.keys(B),n=labs.length,bd=beadsIn(B),i;
-  var singles=0;
-  labs.forEach(function(l){if(total(B[l])===1)singles++;});
-  var s='';
-  s+=txt(40,44,'boxes needed',13,'lb');
-  s+=txt(40,88,String(n),34,'wd');
-  s+=txt(240,44,'beads per box, average',13,'lb');
-  s+=txt(240,88,(bd/n).toFixed(2),34,'wd');
-  s+=txt(500,44,'boxes with only one bead',13,'lb');
-  s+=txt(500,88,Math.round(singles/n*100)+'%',34,'wd');
-  var barw=Math.round(singles/n*360);
-  s+='<rect x="500" y="104" width="360" height="10" fill="var(--paper-2)" shape-rendering="crispEdges"/>';
-  s+='<rect x="500" y="104" width="'+barw+'" height="10" fill="var(--risk)" shape-rendering="crispEdges"/>';
-  s+=txt(40,150,'the first twelve boxes',13,'lb');
-  s+=wallSVG(B,40,176,820,6,12,116,52);
-  var g=gen(B,f7order,0.85,16);
-  s+=txt(40,318,'it writes: '+(g.words.join(' ')||'(nothing)'),17,'vl');
-  $('f7').innerHTML=s;
-  $('f7Read').innerHTML='label: <b>'+f7order+'</b> word'+(f7order>1?'s':'');
-}
-(function(){
-  var c=$('f7Chips'),s='';
-  [1,2,3].forEach(function(n){s+='<button class="chip'+(n===1?' on':'')+'" data-f7="'+n+'">'+n+' word label</button>';});
-  s+='<button class="chip" data-f7="re">write another line</button>';
-  c.innerHTML=s;
-  c.addEventListener('click',function(e){
-    var b=e.target.closest('[data-f7]');if(!b)return;
-    var v=b.getAttribute('data-f7');
-    if(v!=='re'){f7order=+v;c.querySelectorAll('[data-f7]').forEach(function(x){
-      x.classList.toggle('on',x===b);});}
-    f7render();
-  });
-})();
-f7render();
-
-/* ================= 08 · your prompt ================= */
-var F8=[
- 'humpty dumpty sat on a',
- 'the mouse',
- 'why is the sky',
- 'please summarise this email'
-];
-var f8i=0;
-function f8render(){
-  var p=F8[f8i],ws=toks(p),lastw=ws[ws.length-1],box=B1[lastw],s='',i,x=40;
-  s+=txt(40,34,'what you typed',13,'lb');
-  for(i=0;i<ws.length;i++){
-    var wdt=ws[i].length*12+16,lastOne=(i===ws.length-1);
-    s+='<rect x="'+R(x)+'" y="46" width="'+R(wdt)+'" height="36" rx="3" fill="'+
-       (lastOne?'var(--accent)':'var(--paper-2)')+'" opacity="'+(lastOne?'.16':'1')+'" shape-rendering="crispEdges"/>';
-    s+=txt(x+8,71,ws[i],19,lastOne?'vl':'lb');
-    x+=wdt+8;
-  }
-  s+=txt(40,110,'everything but the last word falls on the floor',13,'lb');
-  s+='<line x1="60" y1="122" x2="60" y2="152" stroke="var(--rule)" stroke-width="1.5"/>';
-  s+='<path d="M60 152 l-5 -10 h10 z" fill="var(--rule)"/>';
-  if(box){
-    s+=txt(90,148,lastw,20,'wd');
-    s+=bx(90,160,300,86);s+=tray(90,160,300,86);
-    s+=beadGrid(box,96,166,288,68,8,20,48,null);
-    var g=gen(B1,1,0.85,12,[lastw]);
-    s+=txt(430,190,'it continues',13,'lb');
-    var ls=g.words.length?wrapWords(g.words,30).slice(0,2):['(it stops)'];
-    ls.forEach(function(ln,li){s+=txt(430,226+li*32,ln,20,'wd');});
-    $('f8Read').innerHTML='box found &middot; <b>'+total(box)+'</b> beads';
-  }else{
-    s+=txt(90,148,lastw,20,'wd');
-    s+='<rect x="90" y="160" width="300" height="86" rx="3" fill="none" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
-    s+=txt(240,210,'no box with this on the front',13,'lb','middle');
-    s+=txt(430,190,'it continues',13,'lb');
-    s+=txt(430,226,'(nothing at all)',20,'wd');
-    $('f8Read').innerHTML='<b>no box</b> &middot; nothing to reach into';
-  }
-  $('f8').innerHTML=s;
-}
-(function(){
-  var c=$('f8Chips'),s='';
-  F8.forEach(function(p,i){s+='<button class="chip'+(i===0?' on':'')+'" data-f8="'+i+'">'+p+'</button>';});
-  c.innerHTML=s;
-  c.addEventListener('click',function(e){
-    var b=e.target.closest('[data-f8]');if(!b)return;
-    f8i=+b.getAttribute('data-f8');
-    c.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===b);});
-    f8render();
-  });
-})();
-f8render();
-
-/* ================= 09 · reward ================= */
-var RM=null,f9g=null,f9n=0,f9var=null;
-function rmReset(){
-  RM={};var B=train(CORPORA.rhymes,1);
-  for(var l in B){RM[l]={};for(var w in B[l])RM[l][w]=B[l][w];}
-  f9g=null;f9n=0;f9var=null;f9top=0;f9render();
-}
-var f9top=0;
-function variety(){
-  var seen={},i,n=0,mx=0;
-  for(i=0;i<20;i++){
-    var k=gen(RM,1,0.85,16).words.join(' ');
-    if(!seen[k]){seen[k]=1;n++;}else seen[k]++;
-    if(seen[k]>mx)mx=seen[k];
-  }
-  f9top=mx;return n;
-}
-function f9render(){
-  var s='',i;
-  s+=txt(40,34,'the line it wrote',13,'lb');
-  if(f9g){
-    var n=Math.max(1,f9g.words.length),slot=820/n,lab=slot>=78;
-    for(i=0;i<f9g.words.length;i++){
-      var cx=40+slot*i+slot/2,w=f9g.words[i];
-      s+=txt(cx,74,w,slot<64?15:20,'wd','middle');
-      s+=bead(cx,104,10,hue(w),'drawn');
-      if(lab)s+=txt(cx,136,'from '+(f9g.trace[i].label===START?'start':f9g.trace[i].label),13,'lb','middle');
-    }
-    if(!lab)s+=txt(40,140,'one bead per word, each from the box named by the word before it',13,'lb');
-  }else{
-    s+=txt(40,74,'press write a line',20,'wd');
-  }
-  s+=txt(40,186,'the boxes your verdicts have edited',13,'lb');
-  var labs=Object.keys(RM).sort(function(a,b){return total(RM[b])-total(RM[a]);}).slice(0,6);
-  s+=wallSVG(RM,40,212,820,6,6,116,52);
-  var v=f9var===null?20:f9var;
-  s+=txt(40,300,'variety: '+v+' different lines out of 20 tries'+
-     (f9var!==null&&f9top>1?', the most common one turned up '+f9top+' times':''),13,'lb');
-  s+='<rect x="40" y="310" width="400" height="10" fill="var(--paper-2)" shape-rendering="crispEdges"/>';
-  s+='<rect x="40" y="310" width="'+R(v/20*400)+'" height="10" fill="'+(v<8?'var(--risk)':'var(--safe)')+'" shape-rendering="crispEdges"/>';
-  $('f9').innerHTML=s;
-  $('f9Read').innerHTML='<b>'+f9n+'</b> verdicts given';
-}
-$('f9Write').addEventListener('click',function(){
-  f9g=gen(RM,1,0.85,11);
-  var t=0;while(f9g.words.length<3&&t<8){f9g=gen(RM,1,0.85,11);t++;}
-  f9render();
-});
-function applyVerdict(g,good){
-  g.trace.forEach(function(tr){
-    if(!tr.word||!RM[tr.label])return;
-    if(good)RM[tr.label][tr.word]+=3;
-    else{
-      var b=RM[tr.label];
-      if(Object.keys(b).length>1||b[tr.word]>1){
-        b[tr.word]-=1;
-        if(b[tr.word]<=0)delete b[tr.word];
-        if(!Object.keys(b).length)b[tr.word]=1;
-      }
-    }
-  });
-}
-function verdict(good){
-  if(!f9g)return;
-  applyVerdict(f9g,good);
-  f9n++;f9var=variety();f9render();
-}
-$('f9Good').addEventListener('click',function(){verdict(true);});
-$('f9Bad').addEventListener('click',function(){verdict(false);});
-$('f9Auto').addEventListener('click',function(){
-  for(var i=0;i<25;i++){
-    var g=gen(RM,1,0.85,11);
-    applyVerdict(g,g.words.indexOf('lamb')>=0);
-    f9n++;f9g=g;
-  }
-  f9var=variety();f9render();
-});
-$('f9Reset').addEventListener('click',rmReset);
-rmReset();
-
-/* ================= 10 · sharing ================= */
-var f10mode='apart';
-function f10render(){
-  var A=B1['the'],Bb=B1['a'],s='';
-  if(f10mode==='unseen'){
-    s+=txt(40,40,'purple',24,'wd');
-    s+='<rect x="40" y="60" width="380" height="200" rx="3" fill="none" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
-    s+=txt(230,166,'a word the rhymes never used',13,'lb','middle');
-    s+=txt(470,120,'counting machine:',13,'lb');
-    s+=txt(470,158,'no box, no output',22,'wd');
-    s+=txt(470,206,'a model with positions instead of boxes:',13,'lb');
-    s+=txt(470,244,'purple sits near black and white,',20,'wd');
-    s+=txt(470,274,'so it answers anyway',20,'wd');
-    $('f10Read').innerHTML='<b>unseen label</b> &middot; counting has nothing to say';
-    $('f10').innerHTML=s;return;
-  }
-  var ka=sortedWords(A).slice(0,10),kb=sortedWords(Bb),shared=ka.filter(function(k){return Bb[k];});
-  if(f10mode==='apart'){
-    s+=txt(40,40,'the',24,'wd');
-    s+=bx(40,60,360,200);s+=tray(40,60,360,200);
-    s+=beadGrid(A,48,68,344,178,9,24,56,null);
-    s+=txt(500,40,'a',24,'wd');
-    s+=bx(500,60,360,200);s+=tray(500,60,360,200);
-    s+=beadGrid(Bb,508,68,344,178,9,24,56,null);
-    s+='<line x1="410" y1="160" x2="490" y2="160" stroke="var(--risk)" stroke-width="1.5" stroke-dasharray="5 4"/>';
-    s+=txt(450,146,'×',22,'wd','middle');
-    s+=txt(450,196,'nothing',13,'lb','middle');
-    s+=txt(450,214,'crosses',13,'lb','middle');
-    s+=txt(40,290,'same job in English, '+shared.length+' colours in common, and neither box knows the other exists',13,'lb');
-    $('f10Read').innerHTML='separate boxes &middot; shared knowledge: <b>none</b>';
-  }else{
-    var pool={},k;
-    for(k in A)pool[k]=A[k];
-    for(k in Bb)pool[k]=(pool[k]||0)+Bb[k];
-    s+=txt(40,40,'the',22,'wd');s+=txt(120,40,'and',17,'lb');s+=txt(170,40,'a',22,'wd');
-    s+=txt(210,40,'pooled, because they behave alike',13,'lb');
-    s+=bx(40,60,820,200);s+=tray(40,60,820,200);
-    s+=beadGrid(pool,48,68,804,178,9,24,120,null);
-    s+=txt(40,290,'the thin box is now held up by the fat one, which is the whole trick',13,'lb');
-    $('f10Read').innerHTML='pooled &middot; <b>'+total(pool)+'</b> beads over '+Object.keys(pool).length+' colours';
-  }
-  $('f10').innerHTML=s;
-}
-document.querySelectorAll('[data-f10]').forEach(function(b){
-  b.addEventListener('click',function(){
-    f10mode=b.getAttribute('data-f10');
-    document.querySelectorAll('[data-f10]').forEach(function(x){x.classList.toggle('on',x===b);});
-    f10render();
-  });
-});
-f10render();
-(function(){
-  var v={},i;
-  CORPORA.rhymes.forEach(function(l){toks(l).forEach(function(w){v[w]=1;});});
-  var V=Object.keys(v).length;
-  $('vTiny').textContent=V;
-  $('vT1').textContent=V.toLocaleString();
-  $('vT3').textContent=Math.pow(V,3).toLocaleString();
-})();
-
-/* ================= playground ================= */
-var pg={corpus:'rhymes',order:1,T:0.8,model:null};
-function pgBuild(){pg.model=train(CORPORA[pg.corpus],pg.order);}
-function pgRender(){
-  pgBuild();
-  var B=pg.model,s='';
-  s+=txt(0,22,Object.keys(B).length+' boxes · '+beadsIn(B)+' beads · label of '+pg.order+' word'+(pg.order>1?'s':''),13,'lb');
-  s+=wallSVG(B,0,60,900,6,18,132,58);
-  $('pgFig').innerHTML=s;
-  $('pgRead').innerHTML=pg.corpus+' &middot; label '+pg.order+' &middot; t '+pg.T.toFixed(2);
-  $('pgTv').textContent=pg.T.toFixed(2);
-}
-function pgWrite(){
-  var out='',i;
-  for(i=0;i<5;i++){
-    var g=gen(pg.model,pg.order,pg.T,18);
-    out+='<b>'+(g.words.join(' ')||'(nothing)')+'</b><br>';
-  }
-  $('pgOut').innerHTML=out+'<i>'+pg.corpus+' &middot; label '+pg.order+' &middot; temperature '+pg.T.toFixed(2)+'</i>';
-}
-(function(){
-  var c=$('pgChips');
-  c.innerHTML=
-   '<button class="chip on" data-pgc="rhymes">rhymes</button>'+
-   '<button class="chip" data-pgc="weather">weather</button>'+
-   '<button class="chip" data-pgc="support">support replies</button>'+
-   '<span class="fig-read">&nbsp;</span>'+
-   '<button class="chip on" data-pgo="1">label 1</button>'+
-   '<button class="chip" data-pgo="2">label 2</button>'+
-   '<button class="chip" data-pgo="3">label 3</button>'+
-   '<span class="fig-read">&nbsp;</span>'+
-   '<button class="chip" data-pgp="parrot">the parrot</button>'+
-   '<button class="chip" data-pgp="lunatic">the lunatic</button>'+
-   '<button class="chip" data-pgp="sweet">the sweet spot</button>';
-  c.addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    if(b.hasAttribute('data-pgc')){
-      pg.corpus=b.getAttribute('data-pgc');
-      c.querySelectorAll('[data-pgc]').forEach(function(x){x.classList.toggle('on',x===b);});
-    }else if(b.hasAttribute('data-pgo')){
-      pg.order=+b.getAttribute('data-pgo');
-      c.querySelectorAll('[data-pgo]').forEach(function(x){x.classList.toggle('on',x===b);});
-    }else{
-      var p=b.getAttribute('data-pgp');
-      if(p==='parrot'){pg.order=3;pg.T=0.1;}
-      if(p==='lunatic'){pg.order=1;pg.T=1.9;}
-      if(p==='sweet'){pg.order=2;pg.T=0.85;}
-      $('pgT').value=Math.round(pg.T*100);
-      c.querySelectorAll('[data-pgo]').forEach(function(x){
-        x.classList.toggle('on',+x.getAttribute('data-pgo')===pg.order);});
-      pgRender();pgWrite();return;
-    }
-    pgRender();
-  });
-  $('pgT').addEventListener('input',function(){pg.T=+this.value/100;pgRender();});
-  $('pgGo').addEventListener('click',function(){pgRender();pgWrite();});
-})();
-pgRender();
-
-/* ================= coupling, reveal, dial, weeds ================= */
-document.querySelectorAll('.ref').forEach(function(t){
-  var k=t.getAttribute('data-ref'),sec=t.closest('section');
-  function on(v){
-    t.classList.toggle('hot',v);
-    sec.querySelectorAll('.fig').forEach(function(f){f.classList.toggle('dimmed',v);});
-    sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){p.classList.toggle('hot',v);});
-  }
-  t.addEventListener('mouseenter',function(){on(true);});
-  t.addEventListener('mouseleave',function(){on(false);});
-  t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
-});
-
-var ro=new IntersectionObserver(function(es){
-  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});
-},{threshold:0.06,rootMargin:'0px 0px -4% 0px'});
-document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
-
-(function(){
-  var pf=$('pf'),C=2*Math.PI*22;
-  pf.style.strokeDasharray=C;pf.style.strokeDashoffset=C;
-  window.addEventListener('scroll',function(){
-    var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
-    pf.style.strokeDashoffset=C*(1-Math.min(1,Math.max(0,p||0)));
-  },{passive:true});
-})();
-
-(function(){
-  var weeds=$('weeds'),hint=$('weedsHint');
-  function toggle(){
-    var open=weeds.hidden;
-    weeds.hidden=!open;
-    hint.setAttribute('aria-expanded',String(open));
-    hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
-    if(open){weeds.setAttribute('tabindex','-1');weeds.focus({preventScroll:true});
-      weeds.scrollIntoView({behavior:'smooth',block:'start'});}
-  }
-  document.addEventListener('keydown',function(e){
-    if(e.key!=='s'&&e.key!=='S')return;
-    if(e.metaKey||e.ctrlKey||e.altKey)return;
-    var t=e.target,tag=(t.tagName||'').toLowerCase();
-    if(tag==='input'||tag==='textarea'||t.isContentEditable)return;
-    e.preventDefault();toggle();
-  });
-  hint.addEventListener('click',toggle);
-})();
-})();
+<script>!function(){"use strict";var t=function(t){return document.getElementById(t)},e={rhymes:["the cat and the fiddle the cow jumped over the moon","the little dog laughed to see such fun","and the dish ran away with the spoon","hickory dickory dock","the mouse ran up the clock","the clock struck one and the mouse ran down","hickory dickory dock","mary had a little lamb little lamb little lamb","mary had a little lamb its fleece was white as snow","and everywhere that mary went the lamb was sure to go","jack and jill went up the hill","to fetch a pail of water","jack fell down and broke his crown","and jill came tumbling after","twinkle twinkle little star","how i wonder what you are","up above the world so high","like a diamond in the sky","humpty dumpty sat on a wall","humpty dumpty had a great fall","all the kings horses and all the kings men","could not put humpty together again","little miss muffet sat on a tuffet","eating her curds and whey","there came a big spider who sat down beside her","and frightened little miss muffet away","baa baa black sheep have you any wool","yes sir yes sir three bags full","one for the master and one for the dame","and one for the little boy who lives down the lane","row row row your boat gently down the stream","merrily merrily merrily merrily life is but a dream","rain rain go away come again another day","the little dog laughed to see the cat and the fiddle"],weather:["rain in the morning turning to sun by the afternoon","a cold start with frost on the hills and fog in the valleys","showers moving in from the west later in the day","sun in the south and heavy rain in the north","wind from the west easing by the evening","a dry day with cloud building through the afternoon","frost in the morning and a cold wind by the evening","heavy rain moving east with a risk of thunder","cloud and drizzle in the north with sun in the south","a mild day with light wind and long spells of sun"],support:["thanks for getting in touch we are looking into it now","sorry for the delay in getting back to you","i have escalated this to the team and will update you shortly","could you send us a screenshot of the error you are seeing","this should be fixed in the latest release please try again","happy to help let me know if anything else comes up","we have refunded the charge and you should see it within five days","i understand the frustration and i am sorry for the trouble","thanks for your patience while we looked into this","let me know if that works for you"]},n="end.",r="start.";function a(t){return t.toLowerCase().split(/\s+/).filter(Boolean)}var o=["--v1","--v2","--v3","--v4","--v5","--v6","--v7","--v8"],i={};function l(t){if(t===n||t===r)return"var(--v19)";if(i[t])return i[t];for(var e=0,a=0;a<t.length;a++)e=33*e+t.charCodeAt(a)>>>0;return i[t]="var("+o[e%8]+")",i[t]}function s(t,e,a){var o={};return t.forEach(function(t){var i,l=!1===a?t.slice():t.concat([n]),s=[];for(i=0;i<e;i++)s.push(r);for(var d=0;d<l.length;d++){var h=s.join(" ");o[h]||(o[h]={}),o[h][l[d]]=(o[h][l[d]]||0)+1,s.push(l[d]),s.shift()}}),o}function d(t,e){return s(t.map(a),e,!0)}function h(t){var e=0;for(var n in t)e+=t[n];return e}function c(t){var e=0;for(var n in t)e+=h(t[n]);return e}function u(t){return Object.keys(t).sort(function(e,n){return t[n]-t[e]||(e<n?-1:1)})}function f(t,e){var n,r=u(t),a=t[r[0]];if(e<=.12)return r[0];var o=[],i=0;for(n=0;n<r.length;n++){var l=Math.pow(t[r[n]]/a,1/e);o.push(l),i+=l}var s=Math.random()*i;for(n=0;n<r.length;n++)if((s-=o[n])<=0)return r[n];return r[r.length-1]}function b(t,e,a,o,i){for(var l,s=(i||[]).slice();s.length<e;)s.unshift(r);s=s.slice(-e);var d=[],c=[];for(l=0;l<(o||16);l++){var u=s.join(" "),b=t[u];if(!b){c.push({label:u,word:null});break}var v=f(b,a);if(c.push({label:u,word:v,total:h(b),count:b[v]}),v===n)break;d.push(v),s.push(v),s.shift()}return{words:d,trace:c}}function v(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function g(t){return Math.round(t)}function w(t,e,n,r,a,o){return'<circle class="bd'+(a?" "+a:"")+'" cx="'+g(t)+'" cy="'+g(e)+'" r="'+n+'" fill="'+r+'"'+(o||"")+"/>"}function p(t,e,n,r,a,o){return'<text class="'+(a||"lb")+'" x="'+g(t)+'" y="'+g(e)+'" font-size="'+r+'"'+(o?' text-anchor="'+o+'"':"")+">"+v(n)+"</text>"}function m(t,e,n,r,a){return'<rect class="bx'+(a?" "+a:"")+'" x="'+g(t)+'" y="'+g(e)+'" width="'+g(n)+'" height="'+g(r)+'" rx="3" shape-rendering="crispEdges"/>'}function y(t,e,n,r){return'<line x1="'+g(t+6)+'" y1="'+g(e+r-9)+'" x2="'+g(t+n-6)+'" y2="'+g(e+r-9)+'" stroke="var(--v29)" stroke-width="1.5" shape-rendering="crispEdges"/>'}function k(t,e,n,r,a,o,i,s,d){var h,c=u(t),f=[];c.forEach(function(e){for(h=0;h<t[e];h++)f.push(e)});var b=Math.max(1,Math.floor((r-i)/i)),g=Math.max(1,Math.floor(a/i)),m=Math.min(s,b*g),y=0,k="";if(f.length>m){var x=g>1?Math.min(m,b*(g-1)):Math.max(1,Math.min(m,b)-2);y=f.length-x,f=f.slice(0,x)}for(h=0;h<f.length;h++){k+=w(e+i/2+h%b*i,n+i/2+Math.floor(h/b)*i,o,l(f[h]),d&&d===f[h]?"drawn":"",' data-w="'+v(f[h])+'"')}y>0&&(k+=p(g>1?e+2:e+i/2+Math.max(0,b-2)*i-6,n+i/2+(g>1?g-1:0)*i+4,"+"+y,13,"lb"));return k}var x=d(e.rhymes,1),M=null;function L(e,n){var a,o=900/Math.max(1,e.words.length),i="";for(a=0;a<e.words.length&&!(a>=n);a++){var s=o*(a+.5),d=e.words[a],h=e.trace[a];i+=p(s,64,d,22,"wd","middle"),i+=m(s-30,118,60,80),i+=y(s-30,118,60,80);var c,f=u(x[h.label]||{}).slice(0,6);for(c=0;c<f.length;c++){i+=w(s-18+c%2*22,136+22*Math.floor(c/2),7,l(f[c]),f[c]===d?"gone":"")}i+=w(s,100,10,l(d),"drawn"),i+=p(s,212,h.label===r?"start":h.label,13,"lb","middle")}t("hSvg").innerHTML=i}function E(){M&&clearInterval(M);for(var e=b(x,1,.85,7);e.words.length<4;)e=b(x,1,.85,7);var n=0,r=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;t("hRead").innerHTML="<b>"+e.words.length+"</b> words &middot; <b>"+e.words.length+"</b> beads drawn",r?L(e,e.words.length):(L(e,0),M=setInterval(function(){n++,L(e,n),n>=e.words.length&&(clearInterval(M),M=null)},420))}t("hGo").addEventListener("click",E),E();var T={1:4,2:4,3:4,5:4,6:4,7:4},H={},A=null,j="";function S(){for(var t in H={},T)H[t]=T[t];A=null,j="",q()}function q(){var e,n,r="",a=Object.keys(H);for(r+=p(40,74,"the box for this position",13,"lb"),r+=m(40,88,370,200),r+=y(40,88,370,200),e=0;e<a.length;e++){var o=a[e],i=78+55*e,s=H[o],d=Math.min(s,8);for(r+='<rect x="'+g(i-13)+'" y="300" width="26" height="13" fill="'+l("sq"+o)+'" opacity=".9" shape-rendering="crispEdges"/>',n=0;n<d;n++)r+=w(i,266-20*n,9,l("sq"+o),"");s>d&&(r+=p(i,112,"+"+(s-d),13,"lb","middle")),0===s&&(r+=p(i,266,"0",13,"lb","middle"))}null!==A&&(r+=p(650,26,"drawn",13,"lb","middle"),r+=w(650,52,12,l("sq"+A),"drawn"));var h=76;for(e=0;e<9;e++){var c=530+e%3*h,u=84+Math.floor(e/3)*h,f=4===e||0===e?"x":8===e?"o":null;r+='<rect x="'+c+'" y="'+u+'" width="'+'76" height="'+'76" fill="'+(f?"var(--v26)":l("sq"+e))+'" opacity="'+(f?"1":".16")+'" stroke="var(--v29)" stroke-width="1.5" shape-rendering="crispEdges"/>',"x"===f?r+='<line x1="'+(c+22)+'" y1="'+(u+22)+'" x2="'+(c+h-22)+'" y2="'+(u+h-22)+'" stroke="var(--v18)" stroke-width="3"/><line x1="'+(c+h-22)+'" y1="'+(u+22)+'" x2="'+(c+22)+'" y2="'+(u+h-22)+'" stroke="var(--v18)" stroke-width="3"/>':"o"===f?r+='<circle cx="'+(c+38)+'" cy="'+(u+38)+'" r="19" fill="none" stroke="var(--v18)" stroke-width="3"/>':null!==A&&+A===e&&(r+='<circle cx="'+(c+38)+'" cy="'+(u+38)+'" r="19" fill="none" stroke="var(--v0)" stroke-width="4"/>')}r+=p(530,332,"a colour on a bead is a square on the board",13,"lb"),t("f1").innerHTML='<g data-part="beads">'+r+"</g>";var b=0;for(var v in H)b+=H[v];t("f1Read").innerHTML="<b>"+b+"</b> beads in the box"+(j?" &middot; "+j:"")}t("f1Shake").addEventListener("click",function(){var t,e,n=[];for(t in H)for(e=0;e<H[t];e++)n.push(t);if(!n.length)return j="box empty, it resigns",void q();A=n[Math.floor(Math.random()*n.length)],j="now judge the game",q()}),document.querySelectorAll("[data-f1]").forEach(function(t){t.addEventListener("click",function(){var e=t.getAttribute("data-f1");if("reset"!==e){if(null===A)return j="shake first",void q();"win"===e&&(H[A]+=3,j="+3 beads of that colour"),"draw"===e&&(H[A]+=1,j="+1 bead of that colour"),"loss"===e&&(H[A]=Math.max(0,H[A]-1),j="that bead is gone"),A=null,q()}else S()})}),S();var R,O,C=["mouse","cat","moon","clock","wall","spoon","sky","kings"],I={},F=null;function z(){var e="",n=h(I);if(e+=p(250,40,"the",26,"wd"),e+=p(292,40,"← written on the front",13,"lb"),e+=m(250,60,400,200),e+=y(250,60,400,200),e+=k(I,258,70,384,172,11,30,60,F),0===n&&(e+=p(450,168,"empty. nothing has happened yet.",13,"lb","middle")),t("f2").innerHTML=e,n){var r=F?Math.round(I[F]/n*100):0;t("f2Read").innerHTML=F?"<b>"+n+"</b> beads &middot; the "+F+" = "+I[F]+" of "+n+" ("+r+"%)":"<b>"+n+"</b> beads"}else t("f2Read").textContent="empty"}R=t("f2Chips"),O="",C.forEach(function(t){O+='<button class="chip" data-f2w="'+t+'" style="border-color:'+l(t)+";color:"+l(t)+'">'+t+"</button>"}),O+='<button class="chip" data-f2w="__reset">empty the box</button>',R.innerHTML=O,R.addEventListener("click",function(t){var e=t.target.closest("[data-f2w]");if(e){var n=e.getAttribute("data-f2w");"__reset"===n?(I={},F=null):(I[n]=(I[n]||0)+1,F=n),z()}}),z();var D=a(e.rhymes[0]),G=[{model:{},win:-1,words:D},{model:s([D.slice(0,2)],1,!1),win:1,words:D},{model:s([D.slice(0,5)],1,!1),win:4,words:D},{model:s([D],1,!0),win:-1,words:D},{model:d(e.rhymes,1),win:-1,words:D}];function _(t,e,n,a,o,i,l,s){var d=Object.keys(t).sort(function(e,n){return h(t[n])-h(t[e])||(e<n?-1:1)}).slice(0,i),c=(a-o*l)/Math.max(1,o-1),u="";return d.forEach(function(a,i){var d=e+i%o*(l+c),h=n+Math.floor(i/o)*(s+34);u+=p(d,h-6,function(t,e){var n=t.split(" ").map(function(t){return t===r?"start":t}).join(" ");return n.length>e?n.slice(0,Math.max(1,e-1))+"…":n}(a,Math.floor(l/8.6)),13,"lb"),u+=m(d,h,l,s),u+=y(d,h,l,s),u+=k(t[a],d+4,h+4,l-8,s-14,4.5,12,24,null)}),u}function B(e){var n,r=G[e]||G[0],a="";a+=p(0,22,"the text",13,"lb");var o=0,i=48;for(n=0;n<r.words.length;n++){var l=r.words[n],s=11*l.length+14;o+s>612&&(o=0,i+=40);var d=r.win===n||r.win===n-1;a+='<rect x="'+g(o)+'" y="'+g(i-22)+'" width="'+g(s)+'" height="30" rx="3" fill="'+(d?"var(--v0)":"var(--v27)")+'" opacity="'+(d?".16":"1")+'" shape-rendering="crispEdges"/>',a+=p(o+7,i,l,17,d?"vl":"lb"),o+=s+7}r.win>=0&&(a+=p(0,i+34,"the window sits on a pair, so one bead drops",13,"lb")),a+=p(0,i+80,"the boxes",13,"lb"),a+=_(r.model,0,i+106,612,4,20,140,58),t("sc1fig").innerHTML=a;var h=Object.keys(r.model).length;t("sc1Read").innerHTML="<b>"+h+"</b> boxes &middot; <b>"+c(r.model)+"</b> beads"}!function(){var t=[].slice.call(document.querySelectorAll("#sc1 .stp"));function e(e){t.forEach(function(t){t.classList.toggle("on",t===e)}),B(+e.getAttribute("data-step"))}var n=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&e(t.target)})},{rootMargin:"-45% 0px -45% 0px",threshold:0});t.forEach(function(t){n.observe(t),t.addEventListener("click",function(){e(t)})}),B(0)}();var K=d(e.rhymes,1),N="little",P=null;function V(){var e,r=K[N]||{},a=h(r),o=u(r).slice(0,9),i="";i+=p(40,40,N,24,"wd"),i+=m(40,60,380,250),i+=y(40,60,380,250),i+=k(r,48,70,364,222,10,26,72,P),i+=p(470,40,"the same counts, as chances",13,"lb");var s=76;for(e=0;e<o.length;e++){var d=o[e],c=r[d]/a,f=Math.max(3,252*c),b=d===n?"end":d;b.length>11&&(b=b.slice(0,10)+"…"),i+='<g data-part="dist">',i+='<rect x="470" y="'+g(s-14)+'" width="'+g(f)+'" height="18" fill="'+l(d)+'" opacity="'+(P===d?"1":".75")+'" shape-rendering="crispEdges"/>',i+=p(738,s,b,15,P===d?"vl":"lb"),i+=p(884,s,Math.round(100*c)+"%",15,"lb","end"),i+='<rect class="tgt" x="466" y="'+g(s-18)+'" width="424" height="26" data-w="'+v(d)+'"/>',i+="</g>",s+=27}t("f4").innerHTML=i,P&&r[P]?t("f4Read").innerHTML=N+" → <b>"+(P===n?"end":P)+"</b> &middot; "+r[P]+" of "+a+" beads &middot; "+Math.round(r[P]/a*100)+"%":t("f4Read").innerHTML="<b>"+a+"</b> beads &middot; "+o.length+" colours"}!function(){var e="";["little","the","and","a","up","hickory"].forEach(function(t,n){e+='<button class="chip'+(0===n?" on":"")+'" data-f4l="'+t+'">'+t+"</button>"});var n=t("f4Chips");n.innerHTML=e,n.addEventListener("click",function(t){var e=t.target.closest("[data-f4l]");e&&(N=e.getAttribute("data-f4l"),P=null,n.querySelectorAll(".chip").forEach(function(t){t.classList.toggle("on",t===e)}),V())}),t("f4").addEventListener("click",function(t){var e=t.target.closest("[data-w]");if(e){var n=e.getAttribute("data-w");P=P===n?null:n,V()}})}(),V();var W={ctx:[r],words:[],last:null,lab:r};function J(){var e="",a=K[W.lab]||{};e+=p(40,34,"the line so far",13,"lb"),e+=p(40,68,W.words.length?W.words.join(" "):"(nothing yet)",22,"wd"),e+=p(40,116,"the box on the front of which is written",13,"lb"),e+=p(40,152,W.lab===r?"start":W.lab,22,"wd"),e+=m(40,170,420,110),e+=y(40,170,420,110),e+=k(a,48,178,404,88,9,24,60,W.last),e+='<line x1="500" y1="222" x2="560" y2="222" stroke="var(--v29)" stroke-width="1.5"/>',e+='<path d="M560 222 l-10 -5 v10 z" fill="var(--v29)"/>',W.last?(e+=w(600,222,14,l(W.last),"drawn"),e+=p(630,229,W.last===n?"end of line":W.last,22,"wd"),e+=p(630,196,"the bead you pulled",13,"lb")):e+=p(600,229,"pull a bead",13,"lb"),t("f5").innerHTML=e,t("f5Read").innerHTML="<b>"+W.words.length+"</b> words &middot; "+(Object.keys(a).length||0)+" colours in this box"}function Q(){var t=K[W.lab];if(!t||W.last===n)return!1;var e=f(t,.85);return W.last=e,e!==n&&(W.words.push(e),W.lab=e),J(),e!==n}function U(){W={ctx:[r],words:[],last:null,lab:r},J()}t("f5One").addEventListener("click",function(){W.last===n&&U(),Q()}),t("f5All").addEventListener("click",function(){U();for(var t=0;Q()&&t<15;)t++}),t("f5Reset").addEventListener("click",U),U();var X="little";function Y(){var e,r,a=+t("f6T").value/100,o=K[X],i=u(o).slice(0,7),s=function(t,e){var n,r=u(t),a=t[r[0]],o={},i=0;for(n=0;n<r.length;n++){var l=e<=.12?t[r[n]]===a?1:0:Math.pow(t[r[n]]/a,1/e);o[r[n]]=l,i+=l}for(n=0;n<r.length;n++)o[r[n]]=o[r[n]]/i;return o}(o,a),d="";d+=p(40,34,'what is in the box for "'+X+'"',13,"lb"),d+=p(500,34,"what it behaves as if it holds",13,"lb");Math.max(1,o[i[0]]);for(e=0;e<i.length;e++){var h=i[e],c=70+58*e;for(r=0;r<o[h];r++)d+=w(c,250-20*r,8.5,l(h),"");d+=p(c,278,h===n?"end":h.slice(0,6),13,"lb","middle")}for(d+='<g data-part="temp">',e=0;e<i.length;e++){var f=i[e],b=530+52*e,v=Math.max(0,Math.round(20*s[f]));for(r=0;r<v;r++)d+=w(b,250-20*r,8.5,l(f),"");0===v&&(d+=p(b,250,"·",13,"lb","middle")),d+=p(b,278,Math.round(100*s[f])+"%",13,"lb","middle")}d+="</g>",d+=p(40,306,"raw bead counts, never change",13,"lb"),d+=p(500,306,"chances after the dial, out of 20",13,"lb"),t("f6").innerHTML=d,t("f6Read").innerHTML="temperature <b>"+a.toFixed(2)+"</b>"+(a<=.12?" &middot; greedy":"")}t("f6T").addEventListener("input",Y),t("f6Go").addEventListener("click",function(){var e,n=+t("f6T").value/100,r="";for(e=0;e<3;e++){r+="<b>"+(b(K,1,n,16).words.join(" ")||"(nothing)")+"</b><br>"}t("f6Out").innerHTML=r+"<i>temperature "+n.toFixed(2)+"</i>"}),Y();var Z=1,$={};function tt(){var n=function(t){return $[t]||($[t]=d(e.rhymes,t)),$[t]}(Z),r=Object.keys(n),a=r.length,o=c(n),i=0;r.forEach(function(t){1===h(n[t])&&i++});var l="";l+=p(40,44,"boxes needed",13,"lb"),l+=p(40,88,String(a),34,"wd"),l+=p(240,44,"beads per box, average",13,"lb"),l+=p(240,88,(o/a).toFixed(2),34,"wd"),l+=p(500,44,"boxes with only one bead",13,"lb"),l+=p(500,88,Math.round(i/a*100)+"%",34,"wd"),l+='<rect x="500" y="104" width="360" height="10" fill="var(--v27)" shape-rendering="crispEdges"/>',l+='<rect x="500" y="104" width="'+Math.round(i/a*360)+'" height="10" fill="var(--v28)" shape-rendering="crispEdges"/>',l+=p(40,150,"the first twelve boxes",13,"lb"),l+=_(n,40,176,820,6,12,116,52),l+=p(40,318,"it writes: "+(b(n,Z,.85,16).words.join(" ")||"(nothing)"),17,"vl"),t("f7").innerHTML=l,t("f7Read").innerHTML="label: <b>"+Z+"</b> word"+(Z>1?"s":"")}!function(){var e=t("f7Chips"),n="";[1,2,3].forEach(function(t){n+='<button class="chip'+(1===t?" on":"")+'" data-f7="'+t+'">'+t+" word label</button>"}),n+='<button class="chip" data-f7="re">write another line</button>',e.innerHTML=n,e.addEventListener("click",function(t){var n=t.target.closest("[data-f7]");if(n){var r=n.getAttribute("data-f7");"re"!==r&&(Z=+r,e.querySelectorAll("[data-f7]").forEach(function(t){t.classList.toggle("on",t===n)})),tt()}})}(),tt();var et=["humpty dumpty sat on a","the mouse","why is the sky","please summarise this email"],nt=0;function rt(){var e,n=a(et[nt]),r=n[n.length-1],o=K[r],i="",l=40;for(i+=p(40,34,"what you typed",13,"lb"),e=0;e<n.length;e++){var s=12*n[e].length+16,d=e===n.length-1;i+='<rect x="'+g(l)+'" y="46" width="'+g(s)+'" height="36" rx="3" fill="'+(d?"var(--v0)":"var(--v27)")+'" opacity="'+(d?".16":"1")+'" shape-rendering="crispEdges"/>',i+=p(l+8,71,n[e],19,d?"vl":"lb"),l+=s+8}if(i+=p(40,110,"everything but the last word falls on the floor",13,"lb"),i+='<line x1="60" y1="122" x2="60" y2="152" stroke="var(--v29)" stroke-width="1.5"/>',i+='<path d="M60 152 l-5 -10 h10 z" fill="var(--v29)"/>',o){i+=p(90,148,r,20,"wd"),i+=m(90,160,300,86),i+=y(90,160,300,86),i+=k(o,96,166,288,68,8,20,48,null);var c=b(K,1,.85,12,[r]);i+=p(430,190,"it continues",13,"lb");var u=c.words.length?function(t,e){var n=[],r="";return t.forEach(function(t){r&&(r+" "+t).length>e?(n.push(r),r=t):r=r?r+" "+t:t}),r&&n.push(r),n}(c.words,30).slice(0,2):["(it stops)"];u.forEach(function(t,e){i+=p(430,226+32*e,t,20,"wd")}),t("f8Read").innerHTML="box found &middot; <b>"+h(o)+"</b> beads"}else i+=p(90,148,r,20,"wd"),i+='<rect x="90" y="160" width="300" height="86" rx="3" fill="none" stroke="var(--v28)" stroke-width="1.5" stroke-dasharray="5 4"/>',i+=p(240,210,"no box with this on the front",13,"lb","middle"),i+=p(430,190,"it continues",13,"lb"),i+=p(430,226,"(nothing at all)",20,"wd"),t("f8Read").innerHTML="<b>no box</b> &middot; nothing to reach into";t("f8").innerHTML=i}!function(){var e=t("f8Chips"),n="";et.forEach(function(t,e){n+='<button class="chip'+(0===e?" on":"")+'" data-f8="'+e+'">'+t+"</button>"}),e.innerHTML=n,e.addEventListener("click",function(t){var n=t.target.closest("[data-f8]");n&&(nt=+n.getAttribute("data-f8"),e.querySelectorAll(".chip").forEach(function(t){t.classList.toggle("on",t===n)}),rt())})}(),rt();var at=null,ot=null,it=0,lt=null;function st(){at={};var t=d(e.rhymes,1);for(var n in t)for(var r in at[n]={},t[n])at[n][r]=t[n][r];ot=null,it=0,lt=null,dt=0,ct()}var dt=0;function ht(){var t,e={},n=0,r=0;for(t=0;t<20;t++){var a=b(at,1,.85,16).words.join(" ");e[a]?e[a]++:(e[a]=1,n++),e[a]>r&&(r=e[a])}return dt=r,n}function ct(){var e,n="";if(n+=p(40,34,"the line it wrote",13,"lb"),ot){var a=820/Math.max(1,ot.words.length),o=a>=78;for(e=0;e<ot.words.length;e++){var i=40+a*e+a/2,s=ot.words[e];n+=p(i,74,s,a<64?15:20,"wd","middle"),n+=w(i,104,10,l(s),"drawn"),o&&(n+=p(i,136,"from "+(ot.trace[e].label===r?"start":ot.trace[e].label),13,"lb","middle"))}o||(n+=p(40,140,"one bead per word, each from the box named by the word before it",13,"lb"))}else n+=p(40,74,"press write a line",20,"wd");n+=p(40,186,"the boxes your verdicts have edited",13,"lb");Object.keys(at).sort(function(t,e){return h(at[e])-h(at[t])}).slice(0,6);n+=_(at,40,212,820,6,6,116,52);var d=null===lt?20:lt;n+=p(40,300,"variety: "+d+" different lines out of 20 tries"+(null!==lt&&dt>1?", the most common one turned up "+dt+" times":""),13,"lb"),n+='<rect x="40" y="310" width="400" height="10" fill="var(--v27)" shape-rendering="crispEdges"/>',n+='<rect x="40" y="310" width="'+g(d/20*400)+'" height="10" fill="'+(d<8?"var(--v28)":"var(--v30)")+'" shape-rendering="crispEdges"/>',t("f9").innerHTML=n,t("f9Read").innerHTML="<b>"+it+"</b> verdicts given"}function ut(t,e){t.trace.forEach(function(t){if(t.word&&at[t.label])if(e)at[t.label][t.word]+=3;else{var n=at[t.label];(Object.keys(n).length>1||n[t.word]>1)&&(n[t.word]-=1,n[t.word]<=0&&delete n[t.word],Object.keys(n).length||(n[t.word]=1))}})}function ft(t){ot&&(ut(ot,t),it++,lt=ht(),ct())}t("f9Write").addEventListener("click",function(){ot=b(at,1,.85,11);for(var t=0;ot.words.length<3&&t<8;)ot=b(at,1,.85,11),t++;ct()}),t("f9Good").addEventListener("click",function(){ft(!0)}),t("f9Bad").addEventListener("click",function(){ft(!1)}),t("f9Auto").addEventListener("click",function(){for(var t=0;t<25;t++){var e=b(at,1,.85,11);ut(e,e.words.indexOf("lamb")>=0),it++,ot=e}lt=ht(),ct()}),t("f9Reset").addEventListener("click",st),st();var bt="apart";function vt(){var e=K.the,n=K.a,r="";if("unseen"===bt)return r+=p(40,40,"purple",24,"wd"),r+='<rect x="40" y="60" width="380" height="200" rx="3" fill="none" stroke="var(--v28)" stroke-width="1.5" stroke-dasharray="5 4"/>',r+=p(230,166,"a word the rhymes never used",13,"lb","middle"),r+=p(470,120,"counting machine:",13,"lb"),r+=p(470,158,"no box, no output",22,"wd"),r+=p(470,206,"a model with positions instead of boxes:",13,"lb"),r+=p(470,244,"purple sits near black and white,",20,"wd"),r+=p(470,274,"so it answers anyway",20,"wd"),t("f10Read").innerHTML="<b>unseen label</b> &middot; counting has nothing to say",void(t("f10").innerHTML=r);var a=u(e).slice(0,10),o=(u(n),a.filter(function(t){return n[t]}));if("apart"===bt)r+=p(40,40,"the",24,"wd"),r+=m(40,60,360,200),r+=y(40,60,360,200),r+=k(e,48,68,344,178,9,24,56,null),r+=p(500,40,"a",24,"wd"),r+=m(500,60,360,200),r+=y(500,60,360,200),r+=k(n,508,68,344,178,9,24,56,null),r+='<line x1="410" y1="160" x2="490" y2="160" stroke="var(--v28)" stroke-width="1.5" stroke-dasharray="5 4"/>',r+=p(450,146,"×",22,"wd","middle"),r+=p(450,196,"nothing",13,"lb","middle"),r+=p(450,214,"crosses",13,"lb","middle"),r+=p(40,290,"same job in English, "+o.length+" colours in common, and neither box knows the other exists",13,"lb"),t("f10Read").innerHTML="separate boxes &middot; shared knowledge: <b>none</b>";else{var i,l={};for(i in e)l[i]=e[i];for(i in n)l[i]=(l[i]||0)+n[i];r+=p(40,40,"the",22,"wd"),r+=p(120,40,"and",17,"lb"),r+=p(170,40,"a",22,"wd"),r+=p(210,40,"pooled, because they behave alike",13,"lb"),r+=m(40,60,820,200),r+=y(40,60,820,200),r+=k(l,48,68,804,178,9,24,120,null),r+=p(40,290,"the thin box is now held up by the fat one, which is the whole trick",13,"lb"),t("f10Read").innerHTML="pooled &middot; <b>"+h(l)+"</b> beads over "+Object.keys(l).length+" colours"}t("f10").innerHTML=r}document.querySelectorAll("[data-f10]").forEach(function(t){t.addEventListener("click",function(){bt=t.getAttribute("data-f10"),document.querySelectorAll("[data-f10]").forEach(function(e){e.classList.toggle("on",e===t)}),vt()})}),vt(),function(){var n={};e.rhymes.forEach(function(t){a(t).forEach(function(t){n[t]=1})});var r=Object.keys(n).length;t("vTiny").textContent=r,t("vT1").textContent=r.toLocaleString(),t("vT3").textContent=Math.pow(r,3).toLocaleString()}();var gt={corpus:"rhymes",order:1,T:.8,model:null};function wt(){gt.model=d(e[gt.corpus],gt.order);var n=gt.model,r="";r+=p(0,22,Object.keys(n).length+" boxes · "+c(n)+" beads · label of "+gt.order+" word"+(gt.order>1?"s":""),13,"lb"),r+=_(n,0,60,900,6,18,132,58),t("pgFig").innerHTML=r,t("pgRead").innerHTML=gt.corpus+" &middot; label "+gt.order+" &middot; t "+gt.T.toFixed(2),t("pgTv").textContent=gt.T.toFixed(2)}function pt(){var e,n="";for(e=0;e<5;e++){n+="<b>"+(b(gt.model,gt.order,gt.T,18).words.join(" ")||"(nothing)")+"</b><br>"}t("pgOut").innerHTML=n+"<i>"+gt.corpus+" &middot; label "+gt.order+" &middot; temperature "+gt.T.toFixed(2)+"</i>"}!function(){var e=t("pgChips");e.innerHTML='<button class="chip on" data-pgc="rhymes">rhymes</button><button class="chip" data-pgc="weather">weather</button><button class="chip" data-pgc="support">support replies</button><span class="fig-read">&nbsp;</span><button class="chip on" data-pgo="1">label 1</button><button class="chip" data-pgo="2">label 2</button><button class="chip" data-pgo="3">label 3</button><span class="fig-read">&nbsp;</span><button class="chip" data-pgp="parrot">the parrot</button><button class="chip" data-pgp="lunatic">the lunatic</button><button class="chip" data-pgp="sweet">the sweet spot</button>',e.addEventListener("click",function(n){var r=n.target.closest("button");if(r){if(r.hasAttribute("data-pgc"))gt.corpus=r.getAttribute("data-pgc"),e.querySelectorAll("[data-pgc]").forEach(function(t){t.classList.toggle("on",t===r)});else{if(!r.hasAttribute("data-pgo")){var a=r.getAttribute("data-pgp");return"parrot"===a&&(gt.order=3,gt.T=.1),"lunatic"===a&&(gt.order=1,gt.T=1.9),"sweet"===a&&(gt.order=2,gt.T=.85),t("pgT").value=Math.round(100*gt.T),e.querySelectorAll("[data-pgo]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-pgo")===gt.order)}),wt(),void pt()}gt.order=+r.getAttribute("data-pgo"),e.querySelectorAll("[data-pgo]").forEach(function(t){t.classList.toggle("on",t===r)})}wt()}}),t("pgT").addEventListener("input",function(){gt.T=+this.value/100,wt()}),t("pgGo").addEventListener("click",function(){wt(),pt()})}(),wt(),document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),n=t.closest("section");function r(r){t.classList.toggle("hot",r),n.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",r)}),n.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",r)})}t.addEventListener("mouseenter",function(){r(!0)}),t.addEventListener("mouseleave",function(){r(!1)}),t.addEventListener("click",function(){r(!t.classList.contains("hot"))})});var mt,yt,kt=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),kt.unobserve(t.target))})},{threshold:.06,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(t){kt.observe(t)}),mt=t("pf"),yt=2*Math.PI*22,mt.style.strokeDasharray=yt,mt.style.strokeDashoffset=yt,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);mt.style.strokeDashoffset=yt*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0}),function(){var e=t("weeds"),n=t("weedsHint");function r(){var t=e.hidden;e.hidden=!t,n.setAttribute("aria-expanded",String(t)),n.innerHTML=t?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",t&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,n=(e.tagName||"").toLowerCase();"input"===n||"textarea"===n||e.isContentEditable||(t.preventDefault(),r())}}),n.addEventListener("click",r)}()}();
 </script>
 
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
 </body>
 </html>
