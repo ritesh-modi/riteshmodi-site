@@ -10,7 +10,7 @@
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables</loc>
-    <lastmod>2026-08-01</lastmod>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/</loc>
@@ -19,6 +19,10 @@
   <url>
     <loc>https://www.loopingly.com/talks</loc>
     <lastmod>2026-08-01</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/03-words-to-vectors</loc>
+    <lastmod>2026-08-07</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/ai-transformation-explainer</loc>
@@ -31,6 +35,10 @@
   <url>
     <loc>https://www.loopingly.com/explorables/azure-service-principals-explainer</loc>
     <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/classification-metrics-by-hand</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/discovering-models-trends-explainer</loc>
@@ -85,6 +93,10 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/neural-network-by-hand</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/never-use-ai-when-rules-will-do</loc>
     <lastmod>2026-07-31</lastmod>
   </url>
@@ -109,12 +121,20 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/regression-metrics-by-hand</loc>
+    <lastmod>2026-08-08</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/regulatory-atlas</loc>
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/the-layers-of-intelligence</loc>
     <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/three-motions-of-a-model</loc>
+    <lastmod>2026-08-08</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/three-types-of-machine-learning</loc>
@@ -175,25 +195,5 @@
   <url>
     <loc>https://www.loopingly.com/notes/workforce-reskilling-and-leadership-questions</loc>
     <lastmod>2026-08-03</lastmod>
-  </url>
-  <url>
-    <loc>https://www.loopingly.com/explorables/03-words-to-vectors.html</loc>
-    <lastmod>2026-08-07</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.loopingly.com/explorables/regression-metrics-by-hand.html</loc>
-    <lastmod>2026-08-08</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.loopingly.com/explorables/classification-metrics-by-hand.html</loc>
-    <lastmod>2026-08-08</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.loopingly.com/explorables/neural-network-by-hand.html</loc>
-    <lastmod>2026-08-08</lastmod>
-    <priority>0.8</priority>
   </url>
 </urlset>

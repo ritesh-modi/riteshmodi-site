@@ -51,6 +51,12 @@ PAGES = {
 
 # Explorables -----------------------------------------------------------------
 EXPLORABLES = {
+    "03-words-to-vectors": dict(
+        desc="Spin a compass between two words and watch the angle turn into a similarity score, "
+             "then point it at ten real vectors and pull out each word's nearest neighbours.",
+        short="Spin a compass between two words and watch the angle become a similarity score.",
+        about="Word embeddings and cosine similarity"),
+
     "ai-transformation-explainer": dict(
         desc="Efficiency projects pay back once; reinvention changes what the business "
              "sells. Move the sliders to see which one your AI portfolio is really funding.",
@@ -68,6 +74,12 @@ EXPLORABLES = {
              "then widen its role assignment and watch the blast radius grow along with it.",
         short="Build a service principal, decode its token, then watch the blast radius grow.",
         about="Azure service principals and OAuth machine identity"),
+
+    "classification-metrics-by-hand": dict(
+        desc="Drag one threshold across fifteen emails and watch precision, recall and the four "
+             "confusion counts swing while accuracy sits at 0.87 and tells you nothing.",
+        short="Drag one threshold and watch precision and recall swing while accuracy sits still.",
+        about="Classification metrics: accuracy, precision, recall, F1 and ROC"),
 
     "discovering-models-trends-explainer": dict(
         desc="A new model lands every week and the announcements all sound alike. Read a "
@@ -147,6 +159,12 @@ EXPLORABLES = {
         short="Build the shared space that lets one model see, read and hear at once.",
         about="Multimodal artificial intelligence"),
 
+    "neural-network-by-hand": dict(
+        desc="Fifteen weights, all of them on the page. Walk one row forward through two hidden "
+             "layers, watch the error walk back, then turn the learning rate up until it explodes.",
+        short="Walk one row forward through two hidden layers, then watch the error walk back.",
+        about="Neural network forward and backward passes"),
+
     "never-use-ai-when-rules-will-do": dict(
         desc="When you can make the promise, do not place the bet. Slide the error tolerance "
              "until the model stops being the cheaper answer and a plain rule wins outright.",
@@ -183,6 +201,12 @@ EXPLORABLES = {
         short="Open up the pause: what a reasoning model does, and when it wastes your money.",
         about="Reasoning models and chain-of-thought inference"),
 
+    "regression-metrics-by-hand": dict(
+        desc="Add ten gaps one at a time, then drop a cracked-screen laptop into the test set and "
+             "watch MAE, MSE, RMSE and R squared disagree about the very same model.",
+        short="Drop one cracked-screen laptop into the test set and watch four scores disagree.",
+        about="Regression metrics: MAE, MSE, RMSE and R squared"),
+
     "regulatory-atlas": dict(
         desc="GDPR to the EU AI Act: ten frameworks, who each binds, what each demands, and the "
              "controls that satisfy them. Filter by obligation to see where they overlap.",
@@ -194,6 +218,12 @@ EXPLORABLES = {
              "Mumbai, Bandra. Then the diagram keeps going, and GenAI stops fitting inside.",
         short="The nesting works like India, Maharashtra, Mumbai — until GenAI stops fitting.",
         about="How AI, machine learning, deep learning and generative AI relate"),
+
+    "three-motions-of-a-model": dict(
+        desc="Twenty-two logged commutes, three models, one loop. Nudge a rule downhill, hold "
+             "rows back, drag a threshold, then bend a straight line with two hidden layers.",
+        short="Nudge a rule downhill, hold rows back, then bend it with two hidden layers.",
+        about="Classification, regression and deep learning"),
 
     "three-types-of-machine-learning": dict(
         desc="Three ways to learn to cook, in the same order as the three kinds of machine "

@@ -5,8 +5,48 @@
   <link href="https://www.loopingly.com/feed.xml" rel="self"/>
   <link href="https://www.loopingly.com/explorables"/>
   <id>https://www.loopingly.com/</id>
-  <updated>2026-08-01T00:00:00Z</updated>
+  <updated>2026-08-08T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>Classification, regression, deep learning</title>
+    <link href="https://www.loopingly.com/explorables/three-motions-of-a-model"/>
+    <id>https://www.loopingly.com/explorables/three-motions-of-a-model</id>
+    <updated>2026-08-08T00:00:00Z</updated>
+    <published>2026-08-08T00:00:00Z</published>
+    <summary>Twenty-two logged commutes, three models, one loop. Nudge a rule downhill, hold rows back, drag a threshold, then bend a straight line with two hidden layers.</summary>
+  </entry>
+  <entry>
+    <title>Four numbers disagree about one model</title>
+    <link href="https://www.loopingly.com/explorables/regression-metrics-by-hand"/>
+    <id>https://www.loopingly.com/explorables/regression-metrics-by-hand</id>
+    <updated>2026-08-08T00:00:00Z</updated>
+    <published>2026-08-08T00:00:00Z</published>
+    <summary>Add ten gaps one at a time, then drop a cracked-screen laptop into the test set and watch MAE, MSE, RMSE and R squared disagree about the very same model.</summary>
+  </entry>
+  <entry>
+    <title>Fifteen numbers, learned</title>
+    <link href="https://www.loopingly.com/explorables/neural-network-by-hand"/>
+    <id>https://www.loopingly.com/explorables/neural-network-by-hand</id>
+    <updated>2026-08-08T00:00:00Z</updated>
+    <published>2026-08-08T00:00:00Z</published>
+    <summary>Fifteen weights, all of them on the page. Walk one row forward through two hidden layers, watch the error walk back, then turn the learning rate up until it explodes.</summary>
+  </entry>
+  <entry>
+    <title>One slider, three different models</title>
+    <link href="https://www.loopingly.com/explorables/classification-metrics-by-hand"/>
+    <id>https://www.loopingly.com/explorables/classification-metrics-by-hand</id>
+    <updated>2026-08-08T00:00:00Z</updated>
+    <published>2026-08-08T00:00:00Z</published>
+    <summary>Drag one threshold across fifteen emails and watch precision, recall and the four confusion counts swing while accuracy sits at 0.87 and tells you nothing.</summary>
+  </entry>
+  <entry>
+    <title>From a word to a vector</title>
+    <link href="https://www.loopingly.com/explorables/03-words-to-vectors"/>
+    <id>https://www.loopingly.com/explorables/03-words-to-vectors</id>
+    <updated>2026-08-07T00:00:00Z</updated>
+    <published>2026-08-07T00:00:00Z</published>
+    <summary>Spin a compass between two words and watch the angle turn into a similarity score, then point it at ten real vectors and pull out each word's nearest neighbours.</summary>
+  </entry>
   <entry>
     <title>What is intelligence?</title>
     <link href="https://www.loopingly.com/explorables/what-is-intelligence"/>

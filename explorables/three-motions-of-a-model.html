@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classification, regression and deep learning: the same four motions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:wght@500;700&family=Golos+Text:wght@400;500;600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+--paper:#E8ECEF;--paper2:#DBE1E6;--ink:#101619;--ink2:#39454B;--ink3:#5A666D;--rule:#C3CBD1;
+--acc:#0A6C8C;--panel:#0D1519;--panelink:#DBE3E7;--risk:#A8402A;--warn:#8A6410;--safe:#1F6F52;
+--maxw:680px;--wide:1080px;--pad:26px;
+--disp:"Anybody",system-ui,sans-serif;--body:"Golos Text",system-ui,sans-serif;
+--mono:"Azeret Mono",ui-monospace,Menlo,monospace;
+--s1:12px;--s2:15px;--s3:19px;--s4:24px;--s5:32px;--s6:46px;--s7:84px;
+--t:.5s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--t:0s}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:var(--s3);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.col{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad);position:relative}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+.wide-hero{max-width:var(--wide);margin:0 auto;padding:0 var(--pad)}
+.bleed{width:100%;margin:0}
+section{padding:clamp(72px,9vw,128px) 0}
+section + section{border-top:1px solid var(--rule)}
+h1,h2{font-family:var(--disp);font-weight:700;line-height:.99;letter-spacing:-.03em;margin:0}
+h1{font-size:clamp(38px,6.6vw,84px);max-width:15em}
+h2{font-size:clamp(29px,4vw,46px);letter-spacing:-.022em;margin:0 0 24px;max-width:17em}
+h3{font-family:var(--disp);font-weight:500;font-size:clamp(22px,2.6vw,32px);line-height:1.14;letter-spacing:-.015em;margin:0 0 14px}
+p{margin:0 0 22px}
+b,strong{font-weight:600}
+code{font-family:var(--mono);font-size:var(--s2);background:var(--paper2);padding:2px 6px;border-radius:3px}
+a{color:var(--acc)}
+header{padding:clamp(52px,8vw,100px) 0 clamp(32px,5vw,58px)}
+.lede{font-size:clamp(20px,2.2vw,24px);line-height:1.45;color:var(--ink2);max-width:30em;margin:28px 0 0}
+.lede-meta{font-family:var(--mono);font-size:var(--s1);letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);margin:22px 0 0}
+.fig{border:1px solid var(--rule);background:var(--paper2);border-radius:5px;margin:32px 0 0;overflow:hidden}
+.fig-head{padding:13px 20px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.fig-lab{font-family:var(--mono);font-size:var(--s1);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.fig-read{font-family:var(--mono);font-size:var(--s1);letter-spacing:.04em;color:var(--ink3);text-align:right}
+.fig-read b{color:var(--acc);font-weight:500}
+.fig-read u{text-decoration:none;color:var(--risk)}
+.fig-body{padding:28px;background:var(--paper)}
+.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 20px;border-top:1px solid var(--rule);background:var(--paper2)}
+.fig-ctl label{font-family:var(--mono);font-size:var(--s1);color:var(--ink3);white-space:nowrap}
+.fig-cap{font-family:var(--mono);font-size:var(--s1);line-height:1.68;color:var(--ink3);padding:13px 20px;border-top:1px solid var(--rule)}
+.fig-cap b{color:var(--acc);font-weight:500}
+.fig-slide{flex:1;min-width:180px;display:flex;align-items:center;gap:10px}
+.fig svg{display:block;width:100%;height:auto;touch-action:none}
+@media(max-width:760px){.fig-body{padding:20px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:780px}
+.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px}}
+.intu{border-left:3px solid var(--acc);background:var(--paper2);border-radius:0 5px 5px 0;padding:22px 26px;margin:30px 0;line-height:1.6}
+.intu i{font-family:var(--mono);font-size:var(--s1);letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-style:normal;display:block;margin-bottom:10px}
+.intu p{margin:0 0 14px}.intu p:last-child{margin:0}
+.note{background:var(--paper2);border-radius:4px;padding:20px 24px;margin:28px 0 0;font-size:var(--s2);line-height:1.72;color:var(--ink2)}
+.note b{color:var(--ink);font-weight:600}
+.note-hint{background:none;text-align:center;color:var(--ink3);border:0;width:100%;font-family:var(--mono);font-size:var(--s1);letter-spacing:.09em;cursor:pointer;padding:40px 0;margin:0}
+.note-hint kbd{font-family:var(--mono);border:1px solid var(--rule);border-radius:3px;padding:2px 7px;color:var(--ink2);background:var(--paper2)}
+.note-hint:hover,.note-hint:focus-visible{color:var(--acc)}
+.pull{font-family:var(--disp);font-weight:500;font-size:clamp(22px,2.6vw,32px);line-height:1.24;letter-spacing:-.02em;color:var(--acc);border-left:3px solid var(--acc);padding-left:26px;margin:40px 0}
+.chip{font-family:var(--mono);font-size:var(--s1);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);color:var(--ink2);cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t)}
+.chip:hover{border-color:var(--acc);color:var(--acc)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:var(--paper)}
+input[type=range]{width:100%;accent-color:var(--acc);cursor:pointer;margin:0}
+.panel{background:var(--panel);color:var(--panelink);border-radius:5px;padding:24px 26px;margin:28px 0 0;font-family:var(--mono);font-size:var(--s2);line-height:2;overflow-x:auto}
+.panel b{color:#6FC6E0;font-weight:500}
+.panel i{color:#8A959B;font-style:normal}
+.panel u{text-decoration:none;color:#E09076}
+.panel.weeds{background:none;color:var(--ink);padding:0;margin:0;font-family:var(--body);font-size:var(--s3);overflow:visible}
+.panel.weeds[hidden]{display:none}
+.panel.weeds details{border-top:1px solid var(--rule);padding:18px 0}
+.panel.weeds summary{font-family:var(--disp);font-weight:500;font-size:var(--s3);cursor:pointer}
+.panel.weeds summary::marker{color:var(--acc)}
+.panel.weeds p{margin:14px 0 0;font-size:var(--s2);line-height:1.76;color:var(--ink2)}
+.rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--paper2);border:1px solid var(--rule)}
+.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.rail circle{fill:none;stroke-width:2.5}
+.rail .tk{stroke:var(--rule)}
+.rail .fl{stroke:var(--acc);stroke-linecap:round}
+.rail span{font-family:var(--mono);font-size:var(--s1);color:var(--ink2)}
+@media(max-width:640px){.rail{display:none}}
+.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--pad)}
+.bleed.scrolly.right{grid-template-columns:minmax(0,420px) minmax(0,1fr)}
+.bleed.scrolly.right .sg{order:2}
+.bleed.scrolly > *{min-width:0}
+.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}
+.wide.sg > *{width:100%;max-width:580px;min-width:0}
+.col.ss{padding:38vh 0 42vh;max-width:none}
+.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.3;transition:opacity .35s;cursor:pointer}
+.col.stp.on{opacity:1}
+.col.stp p{font-size:var(--s4);line-height:1.42;margin:0;color:var(--ink2)}
+.col.stp.on p{color:var(--ink)}
+[data-gel]{opacity:.1;transition:opacity var(--t)}
+[data-gel].show{opacity:1}
+@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}
+@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}
+.wide.sg,.bleed.scrolly.right .sg{order:-1;width:100%;height:44vh;background:var(--paper);border-bottom:1px solid var(--rule);z-index:5}
+.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;margin:24px 0}.col.stp p{font-size:var(--s3)}}
+.ref{border-bottom:1px dotted var(--acc);cursor:help}
+.ref.hot{background:var(--paper2)}
+.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}
+.cel rect{stroke-width:1.5}
+.cel.given rect{fill:var(--paper);stroke:var(--ink)}
+.cel.given text{fill:var(--ink)}
+.cel.learn rect{fill:var(--acc);stroke:var(--acc)}
+.cel.learn text{fill:var(--paper)}
+.cel.comp rect{fill:rgba(10,108,140,.15);stroke:var(--acc)}
+.cel.comp text{fill:var(--acc)}
+.cel.off rect{fill:rgba(168,64,42,.15);stroke:var(--risk)}
+.cel.off text{fill:var(--risk)}
+.cel text{font-family:var(--mono)}
+.cel.sel rect{stroke-width:3.5}
+.lb{font-family:var(--mono);fill:var(--ink3);letter-spacing:.02em}
+.vl{font-family:var(--mono);fill:var(--ink)}
+.wd{font-family:var(--disp);font-weight:500;fill:var(--ink);letter-spacing:-.02em}
+.ax{stroke:var(--rule);stroke-width:1.5}
+.ln{stroke:var(--acc);stroke-width:2.5;fill:none}
+.ln.flat{stroke:var(--ink3);stroke-width:2;stroke-dasharray:6 5}
+.ln.old{stroke:var(--acc);stroke-width:1.5;opacity:.3}
+.stk{stroke:var(--risk);stroke-width:2.5;stroke-linecap:round}
+.stk.thin{stroke:var(--risk);stroke-width:1.5}
+.pt{fill:var(--ink)}
+.pt.held{fill:none;stroke:var(--acc);stroke-width:2.5}
+.pt.late{fill:var(--risk)}
+.rt{fill:none;stroke:var(--rule);stroke-width:1.5;stroke-dasharray:5 4}
+.tgt{fill:rgba(0,0,0,0);cursor:pointer}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+footer{padding:64px 0 90px;color:var(--ink3);font-size:var(--s2);line-height:1.8}
+footer a{color:var(--ink2)}
+::selection{background:var(--acc);color:var(--paper)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+</style>
+  <!-- seo:begin -->
+  <meta name="description" content="Twenty-two logged commutes, three models, one loop. Nudge a rule downhill, hold rows back, drag a threshold, then bend a straight line with two hidden layers.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/three-motions-of-a-model">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Classification, regression and deep learning: the same four motions">
+  <meta property="og:description" content="Nudge a rule downhill, hold rows back, then bend it with two hidden layers.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/three-motions-of-a-model">
+  <meta property="og:image" content="https://www.loopingly.com/og/three-motions-of-a-model.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Classification, regression and deep learning: the same four motions">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Classification, regression and deep learning: the same four motions">
+  <meta name="twitter:description" content="Nudge a rule downhill, hold rows back, then bend it with two hidden layers.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/three-motions-of-a-model.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Classification, regression and deep learning: the same four motions","description":"Twenty-two logged commutes, three models, one loop. Nudge a rule downhill, hold rows back, drag a threshold, then bend a straight line with two hidden layers.","url":"https://www.loopingly.com/explorables/three-motions-of-a-model","image":"https://www.loopingly.com/og/three-motions-of-a-model.png","datePublished":"2026-08-08","dateModified":"2026-08-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Classification, regression and deep learning"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Classification, regression, deep learning"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
+<circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
+</svg><span id="pt">&middot;</span></div>
+
+<header class="wide-hero" data-hero="twenty-two-miss-bars-shortening-on-load">
+  <h1>Classification, regression and deep learning are the same four motions</h1>
+  <p class="lede">One commuter logged twenty-two mornings: what time they left, whether it was raining, how long the trip took. Three different models are about to argue over that table. Each one trains, gets tested on mornings it has never seen, gets picked apart miss by miss, and gets scored. The output changes. The loop does not.</p>
+  <p class="lede-meta">22 mornings &middot; 2 features &middot; 20 numbers &middot; every figure computes its own arithmetic</p>
+  <div class="fig" id="figH">
+    <div class="fig-head"><span class="fig-lab">how wrong the network is about each morning, right now</span><span class="fig-read" id="hRead">starting up</span></div>
+    <div class="fig-body"><svg id="hSvg" viewBox="0 0 900 250" role="img" aria-label="Twenty-two vertical bars, one per logged morning, each showing how many minutes the network is currently wrong by. The bars shorten as the network trains."></svg></div>
+    <div class="fig-ctl"><button class="chip" id="hPause">pause</button><button class="chip" id="hAgain">start over</button><span class="fig-read">nothing here is pre-recorded: twenty numbers are being adjusted in your browser, played slowly at first so you can watch the shape arrive</span></div>
+  </div>
+</header>
+
+<section class="reveal" data-ch="01" data-defines="row,feature,label,miss">
+  <div class="col">
+    <h2>Guess how long tomorrow&rsquo;s trip takes</h2>
+    <p>Tomorrow this person leaves at 08:00. It is not raining. How many minutes will the trip take?</p>
+    <p>Do not skip this. Move the marker to a number and press the button. You need to have committed to something before the next paragraph makes any sense.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span class="fig-lab">your guess against what actually happened</span><span class="fig-read" id="f1Read">place your guess</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 200" role="img" aria-label="A scale of journey times where you place a guess and the recorded time is then revealed"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f1S">15 min</label><input type="range" id="f1S" min="15" max="80" value="40" step="1" aria-label="your guess in minutes"><label for="f1S">80 min</label></span>
+        <button class="chip" id="f1Go">show me what happened</button>
+        <button class="chip" id="f1Again">guess again</button>
+      </div>
+      <div class="fig-cap"><b>Drag, then reveal.</b> The rust bar is the only thing this page is about. It does not care whether you guessed high or low.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Whatever you said, there is now a distance between your number and the recorded one. That distance is the <span class="ref" data-ref="miss">miss</span>. Every idea on this page is arithmetic performed on a pile of misses.</p>
+    <p>Look at what you actually did to produce your guess. You were handed two facts, the departure time and the weather, and you were asked for a third. In the language everybody uses for this: the two facts you were given are <b>features</b>, the answer you were asked for is the <b>label</b>, and one morning with both of them filled in is a <b>row</b>. Twenty-two rows is the whole of what any model on this page gets to know.</p>
+    <div class="intu"><i>picture it</i>
+      <p>A market trader who has watched the same stall for a month. Ask what a crate of tomatoes goes for on a wet Tuesday and you get an answer, fast, with no arithmetic. Ask them how they did it and they cannot tell you, because the answer is not stored anywhere as a rule. It is stored as having been there.</p>
+      <p><b>A model is that trader, forced to write the rule down.</b> Not smarter. Not more experienced. Just obliged to commit the guess to something you can inspect, argue with, and check.</p>
+    </div>
+    <p>One guess is a party trick. The moment you want an answer for a morning nobody has lived through yet, you need something written down that will produce a number for any departure time you hand it.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="02" data-defines="model,parameter,total miss" data-uses="row,feature,label,miss">
+  <div class="col">
+    <h2>A rule is two numbers you are allowed to change</h2>
+    <p>Here is the smallest thing that deserves to be called a model. Pick a journey time for a 07:30 departure, then add a fixed amount of minutes for every hour later than that you leave.</p>
+    <div class="panel">minutes = <b>base</b> + <b>slope</b> &times; (hour &minus; 7.5)<br>
+<i>leave at 07:30</i> &rarr; base<br>
+<i>leave at 08:30</i> &rarr; base + slope<br>
+<i>leave at 06:30</i> &rarr; base &minus; slope</div>
+    <p>That is it. Two numbers and a promise to apply them to anybody. Numbers like these, the ones the rule owns and is allowed to change, are its <b>parameters</b>. Everything else is fixed by you before training starts: the shape of the rule, which features go into it, what comes out.</p>
+    <p>Both of these parameters mean something you can say out loud, which is deliberate and will not survive past the middle of this page. <code>base</code> is how long a 07:30 trip takes. <code>slope</code> is the price in minutes of every extra hour in bed.</p>
+    <p>For now the twelve mornings below are the whole log. The later shift had not started yet. Drag both parameters and watch every miss at once.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span class="fig-lab">twelve mornings, one straight rule, twelve misses</span><span class="fig-read" id="f2Read">total miss: 0.0 min</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 380" role="img" aria-label="Twelve logged mornings plotted by departure time against journey time, with a straight line you can move and a rust bar from each point to the line"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f2A">base</label><input type="range" id="f2A" min="20" max="70" value="32" step="0.1" aria-label="the base parameter, minutes for an 07:30 departure"></span>
+        <span class="fig-slide"><label for="f2B">slope</label><input type="range" id="f2B" min="0" max="40" value="3" step="0.1" aria-label="the slope parameter, extra minutes per hour later"></span>
+        <button class="chip" id="f2Best">put it where the arithmetic says</button>
+      </div>
+      <div class="fig-cap"><b>Two knobs, one number to make small.</b> The readout is the average miss across all twelve mornings. See if you can get it under 4 minutes by hand before you press the button.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Something worth noticing while you were dragging: nobody told you which way to move. You moved a knob, the total went up or down, you kept the direction that helped. Reduce that habit to arithmetic and you have the whole of training.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Tuning an old radio with two dials, eyes shut, with somebody in the room telling you only whether the hiss got louder or quieter. You never need to know where the station is. <b>You only need to know which way is better, and to keep going that way until it stops helping.</b></p>
+      <p>That is genuinely all the information a training run has. Not the answer. Just which way is downhill from here.</p>
+    </div>
+    <p>The button lands on a <code>base</code> of 47.9 minutes and a <code>slope</code> of 19.2, leaving an average miss of 2.97 minutes. Both numbers say something believable: a 07:30 trip runs about forty-eight minutes, and every hour later you leave costs you another nineteen.</p>
+    <p>For a rule this small the arithmetic can jump straight to those two numbers in one shot, no searching required. That stops being possible almost immediately. Anything with more than a couple of parameters has to walk.</p>
+  </div>
+</section>
+<section class="reveal" data-ch="03" data-defines="training,step,loss,learning rate,total miss" data-uses="model,parameter,miss,row,feature,label">
+  <div class="col">
+    <h2>Training is one nudge, repeated until the total stops falling</h2>
+    <p>Set both parameters badly on purpose. A <code>base</code> of 32 minutes, a <code>slope</code> of 3. The rule now claims that leaving an hour later costs you three minutes, which is nonsense, and its average miss is 13.6 minutes.</p>
+    <p>What follows is the entire loop, at the speed of one morning at a time. Scroll it.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span class="fig-lab">one nudge, in full</span><span class="fig-read" id="sc1Read">base 32.0 &middot; slope 3.0</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 580 470" role="img" aria-label="Twelve mornings, a straight rule, one morning singled out, its miss, and the two parameters being nudged"></svg></div>
+        <div class="fig-cap"><b>Click any step to jump to it.</b> The two cells at the bottom are the parameters. Everything else on the page is built out of cells like those.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp on" data-step="0"><h3>Two numbers, both wrong</h3><p>Twelve mornings sit where they sit. The rule is the line, and the line is just those two numbers drawn.</p></div>
+      <div class="col stp" data-step="1"><h3>Pick one morning and apply the rule</h3><p>The 07:45 departure. Feed 7.75 in: 32 + 3 &times; 0.25 gives <b>32.8 minutes</b>. That morning actually took <b>49</b>.</p></div>
+      <div class="col stp" data-step="2"><h3>Measure the miss</h3><p>32.8 minus 49 is <b>16.2 minutes short</b>. One row, one number. The sign matters here even though most scores throw it away later: short means the rule needs to come up.</p></div>
+      <div class="col stp" data-step="3"><h3>Nudge both numbers a little</h3><p>Push <code>base</code> up by <b>0.65</b> and <code>slope</code> up by <b>0.16</b>. The slope moves less because this morning is close to 07:30, so the slope had almost nothing to do with the miss. Blame lands where blame belongs.</p></div>
+      <div class="col stp" data-step="4"><h3>Now do that two hundred times</h3><p>Every morning, over and over, each one tugging the two numbers a little. The ghost lines are where the rule used to be. It settles at <b>base 47.9, slope 19.2</b> and stops moving.</p></div>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig" id="figT">
+      <div class="fig-head"><span class="fig-lab">the same run, under your control</span><span class="fig-read" id="tRead">step 0 &middot; average miss 13.62 min</span></div>
+      <div class="fig-body"><svg id="tSvg" viewBox="0 0 900 360" role="img" aria-label="The rule and the falling total miss as training steps are taken"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="tOne">one nudge</button>
+        <button class="chip" id="tRun">run 200</button>
+        <button class="chip" id="tReset">back to 32 and 3</button>
+        <span class="fig-slide"><label for="tLr">nudge size</label><input type="range" id="tLr" min="1" max="60" value="30" step="1" aria-label="learning rate"></span>
+      </div>
+      <div class="fig-cap"><b>Press one nudge repeatedly, then run 200.</b> Push nudge size past about 50 and the run throws itself past the answer instead of settling on it.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Three words for what you just watched, because they are the words everybody else uses. One pass of pick-a-row, measure, nudge is a <b>step</b>. The single number being made small, the total miss over every row, is the <b>loss</b>. How far each nudge moves the parameters is the <b>learning rate</b>, and it is the one setting on this page that you choose rather than train.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Walking downhill in fog thick enough that you can see your boots and nothing else. You cannot see the valley. You can feel which way the ground tilts, so you take a step that way, and then you feel again.</p>
+      <p>Stride length is the learning rate. Tiny steps and you are out there all night. Enormous steps and you cross the valley floor on every stride, land on the far slope, and bounce back and forth across the bottom without ever standing in it. <b>Nothing about the walk requires knowing where the valley is.</b></p>
+    </div>
+    <p class="pull">Training is not a search for the answer. It is repeatedly asking which way is better and going a short distance that way.</p>
+    <p>The rule now has an average miss of 2.97 minutes across the twelve mornings it was trained on. That number is worth almost nothing, and the next figure is about why.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="04" data-defines="held back,training rows,generalise" data-uses="training,step,loss,total miss,model,miss">
+  <div class="col">
+    <h2>A score on rows it has already seen is the flattering one</h2>
+    <p>Every miss in the figure above came from a morning the rule was allowed to study. It saw the answer, adjusted itself, and was then congratulated for being close. That is not a measurement of anything.</p>
+    <p>The fix is to hide some rows before training starts and never let them into the loop. Those rows are <b>held back</b>. They are the only mornings the rule can be honestly quizzed on, because they are the only ones it cannot have absorbed.</p>
+    <p>Click mornings to hold them back. The rule refits instantly on whatever is left, and the two scores appear side by side.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span class="fig-lab">you choose what it is allowed to study</span><span class="fig-read" id="f4Read">studying all 12 &middot; nothing held back</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 400" role="img" aria-label="Twelve mornings, some filled and used for training, some hollow and held back, with the refitted rule and two separate scores"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f4Rand">hold back four at random</button>
+        <button class="chip" id="f4All">let it see everything</button>
+      </div>
+      <div class="fig-cap"><b>Click a morning to hollow it out.</b> Hollow means held back: it is scored, never studied. The line only ever touches the filled ones.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Now the honest part, and it is not the tidy result you were probably expecting. There are 495 ways to hold four of these twelve mornings back. Work through all of them and the held-back score is the worse of the two in 363, which is about three times in four. The typical gap is three quarters of a minute.</p>
+    <p>So on this table, holding rows back barely catches anything. That is not a reason to stop doing it. It is a fact about this particular pairing of a very small rule with a very small log: two parameters cannot memorise twelve mornings even if they want to, so there is not much memorisation to catch.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Handing a student the exam paper a week early and then being delighted by their marks. What you measured was your own generosity.</p>
+      <p>But if the paper has two questions and the student has to answer them with one sentence they wrote in advance, seeing the paper early does not help them much. <b>The trap only bites when the model has enough room to store answers</b>, and by the end of this page there is a model with twenty numbers and four rows, which has room for nothing else.</p>
+    </div>
+    <p>Hold that thought. The two scores you have been reading are both averages, and an average is a decision about what to ignore.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="05" data-defines="evaluate,score,worst miss" data-uses="held back,training rows,miss,total miss,model,parameter">
+  <div class="col">
+    <h2>Evaluating is looking at all the misses; scoring is throwing them away</h2>
+    <p>Here are the twelve misses the trained rule leaves, drawn as a comb rather than collapsed into one number. Click one to see the arithmetic behind it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span class="fig-lab">every miss the rule leaves, one per morning</span><span class="fig-read" id="f5Read">click a tooth</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 350" role="img" aria-label="Twelve misses drawn as bars above and below a zero line, with the rainy mornings distinguishable"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f5="all">all twelve</button>
+        <button class="chip" data-f5="rain">only the wet ones</button>
+        <button class="chip" data-f5="dry">only the dry ones</button>
+      </div>
+      <div class="fig-cap"><b>Click a tooth for its arithmetic.</b> Switch to the wet mornings and the whole comb sits on one side of the line, which is the rule quietly telling you about a feature it was never given.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Nothing in that comb is random. All four wet mornings sit above the line and the rule is short on every one of them, by 2.7 to 5.5 minutes. The rule has no idea rain exists. It cannot, because nobody put rain into it. So the information turns up as a pattern in the leftovers, which is where information you failed to supply always turns up.</p>
+    <p>Reading the leftovers like that is <b>evaluating</b>. Squashing the comb into one number is <b>scoring</b>, and scoring is what you do when you have two rules and have to pick one.</p>
+    <p>The trouble is that there is more than one way to squash. Take the average of the misses and you get one answer. Take the worst single miss and you get another. Those are different questions, and they crown different rules.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span class="fig-lab">three ways to score, three different winners</span><span class="fig-read" id="f6Read">scoring by: average miss</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 410" role="img" aria-label="The same mornings with three candidate lines, each the best under a different scoring rule"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f6="avg">average miss</button>
+        <button class="chip" data-f6="sq">squared miss</button>
+        <button class="chip" data-f6="max">worst single miss</button>
+        <button class="chip" id="f6Freak">add the morning the road was closed</button>
+      </div>
+      <div class="fig-cap"><b>Switch the scoring rule and the winning line moves.</b> Then add the freak morning and watch the three choices fly apart.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>On the twelve ordinary mornings the disagreement is small: the line that minimises the worst miss gets it down from 5.4 to 5.0 minutes, and pays for that by letting the average rise from 2.95 to 3.33. Half a minute either way. Twelve mornings that nearly lie on a line do not give three scoring rules much to argue about.</p>
+    <p>Now add the morning the road was closed, a 07:00 departure that took 78 minutes. The line chosen to protect the worst case swings up to meet it, and its average miss goes to 17.8 minutes against the 5.7 of the line that ignores the freak entirely. One extra row, and the three scores are no longer nearly the same opinion. They are three different models.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Two ways to fine a late train. A euro a minute, so a ten minute delay costs ten. Or a euro per minute squared, so the same delay costs a hundred.</p>
+      <p>Neither is the correct fine. <b>They are different opinions about whether one disaster is worse than several annoyances</b>, and the choice belongs to whoever is running the railway, not to the arithmetic.</p>
+    </div>
+    <p class="pull">A score is not a measurement of the model. It is a measurement of the model against something you decided to care about.</p>
+    <p>That is all four motions: train, hold rows back and test, evaluate the leftovers, score. So far the answer coming out has always been a quantity. Change the answer to a choice and every one of those four motions has to be rebuilt.</p>
+  </div>
+</section>
+<section class="reveal" data-ch="06" data-defines="class,probability,threshold,false alarm,missed" data-uses="model,parameter,training,held back,evaluate,score,miss">
+  <div class="col">
+    <h2>When the answer is a choice, the model still hands you a number</h2>
+    <p>New question about the same twenty-two mornings. Not how long the trip took. Just: did this person get in after 09:00? Yes or no.</p>
+    <p>Twelve of the twenty-two were late. A yes-or-no answer like that is a <b>class</b>, and a model that picks between classes is doing <b>classification</b>. The word covers spam or not spam, tumour or not tumour, this-of-nine-digits, fraud or fine.</p>
+    <p>Here is the part that surprises people, and it is the single most useful thing to know about classification. <b>The model does not output a class.</b> It cannot. Nudging parameters requires a miss you can measure, and there is no such thing as being a little bit wrong about the word yes. So the model outputs a number between 0 and 1, a <b>probability</b>, and something else turns that into a decision afterwards.</p>
+    <p>That something else is a single number you choose: the <b>threshold</b>. Drag it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span class="fig-lab">a probability for each morning, and a line you place across it</span><span class="fig-read" id="f7Read">threshold 0.50</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 400" role="img" aria-label="Each morning plotted by departure time against the model's probability that the trip ran late, with a movable threshold and the four resulting outcome counts"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f7S">threshold</label><input type="range" id="f7S" min="5" max="95" value="50" step="1" aria-label="decision threshold"></span>
+        <button class="chip" id="f7Acc">put it where accuracy is highest</button>
+      </div>
+      <div class="fig-cap"><b>Drag the threshold.</b> A cell holding <code>L</code> was genuinely late. Cells the threshold gets wrong turn rust. The four counts on the right are every way one morning can turn out.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Four mornings are stuck at a probability of 0.509 and there is nothing wrong with that. All four left at 08:00. The model has only been given the departure time, so as far as it can see those four mornings are the same morning. Two of them ran late. A coin flip is the honest answer, and the model says so.</p>
+    <p>Watch what the threshold buys and costs. At 0.50 the rule catches all twelve late mornings and raises two <b>false alarms</b>, mornings it flagged that were fine. Push it to 0.60 and the false alarms vanish, but three genuinely late mornings are now <b>missed</b>. Both settings score twenty and nineteen out of twenty-two, which is to say they are nearly identical if all you look at is accuracy, and completely different if you are the one catching the train.</p>
+    <div class="intu"><i>picture it</i>
+      <p>A smoke alarm with a sensitivity dial. Turn it right up and it screams when you make toast, but it will never fail to notice a fire. Turn it down and it stops bothering you, and one night it stops bothering you about something that matters.</p>
+      <p><b>There is no setting that is simply correct.</b> There is only a decision about which of the two mistakes you would rather make, and the arithmetic cannot make that decision for you because it does not know what is on the other side of the wall.</p>
+    </div>
+    <p>So classification runs the same four motions with two things swapped: a probability comes out instead of a quantity, and the miss is counted rather than measured. The model still trains by being nudged. It is still held back from rows it will be quizzed on. And it can still only see what you gave it, which is why four mornings collapsed into one.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="07" data-defines="decision boundary" data-uses="class,probability,threshold,feature,training,model,parameter">
+  <div class="col">
+    <h2>Give it a second feature and the rule becomes a line across a map</h2>
+    <p>The log has a column the classifier has not been shown: whether it was raining. Put it in.</p>
+    <p>Now each morning has two coordinates, departure time and wet or dry, so it has a position on a map. The rule stops being a point on a scale and becomes a line drawn across that map, with late on one side and fine on the other. It is called the <b>decision boundary</b>, and it is still nothing but a small set of parameters, trained by exactly the loop from earlier.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span class="fig-lab">two features, one boundary, twenty-two mornings</span><span class="fig-read" id="f8Read">22 of 22 on the right side</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 400" role="img" aria-label="Mornings positioned by departure time and by whether it rained, with a trained straight boundary separating late from on time"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f8Rain">drop the rain column</button>
+        <button class="chip" id="f8Reset">put it back</button>
+        <span class="fig-read">click any morning to flip its answer and retrain</span>
+      </div>
+      <div class="fig-cap"><b>Click a morning to change what actually happened, then watch the boundary move to accommodate you.</b> Drop the rain column and the boundary has to stand upright, because there is no second direction left to lean in.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>With both features the boundary crosses the dry row at 08:06 and the wet row at 07:42, and it gets all twenty-two mornings right. Read the tilt: on a wet morning the model wants you out of the door twenty-four minutes earlier for the same verdict.</p>
+    <p>Drop the rain column and the line has to stand straight up, because with one feature there is only one direction. The four 08:00 mornings go back to being indistinguishable and two of them go back to being wrong. Nothing about the model changed. It just went blind in one eye.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Sorting apples on a conveyor by size alone, and being told off for letting bruised ones through. No amount of adjusting the size gate fixes it. <b>The gate is not wrong, it is looking at the wrong thing</b>, and the fix is a second camera rather than a better setting.</p>
+    </div>
+    <p>Clicking a morning to flip its answer is worth doing a few times, because it shows something the arithmetic will not say out loud. Flip one row near the boundary and the line shrugs and moves slightly. Flip one at the far end and the line barely notices. The rows that decide where the boundary sits are the ones it nearly gets wrong, and everything comfortably on the correct side contributes almost nothing.</p>
+    <p>Both models so far have been a straight thing: a straight line through a cloud, a straight boundary across a map. Straight has been enough because we have been looking at half a morning.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="08" data-defines="the full log,bend" data-uses="model,parameter,miss,total miss,held back,training,evaluate,score">
+  <div class="col">
+    <h2>A straight rule cannot have a rush hour</h2>
+    <p>The shift changed. Ten more mornings went into the log, all of them leaving after 08:00, and here is the whole day at once.</p>
+    <p>Before you look at the figure, predict what happens to the rule. It learned that every hour later costs nineteen minutes. It has never seen a departure after 08:00. Ask it about 10:30.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span class="fig-lab">the rule from the early shift, meeting the rest of the day</span><span class="fig-read" id="f9Read">trained on 12 &middot; average miss on the new 10: 48.5 min</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 420" role="img" aria-label="All twenty-two mornings showing a hump around 08:00, with the straight rule from the early shift shooting off the top of the chart"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f9="early">the rule it trained</button>
+        <button class="chip" data-f9="best">best straight line on all 22</button>
+        <button class="chip" data-f9="true">what the day actually looks like</button>
+      </div>
+      <div class="fig-cap"><b>Switch between the three.</b> The rule predicts 105 minutes for a 10:30 departure. That morning took 22.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>It says 105 minutes. The trip took 22. It is wrong by an hour and twenty minutes, and it is wrong with total confidence, because nothing in the loop that produced it could tell it that the world stops behaving like a line somewhere past 08:00.</p>
+    <p>Now the second button, which is the one that matters. Refit a straight line on all twenty-two mornings, with nothing held back and nothing hidden. The best straight line available says: <b>ignore the departure time entirely and predict about 40 minutes, every single morning</b>. Its slope is minus 1.3 minutes per hour, which rounds to flat. Ignoring the departure time completely and always saying 40 would score 11.86; the best straight line manages 11.68. That is the entire value the feature adds once a line is all you have.</p>
+    <p>That is not a training failure. Training worked perfectly. It found the best straight line there is. The problem is that the shape you chose before training started cannot hold the thing you are trying to describe, and no amount of nudging fixes the shape.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Being asked to trace the outline of a hill using a metal ruler. You can slide the ruler, tilt it, put it anywhere you like. You will never get the top.</p>
+      <p><b>Deep learning is not a cleverer way to place the ruler. It is being handed a hinge.</b></p>
+    </div>
+    <p>The traffic has two regimes and one turning point: it gets worse until about 08:15 and then gets better for the rest of the morning. A straight rule has no way to say the word "until". So the next question is the smallest possible one. What is the cheapest thing you can add to a straight rule to let it bend once?</p>
+  </div>
+</section>
+<section class="reveal" data-ch="09" data-defines="unit,clip at zero,hinge,weight" data-uses="model,parameter,miss,total miss,bend,the full log">
+  <div class="col">
+    <h2>One unit multiplies, adds, then refuses to go below zero</h2>
+    <p>Take a straight line and do one thing to it. Whenever it would go negative, make it zero instead.</p>
+    <div class="panel">a straight line &nbsp;&nbsp;&rarr; &nbsp;&nbsp;<b>w</b> &times; hour + <b>b</b><br>
+a <u>unit</u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&rarr; &nbsp;&nbsp;<i>the larger of</i> ( 0 , <b>w</b> &times; hour + <b>b</b> )</div>
+    <p>That is the whole modification. It is called <b>clipping at zero</b>, the thing doing it is a <b>unit</b>, and the numbers <code>w</code> and <code>b</code> are its <b>weight</b> and its bias. Weight is the same idea as slope: how much this unit cares about the feature going in.</p>
+    <p>The clip is what buys you the corner. A straight line is straight everywhere. A clipped line is flat, then straight, with a <b>hinge</b> at the hour where the inside of the bracket crosses zero. One hinge is not much. Three of them, added together with their own weights, can make almost any shape you can draw without lifting the pen.</p>
+    <p>So build the rush hour by hand. Three hinges, six numbers, and a target: the best straight line on this data leaves an average miss of 11.68 minutes. Get under four.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span class="fig-lab">three hinges, added up, against twenty-two real mornings</span><span class="fig-read" id="f10Read">average miss 11.68 min</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 530" role="img" aria-label="Three clipped lines shown separately on top, their weighted sum below, plotted against the twenty-two logged mornings"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-u="0">hinge 1</button><button class="chip" data-u="1">hinge 2</button><button class="chip" data-u="2">hinge 3</button>
+        <span class="fig-slide"><label for="f10K">hinge at</label><input type="range" id="f10K" min="600" max="1100" value="600" step="5" aria-label="the hour where this hinge turns on"></span>
+        <span class="fig-slide"><label for="f10G">then per hour</label><input type="range" id="f10G" min="-60" max="60" value="0" step="0.5" aria-label="minutes per hour this hinge contributes"></span>
+        <button class="chip" id="f10Solve">show a good setting</button>
+      </div>
+      <div class="fig-cap"><b>Pick a hinge, then place it and set what it does.</b> Hinge 1 should climb from the start; hinge 2 has to turn the whole thing over around 08:00, so it needs a bigger number and a negative one.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>A setting that works: hinge 1 climbing 18.5 minutes an hour from 06:00, hinge 2 at 08:00 pulling back 36 an hour, hinge 3 at 09:45 adding 11.5 to flatten the tail. Average miss 2.85 minutes, against 11.68 for the best straight line. Seven numbers, one clip, four times better.</p>
+    <p>Notice what hinge 2 has to do. To turn a line that is climbing at 18.5 into one that is falling, it has to be twice as strong and pointed the other way, so the sum comes out at minus 17.5. Nothing in the model knows that. It is just what the arithmetic requires, and it is the kind of thing training discovers and nobody would guess.</p>
+    <div class="intu"><i>picture it</i>
+      <p>A folding ruler, the wooden kind with brass hinges. Straight out it is exactly as useless as a metal ruler for tracing a hill. Break it at two places and it traces the hill.</p>
+      <p><b>Every hinge you add is one more corner the shape is allowed to have.</b> That is the entire currency deep learning is buying with all those parameters: permission to bend, in more places, in more directions than you can draw.</p>
+    </div>
+    <p>You just did by hand what training does by nudging, on a model with one feature and one layer of hinges. Stack a second layer of hinges on top of the first and the hinges start bending each other, which is where the word deep comes from and where hand-setting stops being possible.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="10" data-defines="hidden layer,forward pass,activation,network" data-uses="unit,weight,clip at zero,hinge,feature,parameter,model">
+  <div class="col">
+    <h2>Twenty numbers, two hidden layers, and every single number on screen</h2>
+    <p>Here is the network the rust bars at the top of this page belong to. Two features go in. Three units, then two units, then one answer. Every number it owns is visible, all twenty of them, and the whole of a prediction is four multiplications and an addition repeated six times.</p>
+    <p>The two rows of units in the middle are the <b>hidden layers</b>. Hidden is a dull word for a dull reason: nothing outside the network ever reads them. You put in a departure time and get back minutes. What happens in between happens.</p>
+  </div>
+  <div class="bleed scrolly right" id="sc2">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span class="fig-lab">one prediction, all the way through</span><span class="fig-read" id="sc2Read">08:00, dry</span></div>
+        <div class="fig-body"><svg id="sc2fig" viewBox="0 0 580 600" role="img" aria-label="A network with two inputs, a layer of three units, a layer of two units and one output, with every weight and activation shown as a numbered cell"></svg></div>
+        <div class="fig-cap"><b>Click a step to jump to it.</b> Filled cells are the twenty numbers the network owns, sitting under the unit that owns them. Outlined cells are numbers it just worked out.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp on" data-step="0"><h3>Two numbers go in</h3><p>An 08:00 dry departure. The clock time is rescaled to sit near zero, because units work best on small numbers, and dry is 0.</p></div>
+      <div class="col stp" data-step="1"><h3>The first layer: three units, each one a hinge</h3><p>Each unit multiplies both inputs by its own weights, adds its bias, clips at zero. Three units, three numbers out. A unit whose bracket came out negative sends zero, which means it is contributing nothing at all to this particular morning.</p></div>
+      <div class="col stp" data-step="2"><h3>The second layer works on the first layer&rsquo;s answers</h3><p>Same operation, but the inputs are no longer clock times. They are three numbers the first layer invented. This is the step that makes the thing deep: <b>a hinge whose input is already hinged.</b></p></div>
+      <div class="col stp" data-step="3"><h3>One number comes out</h3><p>The last unit does not clip, because journey times are allowed to be any size. Multiply, add, done: <b>54.7 minutes</b>. That morning took <b>55</b>.</p></div>
+      <div class="col stp" data-step="4"><h3>Now every morning at once</h3><p>Run all twenty-two through and the curve appears. It climbs to a peak of 55.6 minutes at 08:03 and comes back down, and it draws a second copy of itself above the first for the wet mornings: four minutes higher at 07:00, eight at 09:00. Nobody told it that rain costs more in traffic than on an empty road. It was handed rain as one of two inputs and that fell out.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <p>That trip through the network is a <b>forward pass</b>, and the intermediate numbers the layers produce are <b>activations</b>. Both words describe something you can now point at.</p>
+    <div class="intu"><i>picture it</i>
+      <p>A workshop with two benches. The first bench takes the raw stock and cuts it into three rough parts. The second bench takes those three parts and assembles two sub-assemblies. A final worker screws them together.</p>
+      <p>Nobody at the second bench has seen the raw stock. <b>They work only on what the first bench handed them</b>, which is why the numbers in the middle of a network stop having names you can say. They are not departure times any more. They are whatever turned out to be useful.</p>
+    </div>
+    <p>Twenty numbers all had to be right at once for that pass to land on 54.7. Not one of them was set by a person. Which leaves the obvious question: when the answer comes out wrong, which of the twenty do you blame?</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="11" data-defines="blame,backward pass,gradient" data-uses="forward pass,activation,hidden layer,network,weight,unit,training,step,loss,learning rate,miss">
+  <div class="col">
+    <h2>Backward: the miss is divided among the numbers that caused it</h2>
+    <p>The straight rule had it easy. Two parameters, so a miss of 16 minutes short meant push both up, and how hard depended on how big the feature was.</p>
+    <p>Twenty parameters, arranged in layers, is the same idea carried out with bookkeeping. Start at the answer with the miss in your hand. Hand each unit that fed the answer a share of the blame, in proportion to how much it contributed. Those units then hand shares of their own blame back to the units that fed them. Keep going until every number has a share.</p>
+    <p>Two rules do all the work, and both are things you would guess. <b>A number that had more influence gets more of the blame.</b> And a unit that was clipped to zero on this morning gets none, because it did not affect the answer, so it cannot be at fault.</p>
+    <p>The trip back is the <b>backward pass</b>. Each number's share is its <b>gradient</b>: which way to move it, and how much.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span class="fig-lab">who is to blame for this morning being wrong</span><span class="fig-read" id="f11Read">click a number</span></div>
+      <div class="fig-body"><svg id="f11" viewBox="0 0 900 430" role="img" aria-label="The network with each weight shaded by how large a share of the blame it carries for the currently selected morning"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f11Step">take the nudge</button>
+        <button class="chip" id="f11Row">next morning</button>
+        <button class="chip" id="f11Reset">untrained again</button>
+      </div>
+      <div class="fig-cap"><b>Click any number to see its share.</b> Rust means this number is being pushed down, teal means up, and the bar length is how hard. Grey means a clipped unit had no say in this morning.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i>
+      <p>A restaurant order comes back wrong. The manager does not shout at everybody equally. She works backwards: the plate came from the pass, so how much of this is plating, how much is the sauce station, how much is whoever ordered the wrong fish on Tuesday. Each person gets a share sized by how much of the dish went through their hands.</p>
+      <p>And the station that was closed all evening gets nothing, because it did not touch this plate. <b>That is exactly the rule for a unit that clipped to zero.</b> No contribution, no blame, no adjustment on this morning.</p>
+    </div>
+    <p>Do that for every morning, add up the shares, move every number a small distance in its own direction, and that is one step. Twenty steps in, the curve already has a peak in it. A hundred steps in, the peak is in roughly the right place at roughly the right height. The remaining two thousand four hundred steps are spent arguing about five minutes of accuracy.</p>
+    <p>The slider below is the only knob in this whole page that changes what the argument is about. Everything else has been an inspector. Drag it from left to right and you are watching the same twenty numbers at every point in their training, with three readouts moving together.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig12">
+      <div class="fig-head"><span class="fig-lab">the same network at every point in its training</span><span class="fig-read" id="f12Read">step 0 &middot; average miss 14.22 min</span></div>
+      <div class="fig-body"><svg id="f12" viewBox="0 0 900 420" role="img" aria-label="The network's curve, and the falling miss, at any chosen point during training"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f12S">training steps</label><input type="range" id="f12S" min="0" max="2500" value="0" step="20" aria-label="how many training steps have been taken"></span>
+        <button class="chip" id="f12Play">run it</button>
+      </div>
+      <div class="fig-cap"><b>Drag through the training run.</b> The peak appears inside the first hundred steps. Everything after that is the curve inching towards the dots.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The shape of that run is not what most descriptions of training suggest. Average miss starts at 21 minutes and is down to 6.5 by step 100. Then 5.5 at step 200, 4.3 at 400, 2.5 at 700, 1.9 at 1000, 1.5 at 1500, 1.3 at 2000, and 1.26 at 2500, where it is still creeping downwards. The shape arrives almost immediately; the rest of the run is haggling. Stop at step 100 and you already have a model that knows there is a rush hour, and one that is five minutes worse than the model you get for twenty-five times the electricity.</p>
+    <p class="pull">Nothing in the loop understood traffic. Twenty numbers were pushed downhill until the shape they drew happened to be a rush hour.</p>
+    <p>Twenty numbers, two layers, an average miss of 1.26 minutes on a curve where the best straight rule could only manage 11.68. So the four motions still hold. What changed?</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="12" data-defines="the shared loop" data-uses="class,probability,threshold,decision boundary,network,forward pass,backward pass,gradient,training,held back,evaluate,score,miss,total miss">
+  <div class="col">
+    <h2>The same loop, three times over</h2>
+    <p>Three models have now been trained on one log. Put them side by side and run a morning through each. The four stations are the same four stations in the same order. What differs is what comes out of the last one and what you are allowed to call a miss.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig13">
+      <div class="fig-head"><span class="fig-lab">one morning, three models, four stations each</span><span class="fig-read" id="f13Read">pick a model</span></div>
+      <div class="fig-body"><svg id="f13" viewBox="0 0 900 420" role="img" aria-label="Three model families drawn as the same four-station circuit, with the differences between them highlighted"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f13="reg">straight regression</button>
+        <button class="chip" data-f13="cls">classification</button>
+        <button class="chip" data-f13="net">two hidden layers</button>
+        <button class="chip" id="f13Send">send a morning through</button>
+      </div>
+      <div class="fig-cap"><b>Switch model, then send a morning through.</b> The route is identical every time. Only the shape of the box in the middle and the label on the miss change.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Laid out like that, the differences are smaller than the vocabulary suggests. Regression and classification are not two kinds of learning. They are two kinds of answer, and the answer type decides how you are permitted to measure being wrong: a distance in minutes if the answer is a quantity, a count of four outcomes if the answer is a choice.</p>
+    <p>Deep learning is not a third kind of answer at all. The network in the last two figures did regression: minutes out, distance measured. Put a probability on the end instead and the same twenty numbers do classification, with a threshold on top exactly as before. What the layers buy is not a new task. It is a shape flexible enough to hold whatever is actually in the data, at the cost of every number in it becoming uninterpretable.</p>
+    <div class="intu"><i>picture it</i>
+      <p>Three tradespeople with the same four-step method: look at the job, try something, see how far off it is, adjust. A tailor works in centimetres, an electrician in yes-there-is-continuity-or-no, a cabinetmaker in a curve that has to match a wall nobody built straight.</p>
+      <p><b>The method is not what makes them different. The material is.</b></p>
+    </div>
+    <p>Everything up to here has been the loop working. The last thing worth knowing is the shape of it failing, and the failure is not subtle.</p>
+  </div>
+</section>
+
+<section class="reveal" data-ch="13" data-defines="memorising,overfitting" data-uses="network,training,held back,miss,total miss,parameter,score,evaluate,the shared loop">
+  <div class="col">
+    <h2>Twenty numbers and four mornings is memorising, not learning</h2>
+    <p>Earlier, holding rows back from the two-parameter rule caught almost nothing: the gap between the studied score and the held-back score was three quarters of a minute. Two parameters have nowhere to hide twelve answers.</p>
+    <p>Twenty parameters are a different animal. Choose how many mornings the network is allowed to study, and watch both scores at once.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig14">
+      <div class="fig-head"><span class="fig-lab">how much of the log it gets to see</span><span class="fig-read" id="f14Read">studying 22 &middot; nothing held back</span></div>
+      <div class="fig-body"><svg id="f14" viewBox="0 0 900 400" role="img" aria-label="The network's curve when trained on four, six, eight, twelve or all twenty-two mornings, with the miss on studied and held-back rows shown separately"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f14="4">4 mornings</button><button class="chip" data-f14="6">6</button><button class="chip" data-f14="8">8</button><button class="chip" data-f14="12">12</button><button class="chip on" data-f14="22">all 22</button>
+      </div>
+      <div class="fig-cap"><b>Start with four.</b> The curve passes through all four almost exactly. Then look where it goes between them.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Four mornings: average miss on those four, <b>0.00</b>. The curve goes through all four exactly. Average miss on the eighteen it was never shown, <b>8.3 minutes</b>. Six mornings: 0.00 again, and 3.2 on the rest. Eight: 0.13 and 4.9. Twelve: 0.44 and 2.3. All twenty-two: 1.26, with nothing left to hold back.</p>
+    <p>The held-back score does not fall neatly as rows are added: six mornings scored 3.2 and eight scored 4.9. More data made it look worse. That is not an error in the arithmetic, it is what a held-back score built from fourteen rows does, and it is the same wobble that made the split in the earlier figure look pointless. A score measured on a handful of rows is itself a guess.</p>
+    <p>The studied score says the model is perfect at every one of those settings. It is a lie at every one of them, and the size of the lie is the entire reason anybody holds rows back. This has a name, <b>overfitting</b>, and the picture of it is the curve at four mornings: a shape that goes exactly through the four dots it was shown and does something arbitrary and confident everywhere in between.</p>
+    <div class="intu"><i>picture it</i>
+      <p>A student who has memorised four past exam papers word for word. On those four papers they are flawless. Hand them a fifth and they answer the question they memorised, at length, with total confidence.</p>
+      <p><b>You cannot tell the difference between that student and one who understands the subject by looking at their marks on the four papers.</b> You can only tell by using a paper they have not seen, which is why the held-back rows are not a formality.</p>
+    </div>
+    <p>Two other things this page has been quietly showing you, both worth saying out loud.</p>
+    <p>The starting numbers matter, and not a little. All twenty parameters begin at small random values, and from some starting points the network never finds the peak at all. It settles into predicting a nearly flat 40 minutes and stays there, average miss above 5 minutes, however long you leave it running. Trying sixty different starting points on this data, eighteen of them end up stuck like that: closer to three in ten than one in ten.</p>
+    <p>The reason is the one place the clip at zero bites back. A unit whose bracket comes out negative for every morning outputs zero for every morning, so it contributes nothing, so it receives no share of the blame, so it never moves again. It is dead, and nothing in the loop can revive it. The response in practice is not cleverness. It is running the whole thing from several starting points and keeping the one that worked, which is exactly what every figure here does: eight starting points, and the one with the lowest miss on the rows it was allowed to study survives.</p>
+    <p>And the network still cannot see anything you did not give it. It was handed a clock time and a yes-or-no about rain. It knows nothing about school holidays, roadworks, or the morning the road was closed. Ask it about a Sunday and it will answer, in minutes, to one decimal place, with no way of telling you that it has never seen one.</p>
+    <div class="note"><b>What none of this promises.</b> Twenty-two mornings is far too small a log to trust for anything. The gaps between the studied and held-back scores here are measured on a handful of rows, so they wobble. Every number on this page is real arithmetic on real rows, but the rows are a toy, chosen so that all the arithmetic fits on a screen and you can check it. A production model does exactly what you have just watched, with millions of rows and billions of parameters, and the four motions do not change at all.</div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="col">
+    <h2>Train, test, evaluate, score. Then argue about the score.</h2>
+    <p>The three words on the tin describe what comes out of the box: a quantity, a choice, or a quantity produced by something bendy enough to be worth the trouble. They do not describe three different things happening inside. Inside there is one loop, and it is a loop of being wrong on purpose, in small measured amounts, until being wrong gets boring.</p>
+    <p>The parts worth carrying away are the parts that were decisions rather than arithmetic. You chose the shape of the rule before training began, and no amount of training escapes a shape too rigid to hold the data. You chose which rows the model was allowed to study, and the score on the others is the only one that means anything. You chose what counts as a miss, and that choice crowned a different winner. The arithmetic was never in charge of any of that.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="figP">
+      <div class="fig-head"><span class="fig-lab">everything unlocked at once</span><span class="fig-read" id="pRead">ready</span></div>
+      <div class="fig-body"><svg id="pSvg" viewBox="0 0 900 400" role="img" aria-label="A sandbox with every parameter of the network exposed at once"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="pW">layer width</label><input type="range" id="pW" min="1" max="8" value="3" step="1" aria-label="units per hidden layer"></span>
+        <span class="fig-slide"><label for="pLr">nudge size</label><input type="range" id="pLr" min="1" max="40" value="8" step="1" aria-label="learning rate"></span>
+        <span class="fig-slide"><label for="pRows">rows it may study</label><input type="range" id="pRows" min="4" max="22" value="22" step="1" aria-label="training rows"></span>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="pRun">train it</button>
+        <button class="chip" id="pSeed">different starting numbers</button>
+        <button class="chip" data-p="under">the too-rigid case</button>
+        <button class="chip" data-p="over">the memorising case</button>
+        <button class="chip" data-p="good">the sensible case</button>
+      </div>
+      <div class="fig-cap"><b>Now break it.</b> One unit per layer cannot bend at all. Four rows and eight units per layer memorises. Press different starting numbers a few times on a narrow network and watch it fail to learn about two times in five.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>One thing the sandbox will not let you do is win. There is no setting that makes the held-back score match the studied one, because the held-back rows are mornings this log does not contain, and no arrangement of numbers can recover something nobody wrote down.</p>
+  </div>
+</section>
+
+<button class="note-hint" id="weedsHint" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</button>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h2>Into the weeds</h2>
+    <details><summary>Why the rule is written around 07:30 instead of midnight</summary>
+      <p>The usual textbook form is <code>minutes = start + slope &times; hour</code>, where <code>start</code> is the value at hour zero. Fit that to the early shift and it lands on minus 95.9, which claims a midnight departure takes minus ninety-six minutes. The line is identical; only the label is silly.</p>
+      <p>There is a practical reason to centre it, beyond readability. Gradient descent on the uncentred form is badly behaved: the two parameters have wildly different sensitivities, so any nudge size small enough to be safe for one is uselessly small for the other, and the run crawls for thousands of steps. Subtracting 7.5 from the hour before it goes in makes both parameters comparably sensitive and the same run converges in about twenty-five steps. Every serious model does some version of this to its inputs, which is also why the network rescales the clock time to sit near zero before the first layer sees it.</p>
+    </details>
+    <details><summary>Why the classifier&rsquo;s probabilities are not 0 and 1</summary>
+      <p>Fit the late-or-not classifier with no restraint and it drives its weight up to about 24, which makes the probability curve a cliff: every morning comes out at 0.000, 0.500 or 1.000, and the threshold slider has exactly one place where it does anything.</p>
+      <p>The fit on this page adds a small penalty on the size of the weights, which stops them running away and leaves the weight at 1.36. The probabilities then spread from 0.145 to 0.940. Nothing about the data changed. The model was told to prefer a gentler opinion, and a gentler opinion is more useful because it distinguishes a 06:00 departure from a 07:00 one instead of calling both of them certain. The technique is called regularisation and this is the mildest possible taste of it.</p>
+    </details>
+    <details><summary>The four mornings that are the same morning</summary>
+      <p>Four rows in the log leave at 08:00. Two were dry and arrived at 08:55 and 08:58; two were wet and arrived at 09:01 and 09:03. Given only the clock time, those four rows are one row with two contradictory answers, and no rule of any complexity can separate them. The single-feature classifier gives all four a probability of 0.509, which is the correct behaviour and looks like a failure.</p>
+      <p>This is the most common way a model looks stupid while behaving perfectly. Before reaching for more parameters, it is worth asking whether the rows the model gets wrong are rows that are genuinely distinguishable in the columns you supplied. Twice on this page the answer was no, and both times the fix was a column rather than a model.</p>
+    </details>
+    <details><summary>What the two hidden layers actually built</summary>
+      <p>The run this page keeps starts from the fifth of its eight starting points. Afterwards the first layer&rsquo;s three units have weights on the clock of 0.95, minus 1.93 and minus 0.67, and weights on rain of 0.75, minus 0.07 and 0.45. So unit two is almost purely a clock unit running backwards and barely notices the weather, while units one and three carry the rain between them. Nobody designed that division of labour. It fell out of the starting numbers and the walk downhill.</p>
+      <p>The second layer weights those three by minus 0.43, minus 1.22, 1.97 for its first unit and minus 0.97, minus 0.17, 1.80 for its second, and the output takes 1.26 of the first and minus 1.04 of the second. Both second-layer units are genuinely doing work here, which is somewhat lucky: from other starting points one of them ends up contributing almost nothing and the network does the same job with four fewer numbers. You cannot know which numbers were unnecessary until after you have trained them, which is a large part of why models ship bigger than they need to be.</p>
+    </details>
+    <details><summary>Why a network is not just more hinges in a row</summary>
+      <p>The hand-built model earlier added three hinges together directly. That is a network with one hidden layer, and one hidden layer of enough units can already approximate any smooth curve, which is a genuine and famous result. So why stack a second layer?</p>
+      <p>Because "enough units" can mean an enormous number. A second layer takes hinges built from the input and bends them again, so the shapes available grow much faster per parameter added. On a one-feature curve like this morning&rsquo;s traffic the difference barely matters, and the two-layer network here is showing you the mechanism rather than earning its keep. On an image, where a useful feature is something like "an edge, at any position, at any angle", building it out of one layer of hinges is hopeless and building it out of six is routine.</p>
+    </details>
+    <details><summary>What was left out on purpose</summary>
+      <p>Three things every real project needs and this page does not mention. The rows here were split once, by hand, into studied and held back; in practice you rotate the split several times and average, because a single split of a small log is mostly luck. The network here sees all its training rows on every step, which stops being possible above a few thousand rows, so real training uses small random handfuls at a time. And nothing here uses a third pile of rows, kept back from even the held-back scoring, which is what you need once you start choosing between models using the held-back score, because at that point the held-back rows have quietly started influencing the model too.</p>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p>Every number in this piece is computed in your browser from the twenty-two rows above: the straight fits by closed-form least squares, the classifier by gradient descent with a small weight penalty, the network by full-batch gradient descent on twenty parameters through two hidden layers of clipped units. Nothing is pre-recorded and no result is hard-coded. The commute log is invented, and deliberately small enough that you can check the arithmetic by hand.</p>
+    <p>Figures that report a network score train from several starting points and keep the one with the lowest miss on the rows it was allowed to study, never on the held-back rows. Built August 2026.</p>
+  </div>
+</footer>
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var REDUCE=matchMedia('(prefers-reduced-motion:reduce)').matches;
+var ACC='var(--acc)',RISK='var(--risk)',INK='var(--ink)',FAINT='var(--ink3)',RULE='var(--rule)';
+
+/* ===== the log: 22 mornings ===== */
+var ID='ABCDEFGHIJKLMNOPQRSTUV';
+var D=[[6.00,0,21],[6.25,0,24],[6.50,1,32],[6.75,0,30],[7.00,0,35],[7.25,1,46],
+       [7.50,0,43],[7.75,0,49],[8.00,0,55],[8.00,0,58],[8.00,1,61],[8.00,1,63],
+       [8.25,0,54],[8.50,0,50],[8.75,1,52],[9.00,0,38],[9.25,1,42],[9.50,0,30],
+       [9.75,0,27],[10.00,1,33],[10.50,0,22],[11.00,0,20]]
+  .map(function(a,i){return {i:i,id:ID[i],h:a[0],r:a[1],m:a[2],late:(a[0]*60+a[2])>540};});
+var E=D.slice(0,12);
+function clk(h){var t=Math.round(h*60);return ('0'+Math.floor(t/60)).slice(-2)+':'+('0'+(t%60)).slice(-2);}
+function f1d(v){return (Math.round(v*10)/10).toFixed(1);}
+function f2d(v){return (Math.round(v*100)/100).toFixed(2);}
+
+/* ===== the atom: a cell holding one number ===== */
+function cell(x,y,txt,state,w,h,extra){
+  w=w||34;h=h||26;
+  var fs=w>=56?13:(w>=40?11:10);
+  return '<g class="cel '+state+'"'+(extra||'')+'><rect x="'+Math.round(x)+'" y="'+Math.round(y)+'" width="'+w+'" height="'+h+'" rx="4"/>'+
+    '<text x="'+Math.round(x+w/2)+'" y="'+Math.round(y+h/2+fs*0.36)+'" text-anchor="middle" font-size="'+fs+'">'+txt+'</text></g>';
+}
+function lab(x,y,t,sz,cls,anch){
+  return '<text class="'+(cls||'lb')+'" x="'+Math.round(x)+'" y="'+Math.round(y)+'" font-size="'+(sz||12)+'"'+
+    (anch?' text-anchor="'+anch+'"':'')+'>'+t+'</text>';
+}
+function rainMark(x,y){ /* one consistent mark for a wet morning, everywhere on the page */
+  return '<rect x="'+Math.round(x-2)+'" y="'+Math.round(y-9)+'" width="4" height="9" rx="2" fill="'+ACC+'"/>';
+}
+function clipLine(X,Y,p,h0,h1,lo,hi){ /* keep a rule inside its own plot box */
+  var pts=[],h,v;
+  for(h=h0;h<=h1+0.001;h+=(h1-h0)/160){
+    v=predL(p,h);
+    if(v>=lo&&v<=hi)pts.push(Math.round(X(h))+','+Math.round(Y(v)));
+  }
+  return pts.length>1?'<polyline points="'+pts.join(' ')+'" class="ln"/>':'';
+}
+function mapper(x0,x1,lo,hi){var s=(x1-x0)/(hi-lo);return function(v){return x0+(v-lo)*s;};}
+
+/* ===== motion engine (one interpolation loop for the whole page) ===== */
+var live=[],raf=null;
+function ease(u){return u<0.5?2*u*u:1-Math.pow(-2*u+2,2)/2;}
+function finish(f){var i=live.indexOf(f);if(i<0)return;live.splice(i,1);f.apply(1);if(f.done)f.done();}
+function animate(apply,ms,done){
+  ms=ms||1600;apply(0);
+  if(REDUCE){apply(1);if(done)done();return null;}
+  var f={apply:apply,t0:performance.now(),ms:ms,done:done};
+  live.push(f);
+  f.guard=setTimeout(function(){finish(f);},ms+80);
+  if(!raf)raf=requestAnimationFrame(tick);
+  return f;
+}
+function tick(now){
+  for(var i=live.length-1;i>=0;i--){
+    var f=live[i],u=Math.min(1,(now-f.t0)/f.ms);
+    f.apply(ease(u));
+    if((now-f.t0)>=f.ms){clearTimeout(f.guard);finish(f);}
+  }
+  raf=live.length?requestAnimationFrame(tick):null;
+}
+function settle(){while(live.length){clearTimeout(live[0].guard);finish(live[0]);}}
+function along(g,path){return function(u){
+  var p=path.getPointAtLength(u*path.getTotalLength());
+  g.setAttribute('transform','translate('+p.x.toFixed(1)+','+p.y.toFixed(1)+')');};}
+
+/* ===== straight rule, centred on 07:30 ===== */
+function predL(p,h){return p.base+p.slope*(h-7.5);}
+function ols(rows){
+  var n=rows.length,su=0,sy=0,i;
+  for(i=0;i<n;i++){su+=rows[i].h-7.5;sy+=rows[i].m;}
+  var mu=su/n,my=sy/n,num=0,den=0;
+  for(i=0;i<n;i++){var u=rows[i].h-7.5-mu;num+=u*(rows[i].m-my);den+=u*u;}
+  var sl=den?num/den:0;
+  return {base:my-sl*mu,slope:sl};
+}
+function maeL(rows,p){var s=0;for(var i=0;i<rows.length;i++)s+=Math.abs(rows[i].m-predL(p,rows[i].h));return rows.length?s/rows.length:0;}
+function maxL(rows,p){var s=0;for(var i=0;i<rows.length;i++)s=Math.max(s,Math.abs(rows[i].m-predL(p,rows[i].h)));return s;}
+function rmsL(rows,p){var s=0;for(var i=0;i<rows.length;i++){var e=rows[i].m-predL(p,rows[i].h);s+=e*e;}return Math.sqrt(rows.length?s/rows.length:0);}
+
+/* ===== logistic rule (small weight penalty keeps the probabilities spread) ===== */
+function fitLog(rows,useRain,lam,iters){
+  var w=[0,0],b=0,n=rows.length,lr=0.6,k;
+  lam=lam===undefined?0.10:lam;iters=iters||900;
+  for(var it=0;it<iters;it++){
+    var g0=0,g1=0,gb=0;
+    for(k=0;k<n;k++){
+      var d=rows[k],x0=(d.h-8.5)/1.5,x1=useRain?d.r:0;
+      var p=1/(1+Math.exp(-(w[0]*x0+w[1]*x1+b))),e=p-(d.lab?1:0);
+      g0+=e*x0;g1+=e*x1;gb+=e;
+    }
+    w[0]-=lr*(g0/n+lam*w[0]);
+    if(useRain)w[1]-=lr*(g1/n+lam*w[1]);
+    b-=lr*gb/n;
+  }
+  return {w:w,b:b,rain:useRain};
+}
+function pLate(f,d){return 1/(1+Math.exp(-(f.w[0]*(d.h-8.5)/1.5+(f.rain?f.w[1]*d.r:0)+f.b)));}
+
+/* ===== the network: 2 inputs, two hidden layers, one number out ===== */
+function sxv(d){return [(d.h-8.5)/1.5,d.r];}
+function syv(m){return (m-40)/12;}
+function inv(t){return 40+12*t;}
+/* mulberry32: every step stays inside 32 bits, so the same seed gives the same
+   starting numbers in every browser. A plain multiply-and-mod generator does not:
+   1103515245 times a 31-bit state overflows what a double can hold exactly. */
+function lcg(seed){var s=seed>>>0;return function(){
+  s=(s+0x6D2B79F5)>>>0;
+  var t=s;
+  t=Math.imul(t^(t>>>15),t|1)>>>0;
+  t=(t^(t+Math.imul(t^(t>>>7),t|61)))>>>0;
+  return ((t^(t>>>14))>>>0)/4294967296;};}
+/* weights spread by fan-in, biases a touch positive so units start awake:
+   a unit that begins clipped to zero receives no blame and can never wake up. */
+function initNet(seed,h1,h2){
+  var g=lcg(seed),f=function(k){return (g()*2-1)*k;},j,q;
+  var s1=Math.sqrt(6/2),s2=Math.sqrt(6/h1),s3=Math.sqrt(6/h2);
+  var p={W1:[],b1:[],W2:[],b2:[],W3:[],b3:0,h1:h1,h2:h2};
+  for(j=0;j<h1;j++){p.W1.push([f(s1),f(s1)]);p.b1.push(0.1);}
+  for(j=0;j<h2;j++){var row=[];for(q=0;q<h1;q++)row.push(f(s2));p.W2.push(row);p.b2.push(0.1);}
+  for(j=0;j<h2;j++)p.W3.push(f(s3));
+  return p;
+}
+function fwd(p,x){
+  var a1=[],a2=[],j,q,z;
+  for(j=0;j<p.h1;j++){z=p.W1[j][0]*x[0]+p.W1[j][1]*x[1]+p.b1[j];a1.push(z>0?z:0);}
+  for(j=0;j<p.h2;j++){z=p.b2[j];for(q=0;q<p.h1;q++)z+=p.W2[j][q]*a1[q];a2.push(z>0?z:0);}
+  z=p.b3;for(j=0;j<p.h2;j++)z+=p.W3[j]*a2[j];
+  return {a1:a1,a2:a2,out:z};
+}
+function grads(p,rows){ /* the backward pass, averaged over rows */
+  var n=rows.length,j,q,k;
+  var g={W1:[],b1:[],W2:[],b2:[],W3:[],b3:0,loss:0};
+  for(j=0;j<p.h1;j++){g.W1.push([0,0]);g.b1.push(0);}
+  for(j=0;j<p.h2;j++){var r2=[];for(q=0;q<p.h1;q++)r2.push(0);g.W2.push(r2);g.b2.push(0);}
+  for(j=0;j<p.h2;j++)g.W3.push(0);
+  for(k=0;k<n;k++){
+    var x=sxv(rows[k]),t=syv(rows[k].m),f=fwd(p,x),e=f.out-t;
+    g.loss+=e*e/n;
+    var d3=2*e/n;
+    g.b3+=d3;
+    for(j=0;j<p.h2;j++)g.W3[j]+=d3*f.a2[j];
+    var d2=[];
+    for(j=0;j<p.h2;j++)d2.push(f.a2[j]>0?d3*p.W3[j]:0);
+    for(j=0;j<p.h2;j++){g.b2[j]+=d2[j];for(q=0;q<p.h1;q++)g.W2[j][q]+=d2[j]*f.a1[q];}
+    var d1=[];
+    for(q=0;q<p.h1;q++){var s=0;for(j=0;j<p.h2;j++)s+=d2[j]*p.W2[j][q];d1.push(f.a1[q]>0?s:0);}
+    for(q=0;q<p.h1;q++){g.b1[q]+=d1[q];g.W1[q][0]+=d1[q]*x[0];g.W1[q][1]+=d1[q]*x[1];}
+  }
+  return g;
+}
+function apply(p,g,lr){
+  var j,q;
+  for(j=0;j<p.h1;j++){p.b1[j]-=lr*g.b1[j];p.W1[j][0]-=lr*g.W1[j][0];p.W1[j][1]-=lr*g.W1[j][1];}
+  for(j=0;j<p.h2;j++){p.b2[j]-=lr*g.b2[j];for(q=0;q<p.h1;q++)p.W2[j][q]-=lr*g.W2[j][q];}
+  for(j=0;j<p.h2;j++)p.W3[j]-=lr*g.W3[j];
+  p.b3-=lr*g.b3;
+}
+function stepNet(p,rows,lr){apply(p,grads(p,rows),lr);}
+function maeNet(p,rows){var s=0;for(var i=0;i<rows.length;i++)s+=Math.abs(inv(fwd(p,sxv(rows[i])).out)-rows[i].m);return rows.length?s/rows.length:0;}
+function clone(p){return {W1:p.W1.map(function(r){return r.slice();}),b1:p.b1.slice(),
+  W2:p.W2.map(function(r){return r.slice();}),b2:p.b2.slice(),W3:p.W3.slice(),b3:p.b3,h1:p.h1,h2:p.h2};}
+function trainNet(rows,seed,steps,lr,h1,h2){
+  var p=initNet(seed,h1||3,h2||2);
+  for(var i=0;i<steps;i++)stepNet(p,rows,lr||0.08);
+  return p;
+}
+/* several starting points, keep the best on the rows it was allowed to study.
+   Never on the held-back rows: that would leak them into the choice of model. */
+var SEEDS=[1,2,3,4,5,6,7,8];
+function bestSeed(rows,steps,lr,h1,h2){
+  var bs=SEEDS[0],bm=1e9;
+  for(var s=0;s<SEEDS.length;s++){
+    var m=maeNet(trainNet(rows,SEEDS[s],steps,lr,h1,h2),rows);
+    if(m<bm){bm=m;bs=SEEDS[s];}
+  }
+  return bs;
+}
+function bestNet(rows,steps,lr,h1,h2){
+  return trainNet(rows,bestSeed(rows,steps,lr,h1,h2),steps,lr,h1,h2);
+}
+var KEPT=bestSeed(D,2500,0.08,3,2);
+var NETFULL=trainNet(D,KEPT,2500,0.08,3,2);
+var netCurve=function(p,h,r){return inv(fwd(p,[(h-8.5)/1.5,r]).out);};
+
+/* ================= HERO: 22 miss bars, shortening as it trains ================= */
+(function(){
+  var svg=$('hSvg'),read=$('hRead'),pauseB=$('hPause'),againB=$('hAgain');
+  if(!svg)return;
+  var X=mapper(46,844,0,21),BASE=176,ZERO=166,SC=2.7;
+  var p,steps,running=false,timer=null;
+  function reset(){p=initNet(KEPT,3,2);steps=0;}
+  function draw(){
+    var s='',i,worst=0;
+    s+='<line x1="40" y1="'+ZERO+'" x2="866" y2="'+ZERO+'" stroke="'+RULE+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
+    s+=lab(40,26,'MINUTES WRONG',12);
+    for(i=0;i<D.length;i++){
+      var d=D[i],x=X(i),e=netCurve(p,d.h,d.r)-d.m,a=Math.abs(e);
+      worst=Math.max(worst,a);
+      var hgt=Math.min(106,a*SC);
+      s+='<rect x="'+Math.round(x-4)+'" y="'+Math.round(ZERO-hgt)+'" width="9" height="'+Math.round(hgt)+'" rx="2" fill="'+RISK+'" opacity="'+(0.35+0.5*Math.min(1,a/12))+'"/>';
+      if(a>=2)s+=lab(x,ZERO-hgt-7,f1d(a),10,'lb','middle');
+      s+=cell(x-13,BASE,d.id,'given',26,20);
+      if(d.r)s+=rainMark(x,BASE+40);
+    }
+    s+=lab(40,BASE+56,'a bar is one morning &middot; the tall thin mark under a letter means it was raining',11);
+    svg.innerHTML=s;
+    var mm=maeNet(p,D);
+    read.innerHTML='step <b>'+steps+'</b> &middot; average miss <b>'+f2d(mm)+'</b> min &middot; worst <u>'+f1d(worst)+'</u> min';
+  }
+  function loop(){
+    if(!running)return;
+    /* most of the fall happens in the first fifty steps, so play those slowly.
+       The readout always shows the true step count. */
+    var per=steps<40?1:(steps<200?4:20);
+    for(var k=0;k<per&&steps<2500;k++){stepNet(p,D,0.08);steps++;}
+    draw();
+    if(steps>=2500){running=false;pauseB.textContent='trained';return;}
+    timer=requestAnimationFrame(loop);
+  }
+  function start(){if(running||steps>=2500)return;running=true;pauseB.textContent='pause';loop();}
+  function stop(){running=false;if(timer)cancelAnimationFrame(timer);pauseB.textContent='resume';}
+  reset();draw();
+  pauseB.addEventListener('click',function(){running?stop():start();});
+  againB.addEventListener('click',function(){stop();reset();draw();start();});
+  if(REDUCE){p=clone(NETFULL);steps=2500;draw();read.innerHTML='motion reduced &middot; showing the trained state &middot; average miss <b>'+f2d(maeNet(p,D))+'</b> min';pauseB.textContent='trained';}
+  else{
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){e.isIntersecting?start():stop();});},{threshold:0.2});
+    io.observe(svg);
+    start();
+  }
+  window.__hero={start:start,stop:stop,run:function(){while(steps<2500){stepNet(p,D,0.08);steps++;}draw();},steps:function(){return steps;}};
+})();
+
+/* ================= 01 · your guess against what happened ================= */
+(function(){
+  var svg=$('f1'),read=$('f1Read'),sl=$('f1S'),go=$('f1Go'),again=$('f1Again');
+  if(!svg)return;
+  var TRUTH=55,shown=false,X=mapper(80,840,15,80);
+  function draw(){
+    var g=+sl.value,s='',v;
+    s+='<line x1="80" y1="120" x2="840" y2="120" class="ax" shape-rendering="crispEdges"/>';
+    for(v=15;v<=80;v+=5){
+      s+='<line x1="'+Math.round(X(v))+'" y1="120" x2="'+Math.round(X(v))+'" y2="'+(v%10===5?127:132)+'" class="ax" shape-rendering="crispEdges"/>';
+      if(v%10===5||v===80)s+=lab(X(v),150,v,11,'lb','middle');
+    }
+    s+=lab(80,176,'MINUTES THE TRIP TOOK',12);
+    s+=cell(X(g)-17,62,g,'comp')+lab(X(g),52,'your guess',11,'lb','middle');
+    if(shown){
+      s+=cell(X(TRUTH)-17,20,TRUTH,'given')+lab(X(TRUTH),12,'what happened',11,'lb','middle');
+      var a=Math.min(X(g),X(TRUTH)),b=Math.max(X(g),X(TRUTH));
+      s+='<line x1="'+Math.round(a)+'" y1="105" x2="'+Math.round(b)+'" y2="105" class="stk"/>';
+      s+=cell((a+b)/2-17,92,Math.abs(TRUTH-g),'off');
+    }
+    svg.innerHTML=s;
+    read.innerHTML=shown?('you said <b>'+g+'</b> &middot; it took <b>'+TRUTH+'</b> &middot; miss <u>'+Math.abs(TRUTH-g)+'</u> min')
+                        :('your guess: <b>'+g+'</b> min');
+  }
+  sl.addEventListener('input',function(){shown=false;draw();});
+  go.addEventListener('click',function(){shown=true;draw();});
+  again.addEventListener('click',function(){shown=false;draw();});
+  draw();
+})();
+
+/* ================= 02 · twelve mornings, one straight rule ================= */
+(function(){
+  var svg=$('f2'),read=$('f2Read'),sa=$('f2A'),sb=$('f2B'),best=$('f2Best');
+  if(!svg)return;
+  var X=mapper(80,850,5.85,8.15),Y=mapper(320,50,15,70),FIT=ols(E);
+  function draw(){
+    var p={base:+sa.value,slope:+sb.value},s='',i,v;
+    s+='<line x1="80" y1="320" x2="860" y2="320" class="ax" shape-rendering="crispEdges"/>';
+    s+='<line x1="80" y1="40" x2="80" y2="320" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=8;v+=0.5)s+=lab(X(v),344,clk(v),11,'lb','middle');
+    for(v=20;v<=70;v+=10){s+=lab(70,Y(v)+4,v,11,'lb','end');
+      s+='<line x1="80" y1="'+Math.round(Y(v))+'" x2="860" y2="'+Math.round(Y(v))+'" stroke="'+RULE+'" stroke-width="1" opacity=".5" shape-rendering="crispEdges"/>';}
+    s+=lab(80,368,'DEPARTURE',12)+lab(24,36,'MINUTES',12);
+    s+=clipLine(X,Y,p,5.85,8.15,15,70);
+    for(i=0;i<E.length;i++){
+      var d=E[i],x=X(d.h),y=Y(d.m),yp=Math.max(50,Math.min(320,Y(predL(p,d.h))));
+      s+='<line x1="'+Math.round(x)+'" y1="'+Math.round(y)+'" x2="'+Math.round(x)+'" y2="'+Math.round(yp)+'" class="stk thin"/>';
+      s+='<rect class="pt" x="'+Math.round(x-5)+'" y="'+Math.round(y-5)+'" width="10" height="10" rx="2"/>';
+      if(d.r)s+=rainMark(x,y-8);
+    }
+    svg.innerHTML=s;
+    read.innerHTML='average miss <b>'+f2d(maeL(E,p))+'</b> min &middot; base '+f1d(p.base)+' &middot; slope '+f1d(p.slope);
+  }
+  sa.addEventListener('input',draw);sb.addEventListener('input',draw);
+  best.addEventListener('click',function(){
+    sa.value=FIT.base.toFixed(1);sb.value=FIT.slope.toFixed(1);draw();});
+  draw();
+})();
+
+/* ================= 03 · the training scrolly + the run under your control ================= */
+var SC1=(function(){
+  var svg=$('sc1fig'),read=$('sc1Read');
+  if(!svg)return null;
+  var X=mapper(70,520,5.85,8.2),Y=mapper(250,50,15,70),ROW=E[7]; /* 07:45, dry, 49 */
+  var p={base:32,slope:3},ghosts=[],stepIx=0;
+  var NUDGED={base:32.65,slope:3.16},FINAL=ols(E);
+  function draw(){
+    var s='',i,v,show=stepIx;
+    s+='<g data-gel="a" class="show">';
+    s+='<line x1="70" y1="250" x2="545" y2="250" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=8;v+=0.5)s+=lab(X(v),272,clk(v),11,'lb','middle');
+    for(i=0;i<E.length;i++){var d=E[i];
+      s+='<rect class="pt" x="'+Math.round(X(d.h)-5)+'" y="'+Math.round(Y(d.m)-5)+'" width="10" height="10" rx="2"/>';}
+    var cur=show>=4?FINAL:(show>=3?NUDGED:p);
+    if(show>=4)for(i=0;i<ghosts.length;i++)
+      s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(ghosts[i],5.85)))+'" x2="'+Math.round(X(8.2))+'" y2="'+Math.round(Y(predL(ghosts[i],8.2)))+'" class="ln old"/>';
+    s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(cur,5.85)))+'" x2="'+Math.round(X(8.2))+'" y2="'+Math.round(Y(predL(cur,8.2)))+'" class="ln"/>';
+    s+='</g>';
+    /* the singled-out morning */
+    s+='<g data-gel="b"><rect class="pt sel" x="'+Math.round(X(ROW.h)-8)+'" y="'+Math.round(Y(ROW.m)-8)+'" width="16" height="16" rx="3" fill="'+INK+'"/>'+
+       lab(X(ROW.h)+14,Y(ROW.m)-10,'07:45 &middot; took 49',11)+
+       cell(X(ROW.h)-17,Y(predL(p,ROW.h))-13,f1d(predL(p,ROW.h)),'comp')+'</g>';
+    /* the miss */
+    s+='<g data-gel="c"><line x1="'+Math.round(X(ROW.h))+'" y1="'+Math.round(Y(ROW.m))+'" x2="'+Math.round(X(ROW.h))+'" y2="'+Math.round(Y(predL(p,ROW.h)))+'" class="stk huge" stroke="'+RISK+'" stroke-width="4"/>'+
+       cell(X(ROW.h)+16,(Y(ROW.m)+Y(predL(p,ROW.h)))/2-13,'16.2','off')+lab(X(ROW.h)+56,(Y(ROW.m)+Y(predL(p,ROW.h)))/2+4,'min short',11)+'</g>';
+    /* the two parameters */
+    var pv=show>=4?FINAL:(show>=3?NUDGED:p);
+    s+='<g data-gel="d">'+lab(70,330,'THE TWO NUMBERS THE RULE OWNS',12)+
+       cell(70,346,f1d(pv.base),'learn',56,30)+lab(134,366,'base',12)+
+       cell(230,346,f1d(pv.slope),'learn',56,30)+lab(294,366,'slope',12);
+    if(show===3)s+=lab(70,404,'nudged: base +0.65 &nbsp; slope +0.16',12,'vl');
+    s+='</g>';
+    s+='<g data-gel="e">'+lab(70,438,'AVERAGE MISS OVER ALL TWELVE',12)+
+       cell(70,448,f2d(maeL(E,pv)),'comp',66,26)+lab(146,466,'minutes',12)+'</g>';
+    svg.innerHTML=s;
+    read.innerHTML='base <b>'+f1d(pv.base)+'</b> &middot; slope <b>'+f1d(pv.slope)+'</b>';
+    var order=['a','b','c','d','e'];
+    svg.querySelectorAll('[data-gel]').forEach(function(g){
+      g.classList.toggle('show',order.indexOf(g.getAttribute('data-gel'))<=stepIx);
+    });
+  }
+  /* the ghost trail: where the rule actually was, recorded from a real run */
+  (function(){var q={base:32,slope:3};for(var i=0;i<40;i++){
+    if(i%4===0)ghosts.push({base:q.base,slope:q.slope});
+    var gb=0,gs=0;for(var k=0;k<E.length;k++){var e=predL(q,E[k].h)-E[k].m;gb+=2*e/E.length;gs+=2*e*(E[k].h-7.5)/E.length;}
+    q.base-=0.30*gb;q.slope-=0.30*gs;}})();
+  function set(i){stepIx=i;draw();}
+  set(0);
+  return {set:set,svg:svg};
+})();
+
+(function(){
+  var svg=$('tSvg'),read=$('tRead'),one=$('tOne'),run=$('tRun'),rst=$('tReset'),lr=$('tLr');
+  if(!svg)return;
+  var X=mapper(80,560,5.85,8.15),Y=mapper(250,40,15,70);
+  var LX=mapper(640,860,0,200),LY=mapper(250,40,0,15);
+  var p,steps,hist;
+  function reset(){p={base:32,slope:3};steps=0;hist=[maeL(E,p)];}
+  function nudge(){
+    var gb=0,gs=0,rate=(+lr.value)/100;
+    for(var k=0;k<E.length;k++){var e=predL(p,E[k].h)-E[k].m;gb+=2*e/E.length;gs+=2*e*(E[k].h-7.5)/E.length;}
+    p.base-=rate*gb;p.slope-=rate*gs;steps++;
+    hist.push(Math.min(15,maeL(E,p)));
+  }
+  function draw(){
+    var s='',i,v;
+    s+='<line x1="80" y1="250" x2="580" y2="250" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=8;v+=0.5)s+=lab(X(v),272,clk(v),11,'lb','middle');
+    for(i=0;i<E.length;i++){var d=E[i];
+      s+='<line x1="'+Math.round(X(d.h))+'" y1="'+Math.round(Y(d.m))+'" x2="'+Math.round(X(d.h))+'" y2="'+Math.round(Y(predL(p,d.h)))+'" class="stk thin"/>'+
+         '<rect class="pt" x="'+Math.round(X(d.h)-5)+'" y="'+Math.round(Y(d.m)-5)+'" width="10" height="10" rx="2"/>';}
+    s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(p,5.85)))+'" x2="'+Math.round(X(8.15))+'" y2="'+Math.round(Y(predL(p,8.15)))+'" class="ln"/>';
+    s+=lab(80,296,'THE RULE',12);
+    /* the falling loss, right-hand panel */
+    s+='<line x1="640" y1="250" x2="870" y2="250" class="ax" shape-rendering="crispEdges"/>'+
+       '<line x1="640" y1="40" x2="640" y2="250" class="ax" shape-rendering="crispEdges"/>'+
+       lab(640,296,'AVERAGE MISS PER STEP',12)+lab(632,44,'15',11,'lb','end')+lab(632,254,'0',11,'lb','end');
+    var pts=[];
+    for(i=0;i<hist.length;i++)pts.push(Math.round(LX(Math.min(200,i)))+','+Math.round(LY(hist[i])));
+    if(pts.length>1)s+='<polyline points="'+pts.join(' ')+'" class="ln"/>';
+    s+=cell(70,318,f1d(p.base),'learn',56,28)+lab(134,338,'base',12)+
+       cell(230,318,f1d(p.slope),'learn',56,28)+lab(294,338,'slope',12);
+    svg.innerHTML=s;
+    read.innerHTML='step <b>'+steps+'</b> &middot; average miss <b>'+f2d(maeL(E,p))+'</b> min';
+  }
+  one.addEventListener('click',function(){nudge();draw();});
+  run.addEventListener('click',function(){for(var i=0;i<200;i++)nudge();draw();});
+  rst.addEventListener('click',function(){reset();draw();});
+  lr.addEventListener('input',function(){draw();});
+  reset();draw();
+})();
+
+/* ================= 04 · you choose what it may study ================= */
+(function(){
+  var svg=$('f4'),read=$('f4Read'),rnd=$('f4Rand'),all=$('f4All');
+  if(!svg)return;
+  var X=mapper(80,850,5.85,8.15),Y=mapper(300,50,15,70);
+  var held={};
+  function studied(){return E.filter(function(d){return !held[d.i];});}
+  function heldRows(){return E.filter(function(d){return held[d.i];});}
+  function draw(){
+    var tr=studied(),te=heldRows(),s='',i,v;
+    var p=tr.length>=2?ols(tr):{base:40,slope:0};
+    s+='<line x1="80" y1="300" x2="860" y2="300" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=8;v+=0.5)s+=lab(X(v),322,clk(v),11,'lb','middle');
+    for(v=20;v<=70;v+=10)s+=lab(70,Y(v)+4,v,11,'lb','end');
+    s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(p,5.85)))+'" x2="'+Math.round(X(8.15))+'" y2="'+Math.round(Y(predL(p,8.15)))+'" class="ln"/>';
+    for(i=0;i<E.length;i++){
+      var d=E[i],x=X(d.h),y=Y(d.m);
+      s+='<line x1="'+Math.round(x)+'" y1="'+Math.round(y)+'" x2="'+Math.round(x)+'" y2="'+Math.round(Y(predL(p,d.h)))+'" class="stk thin"/>';
+      s+='<rect class="pt'+(held[d.i]?' held':'')+'" x="'+Math.round(x-6)+'" y="'+Math.round(y-6)+'" width="12" height="12" rx="2"/>';
+      if(d.r)s+=rainMark(x,y-10);
+      s+='<rect class="tgt" x="'+Math.round(x-16)+'" y="'+Math.round(y-16)+'" width="32" height="32" data-row="'+d.i+'"/>';
+    }
+    s+=lab(80,350,'CLICK A MORNING TO HOLLOW IT OUT',12);
+    s+=cell(80,362,f2d(maeL(tr,p)),'comp',66,28)+lab(156,381,'average miss on the '+tr.length+' it studied',12);
+    s+=cell(500,362,te.length?f2d(maeL(te,p)):'--','off',66,28)+lab(576,381,te.length?('on the '+te.length+' held back'):'nothing held back',12);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-row]').forEach(function(t){
+      t.addEventListener('click',function(){
+        var k=+t.getAttribute('data-row');
+        if(!held[k]&&studied().length<=3)return;
+        held[k]=!held[k];draw();});
+    });
+    read.innerHTML='studying <b>'+tr.length+'</b> &middot; '+(te.length?('held back <u>'+te.length+'</u>'):'nothing held back');
+  }
+  rnd.addEventListener('click',function(){
+    held={};var pool=[0,1,2,3,4,5,6,7,8,9,10,11],n=4;
+    while(n--){var k=Math.floor(Math.random()*pool.length);held[pool[k]]=true;pool.splice(k,1);}
+    draw();});
+  all.addEventListener('click',function(){held={};draw();});
+  draw();
+})();
+
+/* ================= 05 · the comb, and three ways to score ================= */
+(function(){
+  var svg=$('f5'),read=$('f5Read');
+  if(!svg)return;
+  var FIT=ols(E),filt='all',sel=-1;
+  function draw(){
+    var s='',i,ZERO=150;
+    s+='<line x1="50" y1="'+ZERO+'" x2="860" y2="'+ZERO+'" class="ax" shape-rendering="crispEdges"/>';
+    s+=lab(50,28,'MINUTES THE RULE IS OUT BY &middot; ABOVE THE LINE THE RULE ASKED FOR TOO LITTLE TIME',12);
+    for(i=0;i<E.length;i++){
+      var d=E[i],x=68+i*68,e=d.m-predL(FIT,d.h);
+      var on=filt==='all'||(filt==='rain'&&d.r)||(filt==='dry'&&!d.r);
+      var y2=ZERO-e*14;
+      s+='<g opacity="'+(on?1:0.15)+'">';
+      s+='<line x1="'+Math.round(x)+'" y1="'+ZERO+'" x2="'+Math.round(x)+'" y2="'+Math.round(y2)+'" class="stk'+(sel===i?'':' thin')+'"/>';
+      s+=lab(x,y2+(e>0?-10:20),(e>0?'+':'')+f1d(e),11,'vl','middle');
+      s+=cell(x-13,262,d.id,sel===i?'off':'given',26,20);
+      if(d.r)s+=rainMark(x,260);
+      s+='</g>';
+      s+='<rect class="tgt" x="'+Math.round(x-17)+'" y="40" width="34" height="245" data-t="'+i+'"/>';
+    }
+    s+=lab(50,314,'A TALL THIN MARK ABOVE A LETTER MEANS IT WAS RAINING',12);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-t]').forEach(function(t){
+      t.addEventListener('click',function(){sel=+t.getAttribute('data-t');draw();});});
+    if(sel<0)read.textContent='click a tooth';
+    else{var d=E[sel],p=predL(FIT,d.h),e=d.m-p;
+      read.innerHTML=d.id+' &middot; '+clk(d.h)+' '+(d.r?'wet':'dry')+' &middot; rule says <b>'+f1d(p)+'</b> &middot; took <b>'+d.m+'</b> &middot; miss <u>'+f1d(Math.abs(e))+'</u> '+(e>0?'under':'over');}
+  }
+  document.querySelectorAll('[data-f5]').forEach(function(b){
+    b.addEventListener('click',function(){
+      filt=b.getAttribute('data-f5');
+      document.querySelectorAll('[data-f5]').forEach(function(x){x.classList.toggle('on',x===b);});
+      draw();});});
+  draw();
+})();
+
+(function(){
+  var svg=$('f6'),read=$('f6Read'),freakB=$('f6Freak');
+  if(!svg)return;
+  var FREAK={i:99,id:'?',h:7.00,r:0,m:78,late:false},withFreak=false,crit='avg';
+  var X=mapper(80,850,5.85,8.2),Y=mapper(300,40,15,85);
+  var cache={};
+  function rows(){return withFreak?E.concat([FREAK]):E;}
+  function fits(){
+    var key=withFreak?'f':'n';
+    if(cache[key])return cache[key];
+    var R=rows(),bestA=null,bestS=null,bestM=null,ma=1e9,ms=1e9,mm=1e9;
+    for(var b=20;b<=70;b+=0.25)for(var sl=0;sl<=40;sl+=0.25){
+      var p={base:b,slope:sl},sa=0,sq=0,mx=0;
+      for(var k=0;k<R.length;k++){var e=Math.abs(R[k].m-predL(p,R[k].h));sa+=e;sq+=e*e;if(e>mx)mx=e;}
+      sa/=R.length;sq=Math.sqrt(sq/R.length);
+      if(sa<ma){ma=sa;bestA=p;}
+      if(sq<ms){ms=sq;bestS=p;}
+      if(mx<mm){mm=mx;bestM=p;}
+    }
+    cache[key]={avg:bestA,sq:bestS,max:bestM};
+    return cache[key];
+  }
+  function draw(){
+    var F=fits(),R=rows(),s='',i,v,names={avg:'average miss',sq:'squared miss',max:'worst single miss'};
+    s+='<line x1="80" y1="300" x2="860" y2="300" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=8;v+=0.5)s+=lab(X(v),322,clk(v),11,'lb','middle');
+    for(v=20;v<=80;v+=20)s+=lab(70,Y(v)+4,v,11,'lb','end');
+    ['avg','sq','max'].forEach(function(k){
+      if(k===crit)return;
+      s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(F[k],5.85)))+'" x2="'+Math.round(X(8.2))+'" y2="'+Math.round(Y(predL(F[k],8.2)))+'" class="ln old"/>';});
+    var p=F[crit];
+    s+='<line x1="'+Math.round(X(5.85))+'" y1="'+Math.round(Y(predL(p,5.85)))+'" x2="'+Math.round(X(8.2))+'" y2="'+Math.round(Y(predL(p,8.2)))+'" class="ln"/>';
+    for(i=0;i<R.length;i++){
+      var d=R[i],x=X(d.h),y=Y(d.m);
+      s+='<line x1="'+Math.round(x)+'" y1="'+Math.round(y)+'" x2="'+Math.round(x)+'" y2="'+Math.round(Y(predL(p,d.h)))+'" class="stk thin"/>';
+      s+='<rect class="pt'+(d.i===99?' late':'')+'" x="'+Math.round(x-6)+'" y="'+Math.round(y-6)+'" width="12" height="12" rx="2"/>';
+      if(d.r)s+=rainMark(x,y-10);
+      if(d.i===99)s+=lab(x+14,y+4,'the road was closed',11);
+    }
+    s+=lab(80,352,'THIS LINE, SCORED THREE WAYS',12);
+    s+=cell(80,368,f2d(maeL(R,p)),crit==='avg'?'learn':'comp',66,28)+lab(154,387,'average',12);
+    s+=cell(320,368,f2d(rmsL(R,p)),crit==='sq'?'learn':'comp',66,28)+lab(394,387,'squared',12);
+    s+=cell(560,368,f1d(maxL(R,p)),crit==='max'?'learn':'comp',66,28)+lab(634,387,'worst',12);
+    svg.innerHTML=s;
+    read.innerHTML='scoring by: <b>'+names[crit]+'</b> &middot; base '+f1d(p.base)+' slope '+f1d(p.slope);
+  }
+  document.querySelectorAll('[data-f6]').forEach(function(b){
+    b.addEventListener('click',function(){
+      crit=b.getAttribute('data-f6');
+      document.querySelectorAll('[data-f6]').forEach(function(x){x.classList.toggle('on',x===b);});
+      draw();});});
+  freakB.addEventListener('click',function(){
+    withFreak=!withFreak;
+    freakB.textContent=withFreak?'take the freak morning back out':'add the morning the road was closed';
+    freakB.classList.toggle('on',withFreak);draw();});
+  draw();
+})();
+
+/* ================= 06 · probability and a threshold ================= */
+(function(){
+  var svg=$('f7'),read=$('f7Read'),sl=$('f7S'),acc=$('f7Acc');
+  if(!svg)return;
+  D.forEach(function(d){d.lab=d.late;});
+  var F=fitLog(D,false),Y=mapper(270,50,0,1);
+  function counts(th){var c={tp:0,fp:0,fn:0,tn:0};
+    D.forEach(function(d){var hi=pLate(F,d)>=th;
+      if(hi&&d.late)c.tp++;else if(hi)c.fp++;else if(d.late)c.fn++;else c.tn++;});
+    return c;}
+  function draw(){
+    var th=(+sl.value)/100,s='',i;
+    s+='<line x1="56" y1="270" x2="866" y2="270" class="ax" shape-rendering="crispEdges"/>';
+    s+='<line x1="56" y1="40" x2="56" y2="270" class="ax" shape-rendering="crispEdges"/>';
+    s+=lab(48,Y(1)+4,'1.0',11,'lb','end')+lab(48,Y(0.5)+4,'0.5',11,'lb','end')+lab(48,Y(0)+4,'0.0',11,'lb','end');
+    s+=lab(56,34,'THE MODEL&rsquo;S PROBABILITY THAT THIS MORNING RAN LATE',12);
+    s+='<line x1="56" y1="'+Math.round(Y(th))+'" x2="866" y2="'+Math.round(Y(th))+'" stroke="'+ACC+'" stroke-width="2" stroke-dasharray="7 5"/>';
+    s+=lab(866,Y(th)-9,'threshold '+th.toFixed(2),11,'vl','end');
+    var pts=[];
+    for(i=0;i<D.length;i++){
+      var d=D[i],x=66+i*36,p=pLate(F,d),hi=p>=th,wrong=(hi!==d.late);
+      pts.push(Math.round(x)+','+Math.round(Y(p)));
+      s+=cell(x-13,Y(p)-10,d.late?'L':'&middot;',wrong?'off':'given',26,20);
+      if(d.r)s+=rainMark(x,Y(p)+22);
+      s+=lab(x,296,clk(d.h).slice(0,2),10,'lb','middle');
+    }
+    s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+ACC+'" stroke-width="1.5" opacity=".4"/>';
+    s+=lab(56,318,'DEPARTURE HOUR, EARLIEST FIRST &middot; L MEANS IT GENUINELY RAN LATE',12);
+    var c=counts(th);
+    var boxes=[['caught',c.tp,'learn'],['false alarms',c.fp,'off'],['missed',c.fn,'off'],['all clear',c.tn,'learn']];
+    for(i=0;i<4;i++){
+      s+=cell(56+i*208,336,boxes[i][1],boxes[i][2],52,30)+lab(116+i*208,356,boxes[i][0],12);
+    }
+    svg.innerHTML=s;
+    read.innerHTML='threshold <b>'+th.toFixed(2)+'</b> &middot; accuracy <b>'+(c.tp+c.tn)+'</b>/22 &middot; false alarms <u>'+c.fp+'</u> &middot; missed <u>'+c.fn+'</u>';
+  }
+  sl.addEventListener('input',draw);
+  acc.addEventListener('click',function(){
+    var bv=5,bs=-1;
+    for(var t=5;t<=95;t++){var c=counts(t/100),sc=c.tp+c.tn;if(sc>bs){bs=sc;bv=t;}}
+    sl.value=bv;draw();});
+  draw();
+})();
+
+/* ================= 07 · two features, one boundary ================= */
+(function(){
+  var svg=$('f8'),read=$('f8Read'),dropB=$('f8Rain'),resetB=$('f8Reset');
+  if(!svg)return;
+  var X=mapper(80,830,5.8,11.2),YD=250,YW=110,useRain=true;
+  var lbl=D.map(function(d){return d.late;});
+  function rows(){return D.map(function(d,i){return {h:d.h,r:d.r,lab:lbl[i]};});}
+  function draw(){
+    var F=fitLog(rows(),useRain),s='',i,v,ok=0;
+    s+='<line x1="80" y1="300" x2="850" y2="300" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),322,clk(v),11,'lb','middle');
+    s+=lab(80,346,'DEPARTURE',12);
+    s+=lab(24,YD+4,'dry',12)+lab(24,YW+4,'wet',12);
+    s+='<line x1="80" y1="'+YD+'" x2="850" y2="'+YD+'" stroke="'+RULE+'" stroke-width="1" shape-rendering="crispEdges"/>';
+    s+='<line x1="80" y1="'+YW+'" x2="850" y2="'+YW+'" stroke="'+RULE+'" stroke-width="1" shape-rendering="crispEdges"/>';
+    /* the boundary: where the probability crosses one half, in each row */
+    function cross(r){return 8.5+1.5*(-(F.b+(F.rain?F.w[1]*r:0))/F.w[0]);}
+    var cd=cross(0),cw=cross(1);
+    s+='<line x1="'+Math.round(X(cw))+'" y1="60" x2="'+Math.round(X(cd))+'" y2="300" stroke="'+ACC+'" stroke-width="2.5"/>';
+    s+=lab(X(cd)+8,296,'boundary',11,'vl');
+    s+=lab(X(cd),44,'&larr; on time &nbsp;|&nbsp; late &rarr;',11,'lb','middle');
+    var seen={};
+    for(i=0;i<D.length;i++){
+      var d=D[i],key=d.h+'_'+d.r;
+      seen[key]=(seen[key]||0)+1;
+      var off=(seen[key]-1)*32-((countKey(key)-1)*16);
+      var x=X(d.h)+off,y=d.r?YW:YD;
+      var pred=pLate(F,{h:d.h,r:d.r})>=0.5,wrong=(pred!==lbl[i]);
+      if(!wrong)ok++;
+      s+=cell(x-13,y-10,lbl[i]?'L':'&middot;',wrong?'off':'given',26,20);
+      s+='<rect class="tgt" x="'+Math.round(x-15)+'" y="'+Math.round(y-14)+'" width="30" height="28" data-c="'+i+'"/>';
+    }
+    s+=lab(80,372,'L MEANS THIS MORNING GOT IN AFTER 09:00 &middot; CLICK TO FLIP IT',12);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-c]').forEach(function(t){
+      t.addEventListener('click',function(){var k=+t.getAttribute('data-c');lbl[k]=!lbl[k];draw();});});
+    read.innerHTML='<b>'+ok+'</b> of 22 on the right side &middot; '+(useRain?('crosses dry at <b>'+clk(cd)+'</b>, wet at <b>'+clk(cw)+'</b>'):'one feature, so the line stands upright');
+  }
+  function countKey(k){var n=0;for(var i=0;i<D.length;i++)if(D[i].h+'_'+D[i].r===k)n++;return n;}
+  dropB.addEventListener('click',function(){useRain=false;dropB.classList.add('on');resetB.classList.remove('on');draw();});
+  resetB.addEventListener('click',function(){useRain=true;lbl=D.map(function(d){return d.late;});resetB.classList.add('on');dropB.classList.remove('on');draw();});
+  draw();
+})();
+
+/* ================= 08 · the rest of the day arrives ================= */
+(function(){
+  var svg=$('f9'),read=$('f9Read'),mode='early';
+  if(!svg)return;
+  var X=mapper(80,850,5.8,11.2),Y=mapper(330,50,0,120);
+  var EARLY=ols(E),BEST=ols(D),LATER=D.slice(12);
+  function draw(){
+    var s='',i,v;
+    s+='<line x1="80" y1="330" x2="860" y2="330" class="ax" shape-rendering="crispEdges"/>';
+    s+='<line x1="80" y1="40" x2="80" y2="330" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),352,clk(v),11,'lb','middle');
+    for(v=0;v<=120;v+=30){s+=lab(70,Y(v)+4,v,11,'lb','end');
+      s+='<line x1="80" y1="'+Math.round(Y(v))+'" x2="860" y2="'+Math.round(Y(v))+'" stroke="'+RULE+'" stroke-width="1" opacity=".5" shape-rendering="crispEdges"/>';}
+    s+=lab(80,376,'DEPARTURE',12)+lab(24,36,'MINUTES',12);
+    if(mode==='true'){
+      [0,1].forEach(function(r){
+        var pts=[];
+        for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(Y(netCurve(NETFULL,v,r))));
+        s+='<polyline points="'+pts.join(' ')+'" class="ln"'+(r?' stroke-dasharray="7 4"':'')+'/>';});
+      s+=lab(X(10.4),Y(netCurve(NETFULL,10.4,1))-12,'wet',11,'vl');
+      s+=lab(X(10.4),Y(netCurve(NETFULL,10.4,0))+20,'dry',11,'vl');
+    }else{
+      var p=mode==='early'?EARLY:BEST;
+      s+='<line x1="'+Math.round(X(5.8))+'" y1="'+Math.round(Y(predL(p,5.8)))+'" x2="'+Math.round(X(11.2))+'" y2="'+Math.round(Y(Math.min(125,predL(p,11.2))))+'" class="ln"/>';
+      for(i=0;i<D.length;i++){var d=D[i];
+        s+='<line x1="'+Math.round(X(d.h))+'" y1="'+Math.round(Y(d.m))+'" x2="'+Math.round(X(d.h))+'" y2="'+Math.round(Y(Math.min(125,predL(p,d.h))))+'" class="stk thin"/>';}
+    }
+    for(i=0;i<D.length;i++){var d=D[i],x=X(d.h),y=Y(d.m);
+      s+='<rect class="pt'+(i>=12?' late':'')+'" x="'+Math.round(x-6)+'" y="'+Math.round(y-6)+'" width="12" height="12" rx="2"/>';
+      if(d.r)s+=rainMark(x,y-10);}
+    s+=lab(80,404,'RUST SQUARES ARRIVED AFTER THE SHIFT CHANGED',12);
+    svg.innerHTML=s;
+    if(mode==='early')read.innerHTML='trained on 12 &middot; average miss on the new 10: <u>'+f1d(maeL(LATER,EARLY))+'</u> min &middot; says <u>'+f1d(predL(EARLY,10.5))+'</u> for a 10:30 that took 22';
+    else if(mode==='best')read.innerHTML='best straight line on all 22 &middot; slope <b>'+f1d(BEST.slope)+'</b> min per hour &middot; average miss <u>'+f2d(maeL(D,BEST))+'</u> min';
+    else read.innerHTML='what the day actually does &middot; a peak just after 08:00, and rain sitting about 7 min above dry';
+  }
+  document.querySelectorAll('[data-f9]').forEach(function(b){
+    b.addEventListener('click',function(){mode=b.getAttribute('data-f9');
+      document.querySelectorAll('[data-f9]').forEach(function(x){x.classList.toggle('on',x===b);});draw();});});
+  draw();
+})();
+
+/* ================= 09 · the hinge workbench ================= */
+(function(){
+  var svg=$('f10'),read=$('f10Read'),ks=$('f10K'),gs=$('f10G'),solve=$('f10Solve');
+  if(!svg)return;
+  var U=[{k:6.0,g:0},{k:8.0,g:0},{k:9.5,g:0}],sel=0,BASE=21;
+  var X=mapper(80,850,5.9,11.1),YT=mapper(190,44,-40,40),YB=mapper(440,240,10,70);
+  function out(h){var y=BASE,j;for(j=0;j<3;j++)y+=U[j].g*Math.max(0,h-U[j].k);return y;}
+  function draw(){
+    var s='',i,v,j;
+    s+=lab(80,32,'EACH HINGE ON ITS OWN',12);
+    s+='<line x1="80" y1="'+Math.round(YT(0))+'" x2="860" y2="'+Math.round(YT(0))+'" class="ax" shape-rendering="crispEdges"/>';
+    for(j=0;j<3;j++){
+      var pts=[];
+      for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(YT(Math.max(-40,Math.min(40,U[j].g*Math.max(0,v-U[j].k))))));
+      s+='<polyline points="'+pts.join(' ')+'" class="ln'+(j===sel?'':' old')+'"/>';
+      s+=lab(X(U[j].k),YT(0)+(j===sel?-8:16),'hinge '+(j+1),11,j===sel?'vl':'lb','middle');
+      s+='<line x1="'+Math.round(X(U[j].k))+'" y1="'+Math.round(YT(0)-6)+'" x2="'+Math.round(X(U[j].k))+'" y2="'+Math.round(YT(0)+6)+'" stroke="'+(j===sel?ACC:RULE)+'" stroke-width="2"/>';
+    }
+    s+=lab(80,224,'ALL THREE ADDED TOGETHER, AGAINST THE REAL MORNINGS',12);
+    s+='<line x1="80" y1="440" x2="860" y2="440" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),460,clk(v),11,'lb','middle');
+    var sp=[];
+    for(v=5.9;v<=11.05;v+=0.05)sp.push(Math.round(X(v))+','+Math.round(YB(Math.max(5,Math.min(75,out(v))))));
+    s+='<polyline points="'+sp.join(' ')+'" class="ln"/>';
+    for(i=0;i<D.length;i++){var d=D[i],x=X(d.h),y=YB(d.m);
+      s+='<line x1="'+Math.round(x)+'" y1="'+Math.round(y)+'" x2="'+Math.round(x)+'" y2="'+Math.round(YB(Math.max(5,Math.min(75,out(d.h)))))+'" class="stk thin"/>';
+      s+='<rect class="pt" x="'+Math.round(x-5)+'" y="'+Math.round(y-5)+'" width="10" height="10" rx="2"/>';
+      if(d.r)s+=rainMark(x,y-8);}
+    var e=0;for(i=0;i<D.length;i++)e+=Math.abs(D[i].m-out(D[i].h));e/=D.length;
+    for(j=0;j<3;j++)s+=cell(80+j*230,486,f1d(U[j].g),j===sel?'learn':'comp',60,28)+lab(148+j*230,505,'min/hour, from '+clk(U[j].k),11);
+    svg.innerHTML=s;
+    read.innerHTML='average miss <b>'+f2d(e)+'</b> min &middot; the best straight line manages 11.68';
+  }
+  function sync(){ks.value=Math.round(U[sel].k*100);gs.value=U[sel].g;}
+  document.querySelectorAll('[data-u]').forEach(function(b){
+    b.addEventListener('click',function(){sel=+b.getAttribute('data-u');
+      document.querySelectorAll('[data-u]').forEach(function(x){x.classList.toggle('on',x===b);});
+      sync();draw();});});
+  ks.addEventListener('input',function(){U[sel].k=(+ks.value)/100;draw();});
+  gs.addEventListener('input',function(){U[sel].g=+gs.value;draw();});
+  solve.addEventListener('click',function(){
+    U=[{k:6.0,g:18.5},{k:8.0,g:-36},{k:9.75,g:11.5}];sync();draw();});
+  sync();draw();
+})();
+
+/* ================= 10 · the forward pass, step by step ================= */
+var SC2=(function(){
+  var svg=$('sc2fig'),read=$('sc2Read');
+  if(!svg)return null;
+  var P=NETFULL,ROW=D[8],stepIx=0; /* 08:00 dry, took 55 */
+  var yIN=56,yL1=178,yL2=306,yO=424;
+  var inX=[190,330],u1X=[92,272,452],u2X=[182,382],oX=282;
+  function wrow(cx,y,vals){          /* the numbers one unit owns, in a row beneath it */
+    var n=vals.length,w=36,gap=4,x0=cx-(n*w+(n-1)*gap)/2,s='',i;
+    for(i=0;i<n;i++)s+=cell(x0+i*(w+gap),y,f2d(vals[i]),'learn',w,22);
+    return s;
+  }
+  function edge(x1,y1,x2,y2){
+    return '<line x1="'+Math.round(x1)+'" y1="'+Math.round(y1)+'" x2="'+Math.round(x2)+'" y2="'+Math.round(y2)+'" stroke="'+RULE+'" stroke-width="1.2"/>';
+  }
+  function draw(){
+    var x=sxv(ROW),f=fwd(P,x),s='',i,j;
+    s+='<g data-gel="a">';
+    s+=lab(20,26,clk(ROW.h)+', '+(ROW.r?'wet':'dry')+' &middot; took '+ROW.m+' min',13,'vl');
+    s+=cell(inX[0]-38,yIN-13,f2d(x[0]),'given',76,26)+lab(inX[0],yIN+34,'clock, rescaled',11,'lb','middle');
+    s+=cell(inX[1]-38,yIN-13,x[1].toFixed(0),'given',76,26)+lab(inX[1],yIN+34,'rain',11,'lb','middle');
+    s+='</g>';
+    s+='<g data-gel="b">'+lab(20,yL1-52,'FIRST HIDDEN LAYER',12);
+    for(j=0;j<3;j++){
+      for(i=0;i<2;i++)s+=edge(inX[i],yIN+13,u1X[j],yL1-13);
+      s+=cell(u1X[j]-30,yL1-13,f1d(f.a1[j]),f.a1[j]>0?'comp':'off',60,26);
+      s+=wrow(u1X[j],yL1+18,[P.W1[j][0],P.W1[j][1],P.b1[j]]);
+    }
+    s+=lab(20,yL1-34,'each unit owns a clock weight, a rain weight and a bias',11)+'</g>';
+    s+='<g data-gel="c">'+lab(20,yL2-52,'SECOND HIDDEN LAYER',12);
+    for(j=0;j<2;j++){
+      for(i=0;i<3;i++)s+=edge(u1X[i],yL1+40,u2X[j],yL2-13);
+      s+=cell(u2X[j]-30,yL2-13,f1d(f.a2[j]),f.a2[j]>0?'comp':'off',60,26);
+      s+=wrow(u2X[j],yL2+18,[P.W2[j][0],P.W2[j][1],P.W2[j][2],P.b2[j]]);
+    }
+    s+=lab(20,yL2-34,'these weights are applied to the three numbers above, not to the clock',11)+'</g>';
+    s+='<g data-gel="d">'+lab(20,yO-52,'THE ANSWER',12);
+    for(j=0;j<2;j++)s+=edge(u2X[j],yL2+40,oX,yO-15);
+    s+=cell(oX-40,yO-15,f1d(inv(f.out)),'comp',80,30)+lab(oX+50,yO+5,'minutes',11);
+    s+=wrow(oX,yO+22,[P.W3[0],P.W3[1],P.b3]);
+    s+=lab(20,yO-34,'no clip here: journey times are allowed to be any size',11)+'</g>';
+    s+='<g data-gel="e">'+lab(20,500,'EVERY MORNING AT ONCE',12);
+    var X=mapper(60,540,5.9,11.1),Y=mapper(576,514,15,70),v,pts;
+    s+='<line x1="60" y1="576" x2="545" y2="576" class="ax" shape-rendering="crispEdges"/>';
+    [0,1].forEach(function(r){
+      pts=[];
+      for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(Y(netCurve(P,v,r))));
+      s+='<polyline points="'+pts.join(' ')+'" class="ln"'+(r?' stroke-dasharray="6 4"':'')+'/>';});
+    for(i=0;i<D.length;i++)s+='<rect class="pt" x="'+Math.round(X(D[i].h)-4)+'" y="'+Math.round(Y(D[i].m)-4)+'" width="8" height="8" rx="2"/>';
+    s+=lab(340,500,'solid dry, dashed wet',11)+'</g>';
+    svg.innerHTML=s;
+    var order=['a','b','c','d','e'];
+    svg.querySelectorAll('[data-gel]').forEach(function(g){
+      g.classList.toggle('show',order.indexOf(g.getAttribute('data-gel'))<=stepIx);});
+    read.innerHTML=clk(ROW.h)+', '+(ROW.r?'wet':'dry')+' &middot; out: <b>'+f1d(inv(f.out))+'</b> min &middot; actual <b>'+ROW.m+'</b>';
+  }
+  function set(i){stepIx=i;draw();}
+  set(0);
+  return {set:set,svg:svg};
+})();
+
+/* ================= 11 · the backward pass, and the one knob ================= */
+(function(){
+  var svg=$('f11'),read=$('f11Read'),stepB=$('f11Step'),rowB=$('f11Row'),rstB=$('f11Reset');
+  if(!svg)return;
+  var inX=80,l1X=300,l2X=572,oX=806;
+  var inY=[150,250],u1Y=[90,215,340],u2Y=[150,290],oY=215;
+  var P,rowIx=8,sel=null,nudges=0;
+  function reset(){P=initNet(KEPT,3,2);nudges=0;sel=null;}
+  function edge(x1,y1,x2,y2){
+    return '<line x1="'+Math.round(x1)+'" y1="'+Math.round(y1)+'" x2="'+Math.round(x2)+'" y2="'+Math.round(y2)+'" stroke="'+RULE+'" stroke-width="1.2"/>';
+  }
+  function draw(){
+    var d=D[rowIx],g=grads(P,[d]),f=fwd(P,sxv(d)),s='',i,j;
+    var all=[];
+    function wrow(cx,y,vals,grs,keys){
+      var n=vals.length,w=40,gap=5,x0=cx-(n*w+(n-1)*gap)/2,out='',i2;
+      for(i2=0;i2<n;i2++){
+        var x=x0+i2*(w+gap);
+        all.push({key:keys[i2],g:grs[i2],v:vals[i2]});
+        out+=cell(x,y,f2d(vals[i2]),'learn',w,22,' data-w="'+keys[i2]+'"');
+        var mag=Math.min(1,Math.abs(grs[i2])/0.3),bw=Math.round(3+mag*33);
+        var col=Math.abs(grs[i2])<1e-9?RULE:(grs[i2]>0?RISK:ACC);
+        out+='<rect x="'+Math.round(x+(w-bw)/2)+'" y="'+(y+25)+'" width="'+bw+'" height="4" rx="2" fill="'+col+'"/>';
+        out+='<rect class="tgt" x="'+Math.round(x-3)+'" y="'+(y-3)+'" width="'+(w+6)+'" height="38" data-k="'+keys[i2]+'"/>';
+      }
+      return out;
+    }
+    for(j=0;j<3;j++)for(i=0;i<2;i++)s+=edge(inX+38,inY[i],l1X-30,u1Y[j]);
+    for(j=0;j<2;j++)for(i=0;i<3;i++)s+=edge(l1X+30,u1Y[i],l2X-30,u2Y[j]);
+    for(j=0;j<2;j++)s+=edge(l2X+30,u2Y[j],oX-34,oY);
+    s+=cell(inX-38,inY[0]-13,f2d(sxv(d)[0]),'given',76,26)+lab(inX-38,inY[0]-22,'clock',11);
+    s+=cell(inX-38,inY[1]-13,sxv(d)[1].toFixed(0),'given',76,26)+lab(inX-38,inY[1]-22,'rain',11);
+    for(j=0;j<3;j++){
+      s+=cell(l1X-30,u1Y[j]-13,f1d(f.a1[j]),f.a1[j]>0?'comp':'off',60,26);
+      s+=wrow(l1X,u1Y[j]+18,[P.W1[j][0],P.W1[j][1],P.b1[j]],[g.W1[j][0],g.W1[j][1],g.b1[j]],
+              ['clock weight, unit '+(j+1),'rain weight, unit '+(j+1),'bias, unit '+(j+1)]);
+    }
+    for(j=0;j<2;j++){
+      s+=cell(l2X-30,u2Y[j]-13,f1d(f.a2[j]),f.a2[j]>0?'comp':'off',60,26);
+      s+=wrow(l2X,u2Y[j]+18,[P.W2[j][0],P.W2[j][1],P.W2[j][2],P.b2[j]],
+              [g.W2[j][0],g.W2[j][1],g.W2[j][2],g.b2[j]],
+              ['second layer '+(j+1)+', from unit 1','second layer '+(j+1)+', from unit 2',
+               'second layer '+(j+1)+', from unit 3','bias, second layer '+(j+1)]);
+    }
+    s+=cell(oX-34,oY-15,f1d(inv(f.out)),'comp',68,30);
+    s+=wrow(oX,oY+22,[P.W3[0],P.W3[1],P.b3],[g.W3[0],g.W3[1],g.b3],
+            ['output weight 1','output weight 2','output bias']);
+    s+=lab(oX-34,oY-24,'says',11)+lab(oX-34,oY+68,'took '+d.m,11,'vl');
+    s+=lab(30,34,clk(d.h)+' &middot; '+(d.r?'wet':'dry')+' &middot; miss '+f1d(Math.abs(inv(f.out)-d.m))+' min',13,'vl');
+    s+=lab(30,410,'BAR UNDER A NUMBER = ITS SHARE OF THE BLAME &middot; TEAL MOVES UP, RUST MOVES DOWN, GREY HAD NO SAY',12);
+    svg.innerHTML=s;
+    svg.querySelectorAll('[data-k]').forEach(function(t){
+      t.addEventListener('click',function(){sel=t.getAttribute('data-k');draw();});});
+    var found=null;
+    if(sel)for(i=0;i<all.length;i++)if(all[i].key===sel)found=all[i];
+    if(found){
+      svg.querySelectorAll('[data-w="'+sel+'"]').forEach(function(c){c.classList.add('sel');});
+      read.innerHTML=sel+' = <b>'+f2d(found.v)+'</b> &middot; blame <b>'+(found.g>0?'+':'')+found.g.toFixed(4)+
+        '</b> &middot; so it moves '+(found.g>0?'<u>down</u>':(Math.abs(found.g)<1e-9?'nowhere':'<b>up</b>'))+
+        ' &middot; '+nudges+' nudges taken';
+    } else read.innerHTML='click a number &middot; '+nudges+' nudges taken';
+  }
+  stepB.addEventListener('click',function(){apply(P,grads(P,[D[rowIx]]),0.08);nudges++;draw();});
+  rowB.addEventListener('click',function(){rowIx=(rowIx+1)%D.length;draw();});
+  rstB.addEventListener('click',function(){reset();draw();});
+  reset();draw();
+})();
+
+(function(){
+  var svg=$('f12'),read=$('f12Read'),sl=$('f12S'),play=$('f12Play');
+  if(!svg)return;
+  var SNAP=[],p=initNet(KEPT,3,2),i;
+  for(i=0;i<=2500;i++){if(i%20===0)SNAP.push({p:clone(p),m:maeNet(p,D)});stepNet(p,D,0.08);}
+  var X=mapper(80,850,5.9,11.1),Y=mapper(280,50,10,75);
+  var LX=mapper(80,850,0,2500),LY=mapper(400,320,0,15);
+  function draw(){
+    var n=Math.round((+sl.value)/20),S=SNAP[Math.min(SNAP.length-1,n)],s='',v,r;
+    s+='<line x1="80" y1="280" x2="860" y2="280" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),302,clk(v),11,'lb','middle');
+    for(v=20;v<=70;v+=25)s+=lab(70,Y(v)+4,v,11,'lb','end');
+    for(r=0;r<2;r++){
+      var pts=[];
+      for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(Y(Math.max(8,Math.min(78,netCurve(S.p,v,r))))));
+      s+='<polyline points="'+pts.join(' ')+'" class="ln"'+(r?' stroke-dasharray="6 4"':'')+'/>';
+    }
+    for(v=0;v<D.length;v++){var d=D[v];
+      s+='<rect class="pt" x="'+Math.round(X(d.h)-5)+'" y="'+Math.round(Y(d.m)-5)+'" width="10" height="10" rx="2"/>';
+      if(d.r)s+=rainMark(X(d.h),Y(d.m)-8);}
+    s+=lab(80,326,'THE CURVE THE TWENTY NUMBERS DRAW, AT THIS POINT IN TRAINING',12);
+    s+='<line x1="80" y1="400" x2="860" y2="400" class="ax" shape-rendering="crispEdges"/>';
+    var lp=[];
+    for(v=0;v<SNAP.length;v++)lp.push(Math.round(LX(v*20))+','+Math.round(LY(Math.min(15,SNAP[v].m))));
+    s+='<polyline points="'+lp.join(' ')+'" fill="none" stroke="'+RULE+'" stroke-width="1.5"/>';
+    var cut=lp.slice(0,Math.min(lp.length,n+1));
+    if(cut.length>1)s+='<polyline points="'+cut.join(' ')+'" class="ln"/>';
+    s+='<line x1="'+Math.round(LX(n*20))+'" y1="314" x2="'+Math.round(LX(n*20))+'" y2="404" stroke="'+ACC+'" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    s+=lab(80,340,'AVERAGE MISS',12)+lab(866,404,'2500 steps',11,'lb','end');
+    svg.innerHTML=s;
+    read.innerHTML='step <b>'+(n*20)+'</b> &middot; average miss <b>'+f2d(S.m)+'</b> min';
+  }
+  sl.addEventListener('input',draw);
+  play.addEventListener('click',function(){
+    if(REDUCE){sl.value=2500;draw();return;}
+    var t=0;
+    var iv=setInterval(function(){t+=40;sl.value=Math.min(2500,t);draw();if(t>=2500)clearInterval(iv);},24);});
+  draw();
+})();
+
+/* ================= 12 · the same four stations, three times ================= */
+(function(){
+  var svg=$('f13'),read=$('f13Read'),send=$('f13Send');
+  if(!svg)return;
+  var fam='reg';
+  var FAM={
+    reg:{name:'straight regression',out:'57.5 minutes',miss:'a distance: 2.5 minutes out',
+         box:'two numbers, applied once',score:'average miss in minutes'},
+    cls:{name:'classification',out:'0.509 probability of late',miss:'one of four outcomes',
+         box:'two numbers, then a threshold',score:'counts, and which mistake you fear'},
+    net:{name:'two hidden layers',out:'54.7 minutes',miss:'a distance: 0.3 minutes out',
+         box:'twenty numbers in three stages',score:'average miss in minutes'}};
+  var ST=[{x:40,t:'TRAIN'},{x:255,t:'TEST'},{x:470,t:'EVALUATE'},{x:685,t:'SCORE'}];
+  function draw(){
+    var F=FAM[fam],s='',i;
+    var body=[
+      ['nudge the numbers','until the total','stops falling'],
+      ['score it on rows','it was never','allowed to study'],
+      ['read the misses','one at a time,','not the average'],
+      ['collapse them to','one number you','can compare']];
+    for(i=0;i<4;i++){
+      s+='<rect x="'+ST[i].x+'" y="110" width="180" height="150" rx="6" fill="none" stroke="'+INK+'" stroke-width="1.5"/>';
+      s+=lab(ST[i].x+90,138,ST[i].t,13,'wd','middle');
+      s+='<line x1="'+ST[i].x+'" y1="152" x2="'+(ST[i].x+180)+'" y2="152" stroke="'+INK+'" stroke-width="1.5" shape-rendering="crispEdges"/>';
+      for(var k=0;k<3;k++)s+=lab(ST[i].x+90,178+k*20,body[i][k],11,'lb','middle');
+      if(i<3){
+        s+='<path id="rt'+i+'" class="rt" d="M'+(ST[i].x+180)+' 185 L'+(ST[i+1].x)+' 185"/>';
+        s+='<path d="M'+(ST[i+1].x-9)+' 180 l9 5 l-9 5" fill="none" stroke="'+RULE+'" stroke-width="1.5"/>';
+      }
+    }
+    s+='<path id="rtBack" class="rt" d="M'+(ST[3].x+90)+' 260 C '+(ST[3].x+90)+' 340, '+(ST[0].x+90)+' 340, '+(ST[0].x+90)+' 260"/>';
+    s+=lab((ST[0].x+ST[3].x)/2+90,356,'and again, until the score stops improving',11,'lb','middle');
+    s+=lab(40,50,'MODEL: '+F.name.toUpperCase(),13,'wd');
+    s+=lab(40,80,'the box in the middle: '+F.box+'  &middot;  what comes out: '+F.out,12);
+    s+=lab(40,396,'what counts as a miss: '+F.miss+'   &middot;   how it is scored: '+F.score,12);
+    s+='<g id="f13tok"></g>';
+    svg.innerHTML=s;
+    read.innerHTML=F.name+' &middot; out: <b>'+F.out+'</b>';
+  }
+  document.querySelectorAll('[data-f13]').forEach(function(b){
+    b.addEventListener('click',function(){fam=b.getAttribute('data-f13');
+      document.querySelectorAll('[data-f13]').forEach(function(x){x.classList.toggle('on',x===b);});draw();});});
+  send.addEventListener('click',function(){
+    var host=$('f13tok');if(!host)return;
+    host.innerHTML='';
+    var g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.innerHTML=cell(-17,-13,'I','comp');
+    host.appendChild(g);
+    var legs=['rt0','rt1','rt2','rtBack'],n=0;
+    function leg(){
+      var path=$(legs[n]);
+      if(!path){host.innerHTML='';return;}
+      animate(along(g,path),1500,function(){
+        n++;
+        read.innerHTML=FAM[fam].name+' &middot; reached <b>'+(n<4?ST[n].t.toLowerCase():'the start again')+'</b>';
+        if(n<legs.length)leg();else setTimeout(function(){host.innerHTML='';},400);
+      });
+    }
+    /* start the token at the first station */
+    g.setAttribute('transform','translate('+(ST[0].x+180)+',185)');
+    leg();
+  });
+  draw();
+})();
+
+/* ================= 13 · how much of the log it may see ================= */
+(function(){
+  var svg=$('f14'),read=$('f14Read');
+  if(!svg)return;
+  var SETS={4:[0,4,8,21],6:[0,3,7,11,16,21],8:[0,2,4,7,10,14,18,21],
+            12:[0,2,4,6,8,10,12,14,16,18,20,21],22:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]};
+  var cache={},k=22;
+  var X=mapper(80,850,5.9,11.1),Y=mapper(300,50,0,80);
+  function fit(n){
+    if(cache[n])return cache[n];
+    var idx=SETS[n],tr=idx.map(function(i){return D[i];});
+    var te=D.filter(function(d){return idx.indexOf(d.i)<0;});
+    var p=bestNet(tr,2500,0.08,3,2);
+    cache[n]={p:p,tr:tr,te:te,mtr:maeNet(p,tr),mte:te.length?maeNet(p,te):0};
+    return cache[n];
+  }
+  function draw(){
+    var F=fit(k),s='',v,i,r;
+    s+='<line x1="80" y1="300" x2="860" y2="300" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),322,clk(v),11,'lb','middle');
+    for(v=0;v<=80;v+=20)s+=lab(70,Y(v)+4,v,11,'lb','end');
+    for(r=0;r<2;r++){
+      var pts=[];
+      for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(Y(Math.max(2,Math.min(78,netCurve(F.p,v,r))))));
+      s+='<polyline points="'+pts.join(' ')+'" class="ln"'+(r?' stroke-dasharray="6 4"':'')+'/>';
+    }
+    for(i=0;i<D.length;i++){
+      var d=D[i],held=SETS[k].indexOf(i)<0;
+      s+='<rect class="pt'+(held?' held':'')+'" x="'+Math.round(X(d.h)-6)+'" y="'+Math.round(Y(d.m)-6)+'" width="12" height="12" rx="2"/>';
+      if(d.r)s+=rainMark(X(d.h),Y(d.m)-10);
+    }
+    s+=lab(80,348,'FILLED = STUDIED &middot; HOLLOW = HELD BACK &middot; SOLID CURVE DRY, DASHED WET',12);
+    s+=cell(80,360,f2d(F.mtr),'comp',66,28)+lab(156,379,'average miss on the '+F.tr.length+' it studied',12);
+    s+=cell(500,360,F.te.length?f2d(F.mte):'--','off',66,28)+lab(576,379,F.te.length?('on the '+F.te.length+' held back'):'nothing held back',12);
+    svg.innerHTML=s;
+    read.innerHTML='studying <b>'+F.tr.length+'</b> &middot; '+(F.te.length?('held back <u>'+F.te.length+'</u> &middot; studied '+f2d(F.mtr)+' min vs held back '+f2d(F.mte)+' min'):'nothing held back');
+  }
+  document.querySelectorAll('[data-f14]').forEach(function(b){
+    b.addEventListener('click',function(){k=+b.getAttribute('data-f14');
+      document.querySelectorAll('[data-f14]').forEach(function(x){x.classList.toggle('on',x===b);});draw();});});
+  draw();
+})();
+
+/* ================= the playground ================= */
+(function(){
+  var svg=$('pSvg'),read=$('pRead'),w=$('pW'),lr=$('pLr'),rowsS=$('pRows'),run=$('pRun'),seedB=$('pSeed');
+  if(!svg)return;
+  var seed=1,P=null,TR=[],TE=[];
+  var X=mapper(80,850,5.9,11.1),Y=mapper(300,50,0,90);
+  function pick(n){
+    var step=D.length/n,out=[],i;
+    for(i=0;i<n;i++)out.push(Math.min(D.length-1,Math.round(i*step)));
+    return out.filter(function(v,j,a){return a.indexOf(v)===j;});
+  }
+  function build(){
+    var n=+rowsS.value,idx=pick(n),width=+w.value;
+    TR=idx.map(function(i){return D[i];});
+    TE=D.filter(function(d){return idx.indexOf(d.i)<0;});
+    P=trainNet(TR,seed,2500,(+lr.value)/100,width,Math.max(1,Math.round(width/1.5)));
+    draw();
+  }
+  function draw(){
+    var s='',v,i,r;
+    s+='<line x1="80" y1="300" x2="860" y2="300" class="ax" shape-rendering="crispEdges"/>';
+    for(v=6;v<=11;v+=1)s+=lab(X(v),322,clk(v),11,'lb','middle');
+    for(v=0;v<=90;v+=30)s+=lab(70,Y(v)+4,v,11,'lb','end');
+    if(P)for(r=0;r<2;r++){
+      var pts=[];
+      for(v=5.9;v<=11.05;v+=0.05)pts.push(Math.round(X(v))+','+Math.round(Y(Math.max(2,Math.min(88,netCurve(P,v,r))))));
+      s+='<polyline points="'+pts.join(' ')+'" class="ln"'+(r?' stroke-dasharray="6 4"':'')+'/>';}
+    for(i=0;i<D.length;i++){
+      var d=D[i],held=TR.indexOf(d)<0;
+      s+='<rect class="pt'+(held?' held':'')+'" x="'+Math.round(X(d.h)-6)+'" y="'+Math.round(Y(d.m)-6)+'" width="12" height="12" rx="2"/>';
+      if(d.r)s+=rainMark(X(d.h),Y(d.m)-10);}
+    var np=P?(P.h1*2+P.h1+P.h2*P.h1+P.h2+P.h2+1):0;
+    s+=lab(80,348,'FILLED = STUDIED &middot; HOLLOW = HELD BACK',12);
+    s+=cell(80,360,P?f2d(maeNet(P,TR)):'--','comp',66,28)+lab(156,379,'studied ('+TR.length+' rows)',12);
+    s+=cell(330,360,TE.length&&P?f2d(maeNet(P,TE)):'--','off',66,28)+lab(406,379,'held back ('+TE.length+')',12);
+    s+=cell(600,360,np,'learn',52,28)+lab(662,379,'numbers in the model',12);
+    svg.innerHTML=s;
+    read.innerHTML=P?('width <b>'+P.h1+'</b>+<b>'+P.h2+'</b> &middot; <b>'+np+'</b> numbers &middot; '+TR.length+' rows &middot; starting point '+seed):'press train it';
+  }
+  [w,lr,rowsS].forEach(function(c){c.addEventListener('input',build);});
+  run.addEventListener('click',build);
+  seedB.addEventListener('click',function(){seed=1+Math.floor(Math.random()*60);build();});
+  document.querySelectorAll('[data-p]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-p');
+      if(k==='under'){w.value=1;rowsS.value=22;lr.value=8;}
+      if(k==='over'){w.value=8;rowsS.value=4;lr.value=8;}
+      if(k==='good'){w.value=3;rowsS.value=22;lr.value=8;}
+      build();});});
+  build();
+})();
+
+/* ================= scrolly wiring, coupling, rail, weeds ================= */
+function scrolly(id,target){
+  if(!target)return;
+  var steps=[].slice.call(document.querySelectorAll('#'+id+' .stp'));
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        steps.forEach(function(s){s.classList.toggle('on',s===e.target);});
+        target.set(+e.target.getAttribute('data-step'));
+      }});
+  },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+  steps.forEach(function(s){
+    io.observe(s);
+    s.addEventListener('click',function(){
+      steps.forEach(function(x){x.classList.toggle('on',x===s);});
+      target.set(+s.getAttribute('data-step'));});
+  });
+  target.set(0);
+}
+scrolly('sc1',SC1);
+scrolly('sc2',SC2);
+
+document.querySelectorAll('.ref').forEach(function(t){
+  var k=t.getAttribute('data-ref'),sec=t.closest('section');
+  function on(v){
+    t.classList.toggle('hot',v);
+    sec.querySelectorAll('.fig').forEach(function(f){f.classList.toggle('dimmed',v);});
+    sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){p.classList.toggle('hot',v);});
+  }
+  t.addEventListener('mouseenter',function(){on(true);});
+  t.addEventListener('mouseleave',function(){on(false);});
+  t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
+});
+
+var ro=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target);}});
+},{threshold:0.06,rootMargin:'0px 0px -4% 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+(function(){
+  var pfEl=$('pf'),ptEl=$('pt'),C=2*Math.PI*22;
+  if(!pfEl)return;
+  pfEl.style.strokeDasharray=C;pfEl.style.strokeDashoffset=C;
+  var secs=[].slice.call(document.querySelectorAll('section[data-ch]'));
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+    pfEl.style.strokeDashoffset=C*(1-Math.min(1,Math.max(0,p||0)));
+    var n=0;
+    for(var i=0;i<secs.length;i++)if(secs[i].getBoundingClientRect().top<window.innerHeight*0.5)n=i+1;
+    ptEl.textContent=n?n:'·';
+  },{passive:true});
+})();
+
+(function(){
+  var weeds=$('weeds'),hint=$('weedsHint');
+  if(!weeds||!hint)return;
+  function toggle(){
+    var open=weeds.hidden;
+    weeds.hidden=!open;
+    hint.setAttribute('aria-expanded',String(open));
+    hint.innerHTML=open?'press <kbd>s</kbd> to hide the deeper cuts':'press <kbd>s</kbd> for the deeper cuts';
+    if(open){weeds.setAttribute('tabindex','-1');weeds.focus({preventScroll:true});
+      weeds.scrollIntoView({behavior:'smooth',block:'start'});}
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='s'&&e.key!=='S')return;
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var t=e.target,tag=(t.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||t.isContentEditable)return;
+    e.preventDefault();toggle();
+  });
+  hint.addEventListener('click',toggle);
+})();
+
+window.__anim={settle:settle,live:function(){return live.length;},REDUCE:REDUCE};
+/* every claim in the prose is checkable from here */
+window.__ml={D:D,E:E,initNet:initNet,trainNet:trainNet,bestNet:bestNet,bestSeed:bestSeed,KEPT:KEPT,SEEDS:SEEDS,maeNet:maeNet,stepNet:stepNet,
+  fwd:fwd,sxv:sxv,inv:inv,netCurve:netCurve,NETFULL:NETFULL,ols:ols,predL:predL,maeL:maeL,
+  fitLog:fitLog,pLate:pLate};
+})();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
