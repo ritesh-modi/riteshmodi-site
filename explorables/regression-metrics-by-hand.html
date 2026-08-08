@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Four numbers disagree about the same ten laptops</title>
+<meta name="description" content="MAE, MSE, RMSE and R-squared worked by hand on ten second-hand laptops. Train on six, test on four, and watch one row decide whether the model looks excellent or worse than useless.">
+<link rel="canonical" href="https://www.loopingly.com/explorables/regression-metrics-by-hand.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#E4E7E6;--v19:#D6DBD9;--v10:#151A18;--v12:#3D4744;--v11:#5C6763;--v21:#C1C7C4;--v0:#2A6B4C;--v16:#141817;--v17:#DFE4E2;--v20:#A8412C;--v24:#7A5C18;--v22:#2A6B4C;--v13:680px;--v25:1080px;--v15:26px;--v2:"Familjen Grotesk",system-ui,sans-serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"JetBrains Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:32px;--v4:46px;--v6:88px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.wide-hero{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.04;letter-spacing:-.022em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 24px;max-width:16em}h3{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.16;letter-spacing:-.012em;margin:0 0 14px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px}a{color:var(--v0)}.lede{font-size:clamp(20px,2.2vw,24px);line-height:1.46;color:var(--v12);max-width:27em}.lede-meta{font-family:var(--v14);font-size:var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v11);margin:24px 0 0}header{padding:clamp(56px,8vw,104px) 0 clamp(36px,5vw,64px)}h1{font-size:clamp(40px,7.4vw,88px);max-width:12em}.wide-hero .lede{margin:30px 0 0}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:5px;margin:32px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v21);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-lab{font-family:var(--v14);font-size:var(--v7);letter-spacing:.1em;text-transform:uppercase;color:var(--v11)}.fig-read{font-family:var(--v14);font-size:var(--v7);letter-spacing:.05em;color:var(--v11);text-align:right}.fig-read b{color:var(--v0);font-weight:500}.fig-body{padding:28px 28px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-ctl label{font-family:var(--v14);font-size:var(--v7);color:var(--v11);white-space:nowrap}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.66;color:var(--v11);padding:13px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-slide{flex:1;min-width:170px;display:flex;align-items:center;gap:10px}.fig svg{display:block;width:100%;height:auto;touch-action:none}@media(max-width:760px){.fig-body{padding:20px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:580px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 5px 5px 0;padding:22px 26px;margin:30px 0;line-height:1.6}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:10px}.intu p{margin:0}.note{background:var(--v19);border-radius:4px;padding:20px 24px;margin:28px 0 0;font-size:var(--v9);line-height:1.7;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note-hint{background:none;text-align:center;color:var(--v11);border:0;width:100%;font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:38px 0;margin:0}.note-hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note-hint:hover,.note-hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.26;letter-spacing:-.014em;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:40px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:background var(--v23),color var(--v23),border-color var(--v23)}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}.chip.off{border-color:var(--v20);color:var(--v20)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:5px;padding:24px 26px;margin:28px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:2;overflow-x:auto}.panel b{color:#8FCBA8;font-weight:500}.panel i{color:#8B948F;font-style:normal}.panel u{text-decoration:none;color:#E0A08C}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:18px 0}.panel.weeds summary{font-family:var(--v2);font-weight:500;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:14px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.3;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.44;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly{grid-template-columns:1fr;gap:0}.wide.sg{order:-1;width:100%;height:44vh;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;margin:24px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.fig.dimmed [data-part]:not(.hot){opacity:.22;transition:opacity .2s}.stk{stroke:var(--v20);stroke-width:2.5;stroke-linecap:round}.stk.small{stroke:var(--v11);stroke-width:2}.stk.huge{stroke:var(--v20);stroke-width:4}.pt{fill:var(--v10)}.pt.test{fill:var(--v0)}.pt.sel{stroke:var(--v10);stroke-width:3}.ln{stroke:var(--v0);stroke-width:2.5;fill:none}.ln.mean{stroke:var(--v11);stroke-width:2;stroke-dasharray:6 5}.sq{fill:var(--v20);fill-opacity:.16;stroke:var(--v20);stroke-width:1}.ax{stroke:var(--v21);stroke-width:1.5}.lb{font-family:var(--v14);fill:var(--v11);letter-spacing:.02em}.vl{font-family:var(--v14);fill:var(--v10)}.wd{font-family:var(--v2);font-weight:500;fill:var(--v10);letter-spacing:-.01em}.tgt{fill:rgba(0,0,0,0);cursor:pointer}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}footer{padding:64px 0 84px;color:var(--v11);font-size:var(--v9);line-height:1.8}footer a{color:var(--v12)}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}</style></style>
+</head>
+<body>
+<div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
+  <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
+</svg><span id="pt">·</span></div>
+
+<header class="wide-hero">
+  <h1>Four numbers disagree about the same ten laptops</h1>
+  <p class="lede">MAE, MSE, RMSE and R squared are not four opinions. They are four questions asked about one set of gaps, and on this tiny table they answer 13, 244, 16 and 0.97, or 76, 18005, 134 and minus 1.33, depending on whether you include one laptop with a cracked screen.</p>
+  <p class="lede-meta">10 rows &middot; 5 columns &middot; 6 to learn from &middot; 4 held back</p>
+  <div class="fig" id="figH">
+    <div class="fig-head"><span class="fig-lab">the whole dataset, and every gap the rule leaves</span><span class="fig-read" id="hRead">click any laptop</span></div>
+    <div class="fig-body"><svg id="hSvg" viewBox="0 0 900 300" role="img" aria-label="Ten laptops plotted by age and price, with the fitted line and the gap under each point"></svg></div>
+    <div class="fig-ctl"><button class="chip" id="hSticks">show the gaps</button><span class="fig-read">every number on this page is computed from these ten rows</span></div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Price this laptop, then find out what it sold for</h2>
+    <p>Three years old. 8GB of memory. Battery at 80 percent of its original capacity. Somebody is about to buy it. What is it worth?</p>
+    <p>Commit to a number before you read on. Drag the marker, press the button, and the actual selling price appears next to it.</p>
+    <p>Whatever you said, the distance between your number and the real one is the only thing this entire page is about. It has a name: the <span class="ref" data-ref="err">error</span>. Everything that follows, all four metrics, is arithmetic performed on a pile of those distances.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span class="fig-lab">figure 1 &middot; your guess against the truth</span><span class="fig-read" id="f1Read">drag, then reveal</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 220" role="img" aria-label="A price scale where the reader places a guess and the actual price is revealed"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f1S">&euro;250</label><input type="range" id="f1S" min="250" max="900" value="700" step="10" aria-label="your guess"><label for="f1S">&euro;900</label></span>
+        <button class="chip" id="f1Go">reveal what it sold for</button>
+        <button class="chip" id="f1Reset">guess again</button>
+      </div>
+      <div class="fig-cap"><b>Drag, then reveal.</b> The gap is drawn in rust. Nothing about it cares whether you guessed high or low, only how far off you were.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A tailor guessing your inside leg. She says 32, the tape says 31. The tailor is not wrong in a way that has a direction anybody cares about, <b>she is out by one inch</b>, and if she is out by one inch on every customer all day she has a very different problem from being out by nine inches on one of them.</p></div>
+    <p>Guessing one laptop is a party trick. The moment you have ten, you need a rule that produces a number for any laptop, including ones you have never seen.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A line is a rule you can check, and a feeling is not</h2>
+    <p>Here are six laptops, plotted by age against price. There is an obvious slope in them: older is cheaper. Turn that into a rule by laying a straight line through the cloud.</p>
+    <p>Drag the slider. The line pivots. Under it, the total of every squared gap moves up and down, and your job is to make that total as small as it will go. When you are close, press the button and the arithmetic will do it exactly.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span class="fig-lab">figure 2 &middot; six points, one line</span><span class="fig-read" id="f2Read">sum of squared gaps: 0</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 330" role="img" aria-label="Six training laptops with a line the reader rotates to minimise squared error"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f2S">steeper</label><input type="range" id="f2S" min="-190" max="-40" value="-70" step="1" aria-label="slope"><label for="f2S">flatter</label></span>
+        <button class="chip" id="f2Best">let the arithmetic do it</button>
+      </div>
+      <div class="fig-cap"><b>Drag until the total stops falling.</b> The line always pivots through the average laptop, so there is exactly one thing to tune and one number to watch.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The rule the arithmetic lands on, rounded so you can check it on paper:</p>
+    <div class="panel">price = <b>961</b> &minus; <b>112</b> &times; age<br>
+<i>a three year old laptop</i> &rarr; 961 &minus; 112&times;3 = <b>625</b><br>
+<i>a six year old laptop</i> &rarr; 961 &minus; 112&times;6 = <b>289</b></div>
+    <div class="intu"><i>picture it</i><p>The line is not trying to touch the points. It is trying to be <b>the least wrong about all of them at once</b>, which usually means touching none of them. A rule that passed through every point would be memorising the six laptops rather than learning anything about laptops.</p></div>
+    <p>That rule now prices any laptop you hand it. Which raises the question the rest of this page exists to answer: how do you know it is any good?</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Four of the ten rows were hidden from the rule on purpose</h2>
+    <p>The table has ten laptops. The line you just fitted only ever saw six of them.</p>
+    <p>The other four were held back. The rule has no knowledge of them, was not adjusted to suit them, and cannot have memorised them. That makes them the only honest way to ask whether the rule works on a laptop it has never met, which is the only thing anybody actually wants to know.</p>
+    <p>Click any row to see where it sits.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span class="fig-lab">figure 3 &middot; ten rows, five columns, one split</span><span class="fig-read" id="f3Read">click a row</span></div>
+      <div class="fig-body"><svg id="f3" viewBox="0 0 900 400" role="img" aria-label="The ten row table beside a scatter, with training and test rows distinguished"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f3="all">show all ten</button>
+        <button class="chip" data-f3="train">the six it learned from</button>
+        <button class="chip" data-f3="test">the four it never saw</button>
+      </div>
+      <div class="fig-cap"><b>Click a row, or switch the view.</b> Age drives the price here; memory and battery are along for the ride, which is deliberate and comes back at the end.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Handing a student the exam paper a week early and then being delighted by the marks. <b>A score on questions you already showed them measures your generosity, not their understanding.</b> The four held-back laptops are the questions they have not seen.</p></div>
+    <p>So there are two piles of gaps now: six from laptops the rule studied, four from laptops it has never met. Those gaps are about to be turned into numbers.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One gap, four things you can do to it</h2>
+    <p>Take a single held-back laptop and watch what happens to its gap. Every metric on this page is one of these operations, repeated over four rows and divided by four.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span class="fig-lab">figure 4 &middot; what a gap is for</span><span class="fig-read" id="sc1Read">laptop H</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 560 420" role="img" aria-label="One laptop, its prediction, its gap, and the square of that gap"></svg></div>
+        <div class="fig-cap">Each step changes the drawing. <b>Click a step to jump to it.</b></div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp on" data-step="0"><h3>What actually happened</h3><p>Laptop H is three years old and sold for <b>&euro;600</b>. That is a fact about the world, and no model can argue with it.</p></div>
+      <div class="col stp" data-step="1"><h3>What the rule claimed</h3><p>961 &minus; 112&times;3 = <b>&euro;625</b>. The rule never saw this laptop. This is a genuine prediction.</p></div>
+      <div class="col stp" data-step="2"><h3>The gap between them</h3><p>600 &minus; 625 = <b>&minus;25</b>. Negative because the rule asked too much. The sign tells you the direction; most metrics throw it away immediately.</p></div>
+      <div class="col stp" data-step="3"><h3>Strip the sign: the absolute error</h3><p>|&minus;25| = <b>25</b>. Twenty five euros out. This is the number MAE averages, and it is measured in euros, which is why it is the easiest of the four to say out loud.</p></div>
+      <div class="col stp" data-step="4"><h3>Or square it</h3><p>(&minus;25)² = <b>625</b>. Drawn as an actual square, because that is what it is: a gap of 25 becomes an area of 625. Double the gap and the area quadruples. That single fact is the whole personality of MSE.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Two ways to fine a late train. Charge a euro a minute and a ten minute delay costs ten. <b>Charge a euro per minute squared and the same delay costs a hundred.</b> Neither is wrong. They are different opinions about whether one disaster is worse than several annoyances.</p></div>
+    <p>Four laptops, four gaps. Here they are, and they are the raw material for everything that follows.</p>
+    <div class="panel">laptop &nbsp;&nbsp;actual &nbsp;&nbsp;predicted &nbsp;&nbsp;&nbsp;gap &nbsp;&nbsp;&nbsp;|gap| &nbsp;&nbsp;&nbsp;gap²<br>
+<i>G</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;620 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;625 &nbsp;&nbsp;&nbsp;&nbsp;&minus;5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;25<br>
+<i>H</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;600 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;625 &nbsp;&nbsp;&nbsp;&minus;25 &nbsp;&nbsp;&nbsp;&nbsp;25 &nbsp;&nbsp;&nbsp;&nbsp;625<br>
+<i>I</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;410 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;401 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;81<br>
+<u>J</u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>470</u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>737</u> &nbsp;&nbsp;<u>&minus;267</u> &nbsp;&nbsp;<u>267</u> &nbsp;<u>71289</u></div>
+    <p>Three of those gaps are small. One is not, and it is about to dominate everything.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>MAE is the average gap, and it is in euros</h2>
+    <p>Add the four absolute gaps. Divide by four. That is the entire calculation, and the answer comes out in the same unit as the thing you predicted, which means you can say it to a person who has never heard of a model.</p>
+    <div class="panel">MAE = <b>1/n</b> &times; &Sigma; |y<i>&#7522;</i> &minus; &#375;<i>&#7522;</i>|<br><br>
+= ( 5 + 25 + 9 + 267 ) / 4<br>
+= <b>306</b> / 4<br>
+= <b>76.5</b> &nbsp;&nbsp;<i>euros, on average, out</i></div>
+    <p>Click each bar below to add it to the running total, and watch the average move. Three of the four barely shift it. The fourth throws it across the figure.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span class="fig-lab">figure 5 &middot; adding up the absolute gaps</span><span class="fig-read" id="f5Read">0 of 4 added</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 300" role="img" aria-label="Four absolute errors accumulating into a mean"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f5Step">add the next gap</button>
+        <button class="chip" id="f5All">add all four</button>
+        <button class="chip" id="f5Reset">start over</button>
+      </div>
+      <div class="fig-cap"><b>Add them one at a time.</b> After three laptops the average is 13. The fourth takes it to 76.5 on its own.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Your average commute this week: 30, 32, 29 and 95 minutes. The average is 46, <b>a number that describes not one single day of your week.</b> MAE is honest about the size of the typical miss and says nothing at all about whether the misses are alike.</p></div>
+    <p>MAE treats a gap of 267 as exactly 267 units of badness, no more. Sometimes that is right. Often it is not, because being wrong by 267 euros on one laptop is not the same kind of problem as being wrong by 5 on 53 of them.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>MSE squares every gap, so the worst row shouts loudest</h2>
+    <p>Same four gaps. Instead of stripping the sign, square them, which strips the sign anyway and does something else on the way: it makes big gaps enormously more expensive than small ones.</p>
+    <div class="panel">MSE = <b>1/n</b> &times; &Sigma; (y<i>&#7522;</i> &minus; &#375;<i>&#7522;</i>)²<br><br>
+= ( 25 + 625 + 81 + <u>71289</u> ) / 4<br>
+= <b>72020</b> / 4<br>
+= <b>18005</b> &nbsp;&nbsp;<i>euros squared, which is not a thing anybody can picture</i><br><br>
+RMSE = &radic;<b>MSE</b> = &radic;18005 = <b>134.2</b> &nbsp;&nbsp;<i>euros again</i></div>
+    <p>Look at where that 72020 comes from. Laptop J contributes 71289 of it. The other three laptops together contribute 731, which is <b>one percent</b> of the total. In MAE, J was 87 percent of the sum. Squaring took it to 99 percent.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span class="fig-lab">figure 6 &middot; the gaps, drawn as areas</span><span class="fig-read" id="f6Read">squares to scale</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 340" role="img" aria-label="Each error drawn as a square whose area is the squared error"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f6="len">as lengths &nbsp;|gap|</button>
+        <button class="chip" data-f6="area">as areas &nbsp;gap²</button>
+        <button class="chip" data-f6="fair">put J back to &minus;25</button>
+      </div>
+      <div class="fig-cap"><b>Switch between lengths and areas.</b> As lengths J is ten times the others. As areas it is over a hundred times, and the small three almost vanish.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Insurance. Ten scratched bumpers cost the insurer far less than one written off car, so the premium is not set by the average dent. <b>Squaring is how you say out loud that one catastrophe matters more than a hundred inconveniences</b>, and RMSE then converts the answer back into money so you can quote it.</p></div>
+    <p>RMSE is the square root of MSE, which puts it back into euros and makes it sayable. It is not the same as MAE, and the difference between them is a diagnostic in its own right: <b>RMSE 134 against MAE 76 is a ratio of 1.75</b>, and a ratio that high is the signature of one row doing most of the damage. When the ratio sits near 1.1, your errors are all much of a muchness.</p>
+    <div class="pull">MAE asks how far off you usually are. MSE asks how bad your worst days get.</div>
+    <p>Both of those are absolute numbers. Neither of them tells you whether 76 euros is good, and that needs something to compare against.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>R squared scores you against the laziest model there is</h2>
+    <p>Is 76 euros of average error good? The question has no answer on its own. It depends entirely on what the alternative was.</p>
+    <p>So R squared invents an alternative and beats you with it. The alternative is the laziest model imaginable: <b>ignore age, ignore memory, ignore everything, and always predict the average price.</b> That model has no idea what a laptop is. Whatever you have built should beat it.</p>
+    <div class="panel">R² = 1 &minus; <b>SS<i>res</i></b> / <b>SS<i>tot</i></b><br><br>
+<i>SS res &nbsp;= your squared gaps</i> &nbsp;&nbsp;= 25 + 625 + 81 + 71289 = <b>72020</b><br>
+<i>SS tot &nbsp;= the lazy model's squared gaps, against the mean of 525</i><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= 95² + 75² + 115² + 55² = <b>30900</b><br><br>
+R² = 1 &minus; 72020 / 30900 = 1 &minus; 2.331 = <b>&minus;1.33</b></div>
+    <p>Negative. That is not a broken calculation, it is the calculation working. R² of 0 means you exactly matched the lazy model. Above 0 means you beat it. <b>Below 0 means you lost to a model that does not look at the data at all.</b></p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span class="fig-lab">figure 7 &middot; your gaps against the lazy model's gaps</span><span class="fig-read" id="f7Read">both sets shown</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 340" role="img" aria-label="Errors against the fitted line compared with errors against the mean line"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7="both">show both</button>
+        <button class="chip" data-f7="model">your line only</button>
+        <button class="chip" data-f7="mean">the lazy model only</button>
+      </div>
+      <div class="fig-cap"><b>Compare the two sets of sticks.</b> Three of yours are shorter than the lazy model's. The fourth is so much longer that it outweighs all three.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A weather forecaster who says "same as yesterday" every single day is the baseline. If your satellites and supercomputers cannot beat that, the equipment is not the point. <b>R² is the ratio of your mistakes to that person's mistakes</b>, flipped so that bigger is better.</p></div>
+    <p>On the six training laptops this same model scores 0.99. On the four it had never seen, it scores minus 1.33. Same model, same arithmetic, two wildly different verdicts, and only one of them was ever going to reach a customer.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One row out of ten decides whether this model looks excellent or worthless</h2>
+    <p>Here are all four metrics, live, over the four held-back laptops. The switch drops laptop J out of the test set and puts it back.</p>
+    <p>Nothing else changes. Same rule, same six training rows, same three other laptops. Watch which metrics shrug and which ones fall over.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span class="fig-lab">figure 8 &middot; the same model, judged twice</span><span class="fig-read" id="f8Read">4 test laptops</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 340" role="img" aria-label="MAE, MSE, RMSE and R squared recomputed with and without the outlier"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" id="f8Toggle">laptop J is in the test set</button>
+        <button class="chip" id="f8Train">score the training rows instead</button>
+      </div>
+      <div class="fig-cap"><b>Flip the switch.</b> MAE moves by a factor of 6. RMSE moves by 9. R² travels from 0.97 to below zero. Every one of those numbers is arithmetically correct.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel" id="f8Panel">with J &nbsp;&nbsp;&nbsp;&nbsp;MAE <b>76.5</b> &nbsp;&nbsp;MSE <b>18005</b> &nbsp;&nbsp;RMSE <b>134.2</b> &nbsp;&nbsp;R² <b>&minus;1.33</b><br>
+without J &nbsp;MAE <b>13.0</b> &nbsp;&nbsp;MSE <b>243.7</b> &nbsp;&nbsp;RMSE <b>15.6</b> &nbsp;&nbsp;R² <b>0.97</b><br>
+<i>on the six training rows</i> &nbsp;MAE 20.7 &nbsp;&nbsp;MSE 538.3 &nbsp;&nbsp;RMSE 23.2 &nbsp;&nbsp;R² 0.99</div>
+    <div class="intu"><i>picture it</i><p>A restaurant with four reviews: three at five stars and one at one star from a diner who got food poisoning. <b>The average rating is 4.0, which describes nobody's evening.</b> Whether you quote the average or the worst case is not a statistical question, it is a question about what you are responsible for.</p></div>
+    <p>The temptation here is to call J an outlier, delete it, and report the good numbers. That is the single most common piece of quiet dishonesty in applied machine learning, and it is worth being precise about why it is dishonest.</p>
+    <div class="pull">You do not get to remove a row because it makes your model look bad. You get to remove it if you can say what made it different.</div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Laptop J is not noise, it is a column you never collected</h2>
+    <p>Look at J in the table. Two years old, 16GB, battery at 86 percent. By every column available it should have sold for around 737 euros, and it went for 470.</p>
+    <p>The reason is not in the table. <b>It had a cracked screen.</b> There is no column for that, so the model could not know, and no amount of clever modelling on these five columns will ever recover it. The error is not the model being stupid. The error is the dataset being incomplete, and the metric is the only thing telling you so.</p>
+    <p>Add the column and the problem dissolves. That is what the button below does.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span class="fig-lab">figure 9 &middot; the column that was missing</span><span class="fig-read" id="f9Read">5 columns</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 300" role="img" aria-label="The table gaining a screen condition column, and the outlier resolving"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f9="5">the 5 columns you have</button>
+        <button class="chip" data-f9="6">add screen_ok</button>
+      </div>
+      <div class="fig-cap"><b>Add the sixth column.</b> J stops being mysterious and becomes ordinary: cracked screens sell at a discount, and now the rule can say so.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A doctor whose notes have no field for "patient is a smoker" will keep being surprised by the same patients. <b>The surprise is information: it is telling you which question your form forgot to ask.</b> A big residual is a lead, not a nuisance.</p></div>
+    <p>So the working habit is not "watch one metric". It is: split before you fit, quote MAE and RMSE together because the gap between them tells you whether one row is carrying the damage, check R squared against zero rather than against 1, and go and look at your largest residual by name.</p>
+    <p>On ten rows you can do all of that by eye. On ten million the arithmetic is identical and the largest residual still has a name, which is the entire reason to learn it here.</p>
+  </div>
+</section>
+
+<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--v21)">
+  <div class="col">
+    <h3>What the four numbers were actually for</h3>
+    <p>MAE told you the typical miss in euros. MSE told you the worst miss dominated. RMSE said the same thing in money. R squared said you had lost to a model that ignores the data. None of them told you about the cracked screen, and all four of them pointed straight at it.</p>
+  </div>
+</div>
+
+<button class="note note-hint" id="weedsHint" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</button>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h3>Into the weeds</h3>
+    <details><summary>Why the line pivots through the average laptop</summary>
+      <p>A least squares line always passes through the point (mean age, mean price). That is why figure 2 only needed one slider: fix that pivot and the slope is the only degree of freedom left. The full solution has two unknowns, but they are not independent, and the pivot is the constraint that ties them.</p></details>
+    <details><summary>Four rows is far too few to test on</summary>
+      <p>Honestly stated: a four row test set is a demonstration, not a measurement. One unusual laptop moves R² by more than two points. In practice you either hold back hundreds of rows, or you use cross validation, which splits the data several different ways and averages the verdicts so no single unlucky split decides anything.</p></details>
+    <details><summary>Why R² has no floor but does have a ceiling</summary>
+      <p>R² is 1 minus a ratio of two sums of squares. The numerator, your errors, is unbounded above: a bad enough model can make it arbitrarily large, so R² runs to minus infinity. The denominator is fixed by the data. That asymmetry is why 1.0 is perfect, 0 is the lazy baseline, and there is no worst possible score.</p></details>
+    <details><summary>MAE, RMSE and what they optimise</summary>
+      <p>If you fit a model by minimising squared error you are fitting to the conditional mean. Minimise absolute error instead and you fit the conditional median, which is far less disturbed by outliers. The choice of metric is not only how you report the model, it can be how you build it.</p></details>
+    <details><summary>The other two columns</summary>
+      <p>Memory and battery are in the table and unused by the model. Battery is largely a proxy for age and would add little; memory does carry real signal and a two variable fit would beat this one. They are left out because one feature can be drawn as a line on a page, and the metrics behave identically either way.</p></details>
+    <details><summary>Rounded coefficients</summary>
+      <p>The exact least squares fit is price = 961.379 minus 112.414 times age. Every number on this page uses the rounded 961 and 112 so you can check the arithmetic on paper. The metrics shift in the third significant figure if you use the exact coefficients, and no conclusion changes.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p>Ten rows, five columns, all invented for this page and chosen so the arithmetic is checkable by hand. Every metric shown here is computed in your browser from the table above using the rounded model price = 961 &minus; 112 &times; age, not stored as text.</p>
+  </div>
+</footer>
+
+<script>!function(){"use strict";var t=function(t){return document.getElementById(t)},e=[{n:"A",age:1,ram:16,bat:95,p:880,s:"train"},{n:"B",age:2,ram:16,bat:90,p:700,s:"train"},{n:"C",age:2,ram:8,bat:88,p:730,s:"train"},{n:"D",age:4,ram:8,bat:78,p:530,s:"train"},{n:"E",age:5,ram:16,bat:72,p:380,s:"train"},{n:"F",age:6,ram:8,bat:64,p:300,s:"train"},{n:"G",age:3,ram:16,bat:84,p:620,s:"test"},{n:"H",age:3,ram:8,bat:80,p:600,s:"test"},{n:"I",age:5,ram:8,bat:70,p:410,s:"test"},{n:"J",age:2,ram:16,bat:86,p:470,s:"test",crack:!0}],n=e.filter(function(t){return"train"===t.s}),a=e.filter(function(t){return"test"===t.s}),r=961,i=-112;function o(t){return r+i*t.age}function c(t){return t.p-o(t)}function s(t){var e,n=t.length,a=0,r=0,i=0;for(e=0;e<n;e++)i+=t[e].p;i/=n;var o=0;for(e=0;e<n;e++){var s=c(t[e]);a+=Math.abs(s),r+=s*s,o+=(t[e].p-i)*(t[e].p-i)}return{mae:a/n,mse:r/n,rmse:Math.sqrt(r/n),r2:o?1-r/o:NaN,ssr:r,sst:o,mean:i,n:n}}var l=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches,u=[],f=null;function d(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}function g(t){var e=u.indexOf(t);e<0||(u.splice(e,1),t.apply(1),t.done&&t.done())}function h(t,e,n){if(e=e||1600,t(0),l)return t(1),n&&n(),null;var a={apply:t,t0:performance.now(),ms:e,done:n};return u.push(a),a.guard=setTimeout(function(){g(a)},e+60),f||(f=requestAnimationFrame(m)),a}function m(t){for(var e=u.length-1;e>=0;e--){var n=u[e],a=Math.min(1,(t-n.t0)/n.ms);n.apply(d(a)),t-n.t0>=n.ms&&(clearTimeout(n.guard),g(n))}f=u.length?requestAnimationFrame(m):null}function p(t,e){return function(n){return t+(e-t)*n}}function v(t){return Math.round(t)}function b(t,e,n,a,r,i){return'<text class="'+(r||"lb")+'" x="'+v(t)+'" y="'+v(e)+'" font-size="'+a+'"'+(i?' text-anchor="'+i+'"':"")+">"+function(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}(n)+"</text>"}function y(t,e,n,a,r){return'<line class="'+(r||"ax")+'" x1="'+v(t)+'" y1="'+v(e)+'" x2="'+v(n)+'" y2="'+v(a)+'"/>'}function x(t){return"€"+Math.round(t)}function E(t,e,n,a){return{x0:t,y0:e,w:n,h:a,sx:function(e){return t+e/7*n},sy:function(t){return e+a-(t-200)/780*a}}}function L(t,e){var n,a="";for(a+=y(t.x0,t.y0+t.h,t.x0+t.w,t.y0+t.h),a+=y(t.x0,t.y0,t.x0,t.y0+t.h),n=1;n<=6;n++)a+=b(t.sx(n),t.y0+t.h+20,String(n),13,"lb","middle");return[300,500,700,900].forEach(function(e){a+=b(t.x0-8,t.sy(e)+4,String(e),13,"lb","end")}),a+=b(t.x0+t.w/2,t.y0+t.h+42,e||"age in years",13,"lb","middle")}function M(t,e,n,a){return'<path class="'+(a||"ln")+'" d="M'+v(t.sx(.4))+" "+v(t.sy(e+.4*n))+" L"+v(t.sx(6.6))+" "+v(t.sy(e+6.6*n))+'"/>'}function w(t,e,n){return'<circle class="pt'+("test"===e.s?" test":"")+(n?" sel":"")+'" cx="'+v(t.sx(e.age))+'" cy="'+v(t.sy(e.p))+'" r="7"/><circle class="tgt" cx="'+v(t.sx(e.age))+'" cy="'+v(t.sy(e.p))+'" r="18" data-row="'+e.n+'"/>'}function S(t,e,n,a,o){var c=t.sy(e.p),s=t.sy((void 0===n?r:n)+(void 0===a?i:a)*e.age);return'<line class="stk'+(o?" "+o:"")+'" x1="'+v(t.sx(e.age))+'" y1="'+v(c)+'" x2="'+v(t.sx(e.age))+'" y2="'+v(s)+'"/>'}!function(){var n=t("hSvg"),a=t("hRead"),s=!1,l=null,u=E(70,26,780,206);function f(){var t=L(u);t+=M(u,r,i),s&&e.forEach(function(e){t+=S(u,e,r,i,Math.abs(c(e))>100?"huge":"small")}),e.forEach(function(e){t+=w(u,e,l===e.n)}),n.innerHTML=t}n.addEventListener("click",function(t){var n=t.target.closest("[data-row]");if(n){l=n.getAttribute("data-row");var r=e.filter(function(t){return t.n===l})[0];a.innerHTML="laptop <b>"+r.n+"</b> &middot; "+r.age+"y &middot; sold "+x(r.p)+" &middot; rule said "+x(o(r))+" &middot; gap <b>"+(c(r)>0?"+":"")+v(c(r))+"</b>",f()}}),t("hSticks").addEventListener("click",function(){s=!s,this.textContent=s?"hide the gaps":"show the gaps",f()}),f()}(),function(){var e=t("f1"),n=t("f1Read"),a=t("f1S"),r=!1,i=600,o=110;function c(t){return 70+(t-250)/650*780}function s(){var t=+a.value,s="";s+=y(70,o,850,o),[300,450,600,750,900].forEach(function(t){s+=y(c(t),104,c(t),116),s+=b(c(t),138,x(t),13,"lb","middle")}),s+=b(70,44,"a 3 year old laptop, 8GB, battery 80%",13,"lb"),s+='<g data-part="err">',r&&(s+='<circle class="pt test" cx="'+v(c(i))+'" cy="'+o+'" r="8"/>',s+=b(c(i),86,"sold for "+x(i),13,"vl","middle"),s+='<line class="stk huge" x1="'+v(c(t))+'" y1="70" x2="'+v(c(i))+'" y2="70"/>',s+=b((c(t)+c(i))/2,58,"gap "+x(Math.abs(t-i)),13,"vl","middle")),s+="</g>",s+='<path class="ln" d="M'+v(c(t))+" 96 L"+v(c(t)-9)+" 80 L"+v(c(t)+9)+' 80 Z"/>';var l=Math.max(96,Math.min(804,c(t)));s+=b(l,166,"your guess "+x(t),13,"vl","middle"),e.innerHTML=s,n.innerHTML=r?"you were <b>"+x(Math.abs(t-i))+"</b> out":"drag, then reveal"}a.addEventListener("input",function(){r=!1,s()}),t("f1Go").addEventListener("click",function(){r=!0,s()}),t("f1Reset").addEventListener("click",function(){r=!1,a.value=700,s()}),s()}(),function(){var e=t("f2"),a=t("f2Read"),r=t("f2S"),i=E(70,24,780,230),o=function(t){var e,n=t.length,a=0,r=0;for(e=0;e<n;e++)a+=t[e].age,r+=t[e].p;a/=n,r/=n;var i=0,o=0;for(e=0;e<n;e++)i+=(t[e].age-a)*(t[e].p-r),o+=(t[e].age-a)*(t[e].age-a);return{b:i/o,a:r-i/o*a,mx:a,my:r}}(n);function c(){var t=+r.value,c=o.my-t*o.mx,s=L(i),l=0;return s+=M(i,c,t),n.forEach(function(e){var n=e.p-(c+t*e.age);l+=n*n,s+=S(i,e,c,t,Math.abs(n)>90?"huge":"small")}),n.forEach(function(t){s+=w(i,t,!1)}),s+='<circle class="pt sel" cx="'+v(i.sx(o.mx))+'" cy="'+v(i.sy(o.my))+'" r="5" fill="none"/>',s+=b(i.sx(o.mx)+12,i.sy(o.my)-10,"the average laptop",13,"lb"),e.innerHTML=s,a.innerHTML="sum of squared gaps: <b>"+v(l).toLocaleString()+"</b>",l}r.addEventListener("input",c),t("f2Best").addEventListener("click",function(){r.value=Math.round(o.b),c(),a.innerHTML="best possible: <b>"+v(c()).toLocaleString()+"</b> at slope "+o.b.toFixed(0)}),c()}(),function(){var n=t("f3"),a=t("f3Read"),c="all",s=null,l=E(486,30,364,270);function u(){var t="",a=54,o=e.filter(function(t){return"all"===c||t.s===c});t+=b(40,32,"laptop",13),t+=b(120,32,"age",13),t+=b(180,32,"ram",13),t+=b(240,32,"batt",13),t+=b(310,32,"price",13),e.forEach(function(e){var n="all"===c||e.s===c,r=s===e.n;t+='<rect class="tgt" x="34" y="'+(a-16)+'" width="360" height="26" data-row="'+e.n+'"/>',r&&(t+='<rect x="34" y="'+(a-16)+'" width="360" height="26" fill="var(--v0)" opacity=".12"/>');var i=n&&"test"===e.s?"vl":"lb";t+=b(40,a,e.n,15,i),t+=b(120,a,String(e.age),15,i),t+=b(180,a,String(e.ram),15,i),t+=b(240,a,String(e.bat),15,i),t+=b(310,a,String(e.p),15,i),t+=b(370,a,"test"===e.s?"test":"train",13,"lb"),a+=32}),t+=L(l),t+=M(l,r,i),o.forEach(function(e){t+=w(l,e,s===e.n)}),n.innerHTML=t}n.addEventListener("click",function(t){var n=t.target.closest("[data-row]");if(n){s=n.getAttribute("data-row");var r=e.filter(function(t){return t.n===s})[0];a.innerHTML="<b>"+r.n+"</b> &middot; "+r.s+" &middot; sold "+x(r.p)+" &middot; rule "+x(o(r)),u()}}),document.querySelectorAll("[data-f3]").forEach(function(t){t.addEventListener("click",function(){c=t.getAttribute("data-f3"),document.querySelectorAll("[data-f3]").forEach(function(e){e.classList.toggle("on",e===t)}),u()})}),u()}(),function(){var n=t("sc1fig"),a=t("sc1Read"),r=e.filter(function(t){return"H"===t.n})[0],i=170;function s(t){return 380-(t-350)/350*300}function l(t){var e="",l=o(r);e+=y(90,60,90,392),[400,500,600,700].forEach(function(t){e+=b(84,s(t)+4,x(t),13,"lb","end")}),e+='<g data-gel="act"><circle class="pt test" cx="170" cy="'+v(s(r.p))+'" r="8"/>'+b(188,s(r.p)+5,"actual "+x(r.p),15,"vl")+"</g>",e+='<g data-gel="pre"><circle class="pt" cx="170" cy="'+v(s(l))+'" r="8"/>'+b(188,s(l)+5,"predicted "+x(l),15,"vl")+"</g>",e+='<g data-gel="gap"><line class="stk" x1="170" y1="'+v(s(r.p))+'" x2="'+i+'" y2="'+v(s(l))+'"/>'+b(154,(s(r.p)+s(l))/2+5,String(v(c(r))),15,"vl","end")+"</g>",e+='<g data-gel="abs">'+b(300,120,"|gap| = 25",20,"wd")+'<rect x="300" y="136" width="80" height="14" fill="var(--v20)" fill-opacity=".5"/></g>',e+='<g data-gel="sq">'+b(300,196,"gap² = 625",20,"wd")+'<rect class="sq" x="300" y="212" width="80" height="80"/>'+b(344,258,"625",13,"lb","middle")+"</g>",n.innerHTML=e;var u=[["act"],["act","pre"],["act","pre","gap"],["act","pre","gap","abs"],["act","pre","gap","abs","sq"]][t]||["act"];n.querySelectorAll("[data-gel]").forEach(function(t){t.classList.toggle("show",u.indexOf(t.getAttribute("data-gel"))>=0)}),a.textContent=["laptop H","the rule speaks","the gap","absolute","squared"][t]||"laptop H"}var u=[].slice.call(document.querySelectorAll("#sc1 .stp"));function f(t){u.forEach(function(e){e.classList.toggle("on",e===t)}),l(+t.getAttribute("data-step"))}var d=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&f(t.target)})},{rootMargin:"-45% 0px -45% 0px",threshold:0});u.forEach(function(t){d.observe(t),t.addEventListener("click",function(){f(t)})}),l(0)}(),function(){var e=t("f5"),n=t("f5Read"),r=0;function i(){var t="",i=110,o=a.slice(0,r),s=0;if(o.forEach(function(t){s+=Math.abs(c(t))}),t+=y(70,230,860,230),a.forEach(function(e,n){var a=Math.abs(c(e)),o=a/280*160,s=n<r;t+='<rect x="'+(i-26)+'" y="'+v(230-o)+'" width="52" height="'+v(o)+'" fill="var(--v20)" fill-opacity="'+(s?".75":".15")+'"/>',t+=b(i,252,e.n,13,"lb","middle"),t+=b(i,224-o,String(v(a)),13,s?"vl":"lb","middle"),i+=90}),t+=b(70,40,"absolute gaps, added one at a time",13),r){var l=s/r;t+=b(520,110,"sum = "+v(s),20,"wd"),t+=b(520,146,r+" laptops",13,"lb"),t+=b(520,196,"MAE = "+l.toFixed(1),20,"wd"),t+='<line class="ln mean" x1="70" y1="'+v(230-l/280*160)+'" x2="470" y2="'+v(230-l/280*160)+'"/>'}e.innerHTML=t,n.innerHTML=r+" of 4 added"+(r?" &middot; MAE <b>"+(s/r).toFixed(1)+"</b>":"")}function o(t,n){if(t>=a.length)n&&n();else{var o=a[t],s=110+90*t,l=Math.abs(c(o)),u=l/280*160,f=document.createElementNS("http://www.w3.org/2000/svg","g");f.innerHTML='<circle r="15" fill="var(--v20)" fill-opacity=".85"/><text y="5" text-anchor="middle" font-family="var(--v14)" font-size="13" fill="#fff">'+v(l)+"</text>",e.appendChild(f);var d=document.createElementNS("http://www.w3.org/2000/svg","path");d.setAttribute("d","M"+s+" "+v(230-u-16)+" C "+(s+80)+" "+v(230-u-90)+", 430 40, 520 96"),d.setAttribute("fill","none"),d.setAttribute("stroke","none"),e.appendChild(d),h(function(t,e){return function(n){var a=e.getPointAtLength(n*e.getTotalLength());t.setAttribute("transform","translate("+a.x.toFixed(1)+","+a.y.toFixed(1)+")")}}(f,d),900,function(){f.remove(),d.remove(),r=t+1,i(),n&&n()})}}t("f5Step").addEventListener("click",function(){r<4&&o(r)}),t("f5All").addEventListener("click",function(){r=0,i(),function t(e){e>=4||o(e,function(){setTimeout(function(){t(e+1)},120)})}(0)}),t("f5Reset").addEventListener("click",function(){r=0,i()}),i()}(),function(){var e=t("f6"),n=t("f6Read"),r="len",i=!1;function o(){var t="",o=140,s=0,l=a.map(function(t){var e=i&&"J"===t.n?-25:c(t);return{n:t.n,e:e}});l.forEach(function(t){s=Math.max(s,t.e*t.e)});var u=Math.max.apply(null,l.map(function(t){return Math.abs(t.e)}));l.forEach(function(e){var n=Math.abs(e.e);if("len"===r){var a=n/u*180;t+='<rect x="'+(o-24)+'" y="'+v(250-a)+'" width="48" height="'+v(a)+'" fill="var(--v20)" fill-opacity=".7"/>',t+=b(o,244-a,String(v(n)),13,"vl","middle")}else{var i=180*Math.sqrt(e.e*e.e/s);t+='<rect class="sq" x="'+v(o-i/2)+'" y="'+v(250-i)+'" width="'+v(i)+'" height="'+v(i)+'"/>',t+=b(o,244-i,String(v(e.e*e.e)),13,"vl","middle")}t+=b(o,274,e.n,13,"lb","middle"),o+=190}),t+=y(70,250,860,250),t+=b(70,40,"len"===r?"each gap as a length, in euros":"each gap as an area, in euros squared",13);var f=l.reduce(function(t,e){return t+e.e*e.e},0),d=l.filter(function(t){return"J"===t.n})[0];t+=b(70,306,"J is "+(d.e*d.e/f*100).toFixed(0)+"% of the squared total"+(i?"  (with J put back to a normal miss)":""),13,"lb"),e.innerHTML=t,n.textContent="len"===r?"lengths |gap|":"areas gap²"}document.querySelectorAll("[data-f6]").forEach(function(t){t.addEventListener("click",function(){var e=t.getAttribute("data-f6");"fair"===e?(i=!i,t.classList.toggle("on",i)):(r=e,document.querySelectorAll("[data-f6]").forEach(function(e){"fair"!==e.getAttribute("data-f6")&&e.classList.toggle("on",e===t)})),o()})}),o()}(),function(){var e=t("f7"),n=t("f7Read"),o="both",l=E(90,26,740,240),u=s(a);function f(){var t=L(l);"mean"!==o&&(t+=M(l,r,i),a.forEach(function(e){t+=S(l,e,r,i,Math.abs(c(e))>100?"huge":"small")})),"model"!==o&&(t+='<line class="ln mean" x1="'+v(l.sx(.4))+'" y1="'+v(l.sy(u.mean))+'" x2="'+v(l.sx(6.6))+'" y2="'+v(l.sy(u.mean))+'"/>',t+=b(l.sx(6.6),l.sy(u.mean)-10,"always predict "+x(u.mean),13,"lb","end"),"mean"===o&&a.forEach(function(e){t+='<line class="stk small" x1="'+v(l.sx(e.age))+'" y1="'+v(l.sy(e.p))+'" x2="'+v(l.sx(e.age))+'" y2="'+v(l.sy(u.mean))+'"/>'})),a.forEach(function(e){t+=w(l,e,!1)}),e.innerHTML=t,n.innerHTML="SS<b>res</b> "+v(u.ssr).toLocaleString()+" vs SS<b>tot</b> "+v(u.sst).toLocaleString()+" &middot; R² <b>"+u.r2.toFixed(2)+"</b>"}document.querySelectorAll("[data-f7]").forEach(function(t){t.addEventListener("click",function(){o=t.getAttribute("data-f7"),document.querySelectorAll("[data-f7]").forEach(function(e){e.classList.toggle("on",e===t)}),f()})}),f()}(),function(){var e=t("f8"),o=t("f8Read"),l=t("f8Toggle"),u=!0,f=!1;function d(){return f?n:u?a:a.filter(function(t){return"J"!==t.n})}var g=null;function m(t){var n=t||s(d()),a="";[["MAE",n.mae,150,"euros"],["MSE",n.mse,2e4,"euros²"],["RMSE",n.rmse,150,"euros"],["R²",n.r2,1,"vs the lazy model"]].forEach(function(t,e){var n=70+205*e,r=t[1],i="R²"===t[0]?Math.max(0,Math.min(1,r)):Math.min(1,r/t[2]);a+=b(n,44,t[0],13,"lb"),a+=b(n,92,"MSE"===t[0]?v(r).toLocaleString():r.toFixed("R²"===t[0]?2:1),26,"wd"),a+='<rect x="'+n+'" y="112" width="170" height="12" fill="var(--v19)"/>',a+='<rect x="'+n+'" y="112" width="'+v(170*i)+'" height="12" fill="'+("R²"===t[0]&&r<0?"var(--v20)":"var(--v0)")+'"/>',"R²"===t[0]&&r<0?a+=b(n,146,"below zero: lost to it",13,"lb"):a+=b(n,146,t[3],13,"lb")});var l=E(70,180,780,110);a+=y(l.x0,l.y0+l.h,l.x0+l.w,l.y0+l.h),a+=M(l,r,i),d().forEach(function(t){a+=S(l,t,r,i,Math.abs(c(t))>100?"huge":"small")}),d().forEach(function(t){a+=w(l,t,!1)}),a+=b(70,300,f?"the six training laptops":u?"all four held-back laptops":"three held-back laptops, J removed",13,"lb"),e.innerHTML=a,g=n,o.innerHTML="<b>"+n.n+"</b> laptops scored"}function x(t){var e=g||s(d()),n={mae:p(e.mae,t.mae),mse:p(e.mse,t.mse),rmse:p(e.rmse,t.rmse),r2:p(e.r2,t.r2)};h(function(e){m({mae:n.mae(e),mse:n.mse(e),rmse:n.rmse(e),r2:n.r2(e),n:t.n})},1500,function(){m(t)})}l.addEventListener("click",function(){u=!u,f=!1,l.textContent=u?"laptop J is in the test set":"laptop J removed",l.classList.toggle("on",u),l.classList.toggle("off",!u),t("f8Train").classList.remove("on"),x(s(d()))}),t("f8Train").addEventListener("click",function(){f=!f,this.classList.toggle("on",f),x(s(d()))}),m()}(),function(){var e=t("f9"),n=t("f9Read"),r=!1;function i(){var t="",i=58;(r?["laptop","age","ram","batt","screen_ok","price"]:["laptop","age","ram","batt","price"]).forEach(function(e,n){t+=b(70+130*n,32,e,13,4===n&&r?"vl":"lb")}),a.forEach(function(e){(r?[e.n,e.age,e.ram,e.bat,e.crack?"no":"yes",e.p]:[e.n,e.age,e.ram,e.bat,e.p]).forEach(function(n,a){t+=b(70+130*a,i,String(n),15,e.crack&&(r&&4===a||0===a)?"vl":"lb")}),e.crack&&(t+='<rect x="64" y="'+(i-17)+'" width="760" height="26" fill="var(--v20)" opacity=".10"/>'),i+=34}),t+=b(70,i+30,r?"with the column, J is an ordinary laptop with a cracked screen":"without it, J is an unexplained 267 euro mistake",15,"vl"),t+=b(70,i+62,r?"the rule can now price cracked screens separately, and the residual goes away":"no model built on these five columns can ever recover the reason",13,"lb"),e.innerHTML=t,n.textContent=r?"6 columns":"5 columns"}document.querySelectorAll("[data-f9]").forEach(function(t){t.addEventListener("click",function(){r="6"===t.getAttribute("data-f9"),document.querySelectorAll("[data-f9]").forEach(function(e){e.classList.toggle("on",e===t)}),i()})}),i()}(),window.__anim={settle:function(){for(;u.length;)clearTimeout(u[0].guard),g(u[0])},live:function(){return u.length},REDUCE:l},document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),n=t.closest("section");function a(a){t.classList.toggle("hot",a),n.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",a)}),n.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",a)})}t.addEventListener("mouseenter",function(){a(!0)}),t.addEventListener("mouseleave",function(){a(!1)}),t.addEventListener("click",function(){a(!t.classList.contains("hot"))})});var k,A,T=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),T.unobserve(t.target))})},{threshold:.06,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(t){T.observe(t)}),k=t("pf"),A=2*Math.PI*22,k.style.strokeDasharray=A,k.style.strokeDashoffset=A,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);k.style.strokeDashoffset=A*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0}),function(){var e=t("weeds"),n=t("weedsHint");function a(){var t=e.hidden;e.hidden=!t,n.setAttribute("aria-expanded",String(t)),n.innerHTML=t?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",t&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,n=(e.tagName||"").toLowerCase();"input"===n||"textarea"===n||e.isContentEditable||(t.preventDefault(),a())}}),n.addEventListener("click",a)}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>
