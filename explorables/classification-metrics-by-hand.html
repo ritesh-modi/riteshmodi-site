@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One slider, three different models, one accuracy</title>
+<meta name="description" content="Probability, threshold, confusion matrix, accuracy, precision, recall, F1, TPR, FPR and ROC worked by hand on fifteen emails, where one slider changes every answer.">
+<link rel="canonical" href="https://www.loopingly.com/explorables/classification-metrics-by-hand.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#F1EDEF;--v19:#E4DEE2;--v10:#1D161B;--v12:#463B42;--v11:#6E6069;--v21:#D3C9CE;--v0:#6E3A5F;--v16:#1C151A;--v17:#EDE5EA;--v20:#A93C4E;--v24:#8A5F18;--v22:#3E7C6A;--v13:680px;--v25:1080px;--v15:26px;--v2:"Frank Ruhl Libre",Georgia,serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"JetBrains Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:32px;--v4:46px;--v6:88px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.wide-hero{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.04;letter-spacing:-.022em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 24px;max-width:16em}h3{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.16;letter-spacing:-.012em;margin:0 0 14px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px}a{color:var(--v0)}.lede{font-size:clamp(20px,2.2vw,24px);line-height:1.46;color:var(--v12);max-width:27em}.lede-meta{font-family:var(--v14);font-size:var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v11);margin:24px 0 0}header{padding:clamp(56px,8vw,104px) 0 clamp(36px,5vw,64px)}h1{font-size:clamp(40px,7.4vw,88px);max-width:12em}.wide-hero .lede{margin:30px 0 0}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:5px;margin:32px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v21);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-lab{font-family:var(--v14);font-size:var(--v7);letter-spacing:.1em;text-transform:uppercase;color:var(--v11)}.fig-read{font-family:var(--v14);font-size:var(--v7);letter-spacing:.05em;color:var(--v11);text-align:right}.fig-read b{color:var(--v0);font-weight:500}.fig-body{padding:28px 28px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-ctl label{font-family:var(--v14);font-size:var(--v7);color:var(--v11);white-space:nowrap}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.66;color:var(--v11);padding:13px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-slide{flex:1;min-width:170px;display:flex;align-items:center;gap:10px}.fig svg{display:block;width:100%;height:auto;touch-action:none}@media(max-width:760px){.fig-body{padding:20px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:580px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 5px 5px 0;padding:22px 26px;margin:30px 0;line-height:1.6}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:10px}.intu p{margin:0}.note{background:var(--v19);border-radius:4px;padding:20px 24px;margin:28px 0 0;font-size:var(--v9);line-height:1.7;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note-hint{background:none;text-align:center;color:var(--v11);border:0;width:100%;font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:38px 0;margin:0}.note-hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note-hint:hover,.note-hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.26;letter-spacing:-.014em;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:40px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:background var(--v23),color var(--v23),border-color var(--v23)}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}.chip.off{border-color:var(--v20);color:var(--v20)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:5px;padding:24px 26px;margin:28px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:2;overflow-x:auto}.panel b{color:#D9A6C4;font-weight:500}.panel i{color:#8B948F;font-style:normal}.panel u{text-decoration:none;color:#E0A08C}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:18px 0}.panel.weeds summary{font-family:var(--v2);font-weight:500;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:14px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.3;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.44;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly{grid-template-columns:1fr;gap:0}.wide.sg{order:-1;width:100%;height:44vh;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;margin:24px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.fig.dimmed [data-part]:not(.hot){opacity:.22;transition:opacity .2s}.stk{stroke:var(--v20);stroke-width:2.5;stroke-linecap:round}.stk.small{stroke:var(--v11);stroke-width:2}.stk.huge{stroke:var(--v20);stroke-width:4}.pt{fill:var(--v10)}.pt.test{fill:var(--v0)}.pt.sel{stroke:var(--v10);stroke-width:3}.ln{stroke:var(--v0);stroke-width:2.5;fill:none}.ln.mean{stroke:var(--v11);stroke-width:2;stroke-dasharray:6 5}.sq{fill:var(--v20);fill-opacity:.16;stroke:var(--v20);stroke-width:1}.ax{stroke:var(--v21);stroke-width:1.5}.lb{font-family:var(--v14);fill:var(--v11);letter-spacing:.02em}.vl{font-family:var(--v14);fill:var(--v10)}.wd{font-family:var(--v2);font-weight:500;fill:var(--v10);letter-spacing:-.01em}.tgt{fill:rgba(0,0,0,0);cursor:pointer}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}footer{padding:64px 0 84px;color:var(--v11);font-size:var(--v9);line-height:1.8}footer a{color:var(--v12)}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}</style></style>
+</head>
+<body>
+<div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
+  <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
+</svg><span id="pt">·</span></div>
+<header class="wide-hero">
+  <h1>One slider, three different models, one accuracy</h1>
+  <p class="lede">A classifier does not hand you a verdict. It hands you a probability, and somebody has to decide where to cut. Move that cut and the same model catches every spam, or catches one third of it, while accuracy sits at 0.87 the whole time and tells you nothing.</p>
+  <p class="lede-meta">15 emails &middot; 3 of them spam &middot; one threshold you choose</p>
+  <div class="fig" id="figH">
+    <div class="fig-head"><span class="fig-lab">every email, sorted by how suspicious the model finds it</span><span class="fig-read" id="hRead">drag the line</span></div>
+    <div class="fig-body"><svg id="hSvg" viewBox="0 0 900 260" role="img" aria-label="Fifteen emails on a probability scale with a movable threshold"></svg></div>
+    <div class="fig-ctl">
+      <span class="fig-slide"><label for="hT">0.00</label><input type="range" id="hT" min="1" max="100" value="50" aria-label="threshold"><label for="hT">1.00</label></span>
+      <span class="fig-read" id="hSub">everything right of the line gets flagged</span>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The model never says spam. It says 0.72.</h2>
+    <p>Email B arrives. Four links, 58 percent of the subject line in capitals, sender not in your address book. You want to know one thing: is it spam?</p>
+    <p>The model will not tell you. What it produces is a <span class="ref" data-ref="prob">probability</span>: 0.72. Not a decision, a degree of suspicion. Every classifier you have used, including the one filtering your inbox right now, works this way, and the label you eventually see was manufactured afterwards by comparing that number to a cut-off somebody chose.</p>
+    <p>Click any email below to see what the model actually produced for it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span class="fig-lab">figure 1 &middot; what the model hands you</span><span class="fig-read" id="f1Read">click an email</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 480" role="img" aria-label="The fifteen emails with their features and the probability the model assigns"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f1="all">all fifteen</button>
+        <button class="chip" data-f1="spam">the 3 that really are spam</button>
+        <button class="chip" data-f1="real">the 12 real ones</button>
+      </div>
+      <div class="fig-cap"><b>Click a row.</b> The truth column is what actually happened, and the model never sees it. It is only there so you can mark the homework.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A smoke alarm that reported "0.72 of the way to a fire" instead of screaming. <b>Useless as a thing to hang in a kitchen, and far more honest.</b> Somebody still has to decide how much smoke is enough to wake the house, and that decision is not the alarm's to make.</p></div>
+    <p>Three of these fifteen are genuinely spam. The model has never been told which, and its job was only to sort them by suspicion. It has done that rather well: the three real spam sit at 0.91, 0.72 and 0.34.</p>
+    <p>That 0.34 is going to cause trouble.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A threshold is a line you choose, not a fact you discover</h2>
+    <p>To turn 0.72 into an action you need a rule: flag anything at or above some number. That number is the <span class="ref" data-ref="thr">threshold</span>, and nothing in the data tells you what it should be.</p>
+    <p>0.5 feels natural because it sounds like "more likely than not". It is a convention, not a law, and on this inbox it is not even the best choice.</p>
+    <p>Drag the line and watch the labels flip. Notice that the probabilities never move. Only the verdicts do.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span class="fig-lab">figure 2 &middot; the same scores, different verdicts</span><span class="fig-read" id="f2Read">threshold 0.50</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 300" role="img" aria-label="Emails flipping between flagged and allowed as the threshold moves"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f2T">flag more</label><input type="range" id="f2T" min="1" max="100" value="50" aria-label="threshold"><label for="f2T">flag less</label></span>
+        <button class="chip" data-f2t="30">0.30</button><button class="chip on" data-f2t="50">0.50</button><button class="chip" data-f2t="80">0.80</button>
+      </div>
+      <div class="fig-cap"><b>Drag it.</b> At 0.30 you flag five emails. At 0.80 you flag one. Same model, same fifteen scores, two different products.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Airport security deciding how loudly the metal detector has to beep before they pull someone aside. <b>Turn the dial up and queues move but knives get through. Turn it down and nobody gets through but everybody is searched.</b> The detector is unchanged; the policy is the whole argument.</p></div>
+    <p>So a single model is really a family of models, one per threshold. To compare them you have to count what each one gets right and wrong, and there are exactly four ways that can go.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Four things can happen to one email, and only two of them are fine</h2>
+    <p>Take email D. The model scored it 0.66 and it is a perfectly real email from a colleague. Set the threshold at 0.50 and watch what that combination produces.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span class="fig-lab">figure 3 &middot; the four outcomes</span><span class="fig-read" id="sc1Read">email D</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 560 440" role="img" aria-label="One email crossed with the truth to give one of four outcomes"></svg></div>
+        <div class="fig-cap">Each step changes the drawing. <b>Click a step to jump to it.</b></div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp on" data-step="0"><h3>What the model said</h3><p>0.66, which is above the line at 0.50, so the filter <b>flags it</b>. That is the prediction, and it is all the filter knows.</p></div>
+      <div class="col stp" data-step="1"><h3>What was actually true</h3><p>Email D is <b>real</b>. It is your colleague asking about Thursday. The model has never seen this column and never will.</p></div>
+      <div class="col stp" data-step="2"><h3>Cross the two and you get a name</h3><p>Predicted spam, actually real. That is a <b>false positive</b>: a false alarm. Your colleague's message is now in the junk folder and you will find it in a week.</p></div>
+      <div class="col stp" data-step="3"><h3>The opposite mistake has its own name</h3><p>Email C scored 0.34 and really is spam. Below the line, so it is allowed through: a <b>false negative</b>. Spam in your inbox. Annoying rather than damaging, which is exactly the asymmetry that decides your threshold.</p></div>
+      <div class="col stp" data-step="4"><h3>And the two ways to be right</h3><p><b>True positive</b>: flagged, and it really was spam. <b>True negative</b>: allowed, and it really was real. Every one of the fifteen emails lands in exactly one of these four boxes, and every metric on this page is arithmetic on those four counts.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A jury. Convicting the guilty and acquitting the innocent are both correct. <b>Convicting the innocent and acquitting the guilty are both errors, and no legal system on earth treats them as equally bad.</b> Which mistake you would rather make is a value judgement that arithmetic cannot settle for you.</p></div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The confusion matrix is those four counts in a box</h2>
+    <p>Sort all fifteen emails into the four outcomes and write the totals in a two by two grid. That grid is the confusion matrix, and despite the name it is the least confusing object in machine learning: it is a tally.</p>
+    <p>Every single metric that follows is built from these four numbers and nothing else. Click any cell to see which emails are in it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span class="fig-lab">figure 4 &middot; the tally, at threshold 0.50</span><span class="fig-read" id="f4Read">click a cell</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 340" role="img" aria-label="A two by two confusion matrix with the emails in each cell"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f4T">threshold</label><input type="range" id="f4T" min="1" max="100" value="50" aria-label="threshold"><label for="f4T" id="f4Tv">0.50</label></span>
+      </div>
+      <div class="fig-cap"><b>Click a cell, then move the threshold.</b> Watch emails migrate between cells. The four counts always add to fifteen, whatever you do.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">at threshold 0.50<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>actually spam</i> &nbsp;&nbsp;<i>actually real</i><br>
+<i>flagged</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TP <b>2</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FP <u>1</u><br>
+<i>allowed</i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FN <u>1</u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TN <b>11</b><br><br>
+<i>2 + 1 + 1 + 11 = 15 emails</i></div>
+    <div class="intu"><i>picture it</i><p>A lost property office with four shelves: returned to the right owner, returned to the wrong owner, still on the shelf although someone is looking for it, and still on the shelf because nobody wants it. <b>You cannot judge the office without counting all four shelves</b>, and most people only ever look at the first.</p></div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Accuracy is the first number you see and the easiest to fool</h2>
+    <p>Accuracy is the fraction you got right. Add the diagonal, divide by everything.</p>
+    <div class="panel">accuracy = <b>(TP + TN)</b> / <b>(TP + FP + FN + TN)</b><br><br>
+= ( 2 + 11 ) / 15<br>
+= <b>13</b> / 15 = <b>0.87</b></div>
+    <p>Eighty seven percent. That sounds like a working spam filter. Now press the button below, which replaces the model with a rule so stupid it does not look at the email at all: <b>never flag anything.</b></p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span class="fig-lab">figure 5 &middot; accuracy against a rule that does nothing</span><span class="fig-read" id="f5Read">the model at 0.50</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 300" role="img" aria-label="The model's accuracy compared with a rule that never flags anything"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f5="model">the model at 0.50</button>
+        <button class="chip" data-f5="none">never flag anything</button>
+        <button class="chip" data-f5="all">flag everything</button>
+      </div>
+      <div class="fig-cap"><b>Compare the three.</b> Doing nothing scores 0.80 and catches no spam whatsoever. That gap, 0.87 against 0.80, is the entire value the model adds by this measure.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Twelve of the fifteen emails are real, so a rule that flags nothing is right twelve times out of fifteen: <b>0.80</b>. It has never caught a single piece of spam and never will, and it beats plenty of real models on accuracy alone.</p>
+    <div class="intu"><i>picture it</i><p>A doctor who tells every patient they are healthy. In a room where 99 people in 100 are healthy, <b>that doctor is 99 percent accurate and will miss every single case of the disease.</b> Accuracy rewards them for the crowd, not for the job.</p></div>
+    <p>The number that matters here is the <b>base rate</b>: how common the thing you are hunting actually is. When 20 percent of your emails are spam, 0.80 is the floor, not an achievement. When 1 percent are, the floor is 0.99, and accuracy has stopped carrying information at all.</p>
+    <div class="pull">Always read accuracy next to the base rate. On its own it is a number about your data, not about your model.</div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One slider, three different models, one accuracy</h2>
+    <p>This is the figure the whole page exists for. The slider is the threshold. The matrix refills as emails migrate between cells, and all four metrics recompute underneath.</p>
+    <p>Stop at <b>0.30</b>, then <b>0.50</b>, then <b>0.80</b>. Accuracy reads 0.87 at all three. Everything else is different.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span class="fig-lab">figure 6 &middot; the threshold, live</span><span class="fig-read" id="f6Read">threshold 0.50</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 420" role="img" aria-label="Emails flying between confusion matrix cells as the threshold moves, with metrics recomputing"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f6T">flag more</label><input type="range" id="f6T" min="1" max="100" value="50" aria-label="threshold"><label for="f6T" id="f6Tv">0.50</label></span>
+        <button class="chip" data-f6t="30">0.30</button><button class="chip on" data-f6t="50">0.50</button><button class="chip" data-f6t="80">0.80</button>
+      </div>
+      <div class="fig-cap"><b>Press 0.30, 0.50 and 0.80 in turn.</b> The emails fly to their new cells. Accuracy holds at 0.87 through all three while recall goes 1.00, 0.67, 0.33.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">threshold &nbsp;&nbsp;TP &nbsp;FP &nbsp;FN &nbsp;TN &nbsp;&nbsp;accuracy &nbsp;precision &nbsp;recall<br>
+&nbsp;&nbsp;&nbsp;<b>0.30</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3 &nbsp;&nbsp;2 &nbsp;&nbsp;0 &nbsp;10 &nbsp;&nbsp;&nbsp;&nbsp;<b>0.87</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.60 &nbsp;&nbsp;&nbsp;<b>1.00</b><br>
+&nbsp;&nbsp;&nbsp;<b>0.50</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 &nbsp;&nbsp;1 &nbsp;&nbsp;1 &nbsp;11 &nbsp;&nbsp;&nbsp;&nbsp;<b>0.87</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.67 &nbsp;&nbsp;&nbsp;<b>0.67</b><br>
+&nbsp;&nbsp;&nbsp;<b>0.80</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1 &nbsp;&nbsp;0 &nbsp;&nbsp;2 &nbsp;12 &nbsp;&nbsp;&nbsp;&nbsp;<b>0.87</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.00 &nbsp;&nbsp;&nbsp;<b>0.33</b><br><br>
+<i>same model, same fifteen emails, same accuracy, three products</i></div>
+    <div class="intu"><i>picture it</i><p>Three security guards with identical eyesight and different instructions. One waves everybody through, one stops anything that beeps, one strip-searches the nervous. <b>They will all report the same proportion of correct decisions and you would not hire them for the same job.</b></p></div>
+    <p>Accuracy cannot see the difference because it counts all four cells equally. The two numbers that can see it are the two that ignore a different cell each.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Precision and recall are two different fears</h2>
+    <p>Both are fractions of the true positives. They differ only in what they divide by, and that difference is the whole argument.</p>
+    <div class="panel">precision = <b>TP</b> / <b>(TP + FP)</b> &nbsp;&nbsp;<i>of everything I flagged, how much was really spam</i><br>
+= 2 / (2 + 1) = <b>0.67</b> &nbsp;&nbsp;<i>a third of my flags were false alarms</i><br><br>
+recall &nbsp;&nbsp;&nbsp;&nbsp;= <b>TP</b> / <b>(TP + FN)</b> &nbsp;&nbsp;<i>of all the spam there was, how much did I catch</i><br>
+= 2 / (2 + 1) = <b>0.67</b> &nbsp;&nbsp;<i>a third of the spam got through</i></div>
+    <p>They happen to be equal at 0.50 on this inbox, which is a coincidence of small numbers. Move the threshold and they pull apart immediately, always in opposite directions.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span class="fig-lab">figure 7 &middot; the two curves that cross</span><span class="fig-read" id="f7Read">threshold 0.50</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 340" role="img" aria-label="Precision and recall plotted against every threshold"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f7T">threshold</label><input type="range" id="f7T" min="1" max="100" value="50" aria-label="threshold"><label for="f7T" id="f7Tv">0.50</label></span>
+        <button class="chip" id="f7Best">where F1 peaks</button>
+      </div>
+      <div class="fig-cap"><b>Sweep the threshold.</b> Precision climbs as you get fussier; recall falls. You are not tuning quality, you are choosing which mistake to make.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Fishing with a net. <b>Precision is how much of your catch is fish rather than boots. Recall is how much of the river's fish you actually caught.</b> A finer net raises one and lowers the other, and no net does both.</p></div>
+    <p>Which one you care about is a question about consequences, not statistics. A spam filter that loses a job offer has failed worse than one that leaves you three adverts, so inbox filters run at high precision on purpose. A cancer screen makes the opposite call, because a missed tumour costs more than a second test.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>F1 is what you report when you are forced to pick one number</h2>
+    <p>You cannot maximise precision and recall together, but you can score their balance. F1 is their harmonic mean, which is a deliberately unforgiving average: it sits close to the smaller of the two, so it collapses whenever either one collapses.</p>
+    <div class="panel">F1 = <b>2</b> &times; (precision &times; recall) / (precision + recall)<br><br>
+<i>at 0.50</i> &nbsp;= 2 &times; (0.67 &times; 0.67) / (0.67 + 0.67) = <b>0.67</b><br>
+<i>at 0.80</i> &nbsp;= 2 &times; (1.00 &times; 0.33) / (1.00 + 0.33) = <b>0.50</b> &nbsp;<i>perfect precision cannot rescue it</i><br>
+<i>at 0.72</i> &nbsp;= 2 &times; (1.00 &times; 0.67) / (1.00 + 0.67) = <b>0.80</b> &nbsp;<i>the best this model can do</i><br><br>
+<i>a plain average of 1.00 and 0.33 would have said 0.67. The harmonic mean says 0.50.</i></div>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span class="fig-lab">figure 8 &middot; F1 across every threshold</span><span class="fig-read" id="f8Read">peak 0.80 at 0.72</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 320" role="img" aria-label="F1 plotted against threshold with its peak marked"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f8Play">sweep the threshold</button>
+        <button class="chip" id="f8Peak">jump to the peak</button>
+      </div>
+      <div class="fig-cap"><b>Press sweep.</b> The marker walks every threshold from 0 to 1 and F1 traces out underneath it. The peak is at 0.72, not at 0.50.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Grading a restaurant on its worst course. <b>An arithmetic mean lets a superb dessert hide a raw chicken; a harmonic mean does not.</b> That is exactly why F1 is preferred to a plain average of precision and recall.</p></div>
+    <p>F1 is a convenience, not a truth. It weights the two fears equally, and your business almost never does.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The ROC curve is every threshold at once</h2>
+    <p>Every metric so far judged one threshold. But the threshold is a policy you can change on a Tuesday, and the model underneath does not change with it. To judge the model rather than the policy, plot what happens at all of them.</p>
+    <div class="panel">TPR = <b>TP</b> / (TP + FN) &nbsp;&nbsp;<i>the recall, again, under a second name</i><br>
+FPR = <b>FP</b> / (FP + TN) &nbsp;&nbsp;<i>of the real emails, how many did I wrongly flag</i><br><br>
+<i>at 0.50</i> &nbsp;TPR = 2/3 = <b>0.67</b> &nbsp;&nbsp;FPR = 1/12 = <b>0.08</b></div>
+    <p>Plot FPR across and TPR up, once per threshold, and join the dots. Press sweep and watch the curve draw itself as the threshold falls.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span class="fig-lab">figure 9 &middot; the ROC curve, drawn by sweeping the threshold</span><span class="fig-read" id="f9Read">AUC 0.94</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 360" role="img" aria-label="The ROC curve traced as the threshold sweeps, with the area under it"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f9Play">sweep the threshold</button>
+        <button class="chip" id="f9Fill">shade the area</button>
+        <span class="fig-slide"><label for="f9T">threshold</label><input type="range" id="f9T" min="1" max="100" value="50" aria-label="threshold"><label for="f9T" id="f9Tv">0.50</label></span>
+      </div>
+      <div class="fig-cap"><b>Sweep it.</b> The dot walks the curve as the threshold falls from 1 to 0. Up and left is good. The diagonal is a coin flip.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The area under that curve is <b>0.944</b>, and it has a meaning far more concrete than "area":</p>
+    <div class="panel">take one real spam and one real email, at random<br>
+the model scores the spam higher <b>34 times out of 36</b><br>
+34 / 36 = <b>0.944</b> = <u>the AUC</u><br><br>
+<i>0.5 means it ranks no better than a coin. 1.0 means it never gets a pair wrong.</i></div>
+    <div class="intu"><i>picture it</i><p>Not "how many did it get right", but <b>"does it put the guilty higher up the list than the innocent"</b>. A model can rank beautifully and still be useless until someone picks a cut-off, which is why AUC and accuracy so often disagree.</p></div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>What the numbers have to clear before anyone should believe them</h2>
+    <p>There is no universal threshold for "good", but there are floors, and most reported results quietly fail one of them. Compare any classifier against these four before believing it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span class="fig-lab">figure 10 &middot; this model against the floors it has to clear</span><span class="fig-read" id="f10Read">at threshold 0.50</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 340" role="img" aria-label="The model compared against the majority baseline, a coin flip and a perfect classifier"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f10="acc">accuracy vs base rate</button>
+        <button class="chip" data-f10="auc">AUC vs a coin flip</button>
+        <button class="chip" data-f10="f1">F1 vs always-yes</button>
+      </div>
+      <div class="fig-cap"><b>Switch the comparison.</b> Each one answers a different version of "compared to what", and a model has to survive all three.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p><b>Accuracy above the base rate.</b> Here the base rate is 0.80, so 0.87 is a gain of seven points, not a triumph. If accuracy is not comfortably above the majority-class rate, the model has learned nothing.</p>
+    <p><b>AUC well above 0.5.</b> 0.5 is a coin flip. 0.944 says the ranking is genuinely good, which is a different claim from "the decisions are good".</p>
+    <p><b>Precision and recall quoted together, at a stated threshold.</b> Either alone is meaningless, and a metric without its threshold is not a result.</p>
+    <p><b>The confusion matrix printed in full.</b> Four numbers, not one. Everything anybody can compute is in there, and nothing can be hidden by an average.</p>
+    <div class="intu"><i>picture it</i><p>Nobody accepts "our surgeon has a 90 percent success rate" without asking what the operations were. <b>The confusion matrix is the case list, and every summary metric is a press release written from it.</b></p></div>
+    <p>The honest report for this model is one sentence: at a threshold of 0.72 it catches two of the three spam with no false alarms, its ranking is right 94 percent of the time, and the third spam looks exactly like an ordinary email to it.</p>
+  </div>
+</section>
+
+<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--v21)">
+  <div class="col">
+    <h3>The model was never the decision</h3>
+    <p>It produced fifteen numbers between 0 and 1 and stopped. Everything after that, the flag, the folder, the four counts, the seven metrics and the argument about which one to put in the deck, came from a threshold that a person chose and could change this afternoon.</p>
+  </div>
+</div>
+
+<button class="note note-hint" id="weedsHint" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</button>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h3>Into the weeds</h3>
+    <details><summary>Why precision is undefined when you flag nothing</summary>
+      <p>Precision is TP divided by TP plus FP. Flag nothing and both are zero, so the fraction is 0/0 and simply has no value. Libraries usually report 0 and warn you. It is worth knowing because a suspiciously perfect precision often means almost nothing was flagged at all.</p></details>
+    <details><summary>Precision-recall curves, and when to prefer them to ROC</summary>
+      <p>ROC uses FPR, whose denominator is the number of true negatives. When negatives vastly outnumber positives, a large absolute number of false alarms still divides down to a tiny FPR, and the ROC curve looks flattering. A precision-recall curve has no such denominator and stays honest under heavy imbalance, which is why fraud and disease work usually quotes it.</p></details>
+    <details><summary>Fifteen emails is not an evaluation</summary>
+      <p>With three positives, recall can only ever be 0, 0.33, 0.67 or 1. One email changing its mind moves it by 33 points. Everything here is arithmetically exact and statistically meaningless: the point is the machinery, not the verdict. Real evaluation needs enough positives that the metrics have somewhere to move.</p></details>
+    <details><summary>Where the probabilities come from, and whether to trust them</summary>
+      <p>This page treats the scores as given. In practice they come from a fitted model, and many models produce numbers that rank well without being genuine probabilities: a score of 0.9 does not necessarily mean nine times in ten. Checking that is called calibration, and it is a separate exercise from everything here.</p></details>
+    <details><summary>Threshold as a business decision</summary>
+      <p>If a false negative costs you 1 and a false positive costs you 10, the threshold that minimises expected cost is not the one that maximises F1. Write both costs down, sweep the threshold, and pick the minimum of the total. That calculation is usually more defensible than any named metric.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p>Fifteen emails, invented for this page, with three genuine spam and probabilities chosen so the threshold has something to argue about. Every count, metric and curve here is computed in your browser from that table. Nothing is stored as text.</p>
+  </div>
+</footer>
+
+<script>!function(){"use strict";var t=function(t){return document.getElementById(t)},e=[{n:"A",links:5,caps:74,truth:1,p:.91},{n:"B",links:4,caps:58,truth:1,p:.72},{n:"C",links:2,caps:41,truth:1,p:.34},{n:"D",links:3,caps:46,truth:0,p:.66},{n:"E",links:2,caps:37,truth:0,p:.48},{n:"F",links:1,caps:29,truth:0,p:.29},{n:"G",links:1,caps:24,truth:0,p:.21},{n:"H",links:0,caps:17,truth:0,p:.16},{n:"I",links:1,caps:14,truth:0,p:.12},{n:"J",links:0,caps:11,truth:0,p:.1},{n:"K",links:0,caps:9,truth:0,p:.08},{n:"L",links:1,caps:13,truth:0,p:.07},{n:"M",links:0,caps:6,truth:0,p:.05},{n:"N",links:0,caps:4,truth:0,p:.04},{n:"O",links:0,caps:3,truth:0,p:.02}],n=e.filter(function(t){return t.truth}).length;function r(t,e){return t.p>=e?t.truth?"TP":"FP":t.truth?"FN":"TN"}function a(t){var n={TP:0,FP:0,FN:0,TN:0};return e.forEach(function(e){n[r(e,t)]++}),n}function l(t){var n=a(t),r=e.length,l=n.TP+n.FP?n.TP/(n.TP+n.FP):null,i=n.TP+n.FN?n.TP/(n.TP+n.FN):0,c=l&&l+i?2*l*i/(l+i):null===l?null:0;return{c:n,acc:(n.TP+n.TN)/r,pre:l,rec:i,f1:c,tpr:i,fpr:n.FP+n.TN?n.FP/(n.FP+n.TN):0}}var i,c,o=(e.length-n)/e.length,f=(i=0,c=0,e.forEach(function(t){t.truth&&e.forEach(function(e){e.truth||(i++,t.p>e.p?c++:t.p===e.p&&(c+=.5))})}),c/i),u=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches,d=[],s=null;function h(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}function v(t){var e=d.indexOf(t);e<0||(d.splice(e,1),t.apply(1),t.done&&t.done())}function p(t,e,n){if(e=e||1400,t(0),u)return t(1),n&&n(),null;var r={apply:t,t0:performance.now(),ms:e,done:n};return d.push(r),r.guard=setTimeout(function(){v(r)},e+60),s||(s=requestAnimationFrame(g)),r}function g(t){for(var e=d.length-1;e>=0;e--){var n=d[e],r=Math.min(1,(t-n.t0)/n.ms);n.apply(h(r)),t-n.t0>=n.ms&&(clearTimeout(n.guard),v(n))}s=d.length?requestAnimationFrame(g):null}function m(){for(;d.length;)clearTimeout(d[0].guard),v(d[0])}function b(t,e){return function(n){return t+(e-t)*n}}function x(t){return Math.round(t)}function y(t,e,n,r,a,l){return'<text class="'+(a||"lb")+'" x="'+x(t)+'" y="'+x(e)+'" font-size="'+r+'"'+(l?' text-anchor="'+l+'"':"")+">"+function(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}(n)+"</text>"}function E(t,e,n,r,a){return'<line class="'+(a||"ax")+'" x1="'+x(t)+'" y1="'+x(e)+'" x2="'+x(n)+'" y2="'+x(r)+'"/>'}function F(t){return null===t?"n/a":t.toFixed(2)}var T={TP:"var(--v22)",FP:"var(--v20)",FN:"var(--v20)",TN:"var(--v11)"};function L(t,n,a,l,i){var c=E(t,a,t+n,a);return[0,.25,.5,.75,1].forEach(function(e){c+=E(t+e*n,a-5,t+e*n,a+5),c+=y(t+e*n,a+24,e.toFixed(2),13,"lb","middle")}),e.forEach(function(e){var o=t+e.p*n,f=r(e,l);c+='<circle class="pt" cx="'+x(o)+'" cy="'+x(a-18)+'" r="'+(i===e.n?9:7)+'" fill="'+T[f]+'"/>',i===e.n&&(c+=y(o,a-38,e.n,13,"vl","middle")),c+='<circle class="tgt" cx="'+x(o)+'" cy="'+x(a-18)+'" r="16" data-em="'+e.n+'"/>'}),c+='<line class="ln" x1="'+x(t+l*n)+'" y1="'+x(a-58)+'" x2="'+x(t+l*n)+'" y2="'+x(a+10)+'" stroke-dasharray="5 4"/>',c+=y(t+l*n,a-66,"threshold "+l.toFixed(2),13,"vl","middle")}!function(){var e=t("hSvg"),r=t("hRead"),a=t("hT"),i=null;function c(){var t=+a.value/100,c=l(t),o=L(70,760,150,t,i);o+=y(70,232,"flagged "+(c.c.TP+c.c.FP)+"  ·  caught "+c.c.TP+" of "+n+" spam  ·  "+c.c.FP+" false alarms",13,"lb"),e.innerHTML=o,r.innerHTML="threshold <b>"+t.toFixed(2)+"</b> · recall <b>"+F(c.rec)+"</b> · precision <b>"+F(c.pre)+"</b>"}a.addEventListener("input",c),e.addEventListener("click",function(t){var e=t.target.closest("[data-em]");e&&(i=e.getAttribute("data-em"),c())}),c()}(),function(){var n=t("f1"),r=t("f1Read"),a="all",l=null;function i(){var t="",r=52;["email","links","caps %","truth","probability"].forEach(function(e,n){t+=y(70+150*n,30,e,13)}),e.forEach(function(e){if(("spam"!==a||e.truth)&&("real"!==a||!e.truth)){var n=l===e.n;t+='<rect class="tgt" x="64" y="'+(r-16)+'" width="780" height="26" data-em="'+e.n+'"/>',n&&(t+='<rect x="64" y="'+(r-16)+'" width="780" height="26" fill="var(--v0)" opacity=".12"/>'),t+=y(70,r,e.n,15,"vl"),t+=y(220,r,String(e.links),15,"lb"),t+=y(370,r,String(e.caps),15,"lb"),t+=y(520,r,e.truth?"spam":"real",15,e.truth?"vl":"lb"),t+='<rect x="670" y="'+(r-11)+'" width="'+x(150*e.p)+'" height="14" fill="'+(e.truth?"var(--v0)":"var(--v11)")+'" fill-opacity=".55"/>',t+=y(836,r,e.p.toFixed(2),15,"vl","end"),r+=28}}),n.innerHTML=t}n.addEventListener("click",function(t){var n=t.target.closest("[data-em]");if(n){l=n.getAttribute("data-em");var a=e.filter(function(t){return t.n===l})[0];r.innerHTML="<b>"+a.n+"</b> · "+a.links+" links · "+a.caps+"% caps · truly "+(a.truth?"spam":"real")+" · model says <b>"+a.p.toFixed(2)+"</b>",i()}}),document.querySelectorAll("[data-f1]").forEach(function(t){t.addEventListener("click",function(){a=t.getAttribute("data-f1"),document.querySelectorAll("[data-f1]").forEach(function(e){e.classList.toggle("on",e===t)}),i()})}),i()}(),function(){var n=t("f2"),r=t("f2Read"),a=t("f2T");function l(){var t=+a.value/100,l=L(70,760,190,t,null),i=0;e.forEach(function(e){e.p>=t&&i++}),l+=y(70,254,i+" of 15 flagged",15,"vl"),l+=y(70,282,"the probabilities never moved; only the verdicts did",13,"lb"),n.innerHTML=l,r.innerHTML="threshold <b>"+t.toFixed(2)+"</b>"}a.addEventListener("input",l),document.querySelectorAll("[data-f2t]").forEach(function(t){t.addEventListener("click",function(){a.value=t.getAttribute("data-f2t"),document.querySelectorAll("[data-f2t]").forEach(function(e){e.classList.toggle("on",e===t)}),l()})}),l()}(),function(){var e=t("sc1fig"),n=t("sc1Read");function r(t,e,n,r,a,l,i,c){return'<g data-gel="'+c+'"><rect x="'+t+'" y="'+e+'" width="'+n+'" height="'+r+'" rx="5" fill="'+i+'" fill-opacity=".16" stroke="'+i+'" stroke-width="1.5"/>'+y(t+n/2,e+30,a,15,"vl","middle")+y(t+n/2,e+56,l,13,"lb","middle")+"</g>"}function a(t){var a="";a+='<g data-gel="pred">'+y(40,44,"the model said",13)+y(40,80,"0.66  →  above 0.50  →  FLAG",20,"wd")+"</g>",a+='<g data-gel="truth">'+y(40,140,"what was actually true",13)+y(40,176,"a real email from a colleague",20,"wd")+"</g>",a+=r(40,220,230,90,"false positive","flagged, but real","var(--v20)","fp"),a+=r(290,220,230,90,"false negative","allowed, but spam","var(--v20)","fn"),a+=r(40,330,230,90,"true positive","flagged, and spam","var(--v22)","tp"),a+=r(290,330,230,90,"true negative","allowed, and real","var(--v11)","tn"),e.innerHTML=a;var l=[["pred"],["pred","truth"],["pred","truth","fp"],["pred","truth","fp","fn"],["pred","truth","fp","fn","tp","tn"]][t]||["pred"];e.querySelectorAll("[data-gel]").forEach(function(t){t.classList.toggle("show",l.indexOf(t.getAttribute("data-gel"))>=0)}),n.textContent=["email D","the truth","false positive","false negative","all four"][t]||"email D"}var l=[].slice.call(document.querySelectorAll("#sc1 .stp"));function i(t){l.forEach(function(e){e.classList.toggle("on",e===t)}),a(+t.getAttribute("data-step"))}var c=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&i(t.target)})},{rootMargin:"-45% 0px -45% 0px",threshold:0});l.forEach(function(t){c.observe(t),t.addEventListener("click",function(){i(t)})}),a(0)}();var k=110,w=70,A=300,M=110;function P(t,e,n){var r=a(t),l="";return l+=y(k+A/2,w-40,"actually spam",13,"lb","middle"),l+=y(k+1.5*A,w-40,"actually real",13,"lb","middle"),l+=y(k-14,w+M/2,"flagged",13,"lb","end"),l+=y(k-14,w+1.5*M,"allowed",13,"lb","end"),[["TP",0,0],["FP",1,0],["FN",0,1],["TN",1,1]].forEach(function(t){var n=t[0],a=k+t[1]*A,i=w+t[2]*M;l+='<rect x="'+a+'" y="'+i+'" width="'+A+'" height="'+M+'" rx="4" fill="'+T[n]+'" fill-opacity="'+(e===n?".28":".12")+'" stroke="'+T[n]+'" stroke-width="1.5"/>',l+=y(a+16,i+30,n,13,"lb"),l+=y(a+A/2,i+72,String(r[n]),26,"wd","middle"),l+='<rect class="tgt" x="'+a+'" y="'+i+'" width="'+A+'" height="'+M+'" data-cellk="'+n+'"/>'}),l}function H(t){var e,n=[];for(e=1;e<=100;e++){var r=e/100;n.push([r,t(l(r))])}return n}function N(t,e,n,r,a,l){var i="";return t.forEach(function(t,l){var c=t[1];null===c||isNaN(c)||(i+=(i?"L":"M")+x(e+t[0]*r)+" "+x(n+a-c*a)+" ")}),'<path class="'+(l||"ln")+'" d="'+i+'" fill="none"/>'}!function(){var n=t("f4"),l=t("f4Read"),i=t("f4T"),c=null;function o(){var o=+i.value/100,f=P(o,c);t("f4Tv").textContent=o.toFixed(2);var u=a(o);if(f+=y(110,320,u.TP+" + "+u.FP+" + "+u.FN+" + "+u.TN+" = "+e.length+" emails, always",13,"lb"),c){var d=e.filter(function(t){return r(t,o)===c}).map(function(t){return t.n});f+=y(730,120,c,20,"wd"),f+=y(730,152,d.join(" ")||"none",15,"vl"),f+=y(730,180,d.length+" email"+(1===d.length?"":"s"),13,"lb")}else f+=y(730,140,"click a cell",13,"lb");n.innerHTML=f,l.innerHTML="TP "+u.TP+" · FP "+u.FP+" · FN "+u.FN+" · TN "+u.TN}n.addEventListener("click",function(t){var e=t.target.closest("[data-cellk]");e&&(c=c===e.getAttribute("data-cellk")?null:e.getAttribute("data-cellk"),o())}),i.addEventListener("input",o),o()}(),function(){var r=t("f5"),a=t("f5Read"),i="model";function c(){var t=l("model"===i?.5:"none"===i?1.01:0),c="";[["this rule",t.acc,"var(--v0)"],["never flag anything",o,"var(--v11)"],["flag everything",n/e.length,"var(--v11)"]].forEach(function(t,e){var n=70+72*e;c+=y(70,n-10,t[0],13,"lb"),c+='<rect x="70" y="'+n+'" width="600" height="26" fill="var(--v19)"/>',c+='<rect x="70" y="'+n+'" width="'+x(600*t[1])+'" height="26" fill="'+t[2]+'"/>',c+=y(690,n+20,t[1].toFixed(2),20,"wd")}),c+='<line class="ln mean" x1="'+x(70+600*o)+'" y1="50" x2="'+x(70+600*o)+'" y2="270" stroke-dasharray="5 4"/>',c+=y(70+600*o+8,286,"the base rate: 0.80 for free",13,"lb"),c+=y(70,296,"spam caught: "+t.c.TP+" of "+n,13,"lb"),r.innerHTML=c,a.innerHTML="model"===i?"the model at 0.50 · accuracy <b>"+t.acc.toFixed(2)+"</b>, recall <b>"+F(t.rec)+"</b>":"none"===i?"never flag · accuracy <b>"+o.toFixed(2)+"</b>, recall <b>0.00</b>":"flag everything · accuracy <b>"+(n/e.length).toFixed(2)+"</b>, recall <b>1.00</b>"}document.querySelectorAll("[data-f5]").forEach(function(t){t.addEventListener("click",function(){i=t.getAttribute("data-f5"),document.querySelectorAll("[data-f5]").forEach(function(e){e.classList.toggle("on",e===t)}),c()})}),c()}(),function(){var n=t("f6"),a=t("f6Read"),i=t("f6T"),c=.5;function o(t){var e={TP:[0,0],FP:[1,0],FN:[0,1],TN:[1,1]}[t];return{x:k+e[0]*A+A/2,y:w+e[1]*M+M/2}}function f(t,e){var r=e||l(t);n.innerHTML=P(t,null)+function(t){var e="";return[["accuracy",t.acc],["precision",t.pre],["recall",t.rec],["F1",t.f1]].forEach(function(t,n){var r=70+205*n;e+=y(r,308,t[0],13,"lb"),e+=y(r,348,null===t[1]?"n/a":t[1].toFixed(2),26,"wd"),e+='<rect x="'+r+'" y="364" width="170" height="12" fill="var(--v19)"/>',e+='<rect x="'+r+'" y="364" width="'+x(170*(t[1]||0))+'" height="12" fill="var(--v0)"/>'}),e+=y(70,404,"accuracy holds near 0.87 across all three presets while recall goes 1.00, 0.67, 0.33",13,"lb")}(r)}function d(d){var s=c,h=l(s),v=l(d);c=d,i.value=Math.round(100*d),t("f6Tv").textContent=d.toFixed(2),a.innerHTML="threshold <b>"+d.toFixed(2)+"</b>";var g={acc:b(h.acc,v.acc),pre:b(null===h.pre?0:h.pre,null===v.pre?0:v.pre),rec:b(h.rec,v.rec),f1:b(h.f1||0,v.f1||0)};p(function(t){f(d,{c:v.c,acc:g.acc(t),pre:null===v.pre?null:g.pre(t),rec:g.rec(t),f1:null===v.f1?null:g.f1(t)})},1300,function(){f(d)}),function(t,a){var l=e.filter(function(e){return r(e,t)!==r(e,a)});if(l.length&&!u){f(a);var i=document.createElementNS("http://www.w3.org/2000/svg","g");n.appendChild(i),l.forEach(function(e){var n=o(r(e,t)),l=o(r(e,a)),c=document.createElementNS("http://www.w3.org/2000/svg","g");c.innerHTML='<circle r="13" fill="'+T[r(e,a)]+'"/><text y="5" text-anchor="middle" font-family="var(--v14)" font-size="13" fill="var(--v18)">'+e.n+"</text>",i.appendChild(c),p(function(t){c.setAttribute("transform","translate("+x(n.x+(l.x-n.x)*t)+","+x(n.y+(l.y-n.y)*t)+")")},1300,function(){c.remove()})}),p(function(){},1350,function(){i.remove()})}else f(a)}(s,d)}i.addEventListener("input",function(){var e=+this.value/100;c=e,t("f6Tv").textContent=e.toFixed(2),a.innerHTML="threshold <b>"+e.toFixed(2)+"</b>",f(e)}),document.querySelectorAll("[data-f6t]").forEach(function(t){t.addEventListener("click",function(){document.querySelectorAll("[data-f6t]").forEach(function(e){e.classList.toggle("on",e===t)}),d(+t.getAttribute("data-f6t")/100)})}),f(.5),window.__f6={go:d,settle:m}}(),function(){var e=t("f7"),n=t("f7Read"),r=t("f7T"),a=90,i=40,c=700,o=210,f=H(function(t){return t.pre}),u=H(function(t){return t.rec});function d(){var d=+r.value/100,s=l(d),h="";h+=E(a,250,790,250),h+=E(a,i,a,250),[0,.5,1].forEach(function(t){h+=y(80,250-t*o+4,t.toFixed(1),13,"lb","end"),h+=y(a+t*c,272,t.toFixed(1),13,"lb","middle")}),h+=y(440,294,"threshold",13,"lb","middle"),h+=N(f,a,i,c,o,"ln"),h+=N(u,a,i,c,o,"ln mean"),h+=y(798,58,"precision",13,"vl"),h+=y(798,82,"recall",13,"lb"),h+='<line class="ln" x1="'+x(a+d*c)+'" y1="'+'40" x2="'+x(a+d*c)+'" y2="250" stroke-dasharray="4 4"/>',h+='<circle class="pt" cx="'+x(a+d*c)+'" cy="'+x(250-(s.pre||0)*o)+'" r="7" fill="var(--v0)"/>',h+='<circle class="pt" cx="'+x(a+d*c)+'" cy="'+x(250-s.rec*o)+'" r="7" fill="var(--v11)"/>',h+=y(a,320,"precision "+F(s.pre)+"   ·   recall "+F(s.rec)+"   ·   F1 "+F(s.f1),15,"vl"),e.innerHTML=h,t("f7Tv").textContent=d.toFixed(2),n.innerHTML="threshold <b>"+d.toFixed(2)+"</b>"}r.addEventListener("input",d),t("f7Best").addEventListener("click",function(){for(var t=0,e=.5,n=1;n<=100;n++){var a=l(n/100).f1||0;a>=t&&(t=a,e=n/100)}r.value=Math.round(100*e),d()}),d()}(),function(){for(var e=t("f8"),n=t("f8Read"),r=.5,a=90,i=40,c=700,o=190,f=H(function(t){return t.f1}),u=0,d=.5,s=1;s<=100;s++){var h=l(s/100).f1||0;h>=u&&(u=h,d=s/100)}function v(){var t=l(r),s="";s+=E(a,230,790,230),s+=E(a,i,a,230),[0,.5,1].forEach(function(t){s+=y(80,230-t*o+4,t.toFixed(1),13,"lb","end"),s+=y(a+t*c,252,t.toFixed(1),13,"lb","middle")}),s+=y(440,274,"threshold",13,"lb","middle"),s+=N(f,a,i,c,o,"ln"),s+='<circle class="pt" cx="'+x(a+d*c)+'" cy="'+x(230-u*o)+'" r="8" fill="var(--v0)"/>',s+=y(a+d*c+14,230-u*o-8,"peak F1 "+u.toFixed(2)+" at "+d.toFixed(2),13,"vl"),s+='<circle class="pt" cx="'+x(a+r*c)+'" cy="'+x(230-(t.f1||0)*o)+'" r="6" fill="var(--v20)"/>',s+=y(a,300,"at "+r.toFixed(2)+":  F1 "+F(t.f1)+"   (precision "+F(t.pre)+", recall "+F(t.rec)+")",15,"vl"),e.innerHTML=s,n.innerHTML="peak <b>"+u.toFixed(2)+"</b> at "+d.toFixed(2)}t("f8Play").addEventListener("click",function(){p(function(t){r=.02+.97*t,v()},2600)}),t("f8Peak").addEventListener("click",function(){r=d,v()}),v()}(),function(){var n,r=t("f9"),a=t("f9Read"),i=t("f9T"),c=!1,o=.5,u=120,d=36,s=250,h=(n=[[0,0]],e.map(function(t){return t.p}).sort(function(t,e){return e-t}).forEach(function(t){var e=l(t);n.push([e.fpr,e.tpr])}),n.push([1,1]),n);function v(){var e=l(o),n="";n+=E(u,286,370,286),n+=E(u,d,u,286),[0,.5,1].forEach(function(t){n+=y(110,286-t*s+4,t.toFixed(1),13,"lb","end"),n+=y(u+t*s,308,t.toFixed(1),13,"lb","middle")}),n+=y(245,332,"false positive rate",13,"lb","middle"),n+=y(68,161,"TPR",13,"lb","middle"),n+='<line class="ln mean" x1="120" y1="286" x2="370" y2="36" stroke-dasharray="5 5"/>',n+=y(265,201,"a coin flip",13,"lb");var i="";h.forEach(function(t,e){i+=(e?"L":"M")+x(u+t[0]*s)+" "+x(286-t[1]*s)+" "}),c&&(n+='<path d="'+i+'L370 286 Z" fill="var(--v0)" fill-opacity=".14"/>'),n+='<path class="ln" d="'+i+'" fill="none"/>',h.forEach(function(t){n+='<circle class="pt" cx="'+x(u+t[0]*s)+'" cy="'+x(286-t[1]*s)+'" r="4" fill="var(--v11)"/>'}),n+='<circle class="pt" cx="'+x(u+e.fpr*s)+'" cy="'+x(286-e.tpr*s)+'" r="9" fill="var(--v0)"/>',n+=y(470,90,"AUC "+f.toFixed(3),26,"wd"),n+=y(470,124,"the model ranks a spam above a real email",13,"lb"),n+=y(470,146,"34 times out of 36",13,"lb"),n+=y(470,200,"at threshold "+o.toFixed(2),13,"lb"),n+=y(470,232,"TPR "+e.tpr.toFixed(2)+"   FPR "+e.fpr.toFixed(2),20,"wd"),r.innerHTML=n,t("f9Tv").textContent=o.toFixed(2),a.innerHTML="AUC <b>"+f.toFixed(2)+"</b>"}i.addEventListener("input",function(){o=+this.value/100,v()}),t("f9Play").addEventListener("click",function(){p(function(t){o=1-.98*t,i.value=Math.round(100*o),v()},3e3)}),t("f9Fill").addEventListener("click",function(){c=!c,this.classList.toggle("on",c),v()}),v()}(),function(){var r=t("f10"),a=t("f10Read"),i="acc";function c(){var t,c=l(.5),u="";(t="acc"===i?[["this model at 0.50",c.acc],["never flag anything",o],["perfect",1]]:"auc"===i?[["this model",f],["a coin flip",.5],["perfect",1]]:[["this model at 0.50",c.f1||0],["flag everything",n/e.length*2/(n/e.length+1)],["perfect",1]]).forEach(function(t,e){var n=80+76*e;u+=y(70,n-12,t[0],13,"lb"),u+='<rect x="70" y="'+n+'" width="640" height="28" fill="var(--v19)"/>',u+='<rect x="70" y="'+n+'" width="'+x(640*t[1])+'" height="28" fill="'+(0===e?"var(--v0)":"var(--v11)")+'"/>',u+=y(730,n+22,t[1].toFixed(2),20,"wd")});var d=t[0][1]-t[1][1];u+=y(70,326,"the gap that matters: "+d.toFixed(2)+" above the floor",15,"vl"),r.innerHTML=u,a.textContent="acc"===i?"accuracy vs base rate":"auc"===i?"AUC vs a coin flip":"F1 vs always-yes"}document.querySelectorAll("[data-f10]").forEach(function(t){t.addEventListener("click",function(){i=t.getAttribute("data-f10"),document.querySelectorAll("[data-f10]").forEach(function(e){e.classList.toggle("on",e===t)}),c()})}),c()}(),window.__anim={settle:m,live:function(){return d.length},REDUCE:u},window.__data={met:l,counts:a,AUC:f,BASE:o,EM:e},document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),n=t.closest("section");function r(r){t.classList.toggle("hot",r),n.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",r)}),n.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",r)})}t.addEventListener("mouseenter",function(){r(!0)}),t.addEventListener("mouseleave",function(){r(!1)}),t.addEventListener("click",function(){r(!t.classList.contains("hot"))})});var S,q,C=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),C.unobserve(t.target))})},{threshold:.06,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(t){C.observe(t)}),S=t("pf"),q=2*Math.PI*22,S.style.strokeDasharray=q,S.style.strokeDashoffset=q,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);S.style.strokeDashoffset=q*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0}),function(){var e=t("weeds"),n=t("weedsHint");function r(){var t=e.hidden;e.hidden=!t,n.setAttribute("aria-expanded",String(t)),n.innerHTML=t?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",t&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,n=(e.tagName||"").toLowerCase();"input"===n||"textarea"===n||e.isContentEditable||(t.preventDefault(),r())}}),n.addEventListener("click",r)}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>
