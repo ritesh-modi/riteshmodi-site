@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fifteen numbers learning the shape of a comfortable room</title>
+<meta name="description" content="A two hidden layer network with fifteen weights, worked by hand on ten rows. Watch one row travel forward, the loss appear, and the error propagate back to every weight.">
+<link rel="canonical" href="https://www.loopingly.com/explorables/neural-network-by-hand.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#EAE6DC;--v19:#DCD6C7;--v10:#1B1813;--v12:#48423A;--v11:#6B6459;--v21:#C9C2B1;--v0:#8A5A18;--v16:#191712;--v17:#EAE4D6;--v20:#A0392A;--v24:#7C6215;--v22:#4A6E3A;--v13:680px;--v25:1080px;--v15:26px;--v2:"Gabarito",system-ui,sans-serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"JetBrains Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:32px;--v4:46px;--v6:88px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.wide-hero{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.04;letter-spacing:-.022em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 24px;max-width:16em}h3{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.16;letter-spacing:-.012em;margin:0 0 14px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px}a{color:var(--v0)}.lede{font-size:clamp(20px,2.2vw,24px);line-height:1.46;color:var(--v12);max-width:27em}.lede-meta{font-family:var(--v14);font-size:var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v11);margin:24px 0 0}header{padding:clamp(56px,8vw,104px) 0 clamp(36px,5vw,64px)}h1{font-size:clamp(40px,7.4vw,88px);max-width:12em}.wide-hero .lede{margin:30px 0 0}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:5px;margin:32px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v21);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-lab{font-family:var(--v14);font-size:var(--v7);letter-spacing:.1em;text-transform:uppercase;color:var(--v11)}.fig-read{font-family:var(--v14);font-size:var(--v7);letter-spacing:.05em;color:var(--v11);text-align:right}.fig-read b{color:var(--v0);font-weight:500}.fig-body{padding:28px 28px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:14px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-ctl label{font-family:var(--v14);font-size:var(--v7);color:var(--v11);white-space:nowrap}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.66;color:var(--v11);padding:13px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-slide{flex:1;min-width:170px;display:flex;align-items:center;gap:10px}.fig svg{display:block;width:100%;height:auto;touch-action:none}@media(max-width:760px){.fig-body{padding:20px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:580px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 5px 5px 0;padding:22px 26px;margin:30px 0;line-height:1.6}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:10px}.intu p{margin:0}.note{background:var(--v19);border-radius:4px;padding:20px 24px;margin:28px 0 0;font-size:var(--v9);line-height:1.7;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note-hint{background:none;text-align:center;color:var(--v11);border:0;width:100%;font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:38px 0;margin:0}.note-hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note-hint:hover,.note-hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.6vw,32px);line-height:1.26;letter-spacing:-.014em;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:40px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:background var(--v23),color var(--v23),border-color var(--v23)}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}.chip.off{border-color:var(--v20);color:var(--v20)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:5px;padding:24px 26px;margin:28px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:2;overflow-x:auto}.panel b{color:#D8B168;font-weight:500}.panel i{color:#8B948F;font-style:normal}.panel u{text-decoration:none;color:#E0A08C}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:18px 0}.panel.weeds summary{font-family:var(--v2);font-weight:500;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:14px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.rail{position:fixed;right:22px;bottom:22px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.3;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.44;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly{grid-template-columns:1fr;gap:0}.wide.sg{order:-1;width:100%;height:44vh;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;margin:24px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.fig.dimmed [data-part]:not(.hot){opacity:.22;transition:opacity .2s}.stk{stroke:var(--v20);stroke-width:2.5;stroke-linecap:round}.stk.small{stroke:var(--v11);stroke-width:2}.stk.huge{stroke:var(--v20);stroke-width:4}.pt{fill:var(--v10)}.pt.test{fill:var(--v0)}.pt.sel{stroke:var(--v10);stroke-width:3}.ln{stroke:var(--v0);stroke-width:2.5;fill:none}.ln.mean{stroke:var(--v11);stroke-width:2;stroke-dasharray:6 5}.sq{fill:var(--v20);fill-opacity:.16;stroke:var(--v20);stroke-width:1}.ax{stroke:var(--v21);stroke-width:1.5}.lb{font-family:var(--v14);fill:var(--v11);letter-spacing:.02em}.vl{font-family:var(--v14);fill:var(--v10)}.wd{font-family:var(--v2);font-weight:500;fill:var(--v10);letter-spacing:-.01em}.tgt{fill:rgba(0,0,0,0);cursor:pointer}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}footer{padding:64px 0 84px;color:var(--v11);font-size:var(--v9);line-height:1.8}footer a{color:var(--v12)}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}</style></style>
+</head>
+<body>
+<div class="rail" aria-hidden="true"><svg viewBox="0 0 52 52">
+  <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
+</svg><span id="pt">·</span></div>
+<header class="wide-hero">
+  <h1>Fifteen numbers learning the shape of a comfortable room</h1>
+  <p class="lede">Ten rows, two inputs, one answer, and a network small enough to print. Every weight is on the page, every multiplication can be checked on paper, and the error that trains it can be watched walking backwards through the layers one edge at a time.</p>
+  <p class="lede-meta">2 inputs &middot; 2 hidden layers &middot; 15 weights &middot; 10 rows</p>
+  <div class="fig" id="figH">
+    <div class="fig-head"><span class="fig-lab">the whole network, and one row moving through it</span><span class="fig-read" id="hRead">press send a row</span></div>
+    <div class="fig-body"><svg id="hSvg" viewBox="0 0 900 300" role="img" aria-label="A two-two-two-one network with a value travelling along its edges"></svg></div>
+    <div class="fig-ctl">
+      <button class="chip" id="hSend">send a row through</button>
+      <button class="chip" id="hBack">send the error back</button>
+      <span class="fig-read">forward is solid, backward is dashed</span>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A straight line cannot describe a comfortable room</h2>
+    <p>Ten rooms. For each one, the temperature, the humidity, and how comfortable people said it was out of ten.</p>
+    <p>Comfort is not a straight line in either input, and that is the whole reason this page exists. Too cold is bad. Too hot is bad. Somewhere around 23 degrees is lovely. The same for humidity. A rule of the form "comfort goes up by so much per degree" is wrong at both ends no matter what number you choose.</p>
+    <p>Press the button and the best straight line through both features will be drawn. It is the best one that exists, and it is still bad.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span class="fig-lab">figure 1 &middot; ten rooms</span><span class="fig-read" id="f1Read">comfort against temperature</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 340" role="img" aria-label="Comfort plotted against temperature with a straight line that cannot fit the curve"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f1Line">draw the best straight line</button>
+        <button class="chip" id="f1Net">draw what the network learns</button>
+        <button class="chip" id="f1Reset">just the data</button>
+      </div>
+      <div class="fig-cap"><b>Try the line, then the network.</b> The line's mistakes are 0.023; the network's are 0.003. Seven times better, from fifteen numbers.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Fitting a plank to the inside of a bowl. <b>You can angle the plank, you can slide it, and it will still cross the curve in two places and miss everywhere else.</b> No amount of choosing a better plank fixes a curve. You need something that can bend.</p></div>
+    <p>A neural network is the cheapest way to build something that bends. It is made of a part so simple you can compute it in your head.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A neuron multiplies, adds, and squashes</h2>
+    <p>That is the entire operation. Take the inputs, multiply each by its own <span class="ref" data-ref="w">weight</span>, add a <span class="ref" data-ref="b">bias</span>, then push the result through a function that flattens the extremes.</p>
+    <p>Here is one neuron doing it, on room seven: 27 degrees, 65 percent humidity. The inputs are scaled to sit near 0 and 1 first, which is bookkeeping rather than mathematics.</p>
+    <div class="panel">x1 = (27 &minus; 15) / 20 = <b>0.60</b> &nbsp;&nbsp;&nbsp; x2 = (65 &minus; 30) / 50 = <b>0.70</b><br><br>
+z = w1&times;x1 + w2&times;x2 + b<br>
+&nbsp;&nbsp;= 1.2&times;0.60 + (&minus;0.8)&times;0.70 + 0.1<br>
+&nbsp;&nbsp;= 0.72 &minus; 0.56 + 0.1 = <b>0.26</b><br><br>
+a = tanh(z) = tanh(0.26) = <b>0.254</b></div>
+    <p>Drag the weights below and watch the output move. The squash is what stops the neuron being a straight line, and it is the only nonlinear thing in the entire network.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span class="fig-lab">figure 2 &middot; one neuron, three dials</span><span class="fig-read" id="f2Read">a = 0.254</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 320" role="img" aria-label="A single neuron with adjustable weights and the tanh squashing function"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f2w1">w1</label><input type="range" id="f2w1" min="-200" max="200" value="120" aria-label="weight one"></span>
+        <span class="fig-slide"><label for="f2w2">w2</label><input type="range" id="f2w2" min="-200" max="200" value="-80" aria-label="weight two"></span>
+        <span class="fig-slide"><label for="f2b">bias</label><input type="range" id="f2b" min="-200" max="200" value="10" aria-label="bias"></span>
+      </div>
+      <div class="fig-cap"><b>Drag any dial.</b> The dot slides along the tanh curve. Push a weight far enough and the output saturates: beyond about z = 2 the curve is flat and the neuron stops responding.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A volume knob with a limiter. <b>Turn it up and the sound gets louder, but only to a point; past that the amplifier flattens everything into the same loudness.</b> That flattening is exactly what makes a stack of neurons able to bend, and exactly what makes them stop learning when you push them too far.</p></div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Two hidden layers is fifteen numbers and nothing else</h2>
+    <p>Stack those neurons. Two inputs feed two neurons, those feed two more, and those feed one output that is not squashed because comfort is a quantity rather than a yes or no.</p>
+    <p>Count the numbers. Four weights and two biases into the first layer, four and two into the second, two and one into the output. <b>Fifteen.</b> That is the whole model, and every one of them is printed on the diagram below.</p>
+    <p>Click any edge to see its weight, or any neuron to see what it computes.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span class="fig-lab">figure 3 &middot; every weight in the model</span><span class="fig-read" id="f3Read">click an edge or a neuron</span></div>
+      <div class="fig-body"><svg id="f3" viewBox="0 0 900 340" role="img" aria-label="The full network with every weight labelled on its edge"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f3="start">the weights we start with</button>
+        <button class="chip" data-f3="trained">after training</button>
+        <button class="chip" data-f3="count">show the count</button>
+      </div>
+      <div class="fig-cap"><b>Switch between start and trained.</b> Training changed all fifteen numbers and nothing else. The wiring never moved.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A mixing desk with fifteen faders and no other controls. <b>Learning is somebody nudging faders, listening, and nudging again.</b> Nothing is added, nothing is rewired, and at the end the desk looks identical to the one you started with apart from where the faders sit.</p></div>
+    <p>Those fifteen numbers start as guesses. To improve them you first have to find out how wrong they are, which means pushing a row all the way through.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Forward: one row walks through the network</h2>
+    <p>Room seven again: 27 degrees, 65 percent, actually rated 8.3. Press play and watch the numbers travel. Each neuron waits for its inputs, multiplies, adds its bias, squashes, and passes the result on.</p>
+    <p>Nothing here is learned or clever. It is fifteen multiplications and some additions, in a fixed order.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span class="fig-lab">figure 4 &middot; the forward pass, step by step</span><span class="fig-read" id="f4Read">ready</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 360" role="img" aria-label="Values travelling along the edges of the network from inputs to output"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f4Play">send the row through</button>
+        <button class="chip" id="f4Step">one layer at a time</button>
+        <button class="chip" id="f4Reset">clear</button>
+      </div>
+      <div class="fig-cap"><b>Press send.</b> The tokens carry the value on each edge. Watch h1 finish before h2 starts: a layer cannot compute until the one behind it has.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">h1&#8321;: 1.2&times;0.60 + (&minus;0.8)&times;0.70 + 0.1 = 0.260 &nbsp;&rarr;&nbsp; tanh &nbsp;<b>0.254</b><br>
+h1&#8322;: &minus;1.1&times;0.60 + 0.9&times;0.70 &minus; 0.2 = &minus;0.230 &nbsp;&rarr;&nbsp; tanh &nbsp;<b>&minus;0.226</b><br><br>
+h2&#8321;: 1.0&times;0.254 + (&minus;0.9)&times;(&minus;0.226) + 0.0 = 0.458 &nbsp;&rarr;&nbsp; <b>0.428</b><br>
+h2&#8322;: 0.7&times;0.254 + 1.1&times;(&minus;0.226) + 0.1 = 0.029 &nbsp;&rarr;&nbsp; <b>0.029</b><br><br>
+out: 1.0&times;0.428 + (&minus;1.0)&times;0.029 + 0.5 = <b>0.899</b> &nbsp;&rarr;&nbsp; comfort <b>9.0</b><br>
+<i>the room was actually rated 8.3, so the model is 0.7 too generous</i></div>
+    <div class="intu"><i>picture it</i><p>A bucket chain at a fire. <b>Nobody in the line knows where the water came from or where it is going; each person takes what arrives, does one thing to it, and hands it on.</b> The answer at the end is the whole chain's doing, and no single link contains it.</p></div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The loss is one number for all ten rooms</h2>
+    <p>Do that for every row, square each miss, take the average. This is the same mean squared error from any regression, and it is what "training" is trying to make small.</p>
+    <div class="panel">loss = <b>1/n</b> &times; &Sigma; (prediction &minus; actual)²<br><br>
+<i>room 7</i> &nbsp;(0.899 &minus; 0.830)² = 0.0047<br>
+<i>all ten, at the starting weights</i> &nbsp;&rarr;&nbsp; <b>0.3562</b><br>
+<i>the best straight line manages</i> &nbsp;&rarr;&nbsp; 0.0232<br>
+<i>this network after training</i> &nbsp;&rarr;&nbsp; <b>0.0031</b></div>
+    <p>The important thing about the loss is not the formula, it is what it depends on. Every one of those fifteen weights affects it. Change one and the loss changes. That makes the loss a function of fifteen numbers, and finding its lowest point is the entire job.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span class="fig-lab">figure 5 &middot; the loss as a function of one weight</span><span class="fig-read" id="f5Read">slide a weight</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 366" role="img" aria-label="The loss curve as a single weight is varied, with the current position marked"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f5W">weight</label><input type="range" id="f5W" min="-300" max="300" value="120" aria-label="weight value"></span>
+        <button class="chip on" data-f5w="W1">W1 &nbsp;first layer</button>
+        <button class="chip" data-f5w="W3">W3 &nbsp;output</button>
+      </div>
+      <div class="fig-cap"><b>Drag the weight.</b> Everything else is held still. The slope under the marker is the gradient for that one weight, and it is exactly what backpropagation computes for all fifteen at once.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Standing on a hillside in fog with fifteen dials, each of which tilts the ground a little. <b>You cannot see the valley, but you can feel which way each dial makes the ground fall.</b> Turn them all slightly downhill, then feel again. That is the whole of training.</p></div>
+    <p>Feeling all fifteen slopes without walking the hill fifteen times is what backpropagation is for.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Backward: the error walks the other way</h2>
+    <p>The model said 0.899, the room was 0.830. That gap is the only thing the network has to learn from, and it starts at the output and moves left, splitting at every neuron.</p>
+    <p>At each step the question is the same: <b>how much did this weight contribute to the error?</b> A weight that fed a large signal into a big mistake gets a large share. A weight whose neuron was saturated gets almost nothing, because a flat curve passes no blame.</p>
+    <p>Press play. The dashed tokens carry blame backwards, and every weight lights up with the amount assigned to it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span class="fig-lab">figure 6 &middot; backpropagation, one layer at a time</span><span class="fig-read" id="f6Read">ready</span></div>
+      <div class="fig-body"><svg id="f6" viewBox="0 0 900 380" role="img" aria-label="Error signals travelling backwards through the network assigning blame to each weight"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f6Play">send the error back</button>
+        <button class="chip" id="f6Step">one layer at a time</button>
+        <button class="chip" id="f6Update">apply the update</button>
+        <button class="chip" id="f6Reset">clear</button>
+      </div>
+      <div class="fig-cap"><b>Play, then apply the update.</b> Each weight moves against its own gradient, by an amount the learning rate decides. Fifteen tiny nudges, and the loss falls.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">dL/d(out) = 2 &times; (0.899 &minus; 0.830) = <b>+0.138</b><br><br>
+<i>output weights, straight away</i><br>
+dL/dW3&#8321; = 0.138 &times; h2&#8321; = 0.138 &times; 0.428 = <b>+0.059</b><br>
+dL/dW3&#8322; = 0.138 &times; h2&#8322; = 0.138 &times; 0.029 = <b>+0.004</b><br><br>
+<i>push the blame back through the squash</i><br>
+&delta;h2&#8321; = 0.138 &times; 1.0 &times; (1 &minus; 0.428²) = <b>+0.112</b><br>
+&delta;h2&#8322; = 0.138 &times; (&minus;1.0) &times; (1 &minus; 0.029²) = <b>&minus;0.138</b><br><br>
+<i>and again, one layer further back</i><br>
+&delta;h1&#8321; = (0.112&times;1.0 + (&minus;0.138)&times;0.7) &times; (1 &minus; 0.254²) = <b>+0.015</b><br>
+&delta;h1&#8322; = (0.112&times;(&minus;0.9) + (&minus;0.138)&times;1.1) &times; (1 &minus; 0.226²) = <b>&minus;0.240</b><br><br>
+<i>then every weight is just delta times what came in</i><br>
+dL/dW1&#8321;&#8321; = 0.015 &times; 0.60 = <b>+0.009</b><br><br>
+<u>W1&#8321;&#8321; &larr; 1.2 &minus; 0.5&times;0.009 = 1.1955</u></div>
+    <div class="intu"><i>picture it</i><p>A project goes wrong and the blame is apportioned backwards down the chain of command. <b>Everyone's share depends on how much they contributed and how much authority they had</b>, and someone who was asleep at the time gets none. The derivative of the squash is exactly that "how awake was this neuron" factor.</p></div>
+    <p>Note what backpropagation is not: it is not searching, guessing, or trying weights to see what happens. It is one pass of the chain rule from calculus, and it produces all fifteen slopes for roughly the cost of one forward pass. That efficiency is the only reason any of this is practical.</p>
+    <div class="pull">Forward computes the answer. Backward computes who to blame for it.</div>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One dial decides whether it learns, crawls, or explodes</h2>
+    <p>Forward, backward, nudge, repeat. That loop is training, and it has exactly one setting that matters here: how far to move each weight along its slope.</p>
+    <p>The loop below is real. It runs the same fifteen weights, the same ten rooms, and the same arithmetic you just checked by hand. Set the rate and press train.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span class="fig-lab">figure 7 &middot; training, live</span><span class="fig-read" id="f7Read">loss 0.3562 at step 0</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 380" role="img" aria-label="The loss curve falling as the network trains, with the learning rate adjustable"></svg></div>
+      <div class="fig-ctl">
+        <span class="fig-slide"><label for="f7R">rate</label><input type="range" id="f7R" min="1" max="300" value="50" aria-label="learning rate"><label for="f7R" id="f7Rv">0.50</label></span>
+        <button class="chip" id="f7Train">train 300 steps</button>
+        <button class="chip" id="f7One">one step</button>
+        <button class="chip" id="f7Reset">back to the start</button>
+      </div>
+      <div class="fig-cap"><b>Try 0.50, then 0.02, then 2.60.</b> One learns, one crawls, one throws the weights so far that the neurons saturate and the loss stops moving at all.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">rate <b>0.50</b> &nbsp;&nbsp;loss falls 0.356 &rarr; about 0.005 within 500 steps<br>
+rate <b>0.02</b> &nbsp;&nbsp;the same shape, roughly twenty times slower<br>
+rate <b>2.60</b> &nbsp;&nbsp;the first few steps overshoot, tanh saturates, and the gradient dies</div>
+    <div class="intu"><i>picture it</i><p>Walking downhill in fog again. <b>Tiny steps and you are still on the hillside at nightfall. Enormous steps and you leap clean across the valley to the opposite slope, then leap back.</b> Nothing about the hill changed; only your stride.</p></div>
+    <p>Watch the loss curve rather than the number. A curve that falls fast and flattens is healthy. One that falls and then jitters sideways is a rate slightly too high. One that goes flat immediately at a bad value is saturation, and no amount of patience fixes it.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>What the hidden units actually learned, and what this tiny model cannot tell you</h2>
+    <p>After training, the four hidden neurons are not mysterious. Each one is a squashed tilt across the temperature and humidity plane, and the output is a weighted sum of those tilts. Bending happens where they overlap.</p>
+    <p>Click a hidden neuron to see the surface it responds to. Nobody designed these. They fell out of fifteen numbers being nudged downhill three hundred times.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span class="fig-lab">figure 8 &middot; what each hidden unit responds to</span><span class="fig-read" id="f8Read">click a neuron</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 340" role="img" aria-label="The response surface of each hidden neuron and the combined output"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f8="h11">h1&#8321;</button><button class="chip" data-f8="h12">h1&#8322;</button>
+        <button class="chip" data-f8="h21">h2&#8321;</button><button class="chip" data-f8="h22">h2&#8322;</button>
+        <button class="chip" data-f8="out">the output</button>
+      </div>
+      <div class="fig-cap"><b>Step through the units.</b> Each is a soft ramp in a different direction. The output is those ramps added up, which is how a stack of straight things makes a curved thing.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Making a curved shape out of stiff card by folding several flat pieces and overlapping them. <b>No individual piece bends. The shape does.</b> That is a hidden layer, and adding a second one lets you fold the folds.</p></div>
+    <p>Now the honest part. Ten rows and fifteen weights is close to one and a half parameters per observation, which is a ratio no serious model would accept. This network can very nearly memorise the table, and its 0.0031 loss on the same ten rooms it trained on is not evidence that it would work on the eleventh room.</p>
+    <p>Everything on this page is the mechanism, checked to the digit. None of it is a claim that the model is good. Establishing that would take a held-back set, and with ten rows there is nothing to hold back.</p>
+    <div class="pull">The arithmetic here is exact. The model is a toy. Those two statements are both true and people constantly confuse them.</div>
+  </div>
+</section>
+
+<div class="bleed reveal" style="padding:clamp(72px,9vw,128px) 0;border-top:1px solid var(--v21)">
+  <div class="col">
+    <h3>The whole thing, in one paragraph</h3>
+    <p>Fifteen numbers turn two inputs into one output by multiplying, adding and squashing. A loss says how wrong the answers are. The chain rule walks that wrongness backwards and hands each of the fifteen a share of the blame. Each moves a little against its share. Repeat three hundred times and a set of arbitrary numbers has become the shape of a comfortable room. Every model you have heard of is this, with more numbers.</p>
+  </div>
+</div>
+
+<button class="note note-hint" id="weedsHint" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</button>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h3>Into the weeds</h3>
+    <details><summary>Why the output neuron has no squash</summary>
+      <p>Comfort is a quantity that can be any number, so the last step is left linear. Squash the output with tanh and the model could never predict outside minus one to one. For classification you would put a sigmoid there instead, precisely because you do want the answer trapped between 0 and 1.</p></details>
+    <details><summary>Why tanh, and what people use instead</summary>
+      <p>Tanh is smooth, centred on zero, and its derivative is a tidy 1 minus a squared, which is why the arithmetic on this page stays checkable. Modern networks mostly use ReLU, which is max(0, z): faster and it does not saturate at the positive end, which matters enormously once you have fifty layers rather than two.</p></details>
+    <details><summary>Where the starting weights came from</summary>
+      <p>They were chosen to be round numbers so the worked example is readable. Real initialisation draws small random values with a variance that depends on the layer width, because starting every weight identical would make every neuron in a layer compute the same thing forever, and starting them large saturates the squash before training begins.</p></details>
+    <details><summary>Batch, stochastic, and what this page does</summary>
+      <p>This page computes the gradient over all ten rows before each update, which is full batch gradient descent. Real training almost always uses small random batches: noisier steps, far cheaper per step, and the noise itself helps escape poor spots. The chain rule is identical either way.</p></details>
+    <details><summary>Why the gradient dies when the rate is too high</summary>
+      <p>A huge step lands the weights somewhere z is large, where tanh is flat. The derivative 1 minus a squared is then almost zero, so the blame passed backwards is almost zero, so the weights barely move again. The network is not stuck at a minimum, it is stuck on a plateau of its own making, and this is the small version of the vanishing gradient problem that made deep networks hard for years.</p></details>
+    <details><summary>Two hidden layers is not obviously better than one here</summary>
+      <p>A single hidden layer with enough units can approximate this surface perfectly well; the universal approximation theorem says so. Two layers is used on this page because the backward pass through two layers shows the chain rule chaining, which is the thing worth seeing. Depth earns its keep on problems far larger than ten rooms.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <p>Ten rooms, invented for this page, with comfort generated by a smooth peak so that no straight line can fit it. The network trains in your browser: fifteen weights, full batch gradient descent, the same arithmetic printed above. Nothing is precomputed and no number here is illustrative.</p>
+  </div>
+</footer>
+
+<script>!function(){"use strict";var t=function(t){return document.getElementById(t)},e=[[16,70,5.9],[18,40,8.4],[20,55,9.4],[22,45,9.9],[23,60,9.6],[25,35,9.3],[27,65,8.3],[29,50,8],[31,75,4.4],[33,45,4.5]];function n(t){return(t-15)/20}function r(t){return(t-30)/50}var a=e.map(function(t){return[n(t[0]),r(t[1])]}),i=e.map(function(t){return t[2]/10}),o={W1:[[1.2,-.8],[-1.1,.9]],b1:[.1,-.2],W2:[[1,-.9],[.7,1.1]],b2:[0,.1],W3:[1,-1],b3:.5};function c(t){return{W1:[t.W1[0].slice(),t.W1[1].slice()],b1:t.b1.slice(),W2:[t.W2[0].slice(),t.W2[1].slice()],b2:t.b2.slice(),W3:t.W3.slice(),b3:t.b3}}function l(t,e){var n=[t.W1[0][0]*e[0]+t.W1[0][1]*e[1]+t.b1[0],t.W1[1][0]*e[0]+t.W1[1][1]*e[1]+t.b1[1]],r=[Math.tanh(n[0]),Math.tanh(n[1])],a=[t.W2[0][0]*r[0]+t.W2[0][1]*r[1]+t.b2[0],t.W2[1][0]*r[0]+t.W2[1][1]*r[1]+t.b2[1]],i=[Math.tanh(a[0]),Math.tanh(a[1])];return{z1:n,a1:r,z2:a,a2:i,o:t.W3[0]*i[0]+t.W3[1]*i[1]+t.b3}}function d(t){for(var e=0,n=0;n<a.length;n++){var r=l(t,a[n]).o-i[n];e+=r*r}return e/a.length}function u(t,e,n,r){for(var a=l(t,e),i=2*(a.o-n)/r,o={W3:[i*a.a2[0],i*a.a2[1]],b3:i,W2:[[0,0],[0,0]],b2:[0,0],W1:[[0,0],[0,0]],b1:[0,0]},c=[i*t.W3[0]*(1-a.a2[0]*a.a2[0]),i*t.W3[1]*(1-a.a2[1]*a.a2[1])],d=0;d<2;d++)o.W2[d]=[c[d]*a.a1[0],c[d]*a.a1[1]],o.b2[d]=c[d];for(var u=[(c[0]*t.W2[0][0]+c[1]*t.W2[1][0])*(1-a.a1[0]*a.a1[0]),(c[0]*t.W2[0][1]+c[1]*t.W2[1][1])*(1-a.a1[1]*a.a1[1])],f=0;f<2;f++)o.W1[f]=[u[f]*e[0],u[f]*e[1]],o.b1[f]=u[f];return o.d1=u,o.d2=c,o.dO=i*r,o.f=a,o}function f(t,e){var n,r,o,c={W1:[[0,0],[0,0]],b1:[0,0],W2:[[0,0],[0,0]],b2:[0,0],W3:[0,0],b3:0};for(n=0;n<a.length;n++){var l=u(t,a[n],i[n],a.length);for(r=0;r<2;r++){for(o=0;o<2;o++)c.W1[r][o]+=l.W1[r][o],c.W2[r][o]+=l.W2[r][o];c.b1[r]+=l.b1[r],c.b2[r]+=l.b2[r],c.W3[r]+=l.W3[r]}c.b3+=l.b3}for(r=0;r<2;r++){for(o=0;o<2;o++)t.W1[r][o]-=e*c.W1[r][o],t.W2[r][o]-=e*c.W2[r][o];t.b1[r]-=e*c.b1[r],t.b2[r]-=e*c.b2[r],t.W3[r]-=e*c.W3[r]}return t.b3-=e*c.b3,t}var s=function(){for(var t=c(o),e=0;e<6e3;e++)f(t,.5);return t}(),h=function(){var t,e=a.length,n=[],r=[];for(t=0;t<e;t++)n.push([1,a[t][0],a[t][1]]),r.push(i[t]);for(var o=[[0,0,0,0],[0,0,0,0],[0,0,0,0]],c=0;c<3;c++){for(var l=0;l<3;l++){var d=0;for(t=0;t<e;t++)d+=n[t][c]*n[t][l];o[c][l]=d}var u=0;for(t=0;t<e;t++)u+=n[t][c]*r[t];o[c][3]=u}for(var f=0;f<3;f++){for(var s=f,h=f;h<3;h++)Math.abs(o[h][f])>Math.abs(o[s][f])&&(s=h);var v=o[f];o[f]=o[s],o[s]=v;for(var b=0;b<3;b++)if(b!==f&&o[f][f])for(var m=o[b][f]/o[f][f],g=f;g<4;g++)o[b][g]-=m*o[f][g]}return[o[0][3]/o[0][0],o[1][3]/o[1][1],o[2][3]/o[2][2]]}();function v(t){return h[0]+h[1]*t[0]+h[2]*t[1]}var b=function(){for(var t=0,e=0;e<a.length;e++){var n=v(a[e])-i[e];t+=n*n}return t/a.length}(),m=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches,g=[],p=null;function x(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}function y(t){var e=g.indexOf(t);e<0||(g.splice(e,1),t.apply(1),t.done&&t.done())}function E(t,e,n){if(e=e||1500,t(0),m)return t(1),n&&n(),null;var r={apply:t,t0:performance.now(),ms:e,done:n};return g.push(r),r.guard=setTimeout(function(){y(r)},e+60),p||(p=requestAnimationFrame(k)),r}function k(t){for(var e=g.length-1;e>=0;e--){var n=g[e],r=Math.min(1,(t-n.t0)/n.ms);n.apply(x(r)),t-n.t0>=n.ms&&(clearTimeout(n.guard),y(n))}p=g.length?requestAnimationFrame(k):null}function w(){for(;g.length;)clearTimeout(g[0].guard),y(g[0])}function L(t){return Math.round(t)}function W(t,e,n,r,a,i){return'<text class="'+(a||"lb")+'" x="'+L(t)+'" y="'+L(e)+'" font-size="'+r+'"'+(i?' text-anchor="'+i+'"':"")+">"+function(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}(n)+"</text>"}function M(t,e,n,r,a){return'<line class="'+(a||"ax")+'" x1="'+L(t)+'" y1="'+L(e)+'" x2="'+L(n)+'" y2="'+L(r)+'"/>'}var F={in:[[110,110],[110,220]],h1:[[320,110],[320,220]],h2:[[530,110],[530,220]],out:[[740,165]]};var T=function(){var t,e,n=[];for(t=0;t<2;t++)for(e=0;e<2;e++)n.push({a:F.in[e],b:F.h1[t],lay:1,j:t,k:e});for(t=0;t<2;t++)for(e=0;e<2;e++)n.push({a:F.h1[e],b:F.h2[t],lay:2,j:t,k:e});for(e=0;e<2;e++)n.push({a:F.h2[e],b:F.out[0],lay:3,j:0,k:e});return n}();function A(t,e){return 1===e.lay?t.W1[e.j][e.k]:2===e.lay?t.W2[e.j][e.k]:t.W3[e.k]}function H(t,e){e=e||{};var n="";return T.forEach(function(r,a){var i=A(t,r),o=e.hotEdge===a;if(n+='<line class="ax" x1="'+r.a[0]+'" y1="'+r.a[1]+'" x2="'+r.b[0]+'" y2="'+r.b[1]+'" stroke="'+(i>=0?"var(--v0)":"var(--v20)")+'" stroke-width="'+(o?4:Math.min(4,.6+1.6*Math.abs(i)))+'" stroke-opacity="'+(o?1:.55)+'"/>',e.labels){var c=.34+.3*r.k,l=r.a[0]+(r.b[0]-r.a[0])*c,d=r.a[1]+(r.b[1]-r.a[1])*c-6;n+=W(l,d,i.toFixed(2),13,o?"vl":"lb","middle")}n+='<line class="tgt" x1="'+r.a[0]+'" y1="'+r.a[1]+'" x2="'+r.b[0]+'" y2="'+r.b[1]+'" stroke="rgba(0,0,0,0)" stroke-width="16" data-edge="'+a+'"/>'}),["in","h1","h2","out"].forEach(function(t){F[t].forEach(function(r,a){var i=e.vals&&e.vals[t]?e.vals[t][a]:null;n+='<circle cx="'+r[0]+'" cy="'+r[1]+'" r="26" fill="var(--v18)" stroke="var(--v10)" stroke-width="1.5"/>',null!=i&&(n+=W(r[0],r[1]+5,(+i).toFixed(2),15,"vl","middle")),n+='<circle class="tgt" cx="'+r[0]+'" cy="'+r[1]+'" r="30" data-node="'+t+a+'"/>'})}),n+=W(110,66,"inputs",13,"lb","middle"),n+=W(320,66,"hidden 1",13,"lb","middle"),n+=W(530,66,"hidden 2",13,"lb","middle"),n+=W(740,120,"output",13,"lb","middle")}function S(t,e,n,r,a,i,o){var c=function(t,e){var n=document.createElementNS("http://www.w3.org/2000/svg","g");return n.innerHTML='<circle r="15" fill="'+(e?"var(--v18)":"var(--v0)")+'" stroke="'+(e?"var(--v20)":"none")+'" stroke-width="2"'+(e?' stroke-dasharray="4 3"':"")+'/><text y="5" text-anchor="middle" font-family="var(--v14)" font-size="12" fill="'+(e?"var(--v20)":"var(--v18)")+'">'+t+"</text>",n}(r,a);return t.appendChild(c),E(function(t){var r=a?1-t:t;c.setAttribute("transform","translate("+L(e[0]+(n[0]-e[0])*r)+","+L(e[1]+(n[1]-e[1])*r)+")")},i||1500,function(){c.remove(),o&&o()}),c}!function(){var e=t("hSvg"),n=t("hRead");function r(){e.innerHTML=H(s,{})}r(),t("hSend").addEventListener("click",function(){r();var t=l(s,a[6]);n.innerHTML="forward: 27&deg;, 65% &rarr; <b>"+(10*t.o).toFixed(1)+"</b>",T.filter(function(t){return 1===t.lay}).forEach(function(t){S(e,t.a,t.b,a[6][t.k].toFixed(2),!1,1500)}),setTimeout(function(){T.filter(function(t){return 2===t.lay}).forEach(function(n){S(e,n.a,n.b,t.a1[n.k].toFixed(2),!1,1500)})},1600),setTimeout(function(){T.filter(function(t){return 3===t.lay}).forEach(function(n){S(e,n.a,n.b,t.a2[n.k].toFixed(2),!1,1500)})},3200)}),t("hBack").addEventListener("click",function(){r();var t=u(s,a[6],i[6],1);n.innerHTML="backward: error <b>"+(t.f.o-i[6]).toFixed(3)+"</b> splitting across the layers",T.filter(function(t){return 3===t.lay}).forEach(function(n){S(e,n.a,n.b,t.dO.toFixed(2),!0,1500)}),setTimeout(function(){T.filter(function(t){return 2===t.lay}).forEach(function(n){S(e,n.a,n.b,t.d2[n.j].toFixed(2),!0,1500)})},1600),setTimeout(function(){T.filter(function(t){return 1===t.lay}).forEach(function(n){S(e,n.a,n.b,t.d1[n.j].toFixed(2),!0,1500)})},3200)}),window.__hero={base:r}}(),function(){var a=t("f1"),i=t("f1Read"),o="data",c=90,u=40,f=740,h=230;function m(t){return c+(t-14)/21*f}function g(t){return 270-t/10*h}function p(){var t=M(c,270,830,270)+M(c,u,c,270);if([16,20,24,28,32].forEach(function(e){t+=W(m(e),292,e+"°",13,"lb","middle")}),[0,5,10].forEach(function(e){t+=W(80,g(e)+4,String(e),13,"lb","end")}),t+=W(460,316,"temperature",13,"lb","middle"),t+=W(34,155,"comfort",13,"lb","middle"),"line"===o||"net"===o){var f,h="";for(f=15;f<=34;f+=.4){var p=[n(f),r(52)],x=10*("line"===o?v(p):l(s,p).o);h+=(h?"L":"M")+L(m(f))+" "+L(g(Math.max(0,Math.min(10,x))))+" "}t+='<path class="ln" d="'+h+'" fill="none" stroke="'+("line"===o?"var(--v20)":"var(--v0)")+'" stroke-width="3"/>',t+=W(830,32,"line"===o?"the best straight line, at 52% humidity":"the trained network, at 52% humidity",13,"lb","end")}e.forEach(function(e){t+='<circle class="pt" cx="'+L(m(e[0]))+'" cy="'+L(g(e[2]))+'" r="8" fill="var(--v10)"/>'}),a.innerHTML=t,i.innerHTML="line"===o?"straight line, loss <b>"+b.toFixed(4)+"</b>":"net"===o?"network, loss <b>"+d(s).toFixed(4)+"</b>":"comfort against temperature"}t("f1Line").addEventListener("click",function(){o="line",p()}),t("f1Net").addEventListener("click",function(){o="net",p()}),t("f1Reset").addEventListener("click",function(){o="data",p()}),p()}(),function(){var e=t("f2"),n=t("f2Read");function r(){var r=+t("f2w1").value/100,a=+t("f2w2").value/100,i=+t("f2b").value/100,o=[.6,.7],c=r*o[0]+a*o[1]+i,l=Math.tanh(c),d=470,u=40,f="";f+=W(70,60,"inputs",13,"lb"),f+=W(70,100,"x1 = 0.60",20,"wd"),f+=W(70,140,"x2 = 0.70",20,"wd"),f+=W(70,196,"z = "+r.toFixed(2)+"×0.60 + "+a.toFixed(2)+"×0.70 + "+i.toFixed(2),15,"vl"),f+=W(70,228,"z = "+c.toFixed(3),20,"wd"),f+=W(70,272,"a = tanh(z) = "+l.toFixed(3),20,"wd"),f+=M(d,145,830,145)+M(650,u,650,250);var s,h="";for(s=-3;s<=3;s+=.1)h+=(h?"L":"M")+L(650+s/3*180)+" "+L(145-105*Math.tanh(s))+" ";f+='<path class="ln" d="'+h+'" fill="none" stroke="var(--v0)" stroke-width="2.5"/>';var v=Math.max(-3,Math.min(3,c));f+='<circle class="pt" cx="'+L(650+v/3*180)+'" cy="'+L(145-105*Math.tanh(v))+'" r="9" fill="var(--v20)"/>',f+=W(650,276,"z",13,"lb","middle"),f+=W(838,145,"tanh",13,"lb"),Math.abs(c)>2&&(f+=W(d,34,"saturated: the curve here is almost flat",13,"lb")),e.innerHTML=f,n.innerHTML="a = <b>"+l.toFixed(3)+"</b>"}["f2w1","f2w2","f2b"].forEach(function(e){t(e).addEventListener("input",r)}),r()}(),function(){var e=t("f3"),n=t("f3Read"),r="start",a=null,i=!1;function c(){return"start"===r?o:s}function l(){var t=H(c(),{labels:!0,hotEdge:a});i&&(t+=W(70,318,"4 + 2 into hidden 1  ·  4 + 2 into hidden 2  ·  2 + 1 into the output  =  15 numbers",15,"vl")),e.innerHTML=t}e.addEventListener("click",function(t){var e=t.target.closest("[data-edge]");if(e){a=+e.getAttribute("data-edge");var r=T[a];return n.innerHTML="weight <b>"+A(c(),r).toFixed(3)+"</b> · layer "+r.lay,void l()}var i=t.target.closest("[data-node]");if(i){var o=i.getAttribute("data-node");n.innerHTML=0===o.indexOf("in")?"an input, scaled to roughly 0 to 1":0===o.indexOf("out")?"output: a weighted sum, not squashed":"a neuron: multiply, add the bias, then tanh"}}),document.querySelectorAll("[data-f3]").forEach(function(t){t.addEventListener("click",function(){var e=t.getAttribute("data-f3");"count"===e?(i=!i,t.classList.toggle("on",i)):(r=e,document.querySelectorAll("[data-f3]").forEach(function(e){"count"!==e.getAttribute("data-f3")&&e.classList.toggle("on",e===t)})),l()})}),l()}(),function(){var e=t("f4"),n=t("f4Read"),r=0,c=l(o,a[6]);function d(){var t={in:[a[6][0],a[6][1]],h1:r>=1?c.a1:[null,null],h2:r>=2?c.a2:[null,null],out:r>=3?[c.o]:[null]},l=H(o,{vals:t});l+=W(70,320,"room 7 · 27° · 65% · actually rated 8.3",13,"lb"),r>=3&&(l+=W(70,346,"the model says "+(10*c.o).toFixed(1)+", so it is "+(10*(c.o-i[6])).toFixed(1)+" too generous",15,"vl")),e.innerHTML=l,n.textContent=["ready","hidden 1 computed","hidden 2 computed","output computed"][r]}function u(t,n){var i=1===t?F.in:2===t?F.h1:F.h2,o=1===t?F.h1:2===t?F.h2:F.out,l=1===t?a[6]:2===t?c.a1:c.a2,u=0,f=0;o.forEach(function(t,e){i.forEach(function(t,e){f++})}),o.forEach(function(a,o){i.forEach(function(i,o){S(e,i,a,(+l[o]).toFixed(2),!1,1400,function(){++u===f&&(r=t,d(),n&&n())})})})}t("f4Play").addEventListener("click",function(){r=0,d(),u(1,function(){setTimeout(function(){u(2,function(){setTimeout(function(){u(3)},150)})},150)})}),t("f4Step").addEventListener("click",function(){if(r>=3)return r=0,void d();u(r+1)}),t("f4Reset").addEventListener("click",function(){r=0,w(),d()}),d(),window.__f4={layer:u,set:function(t){r=t,d()}}}(),function(){var e=t("f5"),n=t("f5Read"),r="W1";function a(t){var e=c(o);return"W1"===r?e.W1[0][0]=t:e.W3[0]=t,d(e)}function i(){var i,o=+t("f5W").value/100,c=100,l=36,d=720,u=230,f="",s=[],h=0;for(i=-3;i<=3;i+=.05){var v=a(i);s.push([i,v]),v>h&&(h=v)}f+=M(c,266,820,266)+M(c,l,c,266);var b="";s.forEach(function(t,e){b+=(e?"L":"M")+L(c+(t[0]+3)/6*d)+" "+L(266-t[1]/h*u)+" "}),f+='<path class="ln" d="'+b+'" fill="none" stroke="var(--v0)" stroke-width="2.5"/>',[-3,-1.5,0,1.5,3].forEach(function(t){f+=W(c+(t+3)/6*d,288,t.toFixed(1),13,"lb","middle")}),f+=W(460,312,"the value of "+("W1"===r?"W1 (first layer, first weight)":"W3 (output weight)"),13,"lb","middle"),f+=W(42,151,"loss",13,"lb","middle");v=a(o);f+='<circle class="pt" cx="'+L(c+(o+3)/6*d)+'" cy="'+L(266-v/h*u)+'" r="9" fill="var(--v20)"/>';var m=.05,g=(a(o+m)-a(o-m))/.1,p=c+(o+.6+3)/6*d,x=266-(v-.6*g)/h*u,y=266-(v+.6*g)/h*u;f+='<line x1="'+L(c+(o-.6+3)/6*d)+'" y1="'+L(x)+'" x2="'+L(p)+'" y2="'+L(y)+'" stroke="var(--v20)" stroke-width="2" stroke-dasharray="5 4"/>',f+=W(100,348,"weight "+o.toFixed(2)+"   loss "+v.toFixed(4)+"   slope "+(g>=0?"+":"")+g.toFixed(4)+"   →  move it "+(g>0?"down":"up"),15,"vl"),e.innerHTML=f,n.innerHTML="loss <b>"+v.toFixed(4)+"</b> · slope "+(g>=0?"+":"")+g.toFixed(3)}t("f5W").addEventListener("input",i),document.querySelectorAll("[data-f5w]").forEach(function(t){t.addEventListener("click",function(){r=t.getAttribute("data-f5w"),document.querySelectorAll("[data-f5w]").forEach(function(e){e.classList.toggle("on",e===t)}),i()})}),i()}(),function(){var e=t("f6"),n=t("f6Read"),r=0,l=c(o),s=u(l,a[6],i[6],1);function h(){var t=H(l,{labels:!0});t+=W(70,338,"error at the output: "+(s.f.o-i[6]).toFixed(3)+"   ·   dL/d(out) = "+s.dO.toFixed(3),15,"vl"),r>=1&&(t+=W(70,364,"δh2 = "+s.d2[0].toFixed(3)+", "+s.d2[1].toFixed(3),13,"lb")),r>=2&&(t+=W(430,364,"δh1 = "+s.d1[0].toFixed(3)+", "+s.d1[1].toFixed(3),13,"lb")),e.innerHTML=t,n.textContent=["ready","blame reached hidden 2","blame reached hidden 1","weights updated"][Math.min(r,3)]}function v(t,n){var a=1===t?F.out:2===t?F.h2:F.h1,i=1===t?F.h2:2===t?F.h1:F.in,o=1===t?[s.dO,s.dO]:2===t?s.d2:s.d1,c=0,l=a.length*i.length;a.forEach(function(a,d){i.forEach(function(i,u){S(e,i,a,(+o[d]).toFixed(2),!0,1400,function(){++c===l&&(r=t,h(),n&&n())})})})}t("f6Play").addEventListener("click",function(){r=0,h(),v(1,function(){setTimeout(function(){v(2)},150)})}),t("f6Step").addEventListener("click",function(){if(r>=2)return r=0,void h();v(r+1)}),t("f6Update").addEventListener("click",function(){f(l,.5),s=u(l,a[6],i[6],1),r=3,h(),n.innerHTML="updated · loss now <b>"+d(l).toFixed(4)+"</b>"}),t("f6Reset").addEventListener("click",function(){l=c(o),s=u(l,a[6],i[6],1),r=0,w(),h()}),h(),window.__f6={back:v,upd:function(){f(l,.5),h()}}}(),function(){var e=t("f7"),n=t("f7Read"),r=c(o),a=[d(r)],i=0;function l(){var t=100,o=36,c=720,l=250,u="";u+=M(t,286,820,286)+M(t,o,t,286);var f=Math.max.apply(null,a.concat([.05])),s="";a.forEach(function(e,n){s+=(n?"L":"M")+L(t+n/Math.max(1,a.length-1)*c)+" "+L(286-Math.min(1,e/f)*l)+" "}),u+='<path class="ln" d="'+s+'" fill="none" stroke="var(--v0)" stroke-width="2.5"/>',u+='<line class="ln mean" x1="100" y1="'+L(286-b/f*l)+'" x2="820" y2="'+L(286-b/f*l)+'" stroke-dasharray="5 4"/>',u+=W(820,286-b/f*l-8,"the best straight line",13,"lb","end"),u+=W(460,310,"training steps",13,"lb","middle"),u+=W(42,161,"loss",13,"lb","middle"),u+=W(100,340,"step "+i+"   loss "+d(r).toFixed(5)+(d(r)<b?"   ·  now beating the straight line":""),15,"vl"),e.innerHTML=u,n.innerHTML="loss <b>"+d(r).toFixed(4)+"</b> at step "+i}function u(e){var n,o=+t("f7R").value/100;for(n=0;n<e;n++)f(r,o),++i%5==0&&a.push(d(r));a.length>260&&(a=a.slice(-260)),l()}t("f7R").addEventListener("input",function(){t("f7Rv").textContent=(+this.value/100).toFixed(2)}),t("f7Train").addEventListener("click",function(){if(m)u(300);else{var t=0;E(function(e){for(var n=Math.floor(300*e);t<n;)u(1),t++},2600,function(){u(0)})}}),t("f7One").addEventListener("click",function(){u(1)}),t("f7Reset").addEventListener("click",function(){r=c(o),a=[d(r)],i=0,w(),l()}),l(),window.__f7={train:u,lossNow:function(){return d(r)},steps:function(){return i}}}(),function(){var a=t("f8"),i=t("f8Read"),o="h11";function c(t){var e=l(s,t);return"h11"===o?e.a1[0]:"h12"===o?e.a1[1]:"h21"===o?e.a2[0]:"h22"===o?e.a2[1]:e.o}function d(){var t,l,d=110,u=36,f=250,s="",h=22;for(t=0;t<h;t++)for(l=0;l<h;l++){var v=30+l/21*50,b=c([n(15+t/21*19),r(v)]),m="out"===o?Math.max(0,Math.min(1,b)):(b+1)/2;s+='<rect x="'+L(d+t*f/h)+'" y="'+L(286-(l+1)*f/h)+'" width="'+Math.ceil(f/h)+'" height="'+Math.ceil(f/h)+'" fill="var(--v0)" fill-opacity="'+(.06+.85*m).toFixed(3)+'"/>'}s+=M(d,286,360,286)+M(d,u,d,286),s+=W(235,310,"temperature 15 to 34",13,"lb","middle"),s+=W(52,161,"humidity",13,"lb","middle"),e.forEach(function(t){var e=d+(t[0]-15)/19*f,n=286-(t[1]-30)/50*f;s+='<circle class="pt" cx="'+L(e)+'" cy="'+L(n)+'" r="5" fill="var(--v10)"/>'});var g={h11:"hidden 1, neuron 1",h12:"hidden 1, neuron 2",h21:"hidden 2, neuron 1",h22:"hidden 2, neuron 2",out:"the output: comfort"};s+=W(430,80,g[o],20,"wd"),s+=W(430,116,"out"===o?"the four ramps added together, which bends":"a soft ramp: high on one side, low on the other",13,"lb"),s+=W(430,150,"darker means a higher value",13,"lb"),a.innerHTML=s,i.textContent=g[o]}document.querySelectorAll("[data-f8]").forEach(function(t){t.addEventListener("click",function(){o=t.getAttribute("data-f8"),document.querySelectorAll("[data-f8]").forEach(function(e){e.classList.toggle("on",e===t)}),d()})}),d()}(),window.__anim={settle:w,live:function(){return g.length},REDUCE:m},window.__nn={fwd:l,loss:d,grad:u,START:o,TRAINED:s,X:a,Y:i,LINLOSS:b,clone:c,step:f},document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),n=t.closest("section");function r(r){t.classList.toggle("hot",r),n.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",r)}),n.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",r)})}t.addEventListener("mouseenter",function(){r(!0)}),t.addEventListener("mouseleave",function(){r(!1)}),t.addEventListener("click",function(){r(!t.classList.contains("hot"))})});var R,q,_=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),_.unobserve(t.target))})},{threshold:.06,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(t){_.observe(t)}),R=t("pf"),q=2*Math.PI*22,R.style.strokeDasharray=q,R.style.strokeDashoffset=q,window.addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight);R.style.strokeDashoffset=q*(1-Math.min(1,Math.max(0,e||0)))},{passive:!0}),function(){var e=t("weeds"),n=t("weedsHint");function r(){var t=e.hidden;e.hidden=!t,n.setAttribute("aria-expanded",String(t)),n.innerHTML=t?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",t&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,n=(e.tagName||"").toLowerCase();"input"===n||"textarea"===n||e.isContentEditable||(t.preventDefault(),r())}}),n.addEventListener("click",r)}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>
