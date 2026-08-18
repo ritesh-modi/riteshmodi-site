@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accuracy, precision, recall and F1: reading the confusion matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#EDF0F0;--v19:#E0E5E5;--v10:#10201F;--v12:#3A4A49;--v11:#606D6C;--v21:#C7D0CF;--v0:#14666E;--v16:#0F1E1F;--v17:#DCE4E4;--v20:#A03520;--v24:#7A5410;--v22:#2E8B74;--v13:680px;--v25:1080px;--v15:26px;--v2:"Space Grotesk",system-ui,sans-serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"IBM Plex Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:32px;--v4:46px;--v6:88px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.03;letter-spacing:-.02em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px}h3{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.5vw,32px);line-height:1.15;letter-spacing:-.015em;margin:0 0 16px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px;color:var(--v10)}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:clamp(20px,2.2vw,24px);line-height:1.42;letter-spacing:-.01em;color:var(--v12)}.eyebrow{font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;text-transform:uppercase;color:var(--v11);margin:0}header{padding:clamp(52px,7vw,96px) 0 clamp(48px,6vw,84px)}.hero-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:5vw;align-items:center;max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}h1{font-size:clamp(42px,6.6vw,88px);max-width:13ch}.hero-kick{font-family:var(--v14);font-size:var(--v7);letter-spacing:.12em;text-transform:uppercase;color:var(--v0);margin:0 0 24px}.hero-lede{margin:28px 0 0;max-width:32em}@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}h1{max-width:none}}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:14px 20px;border-bottom:1px solid var(--v21);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;text-transform:uppercase;color:var(--v11);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v0);font-weight:500}.fig-body{padding:32px 30px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:16px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.62;color:var(--v11);padding:14px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-read{font-family:var(--v14);font-size:var(--v9);color:var(--v12);margin:20px 0 0;line-height:1.8}.fig-read b{color:var(--v10);font-weight:500}.fig svg{display:block;width:100%;height:auto}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:600px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v21);border-radius:3px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;font-size:var(--v3);line-height:1.62}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.17em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu b{font-weight:600}.intu p{margin:0}.note{background:var(--v19);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v9);line-height:1.72;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v11);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:38px 0;margin:0}.note.hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.5vw,32px);line-height:1.24;letter-spacing:-.015em;color:var(--v0);border-left:3px solid var(--v0);padding-left:28px;margin:44px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.04em;padding:9px 15px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:6px;padding:28px 30px;margin:32px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:1.8;overflow-x:auto}.panel b{color:#6FC3C0;font-weight:500}.panel i{color:#8A9897;font-style:normal}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:20px 0}.panel.weeds summary{font-family:var(--v2);font-weight:600;font-size:var(--v3);cursor:pointer;letter-spacing:-.01em}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:16px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.panel.weeds{animation:weedsIn .4s cubic-bezier(.4,0,.2,1)}@keyframes weedsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.panel.weeds{animation:none}}.rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,430px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly.right{grid-template-columns:minmax(0,430px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.wide.sg svg{display:block;width:100%;height:auto}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.26;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.42;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:46vh;width:100%;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:28px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg data-decor viewBox="0 0 54 54"><circle class="tk" cx="27" cy="27" r="23"/><circle class="fl" id="pfill" cx="27" cy="27" r="23"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+
+<header class="hero" data-hero="confusion-square-fills-itself">
+  <div class="hero-grid">
+    <div>
+      <p class="hero-kick">eight passengers &middot; four outcomes</p>
+      <h1>Accuracy, precision, recall and F1</h1>
+      <p class="lede hero-lede">Four numbers, one small square, and a set of eight predictions you can count on your fingers. Everything on this page is worked out from those eight, and then from twenty four patients you can re-sort yourself.</p>
+    </div>
+    <div class="fig" style="margin:0">
+      <div class="fig-head"><span>eight predictions</span><span id="heroState">arriving</span></div>
+      <div class="fig-body"><svg id="heroFig" viewBox="0 0 460 250" role="img" aria-label="Eight case chips moving from a row into a two by two square"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-hero-t="row">as a list</button>
+        <button class="chip on" data-hero-t="square">as a square</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A guess and an answer are two separate things</h2>
+    <p>Eight people were aboard a ship. Some survived, some did not. That is settled history, and we have the record.</p>
+    <p>Separately, a computer program looked at each person's ticket class, age and fare, and guessed whether they made it. That program is the <b>model</b>. Each guess it made is a <b>prediction</b>. The historical record of who actually survived is the <b>actual label</b>.</p>
+    <p>Those two words get muddled constantly, so hold them apart deliberately: the actual label is what happened, the prediction is what the model said would happen. The model does not get to change the first one. Judging the model means putting its eight guesses next to the eight answers and looking at where they disagree.</p>
+    <p>Here are all eight. Each person is drawn as one chip, and the chip carries both facts at once.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>Figure 1 &middot; eight people, eight guesses</span><span id="f1Read">showing both facts</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 240" role="img" aria-label="Eight case chips showing the true outcome and the model's guess"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f1="truth">only what happened</button>
+        <button class="chip" data-f1="guess">only what the model said</button>
+        <button class="chip on" data-f1="both">both at once</button>
+      </div>
+      <div class="fig-cap"><b>Press each of the three buttons, then click any chip.</b> The inside of a chip is the truth. The ring around it is the guess. Two facts, one shape, which is what lets you see agreement and disagreement without reading a table.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>That encoding is worth slowing down on, because every figure below reuses it. A <span class="ref" data-ref="fill">solid teal middle</span> means the person survived. An empty middle means they did not. A <span class="ref" data-ref="ring">heavy unbroken ring</span> means the model predicted survival, and a thin broken ring means it predicted death. The middle is drawn as a filled area because it is a fact about the world that is simply there; the ring is drawn as an outline around that fact because a guess is something laid on top of the truth from outside.</p>
+    <div class="intu"><i>picture it</i><p>A teacher marking multiple-choice papers. She holds the answer key in one hand and a pupil's sheet in the other, and for each question she is doing exactly one thing: comparing two marks. She never asks whether the pupil's answer was reasonable, or well argued, or nearly right. <b>The only material fact is whether the two marks match, and that comparison happens one question at a time.</b> Every metric on this page is a different way of totting up those matches and mismatches at the end.</p></div>
+    <p>Look at chips 2, 5 and 6. Filled middle, heavy ring: the person survived and the model said so. Now look at chips 1 and 3. Filled middle, but only a thin broken ring. Those two survived and the model missed them.</p>
+    <p>Before those mismatches can be counted, one word has to be pinned down, because the four names everyone uses depend on it entirely.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Positive means the thing you went looking for</h2>
+    <p>Answer quickly, before reading on: in a test for a disease, which result is the "positive" one?</p>
+    <p>Most people say the healthy one, because positive sounds like good news. It is the opposite. A positive test result means the disease was found. Positive here has nothing to do with desirable. It marks <b>the thing being hunted for</b>, and the thing being hunted for is usually the bad thing: the tumour, the fraud, the fault, the spam.</p>
+    <p>So the <b>positive class</b> is whichever outcome you decided to detect, and the <b>negative class</b> is everything else. That decision is yours. It is not a property of the data, and nothing stops you making the other choice.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>Figure 2 &middot; the same eight, relabelled</span><span id="f2Read">positive = survived &middot; 5 positives</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 250" role="img" aria-label="The same eight chips with the positive class switched between survived and died"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f2="s">hunt for survivors</button>
+        <button class="chip" data-f2="d">hunt for deaths</button>
+      </div>
+      <div class="fig-cap"><b>Click between the two hunts.</b> Nothing about the eight people changes. The fills invert because filled now means the other thing, and the count of positives goes from five to three.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Watch what stays put when you switch. Person 4 is the same person, with the same history and the same guess against their name, in both views. The model has not been retrained. All that moved is which of the two outcomes we agreed to call the one we are counting.</p>
+    <div class="intu"><i>picture it</i><p>A metal detector on a beach. Sweeping for coins, every beep is a coin-hunt result and every bottle cap is a nuisance. Sweeping for bottle caps to clean up the sand, the beeps mean the opposite. <b>The detector is unchanged and the beach is unchanged; only the thing you named as the target has moved</b>, and with it every count you keep in your notebook.</p></div>
+    <p>This matters more than it looks. Every number later on the page, all four of them, is computed with respect to the positive class. Report a recall of 0.60 without saying what counted as positive and you have reported nothing. In a medical paper it is the difference between finding sixty percent of the sick people and finding sixty percent of the healthy ones.</p>
+    <p>For the rest of this page, positive means survived. Now each of the eight comparisons can be given its proper name.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The second word is the guess, the first says whether it held up</h2>
+    <p>There are exactly four things that can happen when a yes-or-no guess meets a yes-or-no answer. Two of them are the model being right, and two are the model being wrong, and the two ways of being wrong are not the same kind of mistake at all.</p>
+    <p>The names look intimidating and they are built from a rule that takes about ten seconds to learn. Read each name backwards:</p>
+    <p><b>The second word is what the model said.</b> A <b>true positive</b> and a <b>false positive</b> are both cases where the model said positive. The first word says whether that turned out to be correct: true means the model's call held up, false means it did not.</p>
+    <p>So <b>false negative</b> is not a double negative to untangle. It is simply: the model said negative, and it was wrong to. Which means the person actually survived and the model missed them.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span>Figure 3 &middot; naming the eight</span><span id="f3Read">click a chip</span></div>
+      <div class="fig-body"><svg id="f3" viewBox="0 0 900 270" role="img" aria-label="Each of the eight chips resolved into one of four named outcomes"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f3All">name all eight</button>
+        <button class="chip" id="f3Clear">clear the names</button>
+      </div>
+      <div class="fig-cap"><b>Click any chip to have it read out in full.</b> The sentence under the row spells out the guess, the truth, and the name that follows from them, in that order.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Run through all eight and a pattern shows up. Three chips are true positives, two are false negatives, one is a false positive, two are true negatives. Three plus two plus one plus two is eight, and it always will be: every case lands in exactly one of the four boxes, because the two questions behind them have two answers each.</p>
+    <div class="intu"><i>picture it</i><p>A smoke alarm in a kitchen. It goes off and there is a fire: that is the alarm doing its job, a true positive. It goes off because you burnt toast: a false positive, annoying and harmless. It stays quiet on a calm evening: a true negative, the ordinary case nobody notices. And it stays quiet while the pan is alight: a false negative. <b>Both mistakes are the alarm being wrong, but only one of them burns the house down</b>, and no single number can tell you which kind you just made.</p></div>
+    <p>Hold on to that last line, because it is the reason this page has four metrics instead of one. A false positive costs you an unnecessary check. A false negative costs you the thing you were trying to catch. Any summary that adds them together has already thrown away the distinction.</p>
+    <p>Eight names in a row is hard to hold in your head. There is a much better arrangement, and it has been sitting in textbooks for a century.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Two questions, two answers each, and the square draws itself</h2>
+    <p>The four names are not a list to memorise. They are the four corners of a grid you get for free the moment you sort the chips twice. Scroll through the sorting.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>Figure 4 &middot; sorting eight into four</span><span id="sc1Read">eight unsorted</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 520 330" role="img" aria-label="Eight chips sorted by truth and then by prediction into a two by two grid"></svg></div>
+        <div class="fig-cap"><b>Click any step to jump to it.</b> Nothing is added as you scroll. The same eight chips are only ever moved.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><h3>Eight chips, no order</h3><p>This is where the last figure left off. Every chip carries its truth and its guess, and the pile tells you nothing at a glance.</p></div>
+      <div class="col stp" data-step="1"><h3>Sort by what actually happened</h3><p>Survivors to the top row, the rest to the bottom. This split uses only the record. The model has no say in it, which is why these two rows are fixed no matter how good or bad the model is.</p></div>
+      <div class="col stp" data-step="2"><h3>Now sort each row by what the model said</h3><p>Predicted survivors to the left column, predicted deaths to the right. Two cuts across eight chips, and four groups fall out.</p></div>
+      <div class="col stp" data-step="3"><h3>Each group already has a name</h3><p>Top left is truth yes and guess yes: three true positives. Top right is truth yes, guess no: two false negatives. Bottom left is one false positive, bottom right two true negatives.</p></div>
+      <div class="col stp" data-step="4"><h3>The diagonal is where they agreed</h3><p>Top left and bottom right are the five the model got right. The other two boxes are the three it got wrong, split by which kind of wrong.</p></div>
+      <div class="col stp" data-step="5"><h3>The edges carry the totals</h3><p>The rows add to five survivors and three deaths, which is history. The columns add to four predicted survivors and four predicted deaths, which is the model. Same eight chips counted two different ways.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <p>That square is the <b>confusion matrix</b>. The name is old and means the matrix of confusions: which classes the model mixes up with which. For two classes it is always this shape, always four numbers, and those four numbers contain everything any metric on this page will ever use. Nothing later needs the original eight people again.</p>
+    <div class="intu"><i>picture it</i><p>A hotel's arrivals board at the end of the night. Rows for who actually turned up, columns for who the desk expected. Guests who were expected and came sit in one corner; guests who came unannounced sit in another. <b>The two corners on the diagonal are the quiet ones, and every complaint the manager hears comes from the other two.</b></p></div>
+    <p>Two conventions worth knowing, because they trip people up when reading someone else's work. Some textbooks put predictions down the side and the truth across the top, which flips the whole square. And <code>scikit-learn</code>, the library most people meet first, orders its axes negative then positive, so the true negatives land in the top left rather than the bottom right. Always read the axis labels before reading the numbers.</p>
+    <p>Four numbers, then. The obvious thing to do with them is turn them into a single score, and almost everyone's first attempt is the same one.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Accuracy is the diagonal over the whole square</h2>
+    <p>How often was the model right? Count the cases it got right, divide by the number of cases. That is <b>accuracy</b>, and it is the first metric anyone invents, usually without being told it has a name.</p>
+    <p>On the square, being right is the diagonal: the true positives plus the true negatives. Three plus two is five, out of eight, which is 0.625, or 62.5 percent.</p>
+    <div class="panel">accuracy = (TP + TN) / (TP + FP + FN + TN)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (3 + 2) / 8<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <b>0.625</b><br>
+<i>-- the two boxes where the guess matched the answer, over all four boxes</i></div>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span>Figure 5 &middot; accuracy as you change the guesses</span><span id="f5Read">accuracy 0.625</span></div>
+      <div class="fig-body">
+        <svg id="f5" viewBox="0 0 900 300" role="img" aria-label="The confusion matrix recomputing as individual predictions are flipped"></svg>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f5Perfect">make every guess correct</button>
+        <button class="chip" id="f5Reset">back to the real model</button>
+      </div>
+      <div class="fig-cap"><b>Click any of the eight chips in the bottom row to flip that one guess.</b> The square and the fraction recompute from the chips, so every number you see was counted rather than typed.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Flip chip 1 from a miss to a hit and accuracy goes to six out of eight. Flip a correct guess the wrong way and it drops. Nothing surprising happens, which is exactly why accuracy is so appealing: it behaves the way a score ought to behave, it needs no explanation, and it fits in a headline.</p>
+    <div class="intu"><i>picture it</i><p>Marking a true-or-false quiz by counting ticks and ignoring which questions they were on. Twenty ticks out of twenty five is eighty percent whether the five misses were scattered or all clustered on the one topic the exam was actually about. <b>Accuracy is a headcount, and a headcount cannot tell you that the five failures were the only ones that mattered.</b></p></div>
+    <p>Here the eight cases are reasonably balanced: five survivors, three deaths. Accuracy behaves sensibly on data like that, and if your problem really is that even, it is a perfectly honest number to report.</p>
+    <p>Real problems are rarely that even. And once they are lopsided, accuracy stops describing the model at all.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A screening test can score 99% and find nobody</h2>
+    <p>Leave the ship behind and take a town of a thousand people, ten of whom have an illness worth catching early. Here is a test that costs nothing to build. Scroll, and watch it score better than anything else on this page.</p>
+  </div>
+  <div class="bleed scrolly right" id="sc2">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>Figure 6 &middot; the do-nothing test</span><span id="sc2Read">1,000 people &middot; 10 ill</span></div>
+        <div class="fig-body"><svg id="sc2fig" viewBox="0 0 520 384" role="img" aria-label="A thousand people where a test that always says healthy still scores highly on accuracy"></svg></div>
+        <div class="fig-ctl">
+          <button class="chip" data-sc2="500">1 in 2 ill</button>
+          <button class="chip" data-sc2="50">1 in 20</button>
+          <button class="chip on" data-sc2="10">1 in 100</button>
+          <button class="chip" data-sc2="1">1 in 1000</button>
+        </div>
+        <div class="fig-cap"><b>Change how common the illness is, and click any step.</b> The test is identical in all four cases: it says healthy to everybody.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><h3>A thousand people, ten of them ill</h3><p>Each square stands for ten people, so the grid holds a hundred squares. The ill ones are one square's worth, drawn apart at the edge so you can find them.</p></div>
+      <div class="col stp" data-step="1"><h3>The test says healthy. To everyone.</h3><p>It does not look at the patient. It has no inputs. Written down it is one line long, and it never returns a positive.</p></div>
+      <div class="col stp" data-step="2"><h3>It is right about 990 of them</h3><p>Every healthy person gets the correct answer, because the test's only answer is the one most people deserve. Nine hundred and ninety true negatives.</p></div>
+      <div class="col stp" data-step="3"><h3>Accuracy: 0.99</h3><p>Nine hundred and ninety right out of a thousand. That is a higher score than most carefully built models achieve on a hard problem, from a test that does nothing.</p></div>
+      <div class="col stp" data-step="4"><h3>It found none of the ten</h3><p>Ten false negatives, and not a single true positive. The one job the test existed to do was finding those ten people, and it found zero of them.</p></div>
+      <div class="col stp" data-step="5"><h3>The majority drowned out the minority</h3><p>Accuracy counts every case with equal weight, so the 990 easy cases decide the score and the 10 that mattered contribute one percent of it. Make the illness rarer and the useless test scores higher still.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <p>This is <b>class imbalance</b>: one class vastly outnumbering the other. It is the normal condition, not a corner case. Fraud is a fraction of a percent of card transactions. Manufacturing defects are rarer still. The condition being screened for is, by design, uncommon in the screened population.</p>
+    <div class="intu"><i>picture it</i><p>A lifeguard who never blows the whistle, judged on how many bathers left the beach safely. On a calm day that is nearly all of them, and his record looks flawless. <b>The score is dominated by the swimmers who were never in trouble</b>, and the only afternoon it says anything about him is the one afternoon it says nothing.</p></div>
+    <p>Move the prevalence chips and the failure gets worse in the direction you would least expect. At one in a thousand, the do-nothing test scores 0.999. The rarer and more serious the thing you are hunting, the more flattering accuracy becomes about a model that never finds it.</p>
+    <p class="pull">Accuracy asks how often the model was right. On a rare target, that is a question about the easy cases.</p>
+    <p>What went wrong is specific and fixable. Accuracy pools all four boxes into one fraction, so the enormous true negative box swallows everything. The repair is to stop pooling, and to ask two narrower questions instead.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One grades your alarms, the other grades your coverage</h2>
+    <p>Two questions, and the whole difference between them is which pile you divide by.</p>
+    <p><b>Of everything the model flagged, how much of it was real?</b> That is <b>precision</b>. Take the cases the model called positive, and ask what fraction genuinely were. It is a question about the model's alarms, and the do-nothing test from a moment ago cannot even be asked it, because it never raised one.</p>
+    <p><b>Of everything that was really there, how much did the model find?</b> That is <b>recall</b>. Take the cases that genuinely were positive, and ask what fraction the model caught. It is a question about coverage, and the do-nothing test scores exactly zero on it. Ten real cases, none found.</p>
+    <p>On the square, precision reads down a column and recall reads across a row. That is the entire distinction, and it is worth seeing before it is worth reading.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>Figure 7 &middot; a column and a row</span><span id="f7Read">precision = 3/4 = 0.75</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 280" role="img" aria-label="Precision highlighted as a column of the matrix and recall as a row"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7="p">precision: down the column</button>
+        <button class="chip" data-f7="r">recall: across the row</button>
+        <button class="chip" data-f7="b">both at once</button>
+      </div>
+      <div class="fig-cap"><b>Switch between the two.</b> The same true positive box, 3 chips, is the top of both fractions. Only the denominator moves, and moving it is the whole idea.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Precision is three out of four: the model flagged four people as survivors and three of them survived. Recall is three out of five: five people actually survived and the model found three. Same numerator, different question, different answer.</p>
+    <div class="panel">precision = TP / (TP + FP) = 3 / (3 + 1) = 3/4 = <b>0.75</b><br>
+<i>-- of the four the model flagged, three were right</i><br><br>
+recall&nbsp;&nbsp;&nbsp; = TP / (TP + FN) = 3 / (3 + 2) = 3/5 = <b>0.60</b><br>
+<i>-- of the five who survived, the model found three</i></div>
+    <div class="intu"><i>picture it</i><p>A fishing net hauled up on deck. Precision is the question you ask looking into the net: of everything in here, how much is fish and how much is weed and old boots? Recall is the question you ask looking back at the sea: of all the fish that were down there, how many are now on deck? <b>A tiny net you cast carefully can be pure and still leave the sea full of fish; a net that spans the harbour catches everything and comes up mostly rubbish.</b></p></div>
+    <p>Notice what neither of them contains. The true negative box, the one that swallowed accuracy in the town of a thousand, appears in neither formula. Precision and recall are both computed entirely from the positive class and the mistakes around it, which is exactly why they keep working when the negatives outnumber the positives by a thousand to one.</p>
+    <p>That fishing net has a suggestion buried in it. If a bigger net raises recall and lowers precision, then something must be adjustable, and adjusting it must move both.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One dial sets them both, and it moves them opposite ways</h2>
+    <p>A model does not really answer yes or no. Underneath, it produces a number: a <b>score</b> between 0 and 1 saying how strongly this case looks positive to it. 0.93 means it is fairly convinced. 0.31 means it is not.</p>
+    <p>A yes-or-no answer only appears when somebody draws a line and says: at or above this, call it positive. That line is the <b>threshold</b>, and it is not part of the model. It is a decision made afterwards, by a person, and it can be moved at any time without retraining anything.</p>
+    <p>Twenty four patients below, laid out left to right by the score the model gave them. Eight of them genuinely have the condition, and the model is decent but not clairvoyant: it ranks most of the eight high, and it puts a few healthy people up there too. Drag the line and watch the two numbers from a moment ago move in opposite directions.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span>Figure 8 &middot; twenty four patients, one moving line</span><span id="f8Head">threshold <b>0.60</b></span></div>
+      <div class="fig-body">
+        <svg id="f8" viewBox="0 0 900 320" role="img" aria-label="Twenty four patients ordered by model score with a movable decision threshold"></svg>
+        <div class="fig-read" id="f8Read"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <input type="range" id="f8Slider" min="1" max="9" step="1" value="6" aria-label="Decision threshold">
+        <div style="display:flex;justify-content:space-between;font-family:var(--v14);font-size:var(--v7);color:var(--v11);margin-top:9px">
+          <span>0.10 flag almost everyone</span><span>0.50</span><span>0.90 flag almost nobody</span>
+        </div>
+      </div>
+      <div class="fig-cap"><b>Drag the slider.</b> Every number under the figure is counted from the twenty four chips at the current line, not looked up. Chips left of the line are flagged; chips right of it are cleared.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Push the line left, towards 0.10, and the model flags almost everybody. It now catches all eight patients, so recall reaches 1.00, and it drags in fourteen healthy people along with them, so precision collapses to 0.36. Push the line right to 0.90 and it flags only two people. Now recall is 0.13, because seven sick patients walked out untested.</p>
+    <p>This is the trade-off, and it is not a flaw in any particular model. It is arithmetic. Flagging more cases can only add to the flagged pile, so it can only help recall and can only hurt precision. There is no threshold that makes both perfect unless the model separates the two groups completely, which real models do not.</p>
+    <div class="intu"><i>picture it</i><p>Airport security deciding how sensitive to make the walk-through arch. Turn it up and belt buckles set it off: nothing dangerous gets past, and the queue fills with people emptying their pockets. Turn it down and the queue flows: almost every alarm is worth investigating, and something eventually walks through. <b>The dial does not change what is in anyone's bag. It only chooses which of the two failures you would rather have today.</b></p></div>
+    <p>Watch the accuracy readout while you drag, too. It sits highest between 0.60 and 0.70, and across the middle of the range it barely moves, because with sixteen healthy patients out of twenty four it is still mostly reporting on the healthy ones. Only at the loosest setting does it drop sharply, and that is the setting where fourteen healthy people got flagged. Precision and recall are the two that actually move.</p>
+    <p>Two numbers moving in opposite directions is awkward for a leaderboard. So people built a third number to fold them together, and the way they folded them was deliberate.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>F1 refuses to let a strong half cover for a weak one</h2>
+    <p>Try the obvious fix first. Precision 0.36 and recall 1.00: average them and you get 0.68. That model flags twenty two of the twenty four patients and is wrong about most of its alarms, and the average has just called it fairly good.</p>
+    <p>Worse, compare it with the line at 0.70, which gives precision 0.71 and recall 0.63. That model is balanced and useful. Its plain average is 0.67, which is <em>lower</em>. The ordinary average prefers the one that flags nearly everybody.</p>
+    <p>The <b>F1 score</b> uses a different kind of average, the <b>harmonic mean</b>. Instead of adding the two numbers and halving, it multiplies them, doubles the product, and divides by their sum.</p>
+    <div class="panel">F1 = 2 &times; (precision &times; recall) / (precision + recall)<br><br>
+line at 0.10&nbsp; F1 = 2 &times; (0.364 &times; 1.000) / 1.364 = <b>0.53</b>&nbsp; <i>plain average 0.68</i><br>
+line at 0.70&nbsp; F1 = 2 &times; (0.714 &times; 0.625) / 1.339 = <b>0.67</b>&nbsp; <i>plain average 0.67</i></div>
+    <p>The harmonic mean sits close to the smaller of the two numbers, and the further apart they are the harder it pulls down. Any value multiplied by something near zero is near zero, and precision and recall are multiplied together in the numerator. So one number near zero drags the whole score there, no matter how good the other one is.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>Figure 9 &middot; two ways to average the same pair</span><span id="f9Read">line at 0.70</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 290" role="img" aria-label="Plain average and F1 compared across four threshold settings"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f9="1">line at 0.10</button>
+        <button class="chip" data-f9="4">line at 0.40</button>
+        <button class="chip on" data-f9="7">line at 0.70</button>
+        <button class="chip" data-f9="9">line at 0.90</button>
+      </div>
+      <div class="fig-cap"><b>Click through the four lines.</b> Both averages are computed from the same twenty four patients as the previous figure. Watch the two grey bars and the two teal bars disagree about which setting is best.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The extreme case makes the point cleanly. Push the line below anything the slider offers, so that every single patient is flagged, and recall is 1.00 with precision 0.33, because a third of the patients are ill. Its plain average is 0.67, a respectable-sounding number for a model that does no work whatsoever. Its F1 is 0.50, and if the illness were rarer that number would fall further still.</p>
+    <div class="intu"><i>picture it</i><p>A driving test where you must pass both the theory and the road. Score 100 on the theory and 20 on the road, and averaging says 60, a pass. Nobody runs a driving test that way, because the two halves are not interchangeable and being brilliant at one does not make you safe. <b>F1 is the version that fails you on the weaker half</b>, which is what you want from a score that is meant to summarise two different obligations.</p></div>
+    <p>The 1 in F1 is a weight. It says precision and recall matter equally, which is a real assumption and often the wrong one. When they do not matter equally the family is called F-beta: F2 weights recall higher, F0.5 weights precision higher. Reporting plain F1 is quietly claiming that missing a case and raising a false alarm cost you about the same.</p>
+    <p>Four metrics down. The names from the original slide that have not appeared yet are the four rates, and they turn out to be the same square again.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Read one row at a time and four rates fall out</h2>
+    <p>TPR, FNR, TNR, FPR. Four more abbreviations, and not one of them is a new idea. Each is a single box divided by the row it sits in.</p>
+    <p>The top row is everyone who was really positive: five survivors. Of those five, three were caught and two were missed. Three fifths is the <b>true positive rate</b>, 0.60. Two fifths is the <b>false negative rate</b>, 0.40. They add to 1, and they must, because every genuine survivor was either caught or missed and there is no third option.</p>
+    <p>The bottom row is everyone who was really negative: three deaths. Two were correctly left alone, giving a <b>true negative rate</b> of 0.67, and one was wrongly flagged, giving a <b>false positive rate</b> of 0.33. Those two also add to 1, for the same reason.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span>Figure 10 &middot; each row splits into two rates</span><span id="f10Read">click a row of the square</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 290" role="img" aria-label="The two rows of the confusion matrix each producing a pair of rates that sum to one"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f10="p">the row of real survivors</button>
+        <button class="chip" data-f10="n">the row of real deaths</button>
+      </div>
+      <div class="fig-cap"><b>Click either row.</b> The bar underneath is that row split into its two outcomes. Each pair sums to 1, which is what makes them rates rather than counts.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Now the punchline, and it is worth reading twice. The true positive rate is 3/5. Recall is 3/5. They are the same number with two names, because they are the same division: the true positive box over the row of real positives. Medicine has a third name for it, <b>sensitivity</b>, and the true negative rate has a fourth, <b>specificity</b>.</p>
+    <div class="intu"><i>picture it</i><p>One recipe printed in four cookbooks under four titles. A reader who has cooked it once will follow any of the four; a reader meeting all four names at once assumes there are four dishes. <b>Sensitivity, recall and true positive rate are one division, and the only thing that changes is which field wrote it down.</b></p></div>
+    <p>These are the rates you meet in clinical papers, and the reason is that they are stable in a way precision is not. Sensitivity and specificity are computed inside a row, so they do not depend on how common the disease is in the room. Precision is computed down a column, mixing the two rows together, so the same test reports a very different precision in a screening clinic than in a specialist ward. Move the prevalence chips in the town of a thousand and you are watching exactly that effect.</p>
+    <p>Every number the slide named now exists. Which leaves the only question that was ever really at stake.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Picking a metric is deciding which mistake you can afford</h2>
+    <p>There is no best metric, and a page that ended by naming one would be lying to you. There is only a question you have to answer first, in words, about your own situation: which of the two mistakes hurts more, and by roughly how much?</p>
+    <p>Answer that and the metric follows almost mechanically. Refuse to answer it and no formula will answer it for you, because the arithmetic has no way of knowing what a missed tumour costs relative to an unnecessary biopsy.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span>Figure 11 &middot; the same square, three jobs</span><span id="f11Read">cancer screening</span></div>
+      <div class="fig-body"><svg id="f11" viewBox="0 0 900 270" role="img" aria-label="Three situations weighting false positives and false negatives differently"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f11="0">cancer screening</button>
+        <button class="chip" data-f11="1">spam filter</button>
+        <button class="chip" data-f11="2">fraud review queue</button>
+      </div>
+      <div class="fig-cap"><b>Click each job.</b> The two error boxes are weighted by what that mistake actually costs, and the metric named underneath is the one that leads.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Screening for cancer, a false negative sends a sick person home reassured and a false positive sends a well person for a scan they did not need. Those costs are nowhere near equal, so recall leads and a great deal of precision gets spent buying it. Everyone screened positive goes on to a second, sharper test, which is a design that only makes sense once you have accepted a low precision on the first one.</p>
+    <p>A spam filter inverts it. A false negative is a junk mail you delete in a second. A false positive is a job offer in a folder nobody opens. Precision leads, and some spam is allowed through on purpose.</p>
+    <p>A fraud review queue is the case where F1 earns its keep. Analysts can only work through so many cases a day, so a flood of false positives wastes the team, and every missed fraud is money gone. Neither error dominates, and the queue length itself sets the threshold.</p>
+    <div class="intu"><i>picture it</i><p>A fire alarm and a bank vault alarm cannot be tuned the same way. The fire alarm should scream at burnt toast, because the cost of missing a fire is a life and the cost of a false alarm is a hallway full of irritated people. The vault alarm sending armed response every time a lorry rumbles past becomes an alarm nobody answers. <b>Same device, opposite settings, and the settings come from what the mistake costs rather than from anything inside the device.</b></p></div>
+    <div class="note"><b>Where all of this stops.</b> These four numbers describe one model, on one dataset, at one threshold, for one definition of positive. They say nothing about whether the model works on a different hospital's patients, whether the labels were correct in the first place, or whether the cases were even a fair sample. A confusion matrix built on a test set that leaked into training reports beautiful numbers about nothing at all. And with three or more classes the square grows into a full grid, where precision and recall are computed per class and then averaged, which is a choice with its own pitfalls.</div>
+    <p>Everything on this page came out of one square with four numbers in it. Accuracy pools all four and gets fooled when one box is enormous. Precision reads a column, recall reads a row, F1 refuses to let one of them carry the other, and the four rates are those same rows written as fractions. The only judgement that was never in the arithmetic is which box you most need to keep small.</p>
+    <p class="pull">The square counts what happened. Deciding which corner of it you can live with is your job, not the model's.</p>
+  </div>
+</section>
+
+<p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<div class="col">
+  <div class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+    <h3>Into the weeds</h3>
+    <details><summary>What happens to precision when nothing is flagged</summary><p>Precision is TP divided by TP plus FP. A model that flags nobody has zero in both, and zero divided by zero is not a number. Most libraries return 0 and print a warning; some return 1 on the grounds that no alarm was wrong. Neither is a fact about the model, both are conventions, and this is one of the few places where two correct implementations will hand you different numbers for the same predictions. If you ever see a suspiciously clean precision of 0 or 1, check how many cases were flagged before reading anything into it.</p></details>
+    <details><summary>F-beta, and how to say that recall matters twice as much</summary><p>F1 weights precision and recall equally. F-beta generalises it: beta is how many times more you care about recall than precision. F2 is the common choice when misses are the expensive error, and F0.5 when false alarms are. The formula is (1 + beta squared) times precision times recall, divided by beta squared times precision, plus recall. Setting beta to 1 gives back F1 exactly. Choosing beta is the same cost judgement as the last section, written as a number instead of a sentence.</p></details>
+    <details><summary>Precision-recall curves and ROC curves</summary><p>Every threshold on the slider produces one precision and one recall. Plot all of them and you get a precision-recall curve, which describes the model across every possible line rather than at the one you happened to pick. Plot the true positive rate against the false positive rate instead and you get an ROC curve, and the area underneath it is the AUC people quote. The difference matters under imbalance: ROC uses the false positive rate, which has the huge negative row as its denominator, so it stays flattering when negatives dominate. On a rare positive class, the precision-recall curve is the more honest picture.</p></details>
+    <details><summary>Three or more classes</summary><p>With ten classes the square becomes a ten by ten grid, and the diagonal is still the correct predictions. Precision and recall are computed one class at a time, treating that class as positive and the other nine as negative, which gives ten pairs. Averaging them straight is called macro averaging and gives every class an equal vote, including the tiny ones. Pooling all the counts first and then dividing is micro averaging, which gives every case an equal vote and therefore lets the big classes dominate again. Weighted averaging sits in between. The choice is the same imbalance question in a new costume.</p></details>
+    <details><summary>Why the diagonal is not always top left to bottom right</summary><p>The matrix in this piece puts actual positives in the top row and predicted positives in the left column, so the true positives sit top left. The <code>scikit-learn</code> convention orders both axes by label value, so with labels 0 and 1 the negatives come first and true negatives land top left instead. Some textbooks also transpose the whole thing, putting predictions down the side. All three are the same four numbers. Before reading anyone's matrix, find the axis labels and locate the true positive box; the shape of the picture will not tell you where it is.</p></details>
+    <details><summary>Balanced accuracy, and a cheap fix for the town of a thousand</summary><p>Accuracy failed because it weighted 990 easy cases and 10 hard ones equally. Balanced accuracy repairs it by averaging the true positive rate and the true negative rate instead of pooling all four boxes, which gives each row an equal vote regardless of size. The do-nothing test scores a balanced accuracy of 0.50, exactly what a coin flip deserves, rather than 0.99. It is a useful summary when both classes matter and neither error is clearly more expensive, and it is still a single number hiding a trade-off.</p></details>
+    <details><summary>These numbers are estimates, not measurements</summary><p>A recall of 0.60 computed on eight people is not a property of the model, it is one noisy sample of one. Move to a different eight and it could easily read 0.4 or 0.8. Small test sets produce metrics with error bars wide enough to swallow the difference between two models, which is why leaderboard gaps of a fraction of a percent on a few hundred cases usually mean nothing. The worked examples here are small so you can count every chip; real evaluation needs enough cases in the smaller class, not enough cases overall.</p></details>
+  </div>
+</div>
+
+<footer class="col" style="padding:60px 0 90px;color:var(--v11);font-family:var(--v14);font-size:var(--v7);line-height:1.9">
+  <p>The eight passengers, the four-box square and the four rates follow the worked example in the source slides. Every figure on this page recomputes its own numbers from the chips it draws: the eight predictions in the first half, and twenty four scored patients in the second. Nothing is quoted from a benchmark, so there is nothing here to date.</p>
+</footer>
+
+<script>!function(){"use strict";var t={paper:"#EDF0F0",paper2:"#E0E5E5",ink:"#10201F",soft:"#3A4A49",faint:"#606D6C",rule:"#C7D0CF",accent:"#14666E",risk:"#A03520",warn:"#7A5410",safe:"#2E8B74",quiet:"#4A5756"},e=Math.round;function n(t,e){return t?e?"hit":"miss":e?"alarm":"pass"}function a(e,a){var i=n(e,a);return"hit"===i?t.accent:"miss"===i?t.risk:"alarm"===i?t.warn:t.faint}function i(n,i,r,o,s,c,l){n=e(n),i=e(i),r=e(r);var d,f,u,h="guess"===(c=c||"both")?t.paper2:o?t.accent:t.paper;"truth"===c?(d=t.rule,f=1.4,u="none"):(d="guess"===c?s?t.soft:t.faint:a(o,s),f=s?3.2:1.5,u=s?"none":"4 3");var g=e(f/2)+1;return"<rect "+(l||"")+' x="'+(n+g)+'" y="'+(i+g)+'" width="'+(r-2*g)+'" height="'+(r-2*g)+'" rx="'+Math.max(2,e(.16*r))+'" fill="'+h+'" stroke="'+d+'" stroke-width="'+f+'" stroke-dasharray="'+u+'"/>'}function r(n,a,i,r,o,s){return'<text x="'+e(n)+'" y="'+e(a)+'" text-anchor="'+(o||"start")+'" fill="'+(r||t.faint)+'" font-family="IBM Plex Mono,ui-monospace,monospace" font-size="'+(s||12)+'" letter-spacing=".02em">'+i+"</text>"}function o(e,n,a,i,o){return r(e,n,a,i||t.ink,o,15)}function s(n,a,i,r,o,s,c,l){return"<rect "+(l||"")+' x="'+e(n)+'" y="'+e(a)+'" width="'+e(i)+'" height="'+e(r)+'" rx="4" fill="'+(s||"none")+'" fill-opacity="'+(void 0===c?1:c)+'" stroke="'+(o||t.rule)+'" stroke-width="1.5" shape-rendering="crispEdges"/>'}function c(t,n,a,i,r){return"<rect "+r+' x="'+e(t)+'" y="'+e(n)+'" width="'+e(a)+'" height="'+e(i)+'" fill="rgba(0,0,0,0)" style="cursor:pointer"/>'}function l(t,e){var n=document.getElementById(t);n&&(n.innerHTML=e)}function d(t,e){var n=document.getElementById(t);n&&(n.innerHTML=e)}function f(t){return t.toFixed(2)}var u=[{id:"1",t:1,g:0},{id:"2",t:1,g:1},{id:"3",t:1,g:0},{id:"4",t:0,g:0},{id:"5",t:1,g:1},{id:"6",t:1,g:1},{id:"7",t:0,g:1},{id:"8",t:0,g:0}];function h(t){var e={hit:0,miss:0,alarm:0,pass:0};return t.forEach(function(t){e[n(t.t,t.g)]++}),e.TP=e.hit,e.FN=e.miss,e.FP=e.alarm,e.TN=e.pass,e.n=t.length,e}var g={hit:"TP",miss:"FN",alarm:"FP",pass:"TN"},m={hit:"true positive",miss:"false negative",alarm:"false positive",pass:"true negative"},p=document.getElementById("pfill"),v=document.getElementById("ptxt"),y=2*Math.PI*23;p&&(p.style.strokeDasharray=y,p.style.strokeDashoffset=y,addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollHeight-t.clientHeight,n=e>0?t.scrollTop/e:0;n=Math.min(1,Math.max(0,n)),p.style.strokeDashoffset=y*(1-n),v.textContent=Math.round(100*n)+"%"},{passive:!0}));var k,E=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),E.unobserve(t.target))})},{threshold:.05,rootMargin:"0px 0px -4% 0px"});function b(t,e){var n=[].slice.call(document.querySelectorAll("#"+t+" .stp")),a=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(n.forEach(function(e){e.classList.toggle("on",e===t.target)}),e(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});n.forEach(function(t){a.observe(t),t.addEventListener("click",function(){n.forEach(function(e){e.classList.toggle("on",e===t)}),e(+t.getAttribute("data-step"))})}),e(0)}document.querySelectorAll(".reveal").forEach(function(t){E.observe(t)}),addEventListener("scroll",function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(t){t.getBoundingClientRect().top<.94*innerHeight&&t.classList.add("in")})},{passive:!0}),function(){var e="row";function a(){var a="";if("row"===e)u.forEach(function(e,n){var o=30+52*n;a+=i(o,104,34,e.t,e.g),a+=r(o+17,154,e.id,t.faint,"middle")}),a+=r(30,86,"eight people, eight guesses",t.ink_faint||t.faint),a+=r(30,190,"nothing sorted yet",t.faint);else{var o=64,c=148;a+=r(132,34,"model said yes",t.faint),a+=r(288,34,"model said no",t.faint),a+=r(12,86,"really",t.faint),a+=r(12,102,"yes",t.ink),a+=r(12,178,"really",t.faint),a+=r(12,194,"no",t.ink),[["hit",0,0],["miss",0,1],["alarm",1,0],["pass",1,1]].forEach(function(e){var l=e[0],d=132+156*e[2],f=o+92*e[1],h=u.filter(function(t){return n(t.t,t.g)===l});a+=s(d,f,c,84,t.rule,"hit"===l||"pass"===l?t.accent:t.paper2,"hit"===l||"pass"===l?.07:.5),h.forEach(function(t,e){a+=i(d+18+36*e,f+22,28,t.t,t.g)}),a+=r(d+c-9,f+84-11,g[l]+" "+h.length,t.soft,"end")})}l("heroFig",a),d("heroState","row"===e?"a list of eight":"four groups"),document.querySelectorAll("[data-hero-t]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-hero-t")===e)})}document.querySelectorAll("[data-hero-t]").forEach(function(t){t.addEventListener("click",function(){e=t.getAttribute("data-hero-t"),a()})}),a(),matchMedia("(prefers-reduced-motion:reduce)").matches?(e="square",a()):setTimeout(function(){"row"===e&&(e="square",a())},1100)}(),function(){var e="both",n=-1;function a(){var a="";u.forEach(function(o,s){var c=52+100*s;s===n&&(a+='<rect x="'+(c-9)+'" y="45" width="80" height="80" rx="8" fill="none" stroke="'+t.accent+'" stroke-width="2"/>'),a+=i(c,54,62,o.t,o.g,e),a+=r(c+31,36,"person "+o.id,t.faint,"middle")}),a+='<g data-part="fill">'+i(52,168,26,1,0,"truth")+r(88,186,"filled middle = survived",t.faint)+"</g>",a+='<g data-part="ring">'+i(330,168,26,0,1,"guess")+r(366,186,"heavy ring = model said survived",t.faint)+"</g>",a+=r(700,186,"both"===e?"both channels on":"truth"===e?"ring switched off":"fill switched off",t.accent),u.forEach(function(t,e){a+=c(52+100*e-9,45,80,80,'data-f1i="'+e+'"')}),l("f1",a);h(u);if(n<0)d("f1Read","both"===e?"showing both facts":"truth"===e?"showing what happened":"showing what the model said");else{var o=u[n];d("f1Read","person "+o.id+": "+(o.t?"survived":"did not survive")+", model said "+(o.g?"survived":"did not"))}document.querySelectorAll("[data-f1]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-f1")===e)})}document.querySelectorAll("[data-f1]").forEach(function(t){t.addEventListener("click",function(){e=t.getAttribute("data-f1"),a()})}),document.getElementById("f1").addEventListener("click",function(t){var e=t.target.closest("[data-f1i]");if(e){var i=+e.getAttribute("data-f1i");n=n===i?-1:i,a()}}),a()}(),function(){var e="s";function a(){var a="",s="d"===e;a+=r(52,20,s?"positive = did not survive":"positive = survived",t.accent);var c=0;u.forEach(function(e,o){var l=s?1-e.t:e.t,d=s?1-e.g:e.g;l&&c++;var f=52+100*o,u=56;a+=i(f,56,u,l,d),a+=r(f+28,46,"person "+e.id,t.faint,"middle"),a+=r(f+28,132,l?"positive":"negative",l?t.accent:t.faint,"middle"),a+=r(f+28,148,g[n(l,d)],t.ink,"middle")}),a+=r(52,216,"positives in this hunt",t.faint)+o(236,216,String(c),t.accent),a+=r(300,216,"negatives",t.faint)+o(392,216,String(8-c),t.ink),l("f2",a+=r(456,216,"the eight people did not change",t.faint));var f=h(u.map(function(t){return s?{t:1-t.t,g:1-t.g}:t}));d("f2Read",(s?"positive = died":"positive = survived")+" &middot; "+f.n+" cases, "+(f.TP+f.FN)+" positives"),document.querySelectorAll("[data-f2]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-f2")===e)})}document.querySelectorAll("[data-f2]").forEach(function(t){t.addEventListener("click",function(){e=t.getAttribute("data-f2"),a()})}),a()}(),function(){var e={},s=-1;function f(){var f="";if(u.forEach(function(c,l){var d=52+100*l,u=56,h=n(c.t,c.g);l===s&&(f+='<rect x="'+(d-9)+'" y="43" width="74" height="74" rx="8" fill="none" stroke="'+t.accent+'" stroke-width="2"/>'),f+=i(d,52,u,c.t,c.g),f+=r(d+28,36,"person "+c.id,t.faint,"middle"),e[l]&&(f+=o(d+28,146,g[h],a(c.t,c.g),"middle"))}),f+='<line x1="52" y1="176" x2="848" y2="176" stroke="'+t.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',s>=0){var h=u[s],p=n(h.t,h.g);f+=r(52,204,"the model said",t.faint),f+=o(52,226,h.g?"positive: this person survived":"negative: this person did not survive"),f+=r(52,252,"and the record says it was "+(h.t===h.g?"right":"wrong")+", so this is a "+m[p].toUpperCase(),a(h.t,h.g),"start",15)}else f+=r(52,214,"click a chip to have it read out in full",t.faint,"start",15);u.forEach(function(t,e){f+=c(52+100*e-9,43,80,72,'data-f3i="'+e+'"')}),l("f3",f);var v=Object.keys(e).length;d("f3Read",s>=0?"person "+u[s].id+" &middot; "+m[n(u[s].t,u[s].g)]:v?v+" of 8 named":"click a chip")}document.getElementById("f3").addEventListener("click",function(t){var n=t.target.closest("[data-f3i]");if(n){var a=+n.getAttribute("data-f3i");s=s===a?-1:a,e[a]=!0,f()}}),document.getElementById("f3All").addEventListener("click",function(){u.forEach(function(t,n){e[n]=!0}),f()}),document.getElementById("f3Clear").addEventListener("click",function(){e={},s=-1,f()}),f()}(),k=[[54,58],[168,42],[286,74],[398,50],[96,150],[228,168],[344,146],[430,178]],b("sc1",function(e){var a="",c=150,f=76,h=150,m=92;if(0===e)u.forEach(function(t,e){a+=i(k[e][0],k[e][1],34,t.t,t.g)}),a+=r(24,300,"eight chips, no order",t.faint);else if(1===e){var p={1:[],0:[]};u.forEach(function(t){p[t.t].push(t)}),[1,0].forEach(function(e,n){var o=70+110*n;a+=r(24,o+22,"really",t.faint),a+=r(24,o+38,e?"yes":"no",t.ink),p[e].forEach(function(t,e){a+=i(110+52*e,o,34,t.t,t.g)}),a+=r(470,o+22,String(p[e].length),t.faint,"end")}),a+=r(24,300,"sorted by the record only",t.faint)}else a+=r(c,42,"said yes",t.faint),a+=r(310,42,"said no",t.faint),a+=r(20,102,"really",t.faint),a+=r(20,118,"yes",t.ink),a+=r(20,204,"really",t.faint),a+=r(20,220,"no",t.ink),["hit","miss","alarm","pass"].forEach(function(o){var l=function(t){return{hit:[0,0],miss:[0,1],alarm:[1,0],pass:[1,1]}[t]}(o),d=c+160*l[1],p=f+102*l[0],v=u.filter(function(t){return n(t.t,t.g)===o}),y="hit"===o||"pass"===o,k=e>=4&&y?' data-gel="diag" class="show"':e>=4?' data-gel="off" class="show"':"";a+=s(d,p,h,m,t.rule,e>=4&&y?t.accent:t.paper2,e>=4&&y?.1:.45,k),v.forEach(function(t,e){a+=i(d+16+40*e,p+18,30,t.t,t.g)}),e>=3&&(a+=r(d+h-10,p+m-12,g[o]+" "+v.length,t.soft,"end"))}),e>=5&&(a+='<g data-gel="tot" class="show">',a+=o(478,127,"5",t.ink),a+=o(478,229,"3",t.ink),a+=r(474,42,"really",t.faint),a+=o(225,304,"4",t.ink,"middle"),a+=o(385,304,"4",t.ink,"middle"),a+=r(20,304,"model said",t.faint),a+="</g>"),4===e&&(a+=r(20,304,"the diagonal is where they agreed",t.accent)),2===e&&(a+=r(20,304,"two cuts, four groups",t.faint)),3===e&&(a+=r(20,304,"each group already had a name",t.faint));l("sc1fig",a),d("sc1Read",["eight unsorted","split by the record","split again by the model","3 TP &middot; 2 FN &middot; 1 FP &middot; 2 TN","5 right, 3 wrong","totals on the edges"][e]||"")}),function(){var e=u.map(function(t){return t.g});function n(){var n=u.map(function(t,n){return{id:t.id,t:t.t,g:e[n]}}),a=h(n),m="",p=60,v=48,y=150;m+=r(p,26,"said yes",t.faint),m+=r(218,26,"said no",t.faint),m+=r(6,62,"really",t.faint),m+=r(6,80,"yes",t.ink),m+=r(6,146,"really",t.faint),m+=r(6,164,"no",t.ink),[["hit",0,0],["miss",0,1],["alarm",1,0],["pass",1,1]].forEach(function(e){var n=e[0],i=p+158*e[2],c=v+84*e[1],l="hit"===n||"pass"===n;m+=s(i,c,y,76,l?t.accent:t.rule,l?t.accent:t.paper2,l?.12:.5),m+=r(i+14,c+24,g[n],t.soft),m+=o(i+y-16,c+50,String(a[g[n]]),l?t.accent:t.ink,"end")});var k=(a.TP+a.TN)/a.n;m+=r(418,64,"the diagonal",t.accent),m+=o(418,96,a.TP+" + "+a.TN+"  =  "+(a.TP+a.TN),t.ink),m+=r(418,126,"out of eight cases",t.faint),m+=o(418,160,"accuracy  "+f(k),t.accent),m+='<line x1="60" y1="228" x2="840" y2="228" stroke="'+t.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',m+=r(p,252,"the eight guesses",t.faint),n.forEach(function(e,n){var a=248+46*n;m+=i(a,240,34,e.t,e.g),m+=r(a+17,290,e.id,t.faint,"middle")}),n.forEach(function(t,e){m+=c(248+46*e-5,234,44,46,'data-f5i="'+e+'"')}),l("f5",m),d("f5Read","accuracy "+f(k)+" &middot; "+(a.TP+a.TN)+" of 8 right")}document.getElementById("f5").addEventListener("click",function(t){var a=t.target.closest("[data-f5i]");if(a){var i=+a.getAttribute("data-f5i");e[i]=1-e[i],n()}}),document.getElementById("f5Perfect").addEventListener("click",function(){e=u.map(function(t){return t.t}),n()}),document.getElementById("f5Reset").addEventListener("click",function(){e=u.map(function(t){return t.g}),n()}),n()}(),function(){var n=10,a=0,i=10.6,s=30;function c(){var c="",f=1e3,u=f-n;c+=r(s,20,"1,000 people",t.ink),c+=r(s,36,n+" of them ill"+(a>=1?", and the test says healthy to all 1,000":""),t.faint);for(var h=a>=5,g=0;g<f;g++){var m,p,v=g>=f-n,y=Math.floor(g/40),k=e(s+g%40*i),E=e(46+y*i),b=1;v?a>=2?(m=t.risk,p=t.risk):(m=t.accent,p=t.accent):(m=t.paper,p=t.rule,h&&(b=.28)),c+='<rect x="'+k+'" y="'+E+'" width="8" height="8" rx="1.5" fill="'+m+'" stroke="'+p+'" stroke-width="1" opacity="'+b+'"/>'}var w=u/f;a>=3&&(c+=o(s,333,"accuracy "+w.toFixed(3)+"   ("+u+" of 1,000 right)",t.accent)),a>=4&&(c+=o(s,355,"found 0 of the "+n+" ill people",t.risk)),5===a&&(c+=r(s,375,"the faded marks decided the score",t.faint)),l("sc2fig",c),d("sc2Read","1,000 people &middot; "+n+" ill"+(a>=3?" &middot; accuracy "+w.toFixed(3):"")),document.querySelectorAll("[data-sc2]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-sc2")===n)})}document.querySelectorAll("[data-sc2]").forEach(function(t){t.addEventListener("click",function(){n=+t.getAttribute("data-sc2"),c()})}),b("sc2",function(t){a=t,c()})}(),function(){var e="p",n=h(u);function i(){var i="",c=118,f=54,u=156,h=84,m="p"===e||"b"===e,p="r"===e||"b"===e;m&&(i+=s(112,24,168,214,t.accent,t.accent,.1)),p&&(i+=s(110,46,336,100,t.accent,t.accent,.1)),i+=r(c,16,"model said yes",m?t.accent:t.faint),i+=r(282,16,"model said no",t.faint),i+=r(4,84,"really yes",p?t.accent:t.ink),i+=r(4,176,"really no",t.ink),[["hit",0,0],["miss",0,1],["alarm",1,0],["pass",1,1]].forEach(function(e){var l=e[0],d=c+164*e[2],v=f+92*e[1],y=0===e[2],k=0===e[1],E=m&&y||p&&k;i+=s(d,v,u,h,E?a("hit"===l||"miss"===l?1:0,"hit"===l||"alarm"===l?1:0):t.rule,t.paper2,E?.15:.55),i+=r(d+14,v+26,g[l],t.soft),i+=o(d+u-16,v+56,String(n[g[l]]),E?t.ink:t.soft,"end")});var v=508;if("p"!==e&&"b"!==e||(i+=r(v,60,"precision",t.accent),i+=o(v,88,n.TP+" / ("+n.TP+" + "+n.FP+")  =  0.75",t.ink),i+=r(v,110,"of the four flagged, three were real",t.faint)),"r"===e||"b"===e){var y="b"===e?100:0;i+=r(v,60+y,"recall",t.accent),i+=o(v,88+y,n.TP+" / ("+n.TP+" + "+n.FN+")  =  0.60",t.ink),i+=r(v,110+y,"of the five real, three were found",t.faint)}l("f7",i+=r(4,272,"p"===e?"a column: everything the model flagged":"r"===e?"a row: everything that was really there":"same top box, two different denominators",t.faint)),d("f7Read","p"===e?"precision = 3/4 = 0.75":"r"===e?"recall = 3/5 = 0.60":"precision 0.75 &middot; recall 0.60"),document.querySelectorAll("[data-f7]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-f7")===e)})}document.querySelectorAll("[data-f7]").forEach(function(t){t.addEventListener("click",function(){e=t.getAttribute("data-f7"),i()})}),i()}();var w=[{s:.95,t:0},{s:.91,t:1},{s:.87,t:1},{s:.83,t:1},{s:.79,t:0},{s:.74,t:1},{s:.7,t:1},{s:.66,t:0},{s:.62,t:1},{s:.58,t:0},{s:.54,t:1},{s:.5,t:0},{s:.46,t:0},{s:.42,t:1},{s:.38,t:0},{s:.34,t:0},{s:.3,t:0},{s:.26,t:0},{s:.22,t:0},{s:.18,t:0},{s:.14,t:0},{s:.1,t:0},{s:.07,t:0},{s:.03,t:0}];function x(t){var e=h(w.map(function(e){return{t:e.t,g:e.s>=t?1:0}}));return e.acc=(e.TP+e.TN)/e.n,e.prec=e.TP+e.FP?e.TP/(e.TP+e.FP):null,e.rec=e.TP+e.FN?e.TP/(e.TP+e.FN):0,e.f1=null!==e.prec&&e.prec+e.rec>0?2*e.prec*e.rec/(e.prec+e.rec):0,e.mean=null!==e.prec?(e.prec+e.rec)/2:e.rec/2,e}!function(){var n=.6,a=118,s=700,c=128;function u(){var u=x(n),h="";h+=r(14,80,"really ill",t.accent),h+=r(14,100,"8 people",t.faint),h+=r(14,134,"really well",t.soft),h+=r(14,154,"16 people",t.faint),h+='<line x1="118" y1="180" x2="818" y2="180" stroke="'+t.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',[.1,.3,.5,.7,.9].forEach(function(n){var i=a+n*s;h+='<line x1="'+e(i)+'" y1="180" x2="'+e(i)+'" y2="186" stroke="'+t.rule+'" stroke-width="1.5"/>',h+=r(i,202,n.toFixed(1),t.faint,"middle")}),h+=r(a,26,"each chip is one patient, placed by the score the model gave",t.faint),w.forEach(function(t){var e=a+t.s*s-11,r=t.t?74:c;h+=i(e,r,22,t.t,t.s>=n?1:0)});var g=a+n*s;h+='<line x1="'+e(g)+'" y1="60" x2="'+e(g)+'" y2="172" stroke="'+t.ink+'" stroke-width="2.5"/>',h+=o(g,50,n.toFixed(2),t.ink,"middle"),h+=r(g-10,166,"flagged",t.ink,"end"),h+=r(g+10,166,"cleared",t.faint);[["precision",u.prec,t.accent],["recall",u.rec,t.accent],["F1",u.f1,t.ink],["accuracy",u.acc,t.faint]].forEach(function(n,a){var i=222+24*a;h+=r(166,i+11,n[0],t.faint,"end"),h+='<rect x="180" y="'+i+'" width="560" height="14" rx="2" fill="'+t.paper2+'"/>';var s=null===n[1]?0:n[1];h+='<rect x="180" y="'+i+'" width="'+e(560*s)+'" height="14" rx="2" fill="'+n[2]+'"/>',h+=o(754,i+12,null===n[1]?"n/a":f(n[1]),t.ink)}),l("f8",h),d("f8Head","threshold <b>"+n.toFixed(2)+"</b>"),d("f8Read","flagged <b>"+(u.TP+u.FP)+"</b> patients: <b>"+u.TP+"</b> really ill, <b>"+u.FP+"</b> false alarm"+(1===u.FP?"":"s")+". Left untested: <b>"+u.FN+"</b> ill, <b>"+u.TN+"</b> well.")}document.getElementById("f8Slider").addEventListener("input",function(){n=+this.value/10,u()}),u()}(),function(){var n=7,a=[1,4,7,9];function i(){var i="",s=212,c=140;i+='<line x1="100" y1="212" x2="850" y2="212" stroke="'+t.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',[0,.5,1].forEach(function(n){var a=s-166*n;i+=r(88,a+4,n.toFixed(1),t.faint,"end"),i+='<line x1="100" y1="'+e(a)+'" x2="850" y2="'+e(a)+'" stroke="'+t.rule+'" stroke-width="1" opacity=".5" shape-rendering="crispEdges"/>'}),a.forEach(function(a,l){var d=x(a/10),u=c+176*l,h=a===n,g=h?1:.3;[[d.mean,t.faint,"plain average",0],[d.f1,t.accent,"F1",66]].forEach(function(n){var a=u+n[3],r=e(166*n[0]);i+='<rect x="'+a+'" y="'+(s-r)+'" width="56" height="'+r+'" rx="2" fill="'+n[1]+'" opacity="'+g+'"/>',i+=o(a+28,s-r-10,f(n[0]),h?t.ink:t.faint,"middle")}),i+=r(u+61,234,"line at "+(a/10).toFixed(2),h?t.ink:t.faint,"middle"),h&&(i+=r(u+61,252,"precision "+f(d.prec)+"  recall "+f(d.rec),t.accent,"middle"))}),i+='<rect x="140" y="20" width="16" height="12" rx="2" fill="'+t.faint+'"/>'+r(164,31,"plain average of the two",t.faint),i+='<rect x="370" y="20" width="16" height="12" rx="2" fill="'+t.accent+'"/>'+r(394,31,"F1, the harmonic mean",t.accent),l("f9",i+=r(100,284,"the grey bars rank the loosest line highest; the teal bars do not",t.faint,"start",15));var u=x(n/10);d("f9Read","line at "+(n/10).toFixed(2)+" &middot; plain average "+f(u.mean)+" &middot; F1 "+f(u.f1)),document.querySelectorAll("[data-f9]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f9")===n)})}document.querySelectorAll("[data-f9]").forEach(function(t){t.addEventListener("click",function(){n=+t.getAttribute("data-f9"),i()})}),i()}(),function(){var n="p",a=h(u);function i(){var i="",u=54,h=150;i+=r(110,30,"said yes",t.faint),i+=r(268,30,"said no",t.faint),[["hit",0,0],["miss",0,1],["alarm",1,0],["pass",1,1]].forEach(function(e){var l=e[0],d=110+158*e[2],f=u+88*e[1],m="p"===n&&0===e[1]||"n"===n&&1===e[1];i+=s(d,f,h,80,m?t.accent:t.rule,t.paper2,m?.15:.55),i+=r(d+14,f+24,g[l],t.soft),i+=o(d+h-16,f+54,String(a[g[l]]),m?t.ink:t.soft,"end"),i+=c(d,f,h,80,'data-f10r="'+(0===e[1]?"p":"n")+'"')}),i+=r(6,84,"really",t.faint),i+=r(6,102,"yes","p"===n?t.accent:t.ink),i+=r(6,172,"really",t.faint),i+=r(6,190,"no","n"===n?t.accent:t.ink);var m,p,v,y,k,E,b,w=480,x=380;"p"===n?(m=a.TP,p=a.FN,v="true positive rate",y="false negative rate",k=t.accent,E=t.risk,b=a.TP+a.FN):(m=a.TN,p=a.FP,v="true negative rate",y="false positive rate",k=t.quiet,E=t.warn,b=a.TN+a.FP),i+=r(w,56,"p"===n?"the "+b+" who really survived":"the "+b+" who really did not",t.ink);var A=e(x*m/b);i+='<rect x="480" y="88" width="'+A+'" height="'+'44" rx="3" fill="'+k+'"/>',i+='<rect x="'+(w+A)+'" y="'+'88" width="'+(x-A)+'" height="'+'44" rx="3" fill="'+E+'"/>',i+=o(w+A/2,116,m+"/"+b,t.paper,"middle"),i+=o(w+A+(x-A)/2,116,p+"/"+b,t.paper,"middle"),i+=r(w,156,v,k),i+=o(w,178,f(m/b),t.ink),i+=r(860,156,y,E,"end"),i+=o(860,178,f(p/b),t.ink,"end"),i+=r(w,214,f(m/b)+" + "+f(p/b)+" = 1.00, because there is no third outcome",t.faint),l("f10",i+=r(w,236,"p"===n?"this top number is also called recall, and sensitivity":"this top number is also called specificity",t.accent)),d("f10Read","p"===n?"TPR 0.60 &middot; FNR 0.40":"TNR 0.67 &middot; FPR 0.33"),document.querySelectorAll("[data-f10]").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-f10")===n)})}document.querySelectorAll("[data-f10]").forEach(function(t){t.addEventListener("click",function(){n=t.getAttribute("data-f10"),i()})}),document.getElementById("f10").addEventListener("click",function(t){var e=t.target.closest("[data-f10r]");e&&(n=e.getAttribute("data-f10r"),i())}),i()}(),function(){var n=[{k:"cancer screening",miss:1,alarm:.12,missT:"a sick person is sent home reassured",alarmT:"a well person has a scan they did not need",lead:"recall leads, and precision is spent buying it"},{k:"spam filter",miss:.1,alarm:1,missT:"one junk mail reaches the inbox",alarmT:"a real letter is filed where nobody looks",lead:"precision leads, and some spam is let through on purpose"},{k:"fraud review queue",miss:.85,alarm:.62,missT:"a fraudulent payment goes out",alarmT:"an analyst spends an hour on nothing",lead:"neither dominates, which is where F1 earns its keep"}],a=0;function i(){var i=n[a],c="";c+=r(90,24,"said yes",t.faint),c+=r(248,24,"said no",t.faint),c+=r(4,74,"really yes",t.ink),c+=r(4,158,"really no",t.ink),[["hit",0,0],["miss",0,1],["alarm",1,0],["pass",1,1]].forEach(function(e){var n=e[0],a=90+158*e[2],i=44+84*e[1],l="miss"===n||"alarm"===n,d="miss"===n?t.risk:"alarm"===n?t.warn:t.rule;c+=s(a,i,150,76,d,t.paper2,l?.14:.5,l?'stroke-width="2.5"':""),c+=r(a+14,i+26,g[n],t.soft),l&&(c+=o(a+14,i+56,"miss"===n?"a miss":"a false alarm",d))});var f=470;[["a miss costs",i.miss,t.risk,i.missT,0],["a false alarm costs",i.alarm,t.warn,i.alarmT,84]].forEach(function(n){var a=54+n[4];c+=r(f,a,n[0],n[2]),c+='<rect x="470" y="'+(a+10)+'" width="330" height="16" rx="2" fill="'+t.paper2+'"/>',c+='<rect x="470" y="'+(a+10)+'" width="'+e(330*n[1])+'" height="16" rx="2" fill="'+n[2]+'"/>',c+=r(f,a+44,n[3],t.faint)}),c+='<line x1="90" y1="222" x2="840" y2="222" stroke="'+t.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',c+=o(90,248,i.lead,t.accent),l("f11",c+=r(f,206,"bar lengths are illustrative, not measured",t.faint)),d("f11Read",i.k),document.querySelectorAll("[data-f11]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f11")===a)})}document.querySelectorAll("[data-f11]").forEach(function(t){t.addEventListener("click",function(){a=+t.getAttribute("data-f11"),i()})}),i()}(),document.querySelectorAll(".ref").forEach(function(t){var e=t.getAttribute("data-ref"),n=t.closest("section");function a(a){t.classList.toggle("hot",a),n.querySelectorAll(".fig").forEach(function(t){t.classList.toggle("dimmed",a)}),n.querySelectorAll('[data-part="'+e+'"]').forEach(function(t){t.classList.toggle("hot",a)})}t.addEventListener("mouseenter",function(){a(!0)}),t.addEventListener("mouseleave",function(){a(!1)}),t.addEventListener("click",function(){a(!t.classList.contains("hot"))})}),function(){var t=document.getElementById("weeds"),e=document.getElementById("weedsHint");function n(){var n=t.hidden;t.hidden=!n,e.setAttribute("aria-expanded",String(n)),e.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(t.setAttribute("tabindex","-1"),t.focus({preventScroll:!0}),t.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,a=(e.tagName||"").toLowerCase();"input"===a||"textarea"===a||e.isContentEditable||(t.preventDefault(),n())}}),e.addEventListener("click",n),e.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),n())})}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>
