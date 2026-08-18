@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medallion architecture on ten rows a day: bronze, silver and gold in Delta Lake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#EDE7DB;--v19:#E1D9C8;--v10:#211B12;--v12:#4B4133;--v11:#7C7261;--v21:#CDC3AE;--v0:#9A5B14;--v16:#1C1710;--v17:#E9E1D2;--v20:#A33A2C;--v24:#6E5A2E;--v22:#3E6B4A;--v13:680px;--v25:1080px;--v15:26px;--v2:"Archivo",system-ui,sans-serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"IBM Plex Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:23px;--v5:30px;--v4:44px;--v6:74px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.05;letter-spacing:-.022em;margin:0}h2{font-size:clamp(28px,4vw,44px);margin:0 0 26px;max-width:16em}h3{font-family:var(--v2);font-weight:500;font-size:clamp(22px,2.4vw,30px);line-height:1.18;margin:0 0 14px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:clamp(20px,2.1vw,23px);line-height:1.44;letter-spacing:-.012em;color:var(--v12)}header{padding:clamp(54px,8vw,92px) 0 clamp(40px,6vw,72px)}h1{font-size:clamp(35px,7.2vw,74px);max-width:14em}.hero-kick{font-family:var(--v14);font-size:var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin:0 0 22px}.hero-lede{margin:28px 0 0;max-width:34em}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v21);font-family:var(--v14);font-size:var(--v7);letter-spacing:.08em;text-transform:uppercase;color:var(--v11);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v10);font-weight:500}.fig-body{padding:32px;background:var(--v18);touch-action:none}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:15px 20px;border-top:1px solid var(--v21)}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.65;color:var(--v11);padding:14px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-read{font-family:var(--v14);font-size:var(--v9);color:var(--v12);margin:20px 0 0;line-height:1.8}.fig-read b{color:var(--v10);font-weight:500}.fig svg,.wide.sg svg{display:block;width:100%;height:auto}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto}.fig-body svg{min-width:560px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v21);border-radius:3px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.62}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu p{margin:0 0 14px}.intu p:last-child{margin:0}.note{background:var(--v19);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v9);line-height:1.72;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v11);font-family:var(--v14);font-size:var(--v7);letter-spacing:.08em;cursor:pointer;padding:40px 0;margin:0}.note.hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;background:var(--v19)}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.try{background:var(--v19);border-left:3px solid var(--v11);padding:18px 24px;margin:28px 0;border-radius:0 6px 6px 0;font-size:var(--v9);line-height:1.7;color:var(--v12)}.pull{font-family:var(--v2);font-weight:500;font-size:clamp(23px,2.5vw,30px);line-height:1.3;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:42px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v21);border-radius:3px;background:var(--v19);color:var(--v12);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.cap{font-family:var(--v14);font-size:var(--v7);color:var(--v11);letter-spacing:.03em}.panel{background:var(--v16);color:var(--v17);border-radius:6px;padding:24px 26px;margin:30px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:1.7;overflow-x:auto;white-space:pre}.panel b{color:#E0A356;font-weight:500}.panel i{color:#9A8F7C;font-style:normal}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible;white-space:normal}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:20px 0}.panel.weeds summary{font-family:var(--v2);font-weight:500;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:16px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly.right{grid-template-columns:minmax(0,420px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:540px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.26;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.46;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none;opacity:1}}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:44vh;width:100%;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:26px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}svg text{font-family:var(--v14)}.lab{font-size:var(--v7);fill:var(--v11);letter-spacing:.02em}.val{font-size:var(--v9);fill:var(--v10)}.divider{max-width:var(--v13);margin:0 auto;height:1px;background:var(--v21)}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Ten rows a night through bronze, silver and gold. Append the raw file, merge one row per order, rebuild the report, then drop a late row in and watch it move.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/medallion-ten-rows-a-day">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Medallion architecture on ten rows a day: bronze, silver and gold in Delta Lake">
+  <meta property="og:description" content="Append to bronze, merge into silver, rebuild gold, then break it with a late row.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/medallion-ten-rows-a-day">
+  <meta property="og:image" content="https://www.loopingly.com/og/medallion-ten-rows-a-day.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Medallion architecture on ten rows a day: bronze, silver and gold in Delta Lake">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Medallion architecture on ten rows a day: bronze, silver and gold in Delta Lake">
+  <meta name="twitter:description" content="Append to bronze, merge into silver, rebuild gold, then break it with a late row.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/medallion-ten-rows-a-day.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Medallion architecture on ten rows a day: bronze, silver and gold in Delta Lake","description":"Ten rows a night through bronze, silver and gold. Append the raw file, merge one row per order, rebuild the report, then drop a late row in and watch it move.","url":"https://www.loopingly.com/explorables/medallion-ten-rows-a-day","image":"https://www.loopingly.com/og/medallion-ten-rows-a-day.png","datePublished":"2026-08-18","dateModified":"2026-08-18","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Medallion architecture with Delta Lake"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Medallion architecture on ten rows a day"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="tk" cx="27" cy="27" r="23"/><circle class="fl" id="pfill" cx="27" cy="27" r="23"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+<header class="hero">
+  <div class="col">
+    <p class="hero-kick">10 rows a day &middot; 30 days &middot; three tables</p>
+    <h1>Medallion architecture on ten rows a day, in Delta Lake</h1>
+    <p class="lede hero-lede">A pipeline small enough to print every row of, and complete enough to have every problem a real one has: duplicates, late arrivals, unparseable numbers, and a report someone needs to reproduce exactly as it looked last Tuesday.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="fig-head"><span id="heroState">day 1 &middot; 10 rows landed</span><span>orders_raw.csv</span></div>
+      <div class="fig-body"><svg id="heroFig" viewBox="0 0 900 280" role="img" aria-label="Today's ten rows landing in the raw file"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="heroBtn">land the next day</button><button class="chip" id="heroReset">back to day 1</button></div>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One file a day, and the report that cannot be reproduced</h2>
+    <p>A supplier drops a CSV into a folder every morning. Ten order lines, always. Somebody wrote a script that reads it, tidies it up, and refreshes a dashboard. The script has one table and it overwrites it.</p>
+    <p>It works until a Thursday when three things happen at once. Finance asks why Tuesday's revenue figure changed. The supplier resends Monday's file with two rows corrected. And a row arrives with the price written as <code>19,99</code> instead of <code>19.99</code>, which the script silently turns into a null that nobody sees for a fortnight.</p>
+    <p>None of those are exotic. They are the normal weather of data work, and a single table cannot survive any of them, because it holds one state and no history. What it needs is not more cleaning logic. It needs somewhere to put the raw truth, somewhere to put the cleaned version, and somewhere to put the answer, with each one derivable from the one before.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>Figure 1 &middot; what a single table loses</span><span id="f1Read">one table</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 340" role="img" aria-label="A single overwriting table compared with three layered tables"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f1="one">one table, overwritten</button>
+        <button class="chip" data-f1="three">three layers</button>
+        <button class="chip" id="f1Resend">the supplier resends Monday</button>
+      </div>
+      <div class="fig-cap"><b>Press resend in both modes.</b> In one, Monday's original numbers are gone. In the other they are still on disk and still queryable.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>That is the whole of the medallion idea, and the names are only names: <b>bronze</b> for exactly what arrived, <b>silver</b> for the cleaned and conformed version, <b>gold</b> for the shapes the business actually reads. The value is not in the word medallion. It is in the rule that each layer is rebuildable from the one upstream, so a mistake in cleaning costs you a reprocessing job rather than a lost history.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A kitchen with three surfaces. Deliveries land on the first one in their boxes, untouched. Prep happens on the second: washed, trimmed, weighed, labelled. Plating happens on the third. Nobody plates onto the delivery bench, and nobody throws away the boxes until the meal has gone out.</p>
+      <p><b>You can always go back a surface.</b> That is the property being bought, and it is worth more than any individual cleaning rule.</p>
+    </div>
+    <p>Three tables need a table format that can append without rewriting, update without corrupting, and be read while it is being written. A folder of CSVs cannot do that.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A Delta table is Parquet files plus a log that says which ones count</h2>
+    <p>Open a <span class="ref" data-ref="dt">Delta table</span> on disk and there is nothing mysterious in it. A directory of Parquet files, and a subdirectory called <code>_delta_log</code> containing numbered JSON files. Each JSON file is one <span class="ref" data-ref="vr">version</span>: a list of files added, files removed, and some statistics.</p>
+    <p>Reading the table means reading the log first, working out which Parquet files are live at the version you asked for, and then reading only those. That indirection is the entire trick, and everything else follows from it. Writers never edit a Parquet file: they write new ones and record the swap in a new log entry. A reader that started before the swap keeps reading the old list and sees a consistent table.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>Figure 2 &middot; the log and the files</span><span id="f2Read">version 0</span></div>
+      <div class="fig-body">
+        <svg id="f2" viewBox="0 0 900 380" role="img" aria-label="Delta log versions and the parquet files each one makes live"></svg>
+        <div class="fig-read" id="f2Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f2Prev">earlier version</button>
+        <button class="chip" id="f2Next">later version</button>
+        <button class="chip" id="f2Files">show the file list</button>
+      </div>
+      <div class="fig-cap"><b>Step through the versions.</b> Files in solid outline are live at the selected version. Faded ones are still on disk and no longer part of the table.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Three consequences worth naming, because they are the reason this piece uses Delta rather than a folder of Parquet.</p>
+    <p>Appends are cheap and atomic: a new file, one log entry, and either both happened or neither did. Updates and deletes are possible at all, by rewriting the affected files and recording the swap, which plain Parquet has no way to express. And every past version remains addressable, so <code>versionAsOf</code> gives you the table exactly as it was, which is how Tuesday's number gets reproduced on Thursday.</p>
+    <div class="panel">from pyspark.sql import SparkSession
+from delta import configure_spark_with_delta_pip
+
+builder = (SparkSession.builder.appName("medallion")
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+    .config("spark.sql.catalog.spark_catalog",
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog"))
+spark = configure_spark_with_delta_pip(builder).getOrCreate()
+
+BRONZE = "/lake/bronze/orders"
+SILVER = "/lake/silver/orders"
+GOLD   = "/lake/gold/daily_revenue"
+
+<i># the table as it is right now</i>
+spark.read.format("delta").load(BRONZE).count()
+
+<i># the table as it was three versions ago</i>
+(spark.read.format("delta")
+      .option("versionAsOf", 3)
+      .load(BRONZE).count())
+
+<i># or by wall clock</i>
+(spark.read.format("delta")
+      .option("timestampAsOf", "2024-05-07 09:00:00")
+      .load(BRONZE).count())</div>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A library where nobody writes in the books. Corrections are printed as new pages, and a single ledger at the front says which pages are current as of each date. Ask for today and you follow today's ledger entry. Ask for last March and you follow March's, and the pages it points to are still on the shelf.</p>
+      <p><b>The ledger is the table. The pages are just storage.</b></p>
+    </div>
+    <p>With that in place, the first layer is almost embarrassingly simple, and the discipline is in what it refuses to do rather than what it does.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Bronze appends what arrived and changes nothing</h2>
+    <p>The <span class="ref" data-ref="bz">bronze</span> table is the raw feed, landed as it came, with every column read as a string so that nothing can fail to parse and nothing can be silently coerced. The only additions are <span class="ref" data-ref="im">ingestion metadata</span>: which file this row came from, when it was loaded, and which batch it belonged to.</p>
+    <p>Ten rows a day, appended. After thirty days the table holds three hundred rows and thirty versions, and every one of those days can be isolated by its batch column without reading the file system.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span>Figure 3 &middot; bronze, day by day</span><span id="f3Read">day 1 &middot; 10 rows</span></div>
+      <div class="fig-body">
+        <svg id="f3" viewBox="0 0 900 400" role="img" aria-label="The bronze table growing by ten rows per day"></svg>
+        <div class="fig-read" id="f3Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f3Run">run the next day</button>
+        <button class="chip" id="f3Run5">run five days</button>
+        <button class="chip" id="f3Again">re-run today's file</button>
+        <button class="chip" id="f3Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Run a few days, then press re-run.</b> With the idempotency guard on, a repeated file adds nothing. The row count and the version counter tell you which happened.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">from pyspark.sql import functions as F
+from delta.tables import DeltaTable
+
+def ingest_bronze(spark, path_csv: str, batch_id: str):
+    <i># everything as string: bronze must never fail on a bad value</i>
+    raw = (spark.read
+        .option("header", True)
+        .schema("order_id STRING, customer_id STRING, product STRING, "
+                "qty STRING, unit_price STRING, country STRING, event_ts STRING")
+        .csv(path_csv))
+
+    stamped = (raw
+        .withColumn("_source_file", F.input_file_name())
+        .withColumn("_ingested_at", F.current_timestamp())
+        .withColumn("_batch_id",    F.lit(batch_id)))
+
+    <i># idempotency: if this batch is already in, do nothing</i>
+    if DeltaTable.isDeltaTable(spark, BRONZE):
+        already = (spark.read.format("delta").load(BRONZE)
+                   .where(F.col("_batch_id") == batch_id).limit(1).count())
+        if already:
+            print(f"batch {batch_id} already ingested, skipping")
+            return 0
+
+    (stamped.write.format("delta").mode("append")
+        .partitionBy("_batch_id")
+        .save(BRONZE))
+    return stamped.count()
+
+ingest_bronze(spark, "/landing/orders_2024-05-01.csv", "2024-05-01")</div>
+    <p>The guard matters more than it looks. Pipelines get re-run: a scheduler retries, an engineer reruns yesterday after a fix, a file gets redelivered. Without a check on <span class="ref" data-ref="id">idempotency</span>, every retry doubles a day. With one, re-running is free and safe, which is what lets you rerun without a meeting first.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A goods-in book at a warehouse door. You write down what turned up, the time, and the delivery note number. You do not open the boxes, you do not reject anything, and you do not write down what you think should have arrived.</p>
+      <p><b>Bronze is a receipt, not an opinion.</b> If a value is wrong, that is information about the supplier, and destroying it at the door means never being able to prove it.</p>
+    </div>
+    <p>Which leaves everything wrong with the data still in the table. That is deliberate, and it is the next layer's job.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Silver, first pass: type it, and put the failures somewhere</h2>
+    <p>The first of the four things silver does here is <span class="ref" data-ref="se">typing</span>: turn the strings into the types the rest of the pipeline needs, and decide what happens to rows that will not convert.</p>
+    <p>Casting in Spark returns null on failure rather than raising, which is the most dangerous default in the whole stack, because a failed cast and a legitimately empty field look identical downstream. So cast into a new column, compare, and route the mismatches to a <span class="ref" data-ref="qt">quarantine</span> table with the reason attached. Nothing is dropped. Somebody can look at the quarantine on Monday and tell the supplier about the commas.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span>Figure 4 &middot; casting, and what fails it</span><span id="f4Read">clean 8 &middot; quarantined 2</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 400" role="img" aria-label="Rows being cast, with failures routed to quarantine"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f4="strict">quarantine the failures</button>
+        <button class="chip" data-f4="silent">let the cast return null</button>
+        <button class="chip" id="f4Day">a different day</button>
+      </div>
+      <div class="fig-cap"><b>Switch to the silent version.</b> The row counts are identical and the revenue total is not, which is the failure mode this rule exists to prevent.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">from pyspark.sql import functions as F, types as T
+
+def silver_typed(bronze_df):
+    <i># normalise the obvious formatting damage before casting</i>
+    fixed = (bronze_df
+        .withColumn("unit_price_clean",
+                    F.regexp_replace(F.trim("unit_price"), r"[£$,\s]", ""))
+        .withColumn("qty_clean", F.trim("qty")))
+
+    typed = (fixed
+        .withColumn("qty_int",    F.col("qty_clean").cast(T.IntegerType()))
+        .withColumn("unit_price_dec",
+                    F.col("unit_price_clean").cast(T.DecimalType(10, 2)))
+        .withColumn("event_ts_t",
+                    F.to_timestamp("event_ts", "yyyy-MM-dd HH:mm:ss")))
+
+    <i># a cast that returned null from a non-null input is a failure, not a blank</i>
+    reason = (F.when(F.col("order_id").isNull(), "missing order_id")
+        .when(F.col("qty_clean").isNotNull() & F.col("qty_int").isNull(),
+              "qty not an integer")
+        .when(F.col("unit_price_clean").isNotNull() & F.col("unit_price_dec").isNull(),
+              "unit_price not a decimal")
+        .when(F.col("event_ts").isNotNull() & F.col("event_ts_t").isNull(),
+              "event_ts unparseable")
+        .when(F.col("qty_int") &lt;= 0, "qty must be positive")
+        .otherwise(F.lit(None)))
+
+    marked = typed.withColumn("_reject_reason", reason)
+    clean  = marked.where(F.col("_reject_reason").isNull())
+    reject = marked.where(F.col("_reject_reason").isNotNull())
+    return clean, reject
+
+clean, reject = silver_typed(spark.read.format("delta").load(BRONZE)
+                                  .where(F.col("_batch_id") == batch_id))
+
+(reject.write.format("delta").mode("append").save("/lake/quarantine/orders"))</div>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A returns desk rather than a bin. The item that does not scan is put on the shelf behind the counter with a note saying why, and somebody deals with the shelf on Friday. Throwing it in the bin makes the shift look tidier and makes the stock count wrong forever.</p>
+      <p><b>A row you cannot process is a fact about your data, and it belongs somewhere you can count it.</b></p>
+    </div>
+    <p>The rows that survive are now correctly typed and still full of duplicates, because a supplier resending Monday means Monday's orders are in the table twice.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Silver, second pass: one row per order, however many times it arrives</h2>
+    <p>Duplicates arrive for dull reasons. A supplier resends a file, a retry fires twice, an upstream system emits a correction as a fresh event with the same identifier. Bronze holds all of them, correctly. Silver must hold one.</p>
+    <p>Which one is a decision, not a technicality. Pick a <span class="ref" data-ref="bk">business key</span>, here the order id, and a rule for choosing among the copies: usually the latest by event time, with ingestion time breaking ties. Number the rows within each key and keep the first.</p>
+    <p>Then write it with <span class="ref" data-ref="mg">MERGE</span> rather than an append, so a key already in silver is updated in place and a new one is inserted. That single operation is what makes the whole layer re-runnable: run the same day twice and the second run changes nothing.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span>Figure 5 &middot; three copies, one survivor</span><span id="f5Read">order 1043</span></div>
+      <div class="fig-body">
+        <svg id="f5" viewBox="0 0 900 400" role="img" aria-label="Duplicate rows for one order key being reduced to a single winner"></svg>
+        <div class="fig-read" id="f5Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f5="latest">keep the latest event</button>
+        <button class="chip" data-f5="first">keep the first seen</button>
+        <button class="chip" id="f5Next">another duplicated key</button>
+      </div>
+      <div class="fig-cap"><b>Switch the tie-break rule.</b> The surviving row changes, and so does the revenue it contributes, which is why this choice belongs in a written specification rather than in someone's head.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">from pyspark.sql import Window
+
+def dedupe(df):
+    w = (Window.partitionBy("order_id")
+         .orderBy(F.col("event_ts_t").desc(), F.col("_ingested_at").desc()))
+    return (df.withColumn("_rn", F.row_number().over(w))
+              .where(F.col("_rn") == 1)
+              .drop("_rn"))
+
+def merge_silver(spark, batch_df):
+    if not DeltaTable.isDeltaTable(spark, SILVER):
+        batch_df.write.format("delta").partitionBy("order_date").save(SILVER)
+        return
+
+    tgt = DeltaTable.forPath(spark, SILVER)
+    (tgt.alias("t")
+        .merge(batch_df.alias("s"), "t.order_id = s.order_id")
+        <i># only overwrite when the incoming row is genuinely newer</i>
+        .whenMatchedUpdateAll(condition="s.event_ts_t > t.event_ts_t")
+        .whenNotMatchedInsertAll()
+        .execute())
+
+merge_silver(spark, dedupe(clean))</div>
+    <p>Note the condition on the update. Without it, a replayed older copy would overwrite a newer correction, and replays are exactly the situation this is meant to survive. With it, the merge is not merely idempotent, it is order-independent: any sequence of the same batches produces the same silver table.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A guest list on the door. The same name turning up three times does not mean three guests. You decide, in advance, that the most recent booking wins, and you write that on the sheet so the person on the door at midnight makes the same call as the one at eight.</p>
+      <p><b>Deduplication is only half a mechanism. The other half is a stated rule for which copy is the truth.</b></p>
+    </div>
+    <p>One row per order, correctly typed. It is still written in whatever shape the supplier felt like using.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Silver, third pass: make every row mean the same thing</h2>
+    <p><span class="ref" data-ref="st">Standardisation</span> is the unglamorous work that decides whether anyone can join your table to anything else. Country written as <code>gb</code>, <code>GB</code> and <code>United Kingdom</code> is three countries to a group-by. Prices in three currencies are not comparable until they are one.</p>
+    <p>Follow one real row through the whole silver stage, all four operations, with the values at each point.</p>
+  </div>
+  <div class="bleed">
+    <div class="scrolly" id="sc1">
+      <div class="wide sg">
+        <div class="fig">
+          <div class="fig-head"><span>Figure 6 &middot; one row through silver</span><span id="sc1Read">as it landed</span></div>
+          <div class="fig-body"><svg id="sc1fig" viewBox="0 0 540 400" role="img" aria-label="A single row transformed step by step through the silver stage"></svg></div>
+          <div class="fig-cap"><b>Click any step to jump to it.</b> Every value shown is produced by the same rules the code beside this figure describes.</div>
+        </div>
+      </div>
+      <div class="col ss">
+        <div class="col stp" data-step="0"><h3>As it landed in bronze</h3><p>Every column a string, exactly as the supplier wrote it, including the price with a currency symbol glued to the front and the country in lower case.</p></div>
+        <div class="col stp" data-step="1"><h3>Typed, and it survived</h3><p>Quantity becomes an integer, price a decimal with two places, the timestamp a real timestamp. Had any of those failed, this row would be in quarantine instead and the rest of these steps would never run on it.</p></div>
+        <div class="col stp" data-step="2"><h3>Deduplicated against its own key</h3><p>This order arrived twice. The copy with the later event time wins and the earlier one is dropped, silently but reproducibly.</p></div>
+        <div class="col stp" data-step="3"><h3>Standardised into the house style</h3><p>Country upper-cased and mapped to its two-letter code, product name trimmed and title-cased, currency converted to the reporting currency at the rate for that date.</p></div>
+        <div class="col stp" data-step="4"><h3>Enriched with what it did not carry</h3><p>A derived line total, the order date pulled out of the timestamp for partitioning, and the region joined in from the country dimension. Nothing here came from the supplier.</p></div>
+        <div class="col stp" data-step="5"><h3>Merged into silver</h3><p>One row, one order, fully typed, conformed to the vocabulary the rest of the warehouse uses. This is the table analysts should be allowed to query.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">DIM_COUNTRY = spark.createDataFrame(
+    [("GB", "United Kingdom", "EMEA", "GBP"),
+     ("DE", "Germany",        "EMEA", "EUR"),
+     ("US", "United States",  "AMER", "USD")],
+    "country_code STRING, country_name STRING, region STRING, local_ccy STRING")
+
+FX = spark.createDataFrame(
+    [("2024-05-01", "EUR", 0.855), ("2024-05-01", "USD", 0.794),
+     ("2024-05-01", "GBP", 1.000)],
+    "rate_date STRING, ccy STRING, to_gbp DOUBLE")
+
+def standardise_and_enrich(df):
+    std = (df
+        <i># 1. standardise: one spelling per concept</i>
+        .withColumn("country_code",
+            F.upper(F.trim(F.col("country"))).substr(1, 2))
+        .withColumn("product", F.initcap(F.trim(F.col("product"))))
+        .withColumn("order_date", F.to_date("event_ts_t"))
+        <i># 2. derive: columns nobody sent us</i>
+        .withColumn("line_total_local",
+            (F.col("qty_int") * F.col("unit_price_dec")).cast("decimal(12,2)")))
+
+    <i># 3. enrich: conform to the shared dimensions</i>
+    enriched = (std
+        .join(F.broadcast(DIM_COUNTRY), "country_code", "left")
+        .join(F.broadcast(FX),
+              (F.col("local_ccy") == F.col("ccy")) &amp;
+              (F.col("order_date").cast("string") == F.col("rate_date")), "left")
+        .withColumn("line_total_gbp",
+            (F.col("line_total_local") * F.coalesce("to_gbp", F.lit(1.0)))
+            .cast("decimal(12,2)"))
+        .withColumn("_silver_at", F.current_timestamp()))
+
+    return enriched.select(
+        "order_id", "customer_id", "product", "qty_int", "unit_price_dec",
+        "country_code", "region", "order_date", "event_ts_t",
+        "line_total_local", "local_ccy", "line_total_gbp",
+        "_batch_id", "_silver_at")</div>
+    <div class="intu">
+      <i>picture it</i>
+      <p>Three teams filing expenses, one in pounds, one in euros, one writing GB and one writing UK. Nobody is wrong. The total is meaningless until someone decides on a single vocabulary and converts everything into it.</p>
+      <p><b>Standardisation is the decision, written down as code, about what the warehouse's words mean.</b> It is where most of the arguments in a data team actually live.</p>
+    </div>
+    <p>One thing has been quietly assumed through all of that: the country dimension and the customer record are fixed. Customers move.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Silver, fourth pass: keep the history of things that change</h2>
+    <p>A customer's country changes in June. What was the revenue for EMEA in May?</p>
+    <p>If the customer dimension holds only the current country, May's answer changes retroactively every time somebody moves, and the same query run twice gives two answers. Overwriting the old value is called a type 1 dimension and it is the right choice for correcting typos and the wrong one for real changes.</p>
+    <p>A <span class="ref" data-ref="s2">type 2 dimension</span> instead closes the old row and opens a new one, each stamped with the window during which it was true. The customer now has two rows, one flagged current, and any fact can be joined to whichever version was live when it happened.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>Figure 7 &middot; the customer who moved</span><span id="f7Read">type 2</span></div>
+      <div class="fig-body">
+        <svg id="f7" viewBox="0 0 900 380" role="img" aria-label="A customer dimension handled as type 1 and as type 2"></svg>
+        <div class="fig-read" id="f7Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7="t2">type 2: keep both</button>
+        <button class="chip" data-f7="t1">type 1: overwrite</button>
+        <button class="chip" id="f7Move">move the customer again</button>
+      </div>
+      <div class="fig-cap"><b>Move the customer, then ask for May.</b> Under type 1 the May figure moves with them. Under type 2 it does not, which is the entire point.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">DIM = "/lake/silver/dim_customer"
+
+def scd2_customer(spark, incoming, as_of: str):
+    <i># incoming: customer_id, country_code, segment (today's snapshot)</i>
+    if not DeltaTable.isDeltaTable(spark, DIM):
+        (incoming
+            .withColumn("valid_from", F.lit(as_of).cast("date"))
+            .withColumn("valid_to",   F.lit(None).cast("date"))
+            .withColumn("is_current", F.lit(True))
+            .write.format("delta").save(DIM))
+        return
+
+    dim = DeltaTable.forPath(spark, DIM)
+    current = (spark.read.format("delta").load(DIM)
+               .where("is_current").alias("c"))
+
+    <i># rows whose tracked attributes actually changed</i>
+    changed = (incoming.alias("n").join(current, "customer_id")
+        .where("n.country_code &lt;&gt; c.country_code OR n.segment &lt;&gt; c.segment")
+        .select("n.*"))
+
+    <i># step one: close the old version</i>
+    (dim.alias("t").merge(changed.alias("s"), "t.customer_id = s.customer_id")
+        .whenMatchedUpdate(
+            condition="t.is_current = true",
+            set={"is_current": F.lit(False),
+                 "valid_to":   F.lit(as_of).cast("date")})
+        .execute())
+
+    <i># step two: open the new one, plus any customer we have never seen</i>
+    brand_new = incoming.join(current, "customer_id", "left_anti")
+    (changed.unionByName(brand_new)
+        .withColumn("valid_from", F.lit(as_of).cast("date"))
+        .withColumn("valid_to",   F.lit(None).cast("date"))
+        .withColumn("is_current", F.lit(True))
+        .write.format("delta").mode("append").save(DIM))
+
+<i># joining a fact to the version that was live when it happened</i>
+fact_with_dim = (silver.alias("f").join(
+    spark.read.format("delta").load(DIM).alias("d"),
+    (F.col("f.customer_id") == F.col("d.customer_id")) &amp;
+    (F.col("f.order_date") &gt;= F.col("d.valid_from")) &amp;
+    (F.col("d.valid_to").isNull() | (F.col("f.order_date") &lt; F.col("d.valid_to"))),
+    "left"))</div>
+    <div class="intu">
+      <i>picture it</i>
+      <p>An address book where you cross out the old address and write the new one, against one where you add a new card and date the old one. Only the second can answer where you posted the parcel in March.</p>
+      <p><b>Type 2 is not more thorough bookkeeping, it is a different question being answerable.</b> It also costs a join with two inequality conditions on every fact query, which is why nobody does it for every column.</p>
+    </div>
+    <p>Four kinds of processing, one table, and still nothing a business user would recognise. Silver is correct, not useful.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Gold is the shape a question is asked in</h2>
+    <p>Silver has one row per order. Nobody asks a question with one row per order. They ask for revenue by day and region, orders per customer per month, the top ten products this week. Each of those is a <span class="ref" data-ref="gl">gold</span> table with its own <span class="ref" data-ref="gr">grain</span>, built by aggregating silver.</p>
+    <p>The temptation with three hundred rows is to rebuild the whole thing every night, and for three hundred rows that is correct: it costs nothing and it cannot drift. The reason to learn the incremental version is that at three hundred million rows a full rebuild stops finishing before the morning, and the incremental logic is easier to write on day one than to retrofit.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span>Figure 8 &middot; silver rolled up into gold</span><span id="f8Read">full rebuild</span></div>
+      <div class="fig-body">
+        <svg id="f8" viewBox="0 0 900 400" role="img" aria-label="Silver rows aggregated into a gold daily revenue table"></svg>
+        <div class="fig-read" id="f8Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f8="full">full rebuild</button>
+        <button class="chip" data-f8="incr">incremental merge</button>
+        <button class="chip" id="f8Day">advance a day</button>
+      </div>
+      <div class="fig-cap"><b>Advance a few days in both modes.</b> The gold table is identical either way; the rows read to produce it are not, and that difference is the whole argument.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">def build_gold_full(spark):
+    silver = spark.read.format("delta").load(SILVER)
+    gold = (silver.groupBy("order_date", "region")
+        .agg(F.countDistinct("order_id").alias("orders"),
+             F.sum("line_total_gbp").cast("decimal(14,2)").alias("revenue_gbp"),
+             F.countDistinct("customer_id").alias("customers"),
+             F.max("_silver_at").alias("_built_from")))
+    (gold.write.format("delta").mode("overwrite")
+        .option("overwriteSchema", "true").save(GOLD))
+
+def build_gold_incremental(spark, affected_dates: list):
+    <i># only the days this run actually touched, including late arrivals</i>
+    silver = (spark.read.format("delta").load(SILVER)
+              .where(F.col("order_date").isin(affected_dates)))
+    slice_ = (silver.groupBy("order_date", "region")
+        .agg(F.countDistinct("order_id").alias("orders"),
+             F.sum("line_total_gbp").cast("decimal(14,2)").alias("revenue_gbp"),
+             F.countDistinct("customer_id").alias("customers"),
+             F.max("_silver_at").alias("_built_from")))
+
+    tgt = DeltaTable.forPath(spark, GOLD)
+    (tgt.alias("t").merge(slice_.alias("s"),
+        "t.order_date = s.order_date AND t.region = s.region")
+        .whenMatchedUpdateAll()
+        .whenNotMatchedInsertAll()
+        .execute())</div>
+    <p>The subtlety is the list of affected dates. It is not today. A late-arriving row with an event time from three days ago changes a gold row for three days ago, and an incremental job that only ever rebuilds today will leave that number wrong forever while reporting success every night.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A scoreboard rather than a match report. It answers one question instantly and it cannot answer anything else, so you keep the match report and rebuild the scoreboard from it whenever the report changes.</p>
+      <p><b>Gold is disposable by design.</b> Anything in gold that cannot be rebuilt from silver is a bug.</p>
+    </div>
+    <p>Which makes the size of that rebuild window the most consequential number in the pipeline, and it is a number somebody picks.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The restatement window decides which late rows are ever counted</h2>
+    <p>One dial: how many days back each nightly run reprocesses. At zero, only today's date is rebuilt. At seven, the last week is rebuilt every night, so anything that turned up late for any of those days is picked up.</p>
+    <p>Below is the thirty day feed with its real distribution of <span class="ref" data-ref="la">late arrivals</span>. Set the window, run the month, and read the two numbers that matter: how much revenue ends up correctly counted, and how many gold rows had to be rewritten to get it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>Figure 9 &middot; thirty nights, one window</span><span id="k9Head">window 0 days</span></div>
+      <div class="fig-body">
+        <svg id="k9" viewBox="0 0 900 420" role="img" aria-label="Late arriving rows recovered against gold rows rewritten, by restatement window"></svg>
+        <div class="fig-read" id="k9Read"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <input type="range" id="k9Slider" min="0" max="10" step="1" value="0" aria-label="restatement window in days">
+        <div style="display:flex;justify-content:space-between;margin:9px 0 14px" class="cap">
+          <span>0 days</span><span>3</span><span>5</span><span>7</span><span>10 days</span>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="chip" id="k9Run">run the month night by night</button>
+          <button class="chip" id="k9Late">more late arrivals</button>
+          <button class="chip" id="k9Reset">reset</button>
+        </div>
+      </div>
+      <div class="fig-cap"><b>Run the month at 0, then at 3, then at 7.</b> The missed rows and the rewrite cost are both counted from the same simulated feed.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>At a window of <b>0</b>, 64 of the month's rows never reach gold, worth &pound;5,229 of &pound;19,240. They sit correctly in silver, where anybody querying silver would find them, and the dashboard built on gold is quietly short by 27 percent. Nothing errors, and that is the failure mode worth fearing, because it is invisible from the inside.</p>
+    <p>At <b>3</b> the miss falls to 41 rows and &pound;3,028. At <b>7</b> it falls to 18 rows and &pound;1,249, and the cost is that every night rewrites eight days of gold partitions instead of one.</p>
+    <p>Past 7 the numbers stop moving, and it is worth understanding why rather than turning the dial further. Those last 18 rows are not slightly late, they are resends of orders more than ten days old, and no window anyone would run nightly will ever catch them. They need a deliberate backfill, triggered by someone noticing, which is an argument for monitoring the age of incoming events rather than for a bigger window.</p>
+    <p>The right answer is not a number, it is a measurement: look at your own distribution of event time against ingestion time, pick the window that covers the percentile you can defend, and then say out loud that anything beyond it needs a manual backfill.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A monthly ledger you close on the third of the following month. Invoices arriving on the second are counted. One arriving on the tenth needs a decision by a person, and the reason you close at all is that leaving every month open forever means never being able to sign anything off.</p>
+      <p><b>The window is not a technical setting, it is a promise about how correct the numbers are and when.</b></p>
+    </div>
+    <div class="panel">from datetime import date, timedelta
+
+RESTATEMENT_DAYS = 3
+
+def affected_dates(spark, batch_id: str, window_days: int = RESTATEMENT_DAYS):
+    <i># dates actually touched by this batch, however old their events are</i>
+    touched = (spark.read.format("delta").load(SILVER)
+        .where(F.col("_batch_id") == batch_id)
+        .select("order_date").distinct()
+        .rdd.flatMap(lambda r: [r[0]]).collect())
+
+    run_day = date.fromisoformat(batch_id)
+    window = {run_day - timedelta(days=i) for i in range(window_days + 1)}
+    return sorted(window.union(set(touched)))
+
+<i># the nightly job, end to end</i>
+def run_day(spark, batch_id: str):
+    ingest_bronze(spark, f"/landing/orders_{batch_id}.csv", batch_id)
+    bronze_slice = (spark.read.format("delta").load(BRONZE)
+                    .where(F.col("_batch_id") == batch_id))
+    clean, reject = silver_typed(bronze_slice)
+    reject.write.format("delta").mode("append").save("/lake/quarantine/orders")
+    merge_silver(spark, standardise_and_enrich(dedupe(clean)))
+    build_gold_incremental(spark, affected_dates(spark, batch_id))</div>
+    <p>That is the pipeline, complete. What remains is the housekeeping that decides whether it still works in a year.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Ten rows a night is a file problem, not a data problem</h2>
+    <p>Ten rows is a Parquet file of a few kilobytes. Three hundred and sixty five nights is three hundred and sixty five of them, plus a log entry each, plus whatever the merges rewrote. The data is trivial and the metadata is not: every query now opens hundreds of files to read a few hundred kilobytes, and each open costs more than the read.</p>
+    <p>Two maintenance commands handle it. <span class="ref" data-ref="op">OPTIMIZE</span> rewrites many small files into few large ones, changing nothing about the contents. <span class="ref" data-ref="vc">VACUUM</span> deletes files that no live version needs any more, subject to a retention period, and it is the operation that ends time travel beyond that horizon.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span>Figure 10 &middot; a year of small files</span><span id="f10Read">day 30 &middot; 30 files</span></div>
+      <div class="fig-body">
+        <svg id="f10" viewBox="0 0 900 380" role="img" aria-label="File count growing daily, then compacted by OPTIMIZE and cleaned by VACUUM"></svg>
+        <div class="fig-read" id="f10Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f10Run">run 30 more days</button>
+        <button class="chip" id="f10Opt">OPTIMIZE</button>
+        <button class="chip" id="f10Vac">VACUUM</button>
+        <button class="chip" id="f10Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Run a few months, then compact.</b> Watch what OPTIMIZE does to the file count, and what VACUUM does to how far back you can still travel.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">from delta.tables import DeltaTable
+
+<i># weekly: many tiny files become few large ones</i>
+spark.sql(f"OPTIMIZE delta.`{BRONZE}`")
+
+<i># with ordering, if queries filter on a column</i>
+spark.sql(f"OPTIMIZE delta.`{SILVER}` ZORDER BY (order_date, customer_id)")
+
+<i># monthly: drop files no version within retention still needs</i>
+spark.sql(f"VACUUM delta.`{BRONZE}` RETAIN 720 HOURS")   <i># 30 days</i>
+
+<i># what the log currently holds</i>
+spark.sql(f"DESCRIBE HISTORY delta.`{SILVER}`").show(truncate=False)</div>
+    <p>VACUUM is the one to be careful with. Its retention period is the real limit on time travel: once those files are gone, <code>versionAsOf</code> for anything older fails, and the promise made in the first chapter about reproducing Tuesday's number quietly expires. Set it against how far back anyone might actually need to reproduce a figure, not against how much storage costs.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A filing room where every day's paperwork goes into its own envelope. After a year the room is envelopes. Consolidating twelve months into twelve folders changes nothing about what is written, and it is the difference between finding something in a minute and in an afternoon.</p>
+      <p><b>Compaction is not an optimisation you do when you have time.</b> On a small daily feed it is the difference between a table that stays usable and one that degrades on a schedule.</p>
+    </div>
+    <p>Three honest limits before you take this anywhere real.</p>
+    <p>This shape is overkill for genuinely small and simple problems. Ten rows a day that arrive clean, are never resent, and feed one chart do not need three layers; they need a table and a backup. The architecture earns its cost when there are multiple sources, multiple consumers, or a legal need to explain a number from six months ago.</p>
+    <p>Deletion for privacy requests is real work rather than a delete statement. A <code>DELETE</code> removes a row from the current version, but the old files still hold it until VACUUM passes the retention horizon, and it is still sitting in bronze. Any credible right-to-erasure process has to reach every layer and account for retention.</p>
+    <p>And nothing here validates meaning. Every rule in this piece checks form: types, uniqueness, spelling, arithmetic. A supplier who sends ten perfectly formed rows with the wrong prices will pass every check in the pipeline, and the only defences are expectations about volume and distribution, checked and alerted on, which is a separate discipline that starts where this one stops.</p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="col" style="text-align:center">
+    <p class="lede" style="max-width:26em;margin:0 auto">Land what arrived and never touch it. Make one row mean one thing. Aggregate into the shape of the question. Keep every layer rebuildable from the one above it, and the pipeline becomes something you can fix rather than something you must not disturb.</p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="col">
+    <h2>Now break it</h2>
+    <p>The full thirty day feed with every dial exposed: how dirty the source is, how often it resends, how late events run, and how far back each night reprocesses. Run the month and read what reaches gold.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span>the whole pipeline</span><span id="pgHead">day 0 of 30</span></div>
+      <div class="fig-body">
+        <svg id="pg" viewBox="0 0 900 420" role="img" aria-label="The full pipeline simulated over thirty days with adjustable source quality"></svg>
+        <div class="fig-read" id="pgRead"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+          <span class="cap">bad rows</span><input type="range" id="pgBad" min="0" max="40" step="5" value="10" style="width:110px" aria-label="percentage of bad rows">
+          <span class="cap">resends</span><input type="range" id="pgDup" min="0" max="40" step="5" value="10" style="width:110px" aria-label="percentage of duplicate rows">
+          <span class="cap">late</span><input type="range" id="pgLate" min="0" max="40" step="5" value="15" style="width:110px" aria-label="percentage of late arrivals">
+          <span class="cap">window</span><input type="range" id="pgWin" min="0" max="10" step="1" value="3" style="width:110px" aria-label="restatement window">
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="chip" id="pgRun">run the month</button>
+          <button class="chip" id="pgStep">one night</button>
+          <button class="chip" id="pgReset">reset</button>
+        </div>
+      </div>
+      <div class="fig-cap"><b>Push bad rows to 40 percent and run.</b> Bronze never shrinks, silver does, and the gap between them is the quarantine you would be explaining to the supplier.</div>
+    </div>
+  </div>
+</section>
+
+<p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h2>Into the weeds</h2>
+    <details><summary>Doing this without Spark at all</summary>
+      <p>At ten rows a day Spark is a lot of machinery. The delta-rs library gives you Delta tables from plain Python: <code>from deltalake import DeltaTable, write_deltalake</code>, then <code>write_deltalake(path, df, mode="append")</code> with a pandas or Polars frame, and <code>DeltaTable(path, version=3).to_pandas()</code> for time travel. Merge is supported through <code>TableMerger</code>. The layer design in this piece is unchanged; only the execution engine differs.</p></details>
+    <details><summary>Why partition by date and not by something else</summary>
+      <p>Partitioning writes each distinct value into its own directory, which makes filters on that column skip files entirely and makes rewriting one day cheap. It also means one directory per value, so partitioning by a high-cardinality column like customer id on a small table produces thousands of tiny directories and makes everything slower. A rough rule is at least a gigabyte per partition, which for ten rows a day means not partitioning silver at all until it grows, and using ZORDER instead.</p></details>
+    <details><summary>Autoloader and streaming instead of a daily batch</summary>
+      <p>The same layers work with a stream. Structured Streaming with <code>trigger(availableNow=True)</code> against a landing directory gives you exactly-once file processing with a checkpoint doing the idempotency work the batch guard does here, and Delta tables can be read as a stream so silver can be fed by bronze's change feed rather than by a date filter. The design does not change; the trigger does.</p></details>
+    <details><summary>The change data feed</summary>
+      <p>Enable <code>delta.enableChangeDataFeed</code> on a table and Delta records which rows were inserted, updated and deleted in each version. Downstream layers can then read only the changes between two versions rather than re-scanning a date range, which removes most of the guesswork about which gold partitions are affected. It costs extra write volume and is worth it once the tables are large.</p></details>
+    <details><summary>Constraints the table itself enforces</summary>
+      <p>Delta supports check constraints: <code>ALTER TABLE ... ADD CONSTRAINT positive_qty CHECK (qty_int &gt; 0)</code>. A write violating it fails rather than landing bad data, which is the right behaviour for silver and the wrong behaviour for bronze, where the whole point is that nothing is rejected at the door. Constraints and quarantine solve the same problem at different layers with opposite philosophies.</p></details>
+    <details><summary>Schema evolution, and why it should be explicit</summary>
+      <p><code>mergeSchema</code> lets a write add new columns automatically. It is convenient and it means a supplier can silently change your table. The safer pattern is to leave it off, let the write fail, and treat a schema change as a code change with a review. Where it is genuinely needed, bronze is the place to allow it, since bronze is meant to accept whatever arrives.</p></details>
+    <details><summary>Concurrency, and the one error everybody meets</summary>
+      <p>Delta uses optimistic concurrency: two writers both prepare a commit and the loser retries. Appends to different partitions almost never conflict. Two jobs merging into the same table on the same keys will, and the second one raises a concurrent modification error. The usual fixes are partitioning the work so writers do not overlap, or serialising the merges, rather than retrying blindly.</p></details>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer class="col" style="padding:44px 0 80px;color:var(--v11);font-size:var(--v9);line-height:1.7">
+  <p>The figures on this page run a simulation of the pipeline described in the code: the same thirty day feed, the same duplicate, late and malformed rows, the same typing, deduplication, standardisation and aggregation rules. Counts, totals and file numbers are computed in your browser as you use the controls. The code blocks are PySpark with the Delta Lake extensions and are written to be run rather than read.</p>
+  <p>Delta Lake is an open source project of the Linux Foundation. The medallion naming is Databricks' and the underlying layering long predates it.</p>
+</footer>
+<script>!function(){"use strict";var e=function(e){return document.getElementById(e)},t=getComputedStyle(document.documentElement),n=function(e){return t.getPropertyValue(e).trim()},r={ac:n("--v0"),rk:n("--v20"),sf:n("--v22"),rl:n("--v21"),ink:n("--v10"),ft:n("--v11"),pp:n("--v18"),p2:n("--v19"),wn:n("--v24")};function a(e,t,n,r,a){return'<text class="'+(r||"lab")+'" x="'+e+'" y="'+t+'" text-anchor="'+(a||"middle")+'">'+n+"</text>"}function i(e,t,n,a,i,o,s){return'<line x1="'+e.toFixed(1)+'" y1="'+t.toFixed(1)+'" x2="'+n.toFixed(1)+'" y2="'+a.toFixed(1)+'" stroke="'+(o||r.rl)+'" stroke-width="'+(i||1.5)+'" stroke-linecap="round"'+(s?' stroke-dasharray="5 4"':"")+"/>"}function o(e,t,n,i,o,s,d,l,c){var u=d||r.ac;return"<g "+(l||"")+'><rect x="'+e+'" y="'+t+'" width="'+n+'" height="'+i+'" rx="3" fill="'+u+'" fill-opacity="'+(.05+.65*Math.max(0,Math.min(1,o))).toFixed(3)+'" stroke="'+(c?u:r.rl)+'" stroke-width="1.4"'+(c?' stroke-dasharray="4 3"':"")+' shape-rendering="crispEdges"/>'+(null!=s?a(e+n/2,t+i/2+5,s,"val"):"")+"</g>"}function s(e,t){var n=[].slice.call(document.querySelectorAll("["+e+"]"));n.forEach(function(r){r.addEventListener("click",function(){n.forEach(function(e){e.classList.toggle("on",e===r)}),t(r.getAttribute(e))})})}function d(e){return"£"+e.toFixed(2)}var l=["widget","Bolt kit","  hinge ","Clamp","sprocket"],c=[["gb","GBP",1],["GB","GBP",1],["de","EUR",.855],["DE","EUR",.855],["us","USD",.794]];function u(e){var t,n,r,a,i=(void 0===(e=e||{}).bad?10:e.bad)/100,o=(void 0===e.dup?10:e.dup)/100,s=(void 0===e.late?15:e.late)/100,d=(r=e.seed||11,a=r,function(){return(a=(1103515245*a+12345)%2147483648)/2147483648}),u=[],f=1001,v=[];for(t=1;t<=30;t++){var h=[];for(n=0;n<10;n++){var g,p=v.length>6&&d()<o,y=t,b=1+Math.floor(5*d()),m=5+Math.floor(4500*d())/100;if(p){var k=v[Math.floor(d()*v.length)];g=k.id,y=k.day,b=k.qty+(d()<.5?1:0),m=k.price}else g=f++,d()<s&&(y=Math.max(1,t-1-Math.floor(7*d())));var w=c[Math.floor(d()*c.length)],E={id:g,day:t,evDay:y,qty:b,price:m,cc:w[0],ccy:w[1],fx:w[2],product:l[Math.floor(d()*l.length)],dup:p,cust:"C"+(1+Math.floor(6*d())),badKind:null};if(!p&&d()<i){var x=d();E.badKind=x<.4?"price":x<.7?"qty":"ts",E.rawPrice=x<.4?String(m).replace(".",","):"£"+m.toFixed(2),E.rawQty=x>=.4&&x<.7?"three":String(b)}E.rawPrice||(E.rawPrice="£"+m.toFixed(2)),E.rawQty||(E.rawQty=String(b)),E.gbp=Math.round(b*m*w[2]*100)/100,h.push(E),!p&&!E.badKind&&v.length<80&&v.push({id:g,day:y,qty:b,price:m})}u.push(h)}return u}var f,v,h,g,p=u();function y(e,t){var n,r=[];for(n=0;n<(void 0===t?e.length:t);n++)r=r.concat(e[n]);return r}function b(e){var t={};return e.forEach(function(e){if(!e.badKind){var n=t[e.id];(!n||e.evDay>n.evDay||e.evDay===n.evDay&&e.day>n.day)&&(t[e.id]=e)}}),Object.keys(t).map(function(e){return t[e]})}function m(e,t){var n,r=b(y(e)),a=0,i=0,o=0,s=0;for(r.forEach(function(e){e.day-e.evDay<=t?a+=e.gbp:(i+=e.gbp,s++)}),n=1;n<=30;n++)o+=t+1;return{counted:Math.round(100*a)/100,missed:Math.round(100*i)/100,missedRows:s,rewrites:o,total:Math.round(100*(a+i))/100}}!function(){var t=e("heroFig"),n=e("heroState"),i=0;function s(){var e,s=p[i],d="",l=["order_id","customer","product","qty","unit_price","country"];for(e=0;e<6;e++)d+=a(70+136*e,34,l[e],"lab");for(e=0;e<10;e++)for(var c=s[e],u=48+21*e,f=[c.id,c.cust,c.product.trim(),c.rawQty,c.rawPrice,c.cc],v=0;v<6;v++)d+=o(10+136*v,u,130,19,c.badKind?.55:.16,String(f[v]),c.badKind?r.rk:r.ac);d+=a(830,150,"10 rows","val"),d+=a(830,178,"every day","lab"),t.innerHTML=d,n.textContent="day "+(i+1)+" · 10 rows landed"}e("heroBtn").addEventListener("click",function(){i=(i+1)%30,s()}),e("heroReset").addEventListener("click",function(){i=0,s()}),s()}(),function(){var t=e("f1"),n=e("f1Read"),d="one",l=!1;function c(){var e="";"one"===d?(e+=o(300,60,300,70,.5,"orders (overwritten)"),e+=a(450,168,l?"Monday revenue now £742.10":"Monday revenue £688.40","val"),e+=a(450,208,l?"the earlier figure is gone from disk":"one state, no history","val"),e+=a(450,268,l?"nobody can show what the dashboard said on Tuesday":"","val",null)):(["bronze","silver","gold"].forEach(function(t,n){e+=o(120+260*n,60,220,70,.35+.2*n,t),n<2&&(e+=i(340+260*n,95,380+260*n,95,2,r.ac))}),e+=a(450,168,l?"Monday v1 £688.40 and v2 £742.10 both on disk":"each layer rebuildable from the one before","val"),e+=a(450,208,l?"gold shows the corrected figure, bronze still holds both files":"bronze keeps what arrived","val"),e+=a(450,268,l?"versionAsOf reproduces Tuesday exactly":"","val")),t.innerHTML=e,n.textContent=("one"===d?"one table":"three layers")+(l?" · after the resend":"")}s("data-f1",function(e){d=e,c()}),e("f1Resend").addEventListener("click",function(){l=!l,this.textContent=l?"undo the resend":"the supplier resends Monday",c()}),c()}(),function(){var t=e("f2"),n=e("f2Read"),i=e("f2Sum"),s=0,d=!0,l=[["0","append","+ part-0000 (10 rows)"],["1","append","+ part-0001 (10 rows)"],["2","append","+ part-0002 (10 rows)"],["3","merge","+ part-0003, - part-0001"],["4","append","+ part-0004 (10 rows)"],["5","optimize","+ part-0005, - 0000 0002 0003 0004"]];function c(){var e,c="",u=function(e){var t,n={};for(t=0;t<=e;t++)0===t&&(n["part-0000"]=1),1===t&&(n["part-0001"]=1),2===t&&(n["part-0002"]=1),3===t&&(n["part-0003"]=1,delete n["part-0001"]),4===t&&(n["part-0004"]=1),5===t&&(n={"part-0005":1});return n}(s);for(e=0;e<l.length;e++){var f=40+54*e;c+=o(40,f,90,42,e<=s?e===s?.8:.35:.05,l[e][0]+".json",r.ac,'data-ver="'+e+'"'),c+=a(150,f+27,l[e][1],"val","start"),c+=a(260,f+27,l[e][2],"lab","start")}if(c+=a(85,26,"_delta_log"),d){var v=["part-0000","part-0001","part-0002","part-0003","part-0004","part-0005"];for(e=0;e<v.length;e++){var h=40+54*e,g=!!u[v[e]];c+=o(640,h,200,42,g?.55:.04,v[e],g?r.ac:r.ft,"",!g)}c+=a(740,26,"files on disk")}t.innerHTML=c,n.textContent="version "+s,i.innerHTML="at version <b>"+s+"</b> the table is made of <b>"+Object.keys(u).length+"</b> file"+(1===Object.keys(u).length?"":"s")+", out of <b>6</b> written so far. Reading an older version means following an older list, not undoing anything."}t.addEventListener("click",function(e){var t=e.target.closest("[data-ver]");t&&(s=+t.getAttribute("data-ver"),c())}),e("f2Prev").addEventListener("click",function(){s=Math.max(0,s-1),c()}),e("f2Next").addEventListener("click",function(){s=Math.min(5,s+1),c()}),e("f2Files").addEventListener("click",function(){d=!d,this.textContent=d?"hide the file list":"show the file list",c()}),c()}(),function(){var t=e("f3"),n=e("f3Read"),i=e("f3Sum"),s=1,d=1,l=0;function c(){var e,c=10*s,u="";for(e=0;e<30;e++){u+=o(40+e%15*56,60+58*Math.floor(e/15),50,48,e<s?.6:.05,e<s?"10":"",r.ac,"",e>=s)}u+=a(60,44,"one bar per day, ten rows each","lab","start"),u+=a(80,230,"bronze rows","lab","start"),u+=a(80,268,String(c),"val","start"),u+=a(300,230,"delta versions","lab","start"),u+=a(300,268,String(d),"val","start"),u+=a(520,230,"batches skipped","lab","start"),u+=a(520,268,String(l),"val","start"),u+=a(700,230,"files on disk","lab","start"),u+=a(700,268,String(d),"val","start"),u+=a(450,340,"append only: nothing already written is ever changed"),t.innerHTML=u,n.textContent="day "+s+" · "+c+" rows",i.innerHTML="<b>"+c+"</b> rows across <b>"+s+"</b> days, <b>"+d+"</b> table versions, <b>"+l+"</b> re-runs rejected by the idempotency guard."}e("f3Run").addEventListener("click",function(){s<30&&(s++,d++),c()}),e("f3Run5").addEventListener("click",function(){var e;for(e=0;e<5&&s<30;e++)s++,d++;c()}),e("f3Again").addEventListener("click",function(){l++,c()}),e("f3Reset").addEventListener("click",function(){s=1,d=1,l=0,c()}),c()}(),function(){var t=e("f4"),n=e("f4Read"),i="strict",l=0,c={price:"unit_price not a decimal",qty:"qty not an integer",ts:"event_ts unparseable"};function u(){var e,s=p[l],u="",f=0,v=0,h=0,g=0;for(e=0;e<10;e++){var y=s[e],b=46+29*e,m=!!y.badKind;m?v++:f++,m||(h+=y.gbp,g+=y.gbp),u+=o(40,b,90,26,m?.6:.2,String(y.id),m?r.rk:r.ac),u+=o(140,b,110,26,m&&"qty"===y.badKind?.6:.2,y.rawQty,m&&"qty"===y.badKind?r.rk:r.ac),u+=o(260,b,140,26,m&&"price"===y.badKind?.6:.2,y.rawPrice,m&&"price"===y.badKind?r.rk:r.ac),m?(u+=o(420,b,160,26,"strict"===i?.5:.12,"strict"===i?"quarantined":"null","strict"===i?r.rk:r.ft),u+=a(600,b+18,"strict"===i?c[y.badKind]:"looks like a blank field","lab","start")):u+=o(420,b,160,26,.3,d(y.gbp),r.sf)}u+=a(85,34,"order_id")+a(195,34,"qty")+a(330,34,"unit_price")+a(500,34,"silver"),u+=a(240,362,"clean rows "+f+" · rejected "+v,"val"),u+=a(660,362,"strict"===i?"revenue "+d(h)+" and "+v+" rows to chase":"revenue "+d(g)+" and nothing to chase","val"),t.innerHTML=u,n.textContent="clean "+f+" · "+("strict"===i?"quarantined ":"silently nulled ")+v}s("data-f4",function(e){i=e,u()}),e("f4Day").addEventListener("click",function(){l=(l+1)%30,u()}),u()}(),function(){var t,n,i,l=e("f5"),c=e("f5Read"),u=e("f5Sum"),f="latest",v=0,h=(t=y(p),n={},i=[],t.forEach(function(e){e.badKind||(n[e.id]=n[e.id]||[]).push(e)}),Object.keys(n).forEach(function(e){var t=n[e];t.length<2||i.length>=12||t.slice().sort(function(e,t){return t.evDay-e.evDay||t.day-e.day})[0]!==t.slice().sort(function(e,t){return e.day-t.day||e.evDay-t.evDay})[0]&&i.push(t)}),i.length||Object.keys(n).forEach(function(e){n[e].length>=2&&i.length<6&&i.push(n[e])}),i);function g(){var e,t=h[v%h.length],n="",i=t.slice().sort(function(e,t){return"latest"===f?t.evDay-e.evDay||t.day-e.day:e.day-t.day||e.evDay-t.evDay})[0];for(e=0;e<t.length;e++){var s=t[e],g=60+70*e,p=s===i;n+=o(60,g,120,54,p?.7:.15,String(s.id),p?r.sf:r.ac),n+=o(200,g,150,54,.2,"day "+s.day),n+=o(370,g,170,54,.2,"event day "+s.evDay),n+=o(560,g,130,54,.2,"qty "+s.qty),n+=o(710,g,150,54,p?.45:.1,d(s.gbp),p?r.sf:r.ft),p&&(n+=a(880,g+32,"kept","lab","end"))}n+=a(120,44,"order_id")+a(275,44,"arrived")+a(455,44,"event time")+a(785,44,"line total"),n+=a(450,378,t.length+" copies of this order in bronze, 1 in silver","val"),l.innerHTML=n,c.textContent="order "+t[0].id+" · "+t.length+" copies",u.innerHTML="rule <b>"+("latest"===f?"latest event wins":"first arrival wins")+"</b> keeps the row worth <b>"+d(i.gbp)+"</b> out of "+t.map(function(e){return d(e.gbp)}).join(", ")+"."}s("data-f5",function(e){f=e,g()}),e("f5Next").addEventListener("click",function(){v++,g()}),g()}(),function(){var t,n=e("sc1fig"),i=e("sc1Read"),s=null,l=y(p);for(t=0;t<l.length;t++)if(!l[t].badKind&&"EUR"===l[t].ccy&&"de"===l[t].cc){s=l[t];break}s||(s=l[0]);var c,u,f,v,h=[[["order_id",String(s.id)],["qty",s.rawQty+"  (string)"],["unit_price",s.rawPrice+"  (string)"],["country",s.cc],["product",'"'+s.product+'"'],["event_ts","2024-05-"+("0"+s.evDay).slice(-2)+" 14:02:11"]],[["order_id",String(s.id)],["qty_int",String(s.qty)],["unit_price_dec",s.price.toFixed(2)],["country",s.cc],["product",'"'+s.product+'"'],["event_ts_t","timestamp"]],[["order_id",String(s.id)],["copies in bronze","2"],["kept","latest event time"],["qty_int",String(s.qty)],["unit_price_dec",s.price.toFixed(2)],["_rn","1"]],[["country_code","DE"],["product",'"'+s.product.trim().replace(/^./,function(e){return e.toUpperCase()})+'"'],["local_ccy","EUR"],["to_gbp","0.855"],["order_date","2024-05-"+("0"+s.evDay).slice(-2)],["qty_int",String(s.qty)]],[["line_total_local",(s.qty*s.price).toFixed(2)+" EUR"],["line_total_gbp",d(s.gbp)],["region","EMEA"],["order_date","2024-05-"+("0"+s.evDay).slice(-2)],["_silver_at","now"],["_batch_id","2024-05-"+("0"+s.day).slice(-2)]],[["order_id",String(s.id)],["one row","in silver"],["line_total_gbp",d(s.gbp)],["region","EMEA"],["country_code","DE"],["merged","upsert on order_id"]]],g=["as it landed","typed","deduplicated","standardised","enriched","merged"];c="sc1",u=function(e){var t,s=h[e],d="";for(t=0;t<s.length;t++){var l=50+56*t;d+=a(180,l+32,s[t][0],"lab","end"),d+=o(200,l,300,44,e>=1?.4:.12,s[t][1],e>=3?r.sf:r.ac)}d+=a(270,28,"stage "+(e+1)+" of 6: "+g[e],"val"),d+=a(270,392,0===e?"bronze":5===e?"silver":"in flight","lab"),n.innerHTML=d,i.textContent=g[e]},f=[].slice.call(document.querySelectorAll("#"+c+" .stp")),v=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(f.forEach(function(t){t.classList.toggle("on",t===e.target)}),u(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0}),f.forEach(function(e){v.observe(e),e.addEventListener("click",function(){f.forEach(function(t){t.classList.toggle("on",t===e)}),u(+e.getAttribute("data-step"))})}),f.length&&u(0)}(),function(){var t=e("f7"),n=e("f7Read"),i=e("f7Sum"),d="t2",l=1,c=[["GB","2024-01-01","2024-06-01"],["DE","2024-06-01",null],["US","2024-09-01",null]];function u(){var e,s,u="";for(s="t2"===d?c.slice(0,l+1).map(function(e,t,n){return[e[0],e[1],t<n.length-1?n[t+1][1]:null,t===n.length-1]}):[[c[l][0],"2024-01-01",null,!0]],e=0;e<s.length;e++){var f=70+74*e,v=s[e];u+=o(60,f,120,56,.3,"C1"),u+=o(200,f,140,56,v[3]?.6:.2,v[0]),u+=o(360,f,180,56,.2,v[1]),u+=o(560,f,180,56,.2,v[2]||"open"),u+=o(760,f,100,56,v[3]?.6:.05,v[3]?"current":"closed",v[3]?r.sf:r.ft)}u+=a(120,50,"customer")+a(270,50,"country")+a(450,50,"valid_from")+a(650,50,"valid_to")+a(810,50,"flag"),u+=a(450,330,"May revenue for this customer is attributed to: "+("t2"===d?"EMEA, from the row that was live in May":"whatever the customer is today"),"val"),u+=a(450,364,"t2"===d?"the same query gives the same answer next year":"the same query changes every time the customer moves","val"),t.innerHTML=u,n.textContent="t2"===d?"type 2":"type 1",i.innerHTML="dimension rows for this customer: <b>"+s.length+"</b>. "+("t2"===d?"History is preserved, and every fact joins to the version that was live on its order date.":"Only the present is stored, so history is rewritten each time the source changes.")}s("data-f7",function(e){d=e,u()}),e("f7Move").addEventListener("click",function(){l=1===l?2:1,u()}),u()}(),function(){var t=e("f8"),n=e("f8Read"),r=e("f8Sum"),i="full",l=5;function c(){var e,s=b(y(p,l)),c="",u={};s.forEach(function(e){var t=e.evDay+"|"+("US"===e.cc.toUpperCase()?"AMER":"EMEA");u[t]=u[t]||{orders:0,rev:0,cust:{}},u[t].orders++,u[t].rev+=e.gbp,u[t].cust[e.cust]=1});var f=Object.keys(u).sort().slice(-7);for(e=0;e<f.length;e++){var v=f[e].split("|"),h=u[f[e]],g=60+44*e;c+=o(60,g,140,36,.2,"day "+v[0]),c+=o(215,g,120,36,.25,v[1]),c+=o(350,g,120,36,.3,String(h.orders)),c+=o(485,g,180,36,.45,d(Math.round(100*h.rev)/100)),c+=o(680,g,140,36,.2,String(Object.keys(h.cust).length))}c+=a(130,44,"order_date")+a(275,44,"region")+a(410,44,"orders")+a(575,44,"revenue_gbp")+a(750,44,"customers");var m=s.length,k=Math.min(s.length,b(y(p,l)).filter(function(e){return e.day>=l-0&&e.evDay>=l-3}).length+10);c+=a(450,378,"full"===i?"rows read to build this: "+m+" (all of silver)":"rows read to build this: about "+k+" (the affected days only)","val"),t.innerHTML=c,n.textContent="full"===i?"full rebuild":"incremental merge",r.innerHTML="after <b>"+l+"</b> days: silver holds <b>"+s.length+"</b> unique orders, gold holds <b>"+Object.keys(u).length+"</b> rows at a grain of one per date and region."}s("data-f8",function(e){i=e,c()}),e("f8Day").addEventListener("click",function(){l=l>=30?5:l+1,c()}),c()}(),function(){var t=e("k9"),n=e("k9Head"),o=e("k9Read"),s=e("k9Slider"),l="lag",c=15,f=p;function v(){return+s.value}function h(){var e,s=m(f,v()),c="",u={};b(y(f)).forEach(function(e){var t=e.day-e.evDay;u[t]=(u[t]||0)+1});var h=Math.max.apply(null,Object.keys(u).map(Number)),g=0;if(Object.keys(u).forEach(function(e){g=Math.max(g,u[e])}),"lag"===l){for(e=0;e<=Math.max(10,h);e++){var p=u[e]||0,k=p/g*180,w=70+44*e;c+='<rect x="'+w+'" y="'+(250-k).toFixed(1)+'" width="34" height="'+k.toFixed(1)+'" fill="'+(e<=v()?r.sf:r.rk)+'" fill-opacity="0.8"/>',c+=a(w+17,272,String(e)),p&&(c+=a(w+17,244-k,String(p),"lab"))}c+=i(70,250,860,250,1.5,r.rl),c+=a(450,298,"rows by how many days late they arrived"),c+=a(70,40,"green is inside the window and reaches gold, red never does","lab","start");var E=70+44*(v()+1)-5;c+=i(E,60,E,250,2,r.ac,!0)}else{var x,M=0,L=0,_="",S="",D=s.total||1;for(x=1;x<=30;x++){b(y(f,x)).forEach(function(){});var R=b(y(f,x)),q=0,H=0;R.forEach(function(e){e.day-e.evDay<=v()?q+=e.gbp:H+=e.gbp});var C=70+(x-1)/29*790;_+=(1===x?"M":"L")+C.toFixed(1)+" "+(250-q/D*190).toFixed(1),S+=(1===x?"M":"L")+C.toFixed(1)+" "+(250-H/D*190).toFixed(1),M=q,L=H}c+='<path d="'+_+'" fill="none" stroke="'+r.sf+'" stroke-width="3"/>',c+='<path d="'+S+'" fill="none" stroke="'+r.rk+'" stroke-width="3"/>',c+=i(70,250,860,250,1.5,r.rl),c+=a(450,298,"each night of the month, cumulative"),c+=a(70,40,"green reaches gold, red is stranded in silver","lab","start"),c+=a(860,250-M/D*190-14,d(M),"val","end"),c+=a(860,250-L/D*190-14,d(L),"val","end")}c+=a(560,340,"revenue reaching gold  "+d(s.counted),"val","start"),c+=a(560,372,"revenue never counted  "+d(s.missed),"val","start"),c+=a(70,340,"rows missed  "+s.missedRows,"val","start"),c+=a(70,372,"gold partitions rewritten per month  "+s.rewrites,"val","start"),t.innerHTML=c,n.textContent="window "+v()+" day"+(1===v()?"":"s"),o.innerHTML="at a window of <b>"+v()+"</b> days, <b>"+s.missedRows+"</b> of the month’s rows never reach gold, worth <b>"+d(s.missed)+"</b> of <b>"+d(s.total)+"</b>, and the nightly job rewrites <b>"+(v()+1)+"</b> day"+(0===v()?"":"s")+" of gold each run."}s.addEventListener("input",h),e("k9Run").addEventListener("click",function(){l="lag"===l?"month":"lag",this.textContent="lag"===l?"run the month night by night":"back to the lateness histogram",h()}),e("k9Late").addEventListener("click",function(){f=u({late:c=15===c?35:15}),this.textContent=15===c?"more late arrivals":"back to normal lateness",h()}),e("k9Reset").addEventListener("click",function(){s.value=0,c=15,f=p,l="lag",e("k9Run").textContent="run the month night by night",h()}),h()}(),function(){var t=e("f10"),n=e("f10Read"),i=e("f10Sum"),s=30,d=30,l=0,c=0;function u(){var e,u="",f=Math.min(d,60);for(e=0;e<f;e++){u+=o(50+e%20*41,60+46*Math.floor(e/20),34,38,.5,"")}for(d>60&&(u+=a(450,206,"and "+(d-60)+" more","lab")),e=0;e<Math.min(l,20);e++){u+=o(50+e%20*41,230,34,38,.06,"",r.ft,"",!0)}l&&(u+=a(450,296,l+" files superseded and still on disk","lab")),u+=a(120,340,"days run  "+s,"val","start"),u+=a(360,340,"live files  "+d,"val","start"),u+=a(620,340,"time travel back to  "+(c?"day "+c:"day 1"),"val","start"),t.innerHTML=u,n.textContent="day "+s+" · "+d+" files",i.innerHTML="<b>"+10*s+"</b> rows in <b>"+d+"</b> file"+(1===d?"":"s")+". A query at this size spends most of its time opening files rather than reading rows."}e("f10Run").addEventListener("click",function(){s+=30,d+=30,u()}),e("f10Opt").addEventListener("click",function(){l+=d,d=Math.max(1,Math.ceil(s/120)),u()}),e("f10Vac").addEventListener("click",function(){l=0,c=Math.max(1,s-30),u()}),e("f10Reset").addEventListener("click",function(){s=30,d=30,l=0,c=0,u()}),u()}(),function(){var t=e("pg"),n=e("pgHead"),i=e("pgRead"),o=e("pgBad"),s=e("pgDup"),l=e("pgLate"),c=e("pgWin"),f=p,v=1;function h(){f=u({bad:+o.value,dup:+s.value,late:+l.value,seed:11}),v=1,g()}function g(){var e,o=Math.max(1,v),s=y(f,o),l="",u=s.filter(function(e){return e.badKind}).length,h=b(s),g=m(f.slice(0,o),+c.value),p=[["bronze rows",s.length,r.ac],["quarantined",u,r.rk],["silver rows",h.length,r.sf],["reaching gold",h.length-g.missedRows,r.wn]],k=Math.max.apply(null,p.map(function(e){return e[1]}))||1;for(e=0;e<p.length;e++){var w=60+70*e;l+=a(200,w+34,p[e][0],"lab","end"),l+='<rect x="220" y="'+w+'" width="'+Math.max(3,p[e][1]/k*520).toFixed(1)+'" height="46" rx="3" fill="'+p[e][2]+'" fill-opacity="0.8"/>',l+=a(790,w+34,String(p[e][1]),"val","end")}l+=a(450,376,"duplicates collapsed: "+(s.length-u-h.length)+" · revenue never counted: "+d(g.missed),"val"),t.innerHTML=l,n.textContent="day "+v+" of 30",i.innerHTML="bronze <b>"+s.length+"</b>, quarantine <b>"+u+"</b>, silver <b>"+h.length+"</b>, reaching gold <b>"+(h.length-g.missedRows)+"</b>. Bronze is always the largest and always complete."}e("pgRun").addEventListener("click",function(){v=30,g()}),e("pgStep").addEventListener("click",function(){v=v>=30?1:v+1,g()}),e("pgReset").addEventListener("click",function(){o.value=10,s.value=10,l.value=15,c.value=3,f=p,v=1,g()}),[o,s,l].forEach(function(e){e.addEventListener("input",h)}),c.addEventListener("input",g),g()}(),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),n=e.closest("section");function r(r){e.classList.toggle("hot",r),n&&(n.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",r)}),n.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",r)}))}e.addEventListener("mouseenter",function(){r(!0)}),e.addEventListener("mouseleave",function(){r(!1)}),e.addEventListener("click",function(){r(!e.classList.contains("hot"))})}),f=e("pfill"),v=e("ptxt"),h=2*Math.PI*23,f.style.strokeDasharray=h,f.style.strokeDashoffset=h,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);t=Math.min(1,Math.max(0,t||0)),f.style.strokeDashoffset=h*(1-t),v.textContent=Math.round(100*t)+"%"},{passive:!0}),g=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),g.unobserve(e.target))})},{threshold:.05,rootMargin:"0px 0px -4% 0px"}),document.querySelectorAll(".reveal").forEach(function(e){g.observe(e)}),function(){var t=e("weeds"),n=e("weedsHint");function r(){var e=t.hidden;t.hidden=!e,n.setAttribute("aria-expanded",String(e)),n.innerHTML=e?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",e&&(t.setAttribute("tabindex","-1"),t.focus({preventScroll:!0}),t.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,n=(t.tagName||"").toLowerCase();"input"===n||"textarea"===n||t.isContentEditable||(e.preventDefault(),r())}}),n.addEventListener("click",r),n.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),r())})}()}();
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

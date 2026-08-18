@@ -81,6 +81,12 @@ EXPLORABLES = {
         short="Drag one threshold and watch precision and recall swing while accuracy sits still.",
         about="Classification metrics: accuracy, precision, recall, F1 and ROC"),
 
+    "delta-table-api-explained": dict(
+        desc="A table here is a folder of files plus a log saying which ones count. Overwrite, "
+             "merge, time travel and vacuum, watching the folder change at every call.",
+        short="Overwrite, merge and time travel, with the folder open beside you.",
+        about="The Delta Lake table API"),
+
     "discovering-models-trends-explainer": dict(
         desc="A new model lands every week and the announcements all sound alike. Read a "
              "model card the way engineers do, then track which releases actually mattered.",
@@ -152,6 +158,12 @@ EXPLORABLES = {
              "Point the same machine at words and train a language model by hand, bead by bead.",
         short="Train a language model by hand, using matchboxes and coloured beads.",
         about="How language models learn from examples"),
+
+    "medallion-ten-rows-a-day": dict(
+        desc="Ten rows a night through bronze, silver and gold. Append the raw file, merge one "
+             "row per order, rebuild the report, then drop a late row in and watch it move.",
+        short="Append to bronze, merge into silver, rebuild gold, then break it with a late row.",
+        about="Medallion architecture with Delta Lake"),
 
     "multimodal-explainer": dict(
         desc="A phone pointed at a foreign menu needs sight and language at once. Build the "

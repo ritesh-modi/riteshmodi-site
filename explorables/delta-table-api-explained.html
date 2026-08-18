@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Delta table API: a folder of files that behaves like a table</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v16:#F4F1E8;--v17:#E8E3D4;--v8:#1A1B18;--v10:#454741;--v9:#5E6050;--v19:#CFC9B6;--v0:#24457C;--v14:#15170F;--v15:#E9E5D8;--v18:#A33A2C;--v22:#8A6A16;--v20:#2F6B4F;--v11:680px;--v23:1080px;--v13:26px;--v2:"Newsreader",Georgia,serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v12:"IBM Plex Mono",ui-monospace,Menlo,monospace;--v4:14px;--v3:19px;--v6:30px;--v5:44px;--v7:72px;--v21:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v21:0s}}body{margin:0;background:var(--v16);color:var(--v8);font-family:var(--v1);font-size:var(--v3);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v11);margin:0 auto;padding:0 var(--v13);position:relative}.wide{max-width:var(--v23);margin:0 auto;padding:0 var(--v13)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v19)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.08;letter-spacing:-.018em;margin:0}h2{font-size:clamp(28px,4vw,44px);margin:0 0 26px;max-width:17em}h3{font-family:var(--v2);font-weight:500;font-size:clamp(22px,2.4vw,30px);line-height:1.22;margin:0 0 14px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v12);font-size:var(--v4);background:var(--v17);padding:2px 6px;border-radius:3px}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:var(--v6);line-height:1.36;color:var(--v10)}header{padding:clamp(54px,8vw,92px) 0 clamp(40px,6vw,72px)}h1{font-size:clamp(34px,6.6vw,72px);max-width:14em}.lede.kick{font-family:var(--v12);font-size:var(--v4);letter-spacing:.14em;text-transform:uppercase;color:var(--v0);margin:0 0 22px;font-weight:400}.lede.sub{margin:28px 0 0;max-width:33em}.fig{border:1px solid var(--v19);background:var(--v17);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v19);font-family:var(--v12);font-size:var(--v4);letter-spacing:.06em;text-transform:uppercase;color:var(--v9);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v8);font-weight:500}.fig-body{padding:32px;background:var(--v16);touch-action:none}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:15px 20px;border-top:1px solid var(--v19)}.fig-cap{font-family:var(--v12);font-size:var(--v4);line-height:1.7;color:var(--v9);padding:14px 20px;border-top:1px solid var(--v19)}.fig-cap b{color:var(--v0);font-weight:500}.fig-read{font-family:var(--v12);font-size:var(--v4);color:var(--v10);margin:20px 0 0;line-height:1.9}.fig-read b{color:var(--v8);font-weight:500}.fig svg,.wide.sg svg{display:block;width:100%;height:auto}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto}.fig-body svg{min-width:560px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v19);border-radius:3px}}.intu{border-left:3px solid var(--v0);background:var(--v17);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.66}.intu i{font-family:var(--v12);font-size:var(--v4);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu p{margin:0 0 14px}.intu p:last-child{margin:0}.note{background:var(--v17);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v4);line-height:1.85;color:var(--v10)}.note b{color:var(--v8);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v9);font-family:var(--v12);letter-spacing:.08em;cursor:pointer;padding:40px 0;margin:0}.note.hint kbd{font-family:var(--v12);border:1px solid var(--v19);border-radius:3px;padding:2px 7px;background:var(--v17)}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.try{background:var(--v17);border-left:3px solid var(--v9);padding:18px 24px;margin:28px 0;border-radius:0 6px 6px 0;font-size:var(--v4);line-height:1.85;color:var(--v10)}.pull{font-family:var(--v2);font-weight:500;font-size:var(--v6);line-height:1.34;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:42px 0}.chip{font-family:var(--v12);font-size:var(--v4);letter-spacing:.02em;padding:9px 14px;border:1px solid var(--v19);border-radius:3px;background:var(--v17);color:var(--v10);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v16)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.cap{font-family:var(--v12);font-size:var(--v4);color:var(--v9);letter-spacing:.02em}.panel{background:var(--v14);color:var(--v15);border-radius:6px;padding:24px 26px;margin:30px 0 0;font-family:var(--v12);font-size:var(--v4);line-height:1.8;overflow-x:auto;white-space:pre}.panel b{color:#93B4E8;font-weight:500}.panel i{color:#96988A;font-style:normal}.panel.weeds{background:none;color:var(--v8);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible;white-space:normal}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v19);padding:20px 0}.panel.weeds summary{font-family:var(--v2);font-weight:500;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:16px 0 0;font-size:var(--v4);line-height:1.9;color:var(--v10)}.rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v17);border:1px solid var(--v19)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v19)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v12);font-size:var(--v4);color:var(--v10)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v13)}.bleed.scrolly.right{grid-template-columns:minmax(0,420px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:540px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.26;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{line-height:1.5;margin:0;color:var(--v10)}.col.stp.on p{color:var(--v8)}[data-gel]{opacity:.1;transition:opacity var(--v21)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none;opacity:1}}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:44vh;width:100%;background:var(--v16);border-bottom:1px solid var(--v19);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:26px 0}}.term{text-decoration:underline dotted var(--v0);text-underline-offset:4px;cursor:help}.term.hot{color:var(--v0)}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}svg text{font-family:var(--v12);font-size:var(--v4)}.lab{fill:var(--v9);letter-spacing:.02em}.val{fill:var(--v8)}.sub{fill:var(--v10);font-size:13px;letter-spacing:.02em}.divider{max-width:var(--v11);margin:0 auto;height:1px;background:var(--v19)}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v16)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="A table here is a folder of files plus a log saying which ones count. Overwrite, merge, time travel and vacuum, watching the folder change at every call.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/delta-table-api-explained">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="The Delta table API: a folder of files that behaves like a table">
+  <meta property="og:description" content="Overwrite, merge and time travel, with the folder open beside you.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/delta-table-api-explained">
+  <meta property="og:image" content="https://www.loopingly.com/og/delta-table-api-explained.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Delta table API: a folder of files that behaves like a table">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Delta table API: a folder of files that behaves like a table">
+  <meta name="twitter:description" content="Overwrite, merge and time travel, with the folder open beside you.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/delta-table-api-explained.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"The Delta table API: a folder of files that behaves like a table","description":"A table here is a folder of files plus a log saying which ones count. Overwrite, merge, time travel and vacuum, watching the folder change at every call.","url":"https://www.loopingly.com/explorables/delta-table-api-explained","image":"https://www.loopingly.com/og/delta-table-api-explained.png","datePublished":"2026-08-18","dateModified":"2026-08-18","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"The Delta Lake table API"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"The Delta table API"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg viewBox="0 0 54 54"><circle class="tk" cx="27" cy="27" r="23"/><circle class="fl" id="pfill" cx="27" cy="27" r="23"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+<header class="hero">
+  <div class="col">
+    <p class="lede kick">a folder &middot; a ledger &middot; five calls that change both</p>
+    <h1>The Delta table API: a folder of files that behaves like a table</h1>
+    <p class="lede sub">There is no database server anywhere in this picture. There is a folder, some files inside it, and a written record of which files count right now. Everything the API does is one of those two things: write a file, or write a line in the record.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <div class="fig-head"><span id="heroState">version 0 &middot; 1 file live</span><span>/lake/orders</span></div>
+      <div class="fig-body"><svg id="heroFig" viewBox="0 0 900 280" role="img" aria-label="A folder of data files beside a ledger of versions"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="heroBtn">do the next thing</button><button class="chip" id="heroReset">start again</button></div>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Before anything else: a table here is a folder, and the folder is just files</h2>
+    <p>Start with the physical situation, because every confusing thing later comes from people describing the logical situation as though the physical one did not exist.</p>
+    <p>You have data. Say a list of orders. Each order is a <span class="term" data-term="row">row</span>, meaning one complete record about one thing, written as a line of values that belong together. Each thing you record about that order is a <span class="term" data-term="col">column</span>, meaning one named field that every row has: an order number, a customer, a country, an amount. Rows and columns together make a <span class="term" data-term="tbl">table</span>, which in the ordinary sense of the word is a rectangle of values with named columns.</p>
+    <p>Now, where does that rectangle physically live? In the systems this piece is about, it does not live inside a running program that owns it. It lives in a <span class="term" data-term="fld">folder</span> on cheap storage, the same kind of folder you have on a laptop, usually rented from a cloud provider. Inside that folder are <span class="term" data-term="dfile">data files</span>, each one holding some of the rows. Not all of them. Some.</p>
+    <p>The figure below is that folder. Each rectangle is one file, and the number written on it is how many rows are inside that file, because a file's row count is the only thing about it that matters for now. Click a file to see which orders it holds.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>Figure 1 &middot; the folder, opened</span><span id="f1Read">click a file</span></div>
+      <div class="fig-body">
+        <svg id="f1" viewBox="0 0 900 380" role="img" aria-label="Three data files in a folder, each holding some rows of a table"></svg>
+        <div class="fig-read" id="f1Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f1All">show every row together</button>
+        <button class="chip" id="f1Reset">back to the files</button>
+      </div>
+      <div class="fig-cap"><b>Click any file rectangle.</b> Its rows appear on the right. The table you think of as one thing is the rows of all these files, read together.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>That is the whole physical setup, and it is worth sitting with for a moment because two things follow from it immediately.</p>
+    <p>First, reading the table means reading several files and stacking their rows. There is no other step. Nobody consults an index, nobody asks a server. A program opens the files it has been told to open, and the rows it gets are the table.</p>
+    <p>Second, and this is the uncomfortable one: nothing in that folder says which files are part of the table. The folder is a folder. If somebody drops a stray file in, it is now apparently part of your data. If a program crashes halfway through writing, whatever it managed to write is sitting there looking exactly like a real file. The folder has no opinion.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A filing cabinet drawer with no index card at the front. Everything in the drawer is presumably the accounts, because it is in the accounts drawer. If a colleague was interrupted mid-filing and left half a batch in there, those pages are in the drawer too, and they look like every other page.</p>
+      <p>You could work like this, and people did for years. It works right up until two people use the drawer at the same time, or one of them is interrupted. <b>The drawer has no way to say "these pages count and those do not", and that single missing sentence is what everything in this piece is built to provide.</b></p>
+    </div>
+    <p>So the folder gives you storage and nothing else. To see why that is not enough, it helps to watch it fail at something completely ordinary.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Watch a plain folder fail at one ordinary job</h2>
+    <p>Here is the job: today's orders have arrived, and you want to add them to the table. In the physical picture, that means writing a new file into the folder. The word for that is a <span class="term" data-term="wr">write</span>, meaning any operation that changes what is stored.</p>
+    <p>Adding one file sounds safe. But writing a file is not instantaneous: a big file takes time, and during that time the file exists and is incomplete. Meanwhile somebody else, perhaps a dashboard refreshing on a timer, is a <span class="term" data-term="rd">reader</span>, meaning any program opening those files to get the rows out. It has no idea a write is in progress, because nothing tells it.</p>
+    <p>In the figure, the writer's progress is drawn as a file that fills up over time, and the reader is drawn as an eye that opens at a moment you choose. Press the two buttons in either order and see what the reader gets.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>Figure 2 &middot; a reader arriving mid-write</span><span id="f2Read">nothing happening</span></div>
+      <div class="fig-body">
+        <svg id="f2" viewBox="0 0 900 380" role="img" aria-label="A writer producing a file while a reader reads the folder"></svg>
+        <div class="fig-read" id="f2Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f2Start">start writing today's file</button>
+        <button class="chip" id="f2Step">let the write advance</button>
+        <button class="chip" id="f2Read2">read the folder now</button>
+        <button class="chip" id="f2Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Start the write, advance it partway, then read.</b> The count the reader gets is shown against the count it should have got.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Read during the write and you get a number that was never true: yesterday's rows plus part of today's. Nothing failed. No error was raised. The dashboard shows a figure, somebody screenshots it for a meeting, and the number is simply wrong, in a way that is impossible to detect afterwards because five minutes later the file finished and everything looks fine.</p>
+    <p>The property missing here has a name worth learning now, because it is the whole point of the machinery that follows. An operation is <span class="term" data-term="at">atomic</span> when, from the point of view of anybody looking, it has either completely happened or not happened at all, with no observable in-between. The write above is the opposite: its in-between is fully visible, and readers land in it.</p>
+    <p>Now try the second job, which is worse. Change one row: order 1043 was recorded with the wrong amount. The rows live inside a file, and a file cannot be edited in place on this kind of storage. To change one row you must write a new version of the whole file and get rid of the old one, and between those two acts, the folder contains either both copies or neither.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>Correcting a typo on one page of a bound report by retyping the whole page. There is a moment when both the old page and the new page are on the desk, and a moment when neither is in the binder. If somebody photocopies the binder during either moment, they get a document that never officially existed: one with the page twice, or one missing it.</p>
+      <p><b>The fix is not to type faster. It is to have a contents page that says which pages the report currently consists of, and to update that page in one stroke.</b> The loose pages can sit around as long as they like, as long as the contents page never lists a page that is not finished.</p>
+    </div>
+    <p>That contents page is the entire idea. It has a name, it is a real file on disk, and everything else in this piece is either writing one or reading one.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The log is a numbered list of which files count, and it is written last</h2>
+    <p>Inside the folder, alongside the data files, sits a subfolder named <code>_delta_log</code>. It contains small numbered files: <code>00000000000000000000.json</code>, then <code>...001.json</code>, and so on. Together they are the <span class="term" data-term="tl">transaction log</span>, meaning an append-only record of every change ever made to the table, where append-only means new entries are added at the end and existing entries are never edited.</p>
+    <p>Each numbered file records one <span class="term" data-term="cm">commit</span>, meaning one completed change, described as a list of data files added and data files removed. That is genuinely most of what is in there. Not the rows. Just: these files joined the table, these files left it.</p>
+    <p>The state of the table after commit number <em>n</em> is called <span class="term" data-term="vs">version</span> <em>n</em>. Version 0 is the table after the first commit, version 1 after the second, and so on. A folder with a log like this, read through the log rather than directly, is a <span class="term" data-term="dt">Delta table</span>.</p>
+    <p>Here is the order of events that makes it work, and it is the one detail to hold onto. The data file is written first, completely, while nobody is looking at it, because nothing in the log mentions it yet. Only when the file is finished does the writer append a log entry naming it. Readers consult the log, so the file becomes part of the table at the instant that one small entry appears, and not a moment before.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span>Figure 3 &middot; the same write, with a log</span><span id="f3Read">step 0 of 4</span></div>
+      <div class="fig-body">
+        <svg id="f3" viewBox="0 0 900 400" role="img" aria-label="A write with the log entry appearing only after the data file is complete"></svg>
+        <div class="fig-read" id="f3Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f3Next">advance one step</button>
+        <button class="chip" id="f3ReadNow">read the table now</button>
+        <button class="chip" id="f3Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Advance the write step by step and read at any point.</b> On the left is the folder as it physically is; on the right is what a reader following the log sees. They deliberately disagree during the write.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Advance the write halfway and read: the reader still gets yesterday's count, exactly and correctly, because the half-written file is not named in any log entry and so is not part of the table. Advance to the commit and read again: the number jumps in one go. There is no moment at which a reader sees a partial answer. The write has become atomic, and nothing about the storage changed to achieve it. What changed is that the definition of the table moved from "whatever is in the folder" to "whatever the log says".</p>
+    <p>Once you see that, the rest of the design follows almost mechanically. Updating a row means writing a new data file with the corrected row, then committing one entry that says: add the new file, remove the old one. Both halves land together or neither does. Deleting rows is the same shape. So is everything else.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A theatre programme printed fresh for each night's performance. The cast are people, the programme is a list. Swapping an understudy in does not involve editing a person; it involves printing a new programme. Anyone holding tonight's programme has a coherent list, even though the building is full of last week's programmes and next week's drafts.</p>
+      <p><b>The log is the programme, the data files are the cast, and the reason a reader never sees a half-finished cast change is that they were handed a programme that was complete when it was printed.</b></p>
+    </div>
+    <p>All of this is a description of files on disk. What you actually type is a different question, and that is where the word API starts to matter.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>An API is the set of calls you are allowed to make, and Delta gives you two</h2>
+    <p>An <span class="term" data-term="api">API</span>, short for application programming interface, is the list of operations a piece of software offers to programs that use it, along with what each one expects and returns. It is the menu. It is not the kitchen.</p>
+    <p>You will meet the Delta table API in two forms, and confusion between them costs beginners a lot of time, so here they are side by side.</p>
+    <p>The first form is <b>SQL</b>, where you write a statement as text and the engine works out what to do. The second is the <b>programmatic API</b>, where your code obtains an object representing the table and then calls methods on it. A method is just a function that belongs to an object, written after a dot: <code>table.delete(...)</code>. Both forms reach the same files and the same log. Neither is more real than the other.</p>
+    <p>Two more words before the code, both of which appear in every example you will ever read. A <span class="term" data-term="pth">path</span> is the address of the folder, written as a string, like <code>/lake/orders</code>. And a <span class="term" data-term="df">DataFrame</span> is the in-memory representation of a set of rows and columns that your program is currently working with: the rectangle, loaded, sitting in the program, ready to be filtered or counted or written somewhere. A DataFrame is not the table. It is a copy of some rows from it, held in memory.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span>Figure 4 &middot; the same job, four ways</span><span id="f4Read">count the rows</span></div>
+      <div class="fig-body">
+        <svg id="f4" viewBox="0 0 900 400" role="img" aria-label="SQL and programmatic forms of the same Delta operations side by side"></svg>
+        <div class="fig-read" id="f4Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f4="0">count the rows</button>
+        <button class="chip" data-f4="1">add new rows</button>
+        <button class="chip" data-f4="2">change some rows</button>
+        <button class="chip" data-f4="3">look at the history</button>
+      </div>
+      <div class="fig-cap"><b>Pick a job.</b> The SQL form and the Python form appear together, with the files and log entries each one produces shown underneath, so you can see that both routes end in the same place.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The programmatic route needs one more idea, and it is the piece of vocabulary that makes most Delta documentation readable. Before calling methods on a table, your program needs an object standing for it. That object is a <span class="term" data-term="hd">handle</span>: a value in your program that refers to something outside your program, holding the address and knowing how to reach it, rather than holding a copy of the contents.</p>
+    <p>You obtain one like this, and the name of the call says exactly what it does, which is get me a handle for the Delta table living at this path:</p>
+    <div class="panel">from delta.tables import DeltaTable
+
+dt = DeltaTable.forPath(spark, "/lake/orders")   <i># a handle, not the data</i>
+
+<i># the handle knows how to hand you the rows, as a DataFrame</i>
+df = dt.toDF()
+df.count()
+
+<i># and how to describe itself</i>
+dt.history(5).show()        <i># the last five commits</i>
+dt.detail().show()          <i># size, file count, location, properties</i></div>
+    <p>Note what <code>dt</code> is not. It is not the rows: creating it reads a little metadata and no data. It is not a snapshot frozen in time either; ask it for rows again after somebody else commits, and you get the newer state. It is a way of addressing the table, which is why almost every operation in the rest of this piece starts by getting one.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>The difference between a library card with a shelf reference on it and an armful of books. The card is small, you can carry it around, and it does not go stale when the shelf changes. When you actually want to read something you take the card to the shelf and come back with the books.</p>
+      <p><b>The handle is the card. The DataFrame is the armful of books.</b> Confusing them is what makes people ask why their table did not change when they modified their DataFrame: they edited the copy in their arms, not the shelf.</p>
+    </div>
+    <p>With a handle in hand, the simplest thing to do with a table is put rows into it.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Writing rows: two modes, and the one that quietly deletes everything</h2>
+    <p>Writing is done through the DataFrame, not the handle. That surprises people, and the reason is simple once said: you are asking a set of rows to save itself somewhere, so the rows are the sensible starting point. The call chain reads left to right as a sentence.</p>
+    <div class="panel">(new_orders                       <i># a DataFrame: the rows you want to save</i>
+   .write                         <i># give me a writer for these rows</i>
+   .format("delta")               <i># write them as a Delta table, not plain files</i>
+   .mode("append")                <i># add to what is there</i>
+   .save("/lake/orders"))         <i># at this path</i></div>
+    <p>The <span class="term" data-term="md">mode</span> is the part to slow down on, because it decides what happens to rows that are already in the table, and the two common values do opposite things.</p>
+    <p><code>append</code> means add these rows and leave everything else alone. On disk: one new data file, one commit entry adding it, nothing removed. <code>overwrite</code> means this DataFrame is now the entire contents of the table. On disk: new data files, and a commit entry that removes every file that was live before.</p>
+    <p>In the figure, the folder is drawn as before, and each commit is drawn as a row in the ledger showing what it added and what it removed, because add and remove are the only two things a commit ever contains. Run the same DataFrame in both modes and compare the ledger.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span>Figure 5 &middot; append against overwrite</span><span id="f5Read">append</span></div>
+      <div class="fig-body">
+        <svg id="f5" viewBox="0 0 900 420" role="img" aria-label="The folder and log after appending compared with after overwriting"></svg>
+        <div class="fig-read" id="f5Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f5="append">mode: append</button>
+        <button class="chip" data-f5="overwrite">mode: overwrite</button>
+        <button class="chip" id="f5Run">write today's rows</button>
+        <button class="chip" id="f5Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Write in append mode a few times, then reset and try overwrite.</b> Watch the removed column of the ledger, which is empty for every append and full for the overwrite.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>An overwrite with the wrong DataFrame is the classic way to lose a table, and it is worth being precise about what "lose" means here, because it is less bad than it sounds. The old data files are removed from the table, meaning the newest commit no longer lists them. They are still sitting in the folder. The table at the previous version still names them and can still be read. Recovery is possible, for a while, and there is a call for it later in this piece.</p>
+    <p>One more term arrives with writing, unavoidably. The <span class="term" data-term="sc">schema</span> of a table is its column names and the type of each one: <code>order_id</code> is text, <code>amount</code> is a decimal number, and so on. Delta records the schema in the log and checks every write against it. Try to append rows with a column the table does not have, or with text where numbers belong, and the write fails rather than landing silently.</p>
+    <p>That refusal is a feature, and it takes people by surprise the first time. The alternative, which plain file folders offer, is that mismatched data lands happily and is discovered months later by somebody whose report is producing nonsense. If the new column really is wanted, you say so explicitly:</p>
+    <div class="panel">(new_orders.write.format("delta").mode("append")
+   .option("mergeSchema", "true")     <i># yes, really add the new column</i>
+   .save("/lake/orders"))</div>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A form with fixed boxes. Append is handing in another completed form to add to the pile. Overwrite is throwing out the pile and putting yours on the empty desk. Schema enforcement is the clerk refusing a form with an extra box drawn on it in pen, until somebody in charge agrees the form has genuinely changed.</p>
+      <p><b>The clerk is not being obstructive. Every form in the pile is supposed to have the same boxes, and that promise is the only reason anyone can add the pile up.</b></p>
+    </div>
+    <p>Adding rows is the easy half. The interesting calls are the ones that change rows already in the table, and to follow those you need to see what they do to files.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Changing one row rewrites a whole file, and that explains almost everything</h2>
+    <p>Order 1043 has the wrong amount. In a database of the kind that runs as a server, you would tell it to change that row and it would edit the row where it sits. Here you cannot, and the reason is the storage: files of this kind are written once and are not editable in the middle. To change one row inside a file, the only physical option is to produce a new file containing all of that file's rows with the one row altered, and stop counting the old file as part of the table.</p>
+    <p>That approach has a name, <span class="term" data-term="cow">copy-on-write</span>, meaning the system copies the affected unit and writes the change into the copy, rather than modifying the original. The unit being copied is the file, which is why a one-row change can rewrite a file holding a million rows.</p>
+    <p>The call itself is short. You call it on the handle, and you give it a <span class="term" data-term="pr">predicate</span>, meaning a condition written as text that says which rows you mean, in the same style you would write after the word WHERE in a query.</p>
+    <div class="panel">from delta.tables import DeltaTable
+from pyspark.sql import functions as F
+
+dt = DeltaTable.forPath(spark, "/lake/orders")
+
+dt.update(
+    condition = "order_id = '1043'",              <i># the predicate: which rows</i>
+    set       = {"amount": F.lit(24.90)})         <i># the new value</i>
+
+dt.delete("order_date &lt; '2024-01-01'")            <i># same shape, no set</i></div>
+    <p>In the figure, each file is drawn as before with its row count, and the rows inside the file you are changing are drawn individually so you can see which one moved. Files the engine did not need to touch stay pale. The one it rewrote is drawn twice: the old version faded and marked removed, the new one solid and marked added, because that pair is exactly what the commit contains.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span>Figure 6 &middot; one row changed, one file rewritten</span><span id="f6Read">nothing changed yet</span></div>
+      <div class="fig-body">
+        <svg id="f6" viewBox="0 0 900 420" role="img" aria-label="An update rewriting one file while other files are untouched"></svg>
+        <div class="fig-read" id="f6Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f6Row">update order 1043</button>
+        <button class="chip" id="f6Del">delete the 2023 orders</button>
+        <button class="chip" id="f6Wide">update every country at once</button>
+        <button class="chip" id="f6Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Try the three operations.</b> Each shows how many files were read, how many were rewritten, and how many rows were actually changed, so the ratio between work done and rows affected is visible.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Press the third button and the cost becomes obvious: an update touching rows in every file rewrites every file. The rows changed might be a hundred, and the rows rewritten a hundred thousand, because rewriting is done in whole files.</p>
+    <p>This single fact explains a run of behaviours that otherwise look arbitrary. It explains why a targeted update on a well-organised table is fast and the same update on a badly organised one is slow: the difference is how many files contain a matching row. It explains why these systems reward writing predicates that line up with how the data is laid out. And it explains why deleting a small number of rows can produce a surprisingly large amount of new storage.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A wall of printed volumes where you cannot write in the margins. Correcting one sentence means reprinting the volume that sentence is in, and shelving the new copy in place of the old one. Correcting one sentence in every volume means reprinting the entire wall.</p>
+      <p><b>Nothing about the correction got harder. What varies is how many volumes the correction is spread across</b>, which is a fact about how the text was bound, not about the correction.</p>
+    </div>
+    <p>Which leaves the question that decides whether any of this is quick or ruinous. When you ask for the German orders, how does the engine know which files hold German orders? On the evidence so far it does not, and it does the only thing it can.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Partitioning writes the filter into the folder names</h2>
+    <p>Ask the folder for the German orders. You have three files and nothing else. Which one do you open?</p>
+    <p>All three. You have no choice. Nothing about the name <code>part-0000</code> tells you whether there is a German order inside it, so the only way to find out is to open it and look. Three files is fine. Thirty thousand files, which is an ordinary size for a table that has been appended to every hour for a year, is not fine at all, and no amount of clever querying helps, because the cost was fixed the moment the rows were written.</p>
+    <p>The fix is almost insultingly simple: put the answer in the folder name.</p>
+    <div class="panel">/lake/orders/
+    country=DE/part-0000.parquet     <i># every German order, and nothing else</i>
+    country=GB/part-0000.parquet
+    country=US/part-0000.parquet</div>
+    <p>That is <span class="term" data-term="pt">partitioning</span>. You nominate one or more columns as <span class="term" data-term="pc">partition columns</span>, and the writer sorts every row into a subfolder named for its value in those columns. No row is duplicated and no index is built. The value simply moves out of the file and into the path.</p>
+    <p>The payoff arrives at read time. Asked for Germany, the engine lists the directory names, sees that two of the three cannot possibly contain a German row, and discards them without opening a single file. That step has a name, <span class="term" data-term="pp">partition pruning</span>, and it is the difference between a query that reads three files and one that reads thirty thousand.</p>
+    <p>You choose the layout once, at write time, and it is part of the table from then on.</p>
+    <div class="panel">(df.write
+   .format("delta")
+   .partitionBy("country")                <i># the layout, fixed at write time</i>
+   .mode("append")
+   .save("/lake/orders"))
+
+spark.read.format("delta").load("/lake/orders") \
+     .where("country = 'DE'")             <i># prunes: opens one folder</i>
+
+spark.read.format("delta").load("/lake/orders") \
+     .where("order_month = '2024-03'")    <i># prunes nothing: opens everything</i></div>
+    <p>Those last two lines are the whole lesson, and the figure below is built to make the difference impossible to miss. Change the layout, change the question, and watch which files the engine actually has to open.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>Figure 7 &middot; the layout decides what can be skipped</span><span id="f7Read">no partitioning &middot; all orders</span></div>
+      <div class="fig-body">
+        <svg id="f7" viewBox="0 0 900 296" role="img" aria-label="Files grouped into partition folders, with the folders a query can skip drawn as discarded"></svg>
+        <div class="fig-read" id="f7Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7l="none">no partitioning</button>
+        <button class="chip" data-f7l="country">by country</button>
+        <button class="chip" data-f7l="both">by country + month</button>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7q="all">all orders</button>
+        <button class="chip" data-f7q="de">country = 'DE'</button>
+        <button class="chip" data-f7q="mar">month = '2024-03'</button>
+        <button class="chip" data-f7q="demar">DE in March</button>
+      </div>
+      <div class="fig-cap"><b>Pick a layout, then pick a question.</b> Solid folders are opened and read; faded ones are discarded on their name alone. The counter underneath is the only number that matters, because reading a file is the thing you pay for.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu">
+      <i>picture it</i>
+      <p>A filing room. In the first version every drawer is unlabelled and they are stacked to the ceiling, so finding the German invoices means opening every one. In the second, the drawers are labelled by country, and finding the German invoices means walking past two of them without touching either.</p>
+      <p><b>The paper did not change and neither did the question. What changed is that the label now answers part of it</b>, and a label you can read from across the room costs nothing to check.</p>
+    </div>
+    <p>Now try the layout <i>by country</i> with the question <i>month = '2024-03'</i>, because that combination is where most real disappointment lives. The drawers are labelled by country and the question is about March. The labels say nothing about months, so not one drawer can be ruled out, and the engine opens all of them. Partitioning bought exactly nothing.</p>
+    <div class="pull">Pruning is not a property of the table. It is a property of the match between how the data was laid out and what you happened to ask.</div>
+    <p>Which points at the obvious temptation: partition by more columns, prune more questions. The third layout does that, and it works, and the counter shows the cost. Twelve orders now sit in six folders, so the average file holds two rows. Scale that up and it is the same shape of problem either way: partition by customer and a table with fifty thousand customers gets fifty thousand folders, most holding a file of a few kilobytes. The engine now spends its time listing directories and opening tiny files, and the pruning it gained is dwarfed by the overhead it bought. The number of distinct values in a column is its <span class="term" data-term="cd">cardinality</span>, and partitioning on a high-cardinality column is the single most common way to make one of these tables slow.</p>
+    <p>So the rule is not "partition more", it is "partition by the thing you filter on, and only while the folders stay big". A commonly cited target is at least about a gigabyte of data per partition. Country works. Order date by month often works. Order id never works.</p>
+    <p>One reassurance, because the picture so far is bleaker than reality. Even with no partitioning at all, Delta records the minimum and maximum value of each column in every file, in the log. A query for order 1043 can therefore skip files whose recorded range does not contain 1043, without any folder structure at all. That is <span class="term" data-term="ds">data skipping</span>, it is on by default, and it is why the honest advice for a modern table is to partition sparingly, or not at all, and let the statistics do the work.</p>
+    <p>Update and delete each do one job. The call most people come to Delta for does three at once, and it is worth walking through slowly.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Merge: bring me today's file and I will work out what changed</h2>
+    <p>Real feeds do not arrive sorted into things to add and things to change. A supplier sends today's file, and inside it are some orders you have never seen, some you have seen with corrections applied, and possibly some marked cancelled. Doing that with the calls so far means three passes and some awkward bookkeeping between them.</p>
+    <p><span class="term" data-term="mg">Merge</span> is one call that does all three. Two words come with it and they are used constantly in the documentation. The <span class="term" data-term="tg">target</span> is the existing table being changed. The <span class="term" data-term="sr">source</span> is the incoming rows you are merging in. You supply a condition saying how a source row is recognised as being about the same thing as a target row, and then a clause for each case.</p>
+    <p>Follow one merge through, one clause at a time.</p>
+  </div>
+  <div class="bleed">
+    <div class="scrolly" id="sc1">
+      <div class="wide sg">
+        <div class="fig">
+          <div class="fig-head"><span>Figure 8 &middot; one merge, clause by clause</span><span id="sc1Read">the two sides</span></div>
+          <div class="fig-body"><svg id="sc1fig" viewBox="0 0 540 420" role="img" aria-label="Source and target rows being matched and routed by merge clauses"></svg></div>
+          <div class="fig-cap"><b>Click any step to jump to it.</b> Target rows are on the left, incoming source rows on the right, and the colour of a row shows which clause claimed it.</div>
+        </div>
+      </div>
+      <div class="col ss">
+        <div class="col stp" data-step="0"><h3>Two sets of rows, and one question about each pair</h3><p>Four rows already in the table, three arriving today. The question asked of every possible pairing is the merge condition, and here it is simply whether the order ids are equal.</p></div>
+        <div class="col stp" data-step="1"><h3>Some source rows find a partner</h3><p>Order 1043 exists on both sides. In merge vocabulary that pairing is <b>matched</b>, and it is the case where the table already knows about this thing and the incoming row is presumably newer information.</p></div>
+        <div class="col stp" data-step="2"><h3>Matched rows take the update clause</h3><p>The clause says what to do about a match: usually overwrite the target row with the source row's values. Physically this is the file rewrite from a moment ago, done for you.</p></div>
+        <div class="col stp" data-step="3"><h3>Some source rows find nobody</h3><p>Order 1102 has never been seen. That is <b>not matched</b>, and the natural response is to insert it. Together, update-if-present and insert-if-absent is what people mean by the word upsert.</p></div>
+        <div class="col stp" data-step="4"><h3>And some target rows are never mentioned</h3><p>Order 1041 is in the table and not in today's file. There is a third clause for that case, and its default is to do nothing, which is almost always right: absence from one day's file is not evidence of anything.</p></div>
+        <div class="col stp" data-step="5"><h3>All of it lands as one commit</h3><p>Files rewritten, files added, one entry in the log. A reader either sees the whole merge or none of it, which is the atomicity from earlier doing its job on an operation with three moving parts.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Written out, the call mirrors the walk-through exactly. Read it as a sentence: for this target, merge that source, matching on this condition, and here is what to do in each case.</p>
+    <div class="panel">(DeltaTable.forPath(spark, "/lake/orders").alias("t")
+   .merge(
+        source    = todays_file.alias("s"),
+        condition = "t.order_id = s.order_id")     <i># how a pair is recognised</i>
+   .whenMatchedUpdateAll()                          <i># it exists: take the new values</i>
+   .whenNotMatchedInsertAll()                       <i># it is new: add it</i>
+   .execute())</div>
+    <p>Two details on that snippet, both of which trip people up. <code>alias</code> gives each side a short name so the condition can say which side it means, which is why you see <code>t.</code> and <code>s.</code> prefixes everywhere in merge examples. And nothing happens until <code>execute()</code>: the calls before it are describing the operation, not performing it.</p>
+    <p>Each clause can also carry its own condition, which is how you express the rule that stops replays from doing damage:</p>
+    <div class="panel">   .whenMatchedUpdateAll(condition = "s.updated_at &gt; t.updated_at")</div>
+    <p>Without it, re-running an old file overwrites newer corrections with stale values. With it, a merge can be run twice, or out of order, and the result is the same, which matters because pipelines are re-run constantly.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A membership secretary with a card index and a stack of forms handed in this week. For each form: find the card, update it if it exists, write a new card if it does not, and leave alone the members who did not hand anything in. One person, one pass, three different actions depending on what they find.</p>
+      <p><b>Merge is that pass, expressed as one instruction instead of three, and committed as one change instead of three.</b></p>
+    </div>
+    <p>Every operation so far has produced a new version and left the old files sitting in the folder. That accumulated history is not waste. It is a feature you can read.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Every past version is still readable, because its files are still named</h2>
+    <p>Here is the dial for this piece, and it is the capability that most surprises people coming from ordinary databases.</p>
+    <p>A commit records which files were added and removed. Work through the log from the start and stop at commit 3, and you have the exact list of files that made up the table at that moment. Read those files and you have the table as it was. That list is a <span class="term" data-term="sn">snapshot</span>, meaning the complete contents of the table at one version, and reading one is called <span class="term" data-term="tt">time travel</span>.</p>
+    <p>It costs nothing to keep, because nothing was deleted to create the new version. The old files were unlisted, not removed.</p>
+    <p>In the figure, drag the version slider along the log. The top strip is the log with the selected commit marked. The middle is the folder, where files live at the selected version are drawn solid and files not in that version are drawn faded, so you can watch the same physical folder produce different tables. The bottom is the rows a reader gets. Everything is computed from the commits above it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>Figure 9 &middot; the same folder at every version</span><span id="k9Head">version 5 of 5</span></div>
+      <div class="fig-body">
+        <svg id="k9" viewBox="0 0 900 440" role="img" aria-label="A version slider showing which files are live and which rows a reader gets"></svg>
+        <div class="fig-read" id="k9Read"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <input type="range" id="k9Slider" min="0" max="5" step="1" value="5" aria-label="table version">
+        <div style="display:flex;justify-content:space-between;margin:9px 0 14px" class="cap">
+          <span>v0 first append</span><span>v2 the update</span><span>v3 the delete</span><span>v5 now</span>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="chip" id="k9Rows">show the rows</button>
+          <button class="chip" id="k9Files">show the file list</button>
+          <button class="chip" id="k9Reset">back to now</button>
+        </div>
+      </div>
+      <div class="fig-cap"><b>Drag the slider from version 5 back to version 0.</b> The folder never changes. What changes is which of its files the log says are part of the table.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Drag to version 1 and the row corrected at version 2 shows its old amount again. Drag to version 2 and the rows deleted at version 3 are back. This is not a backup being restored: it is the ordinary read path, pointed at an earlier list.</p>
+    <p>You ask for it with one option, by version number or by wall-clock time:</p>
+    <div class="panel"><i># by version</i>
+df = spark.read.format("delta").option("versionAsOf", 3).load("/lake/orders")
+
+<i># by timestamp: the version that was current at that moment</i>
+df = (spark.read.format("delta")
+        .option("timestampAsOf", "2024-05-07 09:00:00")
+        .load("/lake/orders"))
+
+<i># in SQL, the same two</i>
+spark.sql("SELECT * FROM delta.`/lake/orders` VERSION AS OF 3")
+spark.sql("SELECT * FROM delta.`/lake/orders` TIMESTAMP AS OF '2024-05-07 09:00:00'")</div>
+    <p>Three uses justify the whole mechanism. Reproducing a number somebody is querying, by reading the table as it stood when the report ran. Comparing two versions to see what a job actually changed, by reading both and subtracting. And undoing a mistake, which has its own call rather than requiring you to copy data around:</p>
+    <div class="panel">dt.restoreToVersion(4)      <i># or dt.restoreToTimestamp("2024-05-07 09:00:00")</i></div>
+    <p>Restore is worth one extra sentence, because its behaviour is a small lesson in how the whole system thinks. It does not rewind the table by erasing versions 5 and 6. It appends a <em>new</em> commit whose file list happens to match version 4's. History is never rewritten, only extended, so the record of the mistake and of the recovery both remain.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A ship's logbook, where entries are added in ink and never erased. Wanting the ship's position last Tuesday does not mean undoing this week: it means reading down to Tuesday and stopping. Correcting an error means writing a correction as today's entry, not scratching out the original.</p>
+      <p><b>Time travel is reading down to a point. Restore is writing a new entry that says: we are back where we were on Tuesday.</b> Neither one removes anything.</p>
+    </div>
+    <p>Which raises a question you may have been holding since the log first appeared. If nothing is ever deleted, does this folder simply grow forever?</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Housekeeping: two calls, one of which is the only way to lose data</h2>
+    <p>The answer is yes, it grows, and there are two calls that deal with it. They are usually mentioned in the same breath and they do completely different things, so it is worth keeping them apart from the start.</p>
+    <p>The first problem is not size, it is count. A pipeline appending a small batch every few minutes produces a small file every few minutes. Reading the table then means opening thousands of files, and opening a file has a fixed cost regardless of how little is in it, so a table holding a modest amount of data can become slow to read purely because of how it is spread out. That is the <span class="term" data-term="sf">small files</span> problem.</p>
+    <p><code>OPTIMIZE</code> fixes it by reading many small files and writing their rows out as fewer large ones. Nothing about the data changes. In log terms it is one more commit: many files removed, a few added.</p>
+    <div class="panel">spark.sql("OPTIMIZE delta.`/lake/orders`")
+
+<i># with a layout hint, if queries usually filter on these columns</i>
+spark.sql("OPTIMIZE delta.`/lake/orders` ZORDER BY (order_date, country)")</div>
+    <p>The second problem is the files nobody needs any more: the ones removed by earlier commits, still sitting in the folder. <code>VACUUM</code> deletes them from storage, and it is the only operation in this piece that actually destroys anything.</p>
+    <p>It will not delete files that any recent version still needs, and the meaning of recent is a setting called the <span class="term" data-term="rt">retention</span> period, which is the age a discarded file must reach before vacuum is allowed to remove it. The default is seven days.</p>
+    <div class="panel">spark.sql("VACUUM delta.`/lake/orders`")                 <i># default retention: 7 days</i>
+spark.sql("VACUUM delta.`/lake/orders` RETAIN 720 HOURS") <i># 30 days</i></div>
+    <p>The consequence lands directly on the version slider from a moment ago, and it is the sentence people wish they had read earlier: <b>the retention period is the real limit on how far back you can time travel.</b> The log may still describe version 2, but if vacuum has removed the files version 2 named, reading it fails. Set retention against how far back somebody might genuinely need to reproduce a number, not against the storage bill.</p>
+    <p>In the figure, the folder is drawn with each file in one of three states, which are worth reading off before you press anything: solid means live in the current version, faded means removed from the current version but still needed by some older version you could still read, and outlined means removed and old enough that vacuum may delete it. The horizon marker shows how far back time travel currently works.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span>Figure 10 &middot; what each housekeeping call touches</span><span id="f10Read">day 30 &middot; 30 files</span></div>
+      <div class="fig-body">
+        <svg id="f10" viewBox="0 0 900 420" role="img" aria-label="Files by state, and the effect of optimize and vacuum on file count and time travel"></svg>
+        <div class="fig-read" id="f10Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f10Run">run another month of appends</button>
+        <button class="chip" id="f10Opt">OPTIMIZE</button>
+        <button class="chip" id="f10Vac">VACUUM</button>
+        <button class="chip" id="f10Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Append for a few months, then compact, then vacuum.</b> Optimize moves the file count; vacuum moves the time-travel horizon. Neither one moves the other.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu">
+      <i>picture it</i>
+      <p>An office that keeps every superseded draft. Optimize is having the loose pages bound into proper volumes: the same words, far easier to carry. Vacuum is the shredder, run on drafts older than a stated age.</p>
+      <p><b>Binding is reversible in the sense that nothing was lost. Shredding is not, and the age on the shredding policy is exactly how far back anyone can ever check what a document used to say.</b></p>
+    </div>
+    <p>There is one more thing the log offers before we get to what all of this cannot do, and it is free, because it is simply the log read as a report.</p>
+    <div class="panel">dt.history().show(truncate=False)
+<i># version | timestamp | operation | operationParameters | operationMetrics ...</i>
+<i>#    5    | 09:41     | MERGE     | {predicate: t.order_id = s.order_id} | {numTargetRowsUpdated: 2, ...}</i></div>
+    <p>Every commit records what kind of operation made it, the parameters it was given, and how many rows it touched. Nobody had to switch that on. It is a by-product of the log existing, and it answers the question that plain file folders make unanswerable: who changed this table, when, with what, and how much did it affect.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Two writers at once, and the error message that means it worked</h2>
+    <p>Everything so far assumed one writer. Real systems have several: a nightly load, a correction job, somebody running a backfill by hand.</p>
+    <p>The rule for how simultaneous changes are handled is called <span class="term" data-term="cc">concurrency control</span>, and Delta uses the <span class="term" data-term="oc">optimistic</span> kind, meaning writers do not reserve the table in advance. Each one reads the current version, does its work, and then tries to commit. The commit is where the check happens: if somebody else committed in the meantime, and their change overlaps with yours, your commit is rejected.</p>
+    <p>The rejection is the mechanism working. Nothing was corrupted, and no half-merged state was written. Your job raises an error saying the table was modified concurrently, and the correct response is usually to run it again, since it will then read the new version and redo its work on top.</p>
+    <p>In the figure, two writers are drawn as two lanes, each showing which version it read and what it wants to commit. Press the buttons to advance either one, and see which commits succeed.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span>Figure 11 &middot; two writers, one log</span><span id="f11Read">both idle</span></div>
+      <div class="fig-body">
+        <svg id="f11" viewBox="0 0 900 400" role="img" aria-label="Two concurrent writers attempting to commit to the same table"></svg>
+        <div class="fig-read" id="f11Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip" id="f11A">writer A: read, then commit</button>
+        <button class="chip" id="f11B">writer B: read, then commit</button>
+        <button class="chip" id="f11Sep">give them separate partitions</button>
+        <button class="chip" id="f11Reset">reset</button>
+      </div>
+      <div class="fig-cap"><b>Have both writers read, then commit both.</b> Then try the separate-partitions version, where their work does not overlap and both succeed.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Two appends to different parts of a table generally both succeed, because they add files and remove nothing, so there is nothing to disagree about. Two merges aimed at the same rows will conflict, and that is correct, since one of them was computed against a table that no longer exists.</p>
+    <p>The practical guidance follows directly: arrange for writers not to overlap where you can, and where you cannot, let the loser retry rather than catching the error and continuing. A caught conflict that is then ignored is how a job reports success while having done half its work.</p>
+    <div class="intu">
+      <i>picture it</i>
+      <p>A shared paper ledger where the rule is that you may only write on the next blank line, and only if the line above is the one you read when you started. Two clerks who both read line 40 and both go away to prepare an entry will find that only the faster one can write line 41. The other has to read line 41 and redo their sum.</p>
+      <p><b>Nobody was locked out of the room, and no half-entry was ever written.</b> The cost of optimism is redoing work occasionally; the benefit is that readers are never blocked and writers never queue.</p>
+    </div>
+    <p>That is the mechanism in full. What remains is being clear about the shape of problem it is for, which is narrower than the enthusiasm around it sometimes suggests.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>What this is not: a database for your application</h2>
+    <p>Delta tables suit an <span class="term" data-term="aw">analytical workload</span>, meaning work that reads a great many rows at a time to compute summaries, and writes in batches. They suit it very well: large scans, columns rather than whole rows, and periodic bulk changes.</p>
+    <p>They do not suit a <span class="term" data-term="tw">transactional workload</span>, meaning the pattern behind an ordinary application, where thousands of small operations a second each touch one row and expect an answer in milliseconds. Copy-on-write is the reason: a one-row change rewrites a file. Serving a shopping basket from a Delta table would be a design error, and no amount of tuning fixes it, because the mismatch is architectural.</p>
+    <p>Three more limits deserve stating plainly rather than being discovered.</p>
+    <p><b>The storage underneath has its own rules.</b> These tables usually live on <span class="term" data-term="os">object storage</span>, meaning cloud services that store whole files addressed by name, rather than a filesystem with directories in the traditional sense. Listing files there is slower than you expect, renames are not always cheap, and the guarantees vary by provider. Most of the awkward operational corners in real deployments trace back to that layer rather than to Delta.</p>
+    <p><b>Small frequent writes are the expensive pattern.</b> Every commit is a file plus a log entry. Committing every few seconds produces a table that needs constant compaction to stay readable. Batching writes is not a micro-optimisation here, it is how the design expects to be used.</p>
+    <p><b>Deleting for privacy requests is more work than a delete.</b> The rows leave the current version, and they remain in older versions until vacuum passes the retention horizon. Any credible erasure process has to account for that, and for copies in other tables downstream.</p>
+    <p>The figure lays out four workloads against what each one needs, so the fit and the mismatch are visible together rather than asserted.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig12">
+      <div class="fig-head"><span>Figure 12 &middot; four workloads, one table format</span><span id="f12Read">nightly reporting load</span></div>
+      <div class="fig-body">
+        <svg id="f12" viewBox="0 0 900 400" role="img" aria-label="Four workloads compared against what a Delta table provides"></svg>
+        <div class="fig-read" id="f12Sum"></div>
+      </div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f12="0">nightly reporting load</button>
+        <button class="chip" data-f12="1">hourly corrections feed</button>
+        <button class="chip" data-f12="2">a web app's basket</button>
+        <button class="chip" data-f12="3">per-second sensor stream</button>
+      </div>
+      <div class="fig-cap"><b>Step through the four.</b> Each row shows what that workload demands and whether this design supplies it, with the reason drawn from the mechanism rather than from a rule of thumb.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu">
+      <i>picture it</i>
+      <p>A goods lift rated for pallets. It moves a tonne at a time, all day, reliably. Using it to carry single envelopes between floors is not a misuse that better scheduling fixes: the doors alone take longer than the errand.</p>
+      <p><b>Choosing between this and an application database is not a question of scale or of how modern you are. It is a question of whether your work arrives in pallets or in envelopes.</b></p>
+    </div>
+    <p>Which is a reasonable place to stop, with the whole mechanism in view: a folder, a log, a handful of calls that write one and append to the other, and a set of consequences that all trace back to those two facts.</p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="col" style="text-align:center">
+    <p class="lede" style="max-width:26em;margin:0 auto">Every call in this API does one of two things. It writes data files while nobody is looking, or it appends a line to a log saying which files count now. Reading, updating, merging, time travel and recovery are all consequences of those two moves.</p>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="col">
+    <h2>Now try it yourself</h2>
+    <p>A table you can operate. Issue calls in any order and watch both halves respond: the folder on the left, the log on the right, the rows a reader would get underneath. Nothing here is scripted, so you can put the table into states this piece never described.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig13">
+      <div class="fig-head"><span>the whole table</span><span id="pgHead">version 0 &middot; 1 file</span></div>
+      <div class="fig-body">
+        <svg id="pg" viewBox="0 0 900 440" role="img" aria-label="An interactive Delta table you can append to, update, merge, optimize and vacuum"></svg>
+        <div class="fig-read" id="pgRead"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="chip" id="pgApp">append 10 rows</button>
+          <button class="chip" id="pgUpd">update one row</button>
+          <button class="chip" id="pgDel">delete some rows</button>
+          <button class="chip" id="pgMrg">merge today's file</button>
+        </div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="chip" id="pgOpt">OPTIMIZE</button>
+          <button class="chip" id="pgVac">VACUUM</button>
+          <button class="chip" id="pgRes">restore to version 1</button>
+          <button class="chip" id="pgReset">start again</button>
+        </div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center">
+          <span class="cap">read at version</span>
+          <input type="range" id="pgVer" min="0" max="0" step="1" value="0" style="width:200px" aria-label="read at version">
+        </div>
+      </div>
+      <div class="fig-cap"><b>Try this order: append twice, update, vacuum, then drag the version slider back.</b> The early versions are still listed in the log and their files are gone, which is the one failure this design permits you to cause.</div>
+    </div>
+  </div>
+</section>
+
+<p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h2>Into the weeds</h2>
+    <details><summary>Using Delta without Spark at all</summary>
+      <p>Everything in this piece was shown through Spark because that is what most documentation assumes, but the format is not tied to it. The <code>deltalake</code> Python package (delta-rs) reads and writes the same tables from plain Python: <code>write_deltalake(path, df, mode="append")</code> with a pandas or Polars frame, <code>DeltaTable(path).to_pandas()</code> to read, <code>DeltaTable(path, version=3)</code> for time travel, and a merge builder for upserts. For a table of a few million rows this avoids a cluster entirely, and the files it produces are readable by Spark and everything else.</p></details>
+    <details><summary>Paths, catalogs, and why examples look different</summary>
+      <p>This piece addressed tables by path, which is the form that shows the mechanism. Production systems usually register tables in a catalog, a service that maps a name like <code>sales.orders</code> to a path plus permissions. Then <code>DeltaTable.forName(spark, "sales.orders")</code> replaces <code>forPath</code>, and SQL says <code>FROM sales.orders</code> rather than <code>FROM delta.`/lake/orders`</code>. Same table, same log, different way of saying where.</p></details>
+    <details><summary>What checkpoints are, and why the log does not get slow</summary>
+      <p>Reading a table means replaying every commit from the beginning, which would get slower with each write. Every tenth commit, Delta writes a checkpoint: a single file summarising the table state at that point. A reader then loads the most recent checkpoint and replays only the handful of commits after it. This is why a table with fifty thousand commits still opens quickly, and it is entirely automatic.</p></details>
+    <details><summary>Deletion vectors, or how a delete stopped rewriting files</summary>
+      <p>Newer versions support marking rows as deleted in a small side file rather than rewriting the data file, which turns an expensive delete into a cheap one and defers the rewrite to the next optimize. It is a genuine change to the copy-on-write story told here, it has to be enabled on the table, and readers must be new enough to understand it, which is what protocol versions and table features govern.</p></details>
+    <details><summary>Reading a table as a stream</summary>
+      <p>Because the log is an ordered record of changes, a job can follow it: process commits 0 to 5, remember where it stopped, and pick up at 6 next time. Structured Streaming does this with a checkpoint of its own, and <code>trigger(availableNow=True)</code> runs it as a batch job that processes whatever is new. Enabling the change data feed goes further and records which individual rows were inserted, updated and deleted per version, so a downstream table can consume changes rather than rescanning.</p></details>
+    <details><summary>Constraints and generated columns</summary>
+      <p><code>ALTER TABLE ... ADD CONSTRAINT positive_amount CHECK (amount &gt; 0)</code> makes the table itself refuse a write that violates the rule, which is stronger than checking in the pipeline because it applies to every writer including the ones you did not know about. Generated columns compute a value from other columns on write, which is commonly used to derive a partition column from a timestamp without every writer having to remember to add it.</p></details>
+    <details><summary>Where Delta sits among the alternatives</summary>
+      <p>Apache Iceberg and Apache Hudi solve the same problem with the same central idea: files plus a metadata layer that defines which of them constitute the table. They differ in metadata layout, in how they handle updates, and in which engines support them best. The concepts in this piece transfer almost directly, which is the useful thing to know: learn one properly and the others are a vocabulary exercise rather than a fresh start.</p></details>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer class="col" style="padding:44px 0 80px;color:var(--v9);font-size:var(--v4);line-height:1.9">
+  <p>Every figure on this page runs a small simulation of the mechanism it describes: files are added and removed by the same rules the text gives, the log is built from those events, and the rows a reader sees at any version are computed by replaying the commits up to that point. File counts, row counts, version numbers and the time-travel horizon are all derived, not drawn by hand.</p>
+  <p>Delta Lake is an open source project of the Linux Foundation. The code shown is the Python API for Apache Spark plus the equivalent SQL; the delta-rs package offers the same operations without Spark. Behaviour described here, including default retention of seven days and checkpoints every ten commits, reflects the project's documented defaults as of mid-2026 and is worth checking against your own version, since defaults do move.</p>
+</footer>
+<script>!function(){"use strict";var e,t,n,r,a,o,i,l,s,d,c,f,u,h=function(e){return document.getElementById(e)},v=getComputedStyle(document.documentElement),m=function(e){return v.getPropertyValue(e).trim()},w={ac:m("--v0"),rk:m("--v18"),sf:m("--v20"),rl:m("--v19"),ink:m("--v8"),ft:m("--v9"),pp:m("--v16"),p2:m("--v17"),wn:m("--v22")};function g(e,t,n,r,a){return'<text class="'+(r||"lab")+'" x="'+e+'" y="'+t+'" text-anchor="'+(a||"middle")+'">'+function(e){return String(e).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}(n)+"</text>"}function b(e,t,n,r,a,o,i){return'<line x1="'+e.toFixed(1)+'" y1="'+t.toFixed(1)+'" x2="'+n.toFixed(1)+'" y2="'+r.toFixed(1)+'" stroke="'+(o||w.rl)+'" stroke-width="'+(a||1.5)+'" stroke-linecap="round"'+(i?' stroke-dasharray="5 4"':"")+"/>"}function p(e,t,n,r,a,o,i,l){var s=w.ac,d=.16,c=w.rl,f="",u=1.5;"fresh"===a&&(d=.32,c=w.ac,u=2.5),"live"===a&&(d=.16),"retired"===a&&(d=.07,c=w.ft,f=' stroke-dasharray="4 3"'),"purge"===a&&(d=.05,c=w.rk,f=' stroke-dasharray="2 4"',s=w.rk),"writing"===a&&(d=.14,c=w.wn,f=' stroke-dasharray="6 4"',s=w.wn);var h="<g "+(l||"")+'><rect x="'+e+'" y="'+t+'" width="'+n+'" height="'+r+'" rx="4" fill="'+s+'" fill-opacity="'+d+'" stroke="'+c+'" stroke-width="'+u+'"'+f+' shape-rendering="crispEdges"/>';return null!=o&&(h+=g(e+n/2,t+r/2+(i?-3:5),o,"val")),null!=i&&(h+=g(e+n/2,t+r/2+15,i,"sub")),h+"</g>"}function E(e,t){var n=[].slice.call(document.querySelectorAll("["+e+"]"));n.forEach(function(r){r.addEventListener("click",function(){n.forEach(function(e){e.classList.toggle("on",e===r)}),t(r.getAttribute(e))})})}function y(e,t){var n={id:"part-"+String(e.nextId++).padStart(4,"0"),rows:t,from:e.v+1,to:null};return e.files.push(n),n}function k(e,t,n,r,a){e.v++,n.forEach(function(t){t.from=e.v}),r.forEach(function(t){t.to=e.v}),e.commits.push({v:e.v,op:t,add:n.map(function(e){return e.id}),rem:r.map(function(e){return e.id}),note:a||""})}function L(e,t){return e.files.filter(function(e){return e.from<=t&&(null===e.to||e.to>t)})}function x(e,t){var n=0;return L(e,t).forEach(function(e){n+=e.rows.length}),n}function T(e,t,n){var r,a=[];for(r=0;r<e;r++)a.push({id:n.nextOrder++,amt:10+37*r%90/2,yr:2024});return a}function M(){var e={files:[],commits:[],v:-1,nextId:0,nextOrder:1041};return k(e,"WRITE",[y(e,T(4,0,e))],[]),k(e,"WRITE",[y(e,T(4,0,e))],[]),e}!function(){var e=h("heroFig"),t=h("heroState"),n=0,r=["a first write lands one file","a second write appends another file","an update rewrites the first file","a delete removes rows from the second","optimize folds them into one"];function a(){var a=function(e){var t={files:[],commits:[],v:-1,nextId:0,nextOrder:1041};if(k(t,"WRITE",[y(t,T(4,0,t))],[]),e>=1&&k(t,"WRITE",[y(t,T(4,0,t))],[]),e>=2){var n=L(t,t.v);k(t,"UPDATE",[y(t,n[0].rows.slice())],[n[0]])}if(e>=3){var r=L(t,t.v);k(t,"DELETE",[y(t,r[1].rows.slice(0,2))],[r[1]])}if(e>=4){var a=L(t,t.v),o=[];a.forEach(function(e){o=o.concat(e.rows)}),k(t,"OPTIMIZE",[y(t,o)],a)}return t}(n),o="",i=L(a,a.v);o+=g(150,32,"the folder","lab"),a.files.forEach(function(e,t){var n=40+t%3*115,r=54+74*Math.floor(t/3),l=i.indexOf(e)>=0;o+=p(n,r,105,58,l?e.from===a.v?"fresh":"live":"retired",e.id.slice(5),e.rows.length+" rows")}),o+=g(600,32,"the log","lab"),a.commits.forEach(function(e,t){var n=48+44*t;o+=p(430,n,340,36,t===a.commits.length-1?"fresh":"live",null,null),o+=g(444,n+23,"v"+e.v+"  "+e.op+"   +"+e.add.length+" file"+(1===e.add.length?"":"s")+(e.rem.length?"   −"+e.rem.length:""),"val","start")}),o+=g(450,268,r[n],"val"),e.innerHTML=o,t.textContent="version "+a.v+" · "+i.length+" file"+(1===i.length?"":"s")+" live"}h("heroBtn").addEventListener("click",function(){n=(n+1)%r.length,a()}),h("heroReset").addEventListener("click",function(){n=0,a()}),a()}(),function(){var e=h("f1"),t=h("f1Read"),n=h("f1Sum"),r=null,a=!1,o=(M(),[{id:"part-0000",rows:[[1041,"GB",18.5],[1042,"DE",9.99],[1043,"GB",42]]},{id:"part-0001",rows:[[1044,"US",31.2],[1045,"GB",7.45]]},{id:"part-0002",rows:[[1046,"DE",12],[1047,"US",88.1],[1048,"GB",5.25]]}]);function i(){var i,l="";for(l+=g(160,34,"/lake/orders","lab"),i=0;i<o.length;i++){l+=p(40,60+96*i,240,76,r===i?"fresh":"live",o[i].id,o[i].rows.length+" rows",'data-file="'+i+'"')}var s=a?o.reduce(function(e,t){return e.concat(t.rows)},[]):null!==r?o[r].rows:null;l+=g(620,34,a?"every row in the table":null!==r?"rows inside "+o[r].id:"rows","lab"),s?(l+=g(400,64,"order","lab","start")+g(560,64,"country","lab","start")+g(720,64,"amount","lab","start"),s.forEach(function(e,t){var n=80+32*t;l+=b(390,n+22,860,n+22,1,w.rl),l+=g(400,n+16,String(e[0]),"val","start"),l+=g(560,n+16,e[1],"val","start"),l+=g(720,n+16,"£"+e[2].toFixed(2),"val","start")})):l+=g(620,180,"click a file on the left","lab"),e.innerHTML=l,t.textContent=a?"8 rows across 3 files":null!==r?o[r].id:"click a file",n.innerHTML=a?"the table is <b>8</b> rows, and it is physically <b>3</b> files whose rows have been stacked together.":null!==r?"<b>"+o[r].id+"</b> holds <b>"+o[r].rows.length+"</b> of the table’s 8 rows. No file holds the whole table, and no file knows the others exist.":"each rectangle is one file; the number on it is how many rows are inside."}e.addEventListener("click",function(e){var t=e.target.closest("[data-file]");t&&(r=+t.getAttribute("data-file"),a=!1,i())}),h("f1All").addEventListener("click",function(){a=!0,r=null,i()}),h("f1Reset").addEventListener("click",function(){a=!1,r=null,i()}),i()}(),function(){var e=h("f2"),t=h("f2Read"),n=h("f2Sum"),r=-1,a=null,o=10;function i(){var i="";if(i+=g(200,34,"the folder","lab"),i+=p(60,56,120,64,"live","part-0000","4 rows"),i+=p(200,56,120,64,"live","part-0001","4 rows"),r>=0){var l=Math.min(1,r/3);i+=p(60,146,260,70,l>=1?"fresh":"writing","part-0002",l>=1?"10 rows (complete)":Math.round(o*l)+" rows so far"),i+='<rect x="64" y="206" width="'+(252*l).toFixed(1)+'" height="6" fill="'+(l>=1?w.ac:w.wn)+'" fill-opacity="0.8"/>'}i+=g(640,34,"what a reader gets","lab"),null===a?i+=g(640,150,"press read to find out","lab"):(i+=p(500,90,280,80,8===a||18===a?"live":"purge",a+" rows",8===a?"yesterday only":18===a?"yesterday plus today":"a number that was never true"),i+=g(640,208,"a correct answer would be "+(r>=3?18:8)+" rows","val"),i+=g(640,248,8===a||18===a?"this read happened to be safe":"this read was inside the write","val")),i+=g(450,338,r<0?"no write in progress":r>=3?"the write has finished":"the write is part way through","val"),e.innerHTML=i,t.textContent=r<0?"nothing happening":r>=3?"write complete":"write "+Math.round(r/3*100)+"% done",n.innerHTML=null===a?"start the write, advance it, and read at a moment of your choosing.":"the reader received <b>"+a+" rows</b> against a correct answer of <b>"+(r>=3?18:8)+"</b>. "+(8===a||18===a?"This time it was fine.":"Nothing raised an error, and nothing recorded that this answer was wrong.")}h("f2Start").addEventListener("click",function(){r=0,a=null,i()}),h("f2Step").addEventListener("click",function(){r>=0&&(r=Math.min(3,r+1)),i()}),h("f2Read2").addEventListener("click",function(){a=r<0?8:r>=3?18:8+Math.round(o*r/3),i()}),h("f2Reset").addEventListener("click",function(){r=-1,a=null,i()}),i()}(),function(){var e=h("f3"),t=h("f3Read"),n=h("f3Sum"),r=0,a=null,o=["nothing yet","the file is being written","the file is finished, log untouched","the log entry is appended","done"];function i(){var i="",l=0===r?0:Math.min(1,r/2);i+=g(190,34,"the folder as it is","lab"),i+=p(60,56,120,60,"live","part-0000","4 rows"),i+=p(200,56,120,60,"live","part-0001","4 rows"),r>=1&&(i+=p(60,132,260,64,r>=2?"fresh":"writing","part-0002",r>=2?"10 rows (complete)":Math.round(10*l)+" rows so far")),i+=g(640,34,"the log","lab"),i+=p(500,56,280,34,"live",null,null)+g(514,79,"v0  WRITE  +part-0000","val","start"),i+=p(500,98,280,34,"live",null,null)+g(514,121,"v1  WRITE  +part-0001","val","start"),i+=r>=3?p(500,140,280,34,"fresh",null,null)+g(514,163,"v2  WRITE  +part-0002","val","start"):g(640,163,"no entry yet","lab"),i+=g(450,246,o[r],"val"),null!==a?(i+=g(450,290,"a reader following the log gets "+a+" rows","val"),i+=g(450,326,8===a?"the half-written file is not in any log entry, so it is not in the table":"the commit is present, so the new file is part of the table","lab")):i+=g(450,300,"press read at any step","lab"),e.innerHTML=i,t.textContent="step "+r+" of 4",n.innerHTML=null===a?"the left side is the physical folder; the right side is the log a reader consults.":"at this step a reader gets <b>"+a+" rows</b>, and the only value it can ever be is <b>8</b> or <b>18</b>, never anything between."}h("f3Next").addEventListener("click",function(){r=Math.min(4,r+1),a=null,i()}),h("f3ReadNow").addEventListener("click",function(){a=r>=3?18:8,i()}),h("f3Reset").addEventListener("click",function(){r=0,a=null,i()}),i()}(),function(){var e=h("f4"),t=h("f4Read"),n=h("f4Sum"),r=0,a=[["count the rows","SELECT count(*) FROM delta.`/lake/orders`",'DeltaTable.forPath(spark, "/lake/orders").toDF().count()',"reads the log, then the live files","no new files, no commit"],["add new rows","INSERT INTO delta.`/lake/orders` SELECT * FROM staging",'df.write.format("delta").mode("append").save("/lake/orders")',"writes one file, then commits","+1 file, +1 commit"],["change some rows","UPDATE delta.`/lake/orders` SET amount = 24.90 WHERE order_id = '1043'",'dt.update("order_id = \'1043\'", {"amount": F.lit(24.90)})',"rewrites the files holding matches","+1 file, −1 file, +1 commit"],["look at the history","DESCRIBE HISTORY delta.`/lake/orders`",'DeltaTable.forPath(spark, "/lake/orders").history().show()',"reads the log only","nothing changes"]];function o(){var o=a[r],i="";i+=g(60,42,"SQL","lab","start"),i+=p(60,54,780,54,"live",null,null),i+=g(76,86,o[1],"val","start"),i+=g(60,146,"Python, through the handle","lab","start"),i+=p(60,158,780,54,"live",null,null),i+=g(76,190,o[2],"val","start"),i+=g(60,254,"what actually happens","lab","start"),i+=p(60,266,380,64,"fresh",null,null),i+=g(250,304,o[3],"val"),i+=p(460,266,380,64,"fresh",null,null),i+=g(650,304,o[4],"val"),i+=g(450,372,"both routes reach the same files and the same log","lab"),e.innerHTML=i,t.textContent=o[0],n.innerHTML="<b>"+o[0]+"</b>: the two forms are different ways of asking, and they leave the folder in exactly the same state (<b>"+o[4]+"</b>)."}E("data-f4",function(e){r=+e,o()}),o()}(),function(){var e=h("f5"),t=h("f5Read"),n=h("f5Sum"),r="append",a=null;function o(){a=M(),i()}function i(){var o="",i=L(a,a.v);o+=g(170,34,"the folder","lab"),a.files.forEach(function(e,t){var n=40+t%3*115,r=54+80*Math.floor(t/3);o+=p(n,r,105,64,i.indexOf(e)>=0?e.from===a.v?"fresh":"live":"retired",e.id.slice(5),e.rows.length+" rows")}),o+=g(640,34,"the log: added and removed","lab"),o+=g(470,58,"version","lab","start")+g(545,58,"operation","lab","start")+g(730,58,"added","lab","start")+g(800,58,"removed","lab","start"),a.commits.forEach(function(e,t){var n=70+40*t;o+=b(460,n+28,870,n+28,1,w.rl),o+=g(470,n+20,"v"+e.v,"val","start"),o+=g(545,n+20,e.op,"val","start"),o+=g(740,n+20,"+"+e.add.length,"val","start"),o+=g(812,n+20,e.rem.length?"−"+e.rem.length:"—","val","start")}),o+=g(450,378,"mode selected: "+r,"val"),o+=g(450,402,"append"===r?"the next write will add 1 file and remove nothing":"the next write will add 1 file and remove all "+i.length+" live file(s)","lab"),o+=g(450,346,"live rows now: "+x(a,a.v)+"   ·   files live: "+i.length+" of "+a.files.length+" in the folder","val"),e.innerHTML=o,t.textContent="mode: "+r,n.innerHTML="append"===r?"append leaves the removed column empty: the table now holds <b>"+x(a,a.v)+"</b> rows across <b>"+i.length+"</b> files.":"overwrite removed <b>"+(a.files.length-i.length)+"</b> file(s) from the table in one commit, leaving <b>"+x(a,a.v)+"</b> rows. Those files are still in the folder and still readable at earlier versions."}E("data-f5",function(e){r=e,i()}),h("f5Run").addEventListener("click",function(){var e=L(a,a.v),t=y(a,T(5,0,a));"append"===r?k(a,"WRITE (append)",[t],[]):k(a,"WRITE (overwrite)",[t],e),i()}),h("f5Reset").addEventListener("click",o),o()}(),function(){var e=h("f6"),t=h("f6Read"),n=h("f6Sum"),r="none",a=[{id:"part-0000",rows:[[1041,2024,18.5],[1042,2024,9.99],[1043,2024,42]]},{id:"part-0001",rows:[[1044,2023,31.2],[1045,2023,7.45],[1046,2024,12]]},{id:"part-0002",rows:[[1047,2024,88.1],[1048,2024,5.25],[1049,2024,63]]}];function o(){var o="row"===r?[0]:"del"===r?[1]:"wide"===r?[0,1,2]:[],i="",l=0,s=0;a.forEach(function(e,t){var n=40+280*t,a=o.indexOf(t)>=0;a&&(s+=e.rows.length),i+=p(n,50,260,42,a?"retired":"live",e.id,a?"removed by the commit":"untouched"),e.rows.forEach(function(e,t){var o=104+34*t,s="row"===r&&1043===e[0]||"del"===r&&2023===e[1]||"wide"===r;a&&s&&l++,i+=p(n+16,o,228,28,a&&s?"fresh":"live",null,null),i+=g(n+28,o+19,e[0]+"   "+e[1]+"   £"+e[2].toFixed(2),"val","start")}),a&&(i+=p(n,232,260,42,"fresh",e.id.replace("part","new"),"written by the commit"))}),i+=g(450,318,"none"===r?"nothing has been changed yet":"del"===r?"rows from 2023 are dropped, so the rewritten file is smaller":"the rewritten file contains every row of the original, with the change applied","val"),i+=g(160,366,"files read: "+("none"===r?0:3),"val","start"),i+=g(400,366,"files rewritten: "+o.length,"val","start"),i+=g(660,366,"rows changed: "+("del"===r?2:l),"val","start"),e.innerHTML=i,t.textContent={none:"nothing changed yet",row:"update one row",del:"delete the 2023 rows",wide:"update every row"}[r],n.innerHTML="none"===r?"each small rectangle is one row inside its file.":"this operation changed <b>"+("del"===r?2:l)+"</b> row(s) and rewrote <b>"+s+"</b> row(s) into <b>"+o.length+"</b> new file(s), because rewriting happens in whole files."}h("f6Row").addEventListener("click",function(){r="row",o()}),h("f6Del").addEventListener("click",function(){r="del",o()}),h("f6Wide").addEventListener("click",function(){r="wide",o()}),h("f6Reset").addEventListener("click",function(){r="none",o()}),o()}(),function(){var e=h("f7"),t=h("f7Read"),n=h("f7Sum"),r="none",a="all",o=[[1041,"GB","2024-03",18.5],[1042,"DE","2024-03",9.99],[1043,"GB","2024-03",42],[1044,"US","2024-03",31.2],[1045,"GB","2024-04",7.45],[1046,"DE","2024-04",12],[1047,"US","2024-04",88.1],[1048,"GB","2024-04",5.25],[1049,"DE","2024-03",63],[1050,"US","2024-03",24.9],[1051,"GB","2024-03",55],[1052,"DE","2024-04",31.2]],i={none:[],country:["country"],both:["country","month"]},l={all:"all orders",de:"country = ‘DE’",mar:"month = ‘2024-03’",demar:"DE in March"},s={none:"no partitioning",country:"by country",both:"by country + month"};function d(e,t){return"country"===t?e[1]:e[2]}function c(){var c=function(){var e,t=i[r];if(!t.length){var n=[];for(e=0;e<3;e++)n.push({id:"part-000"+e,rows:o.slice(4*e,4*e+4)});return[{country:null,month:null,labels:["/lake/orders","no partition columns"],files:n}]}var a={},l=[];return o.forEach(function(e){var n=t.map(function(t){return d(e,t)}).join("/");a[n]||(a[n]={country:e[1],month:e[2],labels:t.map(function(t){return t+"="+d(e,t)}),files:[{id:"part-0000",rows:[]}]},l.push(n)),a[n].files[0].rows.push(e)}),l.sort(),l.map(function(e){return a[e]})}(),f=c.length,u=(840-12*(f-1))/f,h="",v=0,m=0,w=0,b=0,E=i[r].map(function(e){return e+"="+("country"===e?"DE":"2024-03")}).join("/");h+=g(450,26,"/lake/orders/"+(E?E+"/":"")+"part-0000.parquet","lab"),c.forEach(function(e,t){var n=30+t*(u+12),o=function(e){var t=i[r];if("all"===a)return!0;var n="mar"===a||"demar"===a;return!(("de"===a||"demar"===a)&&t.indexOf("country")>=0&&"DE"!==e.country||n&&t.indexOf("month")>=0&&"2024-03"!==e.month)}(e),l=o?"fresh":"retired",s=e.files.length;h+=p(n,48,u,46,l,e.labels[0],e.labels[1]||null);var d=(u-20-8*(s-1))/s;e.files.forEach(function(e,t){m++,o&&(v++,w+=e.rows.length),h+=p(n+10+t*(d+8),110,d,44,l,e.id,e.rows.length+(1===e.rows.length?" row":" rows")),e.rows.forEach(function(e){(function(e){return"all"===a||("de"===a?"DE"===e[1]:("mar"===a||"DE"===e[1])&&"2024-03"===e[2])})(e)&&b++})})}),h+=g(170,204,"files opened: "+v+" of "+m,"val"),h+=g(450,204,"rows scanned: "+w+" of "+o.length,"val"),h+=g(740,204,"rows that match: "+b,"val");var y=m-v;h+=g(450,240,"all"===a?"no filter, so every file is read whatever the layout":0===y?"the layout says nothing about this question, so nothing can be skipped":y+" file(s) discarded on the folder name alone, without being opened","val"),h+=g(450,270,"average file: "+(o.length/m).toFixed(1)+" rows","lab"),e.innerHTML=h,t.textContent=s[r]+" · "+l[a],n.innerHTML="all"===a?"twelve orders in <b>"+m+"</b> file(s). Pick a question to see how many of them a reader has to open.":0===y?"the engine opened <b>all "+m+"</b> file(s) and read <b>"+w+"</b> rows to return <b>"+b+"</b>. Nothing in the folder names ruled anything out.":"the engine opened <b>"+v+"</b> of <b>"+m+"</b> file(s) and read <b>"+w+"</b> rows to return <b>"+b+"</b>. The other "+y+" never left the directory listing."}E("data-f7l",function(e){r=e,c()}),E("data-f7q",function(e){a=e,c()}),c()}(),a=h("sc1fig"),o=h("sc1Read"),i=[[1041,18.5],[1042,9.99],[1043,42],[1044,31.2]],l=[[1043,24.9],[1102,55],[1044,31.2]],s=["the two sides","matched pairs","the update clause","the insert clause","target rows nobody mentioned","one commit"],e="sc1",t=function(e){var t="";t+=g(130,34,"in the table (target)","lab"),t+=g(400,34,"arriving (source)","lab"),i.forEach(function(n,r){var a=60+62*r,o=l.some(function(e){return e[0]===n[0]}),i="live";e>=1&&o&&(i="fresh"),e>=4&&!o&&(i="retired"),t+=p(30,a,200,48,i,null,null),t+=g(46,a+30,n[0]+"   £"+n[1].toFixed(2),"val","start")}),l.forEach(function(n,r){var a=60+62*r,o=i.some(function(e){return e[0]===n[0]}),l="live";if(e>=1&&o&&(l="fresh"),e>=3&&!o&&(l="fresh"),t+=p(300,a,200,48,l,null,null),t+=g(316,a+30,n[0]+"   £"+n[1].toFixed(2),"val","start"),e>=1&&o){var s=60+62*i.findIndex(function(e){return e[0]===n[0]})+24;t+=b(230,s,300,a+24,2,w.ac)}}),e>=2&&(t+=g(265,322,"matched: 1043 takes £24.90, 1044 unchanged in value","val")),e>=3&&(t+=g(265,350,"not matched: 1102 is inserted as a new row","val")),e>=4&&(t+=g(265,378,"1041 and 1042 are not in today’s file, and are left alone","val")),e>=5&&(t+=g(265,406,"one commit: 1 file added, 1 file removed","val")),a.innerHTML=t,o.textContent=s[e]},n=[].slice.call(document.querySelectorAll("#"+e+" .stp")),r=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(n.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0}),n.forEach(function(e){r.observe(e),e.addEventListener("click",function(){n.forEach(function(t){t.classList.toggle("on",t===e)}),t(+e.getAttribute("data-step"))})}),n.length&&t(0),function(){var e=h("k9"),t=h("k9Head"),n=h("k9Read"),r=h("k9Slider"),a="rows",o=function(){var e={files:[],commits:[],v:-1,nextId:0,nextOrder:1041};k(e,"WRITE",[y(e,[[1041,18.5],[1042,9.99]])],[]),k(e,"WRITE",[y(e,[[1043,42],[1044,31.2]])],[]);var t=L(e,e.v);k(e,"UPDATE",[y(e,[[1043,24.9],[1044,31.2]])],[t[1]]);var n=L(e,e.v);k(e,"DELETE",[y(e,[[1042,9.99]])],[n[0]]),k(e,"MERGE",[y(e,[[1102,55]])],[]);var r=L(e,e.v),a=[];return r.forEach(function(e){a=a.concat(e.rows)}),k(e,"OPTIMIZE",[y(e,a)],r),e}();function i(){var i=+r.value,l=L(o,i),s="";if(o.commits.forEach(function(e,t){s+=p(40+140*t,40,128,52,t===i?"fresh":t<i?"live":"retired","v"+e.v,e.op,'data-ver="'+t+'"')}),s+=g(450,24,"the log: click a commit or drag the slider","lab"),s+=g(170,128,"the folder at this version","lab"),o.files.forEach(function(e,t){var n=40+t%4*115,r=146+76*Math.floor(t/4);s+=p(n,r,105,60,l.indexOf(e)>=0?"live":"retired",e.id.slice(5),e.rows.length+" rows")}),"rows"===a){s+=g(700,128,"what a reader gets","lab");var d=[];l.forEach(function(e){d=d.concat(e.rows)}),d.sort(function(e,t){return e[0]-t[0]}),d.forEach(function(e,t){var n=150+32*t;s+=b(560,n+22,860,n+22,1,w.rl),s+=g(570,n+16,String(e[0]),"val","start"),s+=g(700,n+16,"£"+e[1].toFixed(2),"val","start")}),d.length||(s+=g(700,190,"no rows","lab"))}else s+=g(700,128,"files named by this version","lab"),l.forEach(function(e,t){var n=150+32*t;s+=g(570,n+16,e.id,"val","start"),s+=g(760,n+16,e.rows.length+" rows","lab","start")});s+=g(450,404,"the folder holds all "+o.files.length+" files at every version; only the log changes","val"),e.innerHTML=s,t.textContent="version "+i+" of "+o.v,n.innerHTML="at version <b>"+i+"</b> the table is <b>"+l.length+"</b> file(s) and <b>"+x(o,i)+"</b> row(s). Version "+o.v+" has <b>"+x(o,o.v)+"</b>. Nothing was deleted to move between them."}r.addEventListener("input",i),e.addEventListener("click",function(e){var t=e.target.closest("[data-ver]");t&&(r.value=+t.getAttribute("data-ver"),i())}),h("k9Rows").addEventListener("click",function(){a="rows",i()}),h("k9Files").addEventListener("click",function(){a="files",i()}),h("k9Reset").addEventListener("click",function(){r.value=5,a="rows",i()}),i()}(),function(){var e=h("f10"),t=h("f10Read"),n=h("f10Sum"),r=30,a=30,o=0,i=0,l=1;function s(){var s,d="",c=Math.min(a,32);for(d+=g(120,34,"live in the current version","lab","start"),s=0;s<c;s++)d+=p(50+s%16*52,50,44,40,"live",null,null);for(a>32&&(d+=g(450,112,"and "+(a-32)+" more","lab")),d+=g(120,150,"removed, still needed for time travel","lab","start"),s=0;s<Math.min(o,16);s++)d+=p(50+s%16*52,164,44,40,"retired",null,null);for(o||(d+=g(450,190,"none","lab")),d+=g(120,240,"removed and past retention: vacuum may delete these","lab","start"),s=0;s<Math.min(i,16);s++)d+=p(50+s%16*52,254,44,40,"purge",null,null);i||(d+=g(450,280,"none","lab")),d+=g(120,348,"days of appends: "+r,"val","start"),d+=g(400,348,"files to open on a read: "+a,"val","start"),d+=g(680,348,"time travel back to day "+l,"val","start"),e.innerHTML=d,t.textContent="day "+r+" · "+a+" files",n.innerHTML="<b>"+a+"</b> live file(s), <b>"+o+"</b> retained for older versions, <b>"+i+"</b> eligible for deletion. Time travel currently reaches back to <b>day "+l+"</b>."}h("f10Run").addEventListener("click",function(){i+=o,o=0,r+=30,a+=30,s()}),h("f10Opt").addEventListener("click",function(){o+=a;var e=Math.max(1,Math.ceil(r/120));a=e,s()}),h("f10Vac").addEventListener("click",function(){i=0,l=Math.max(1,r-7),s()}),h("f10Reset").addEventListener("click",function(){r=30,a=30,o=0,i=0,l=1,s()}),s()}(),function(){var e=h("f11"),t=h("f11Read"),n=h("f11Sum"),r={read:null,done:!1},a={read:null,done:!1},o=3,i=!1,l="";function s(){var s="";s+=g(450,34,"the table is at version "+o,"val"),[["writer A",r,80],["writer B",a,220]].forEach(function(e){var t=e[0],n=e[1],r=e[2];s+=p(60,r,180,60,null===n.read?"retired":"live",t,null===n.read?"idle":"read version "+n.read),s+=p(280,r,200,60,n.done?"fresh":"retired",n.done?"committed":"not committed",n.done?"version "+n.doneV:"")}),s+=g(660,90,i?"they write different partitions":"they write the same rows","val"),s+=g(660,130,i?"no overlap, so both can commit":"overlapping, so only one can commit","lab"),l&&(s+=g(450,330,l,"val")),s+=g(450,372,"a rejected commit means nothing was written, not that data was lost","lab"),e.innerHTML=s,t.textContent=null===r.read&&null===a.read?"both idle":"A "+(r.done?"committed":"pending")+" · B "+(a.done?"committed":"pending"),n.innerHTML=l||"have both writers read the table, then try to commit both."}function d(e,t,n){null===e.read?(e.read=o,l=n+" read version "+o+" and started work."):e.done||(e.read===o||i?(o++,e.done=!0,e.doneV=o,l=n+" committed version "+o+"."):(l=n+" was rejected: it read version "+e.read+" but the table is now at "+o+". Re-run it and it will read the new version.",e.read=null)),s()}h("f11A").addEventListener("click",function(){d(r,0,"writer A")}),h("f11B").addEventListener("click",function(){d(a,0,"writer B")}),h("f11Sep").addEventListener("click",function(){i=!i,this.textContent=i?"put them back on the same rows":"give them separate partitions",r={read:null,done:!1},a={read:null,done:!1},l="",s()}),h("f11Reset").addEventListener("click",function(){r={read:null,done:!1},a={read:null,done:!1},o=3,l="",s()}),s()}(),function(){var e=h("f12"),t=h("f12Read"),n=h("f12Sum"),r=0,a=[["nightly reporting load",[["rows read per query","millions",!0],["writes per day","one batch",!0],["latency needed","minutes",!0],["rows changed at once","thousands",!0]],"a good fit in every dimension"],["hourly corrections feed",[["rows read per query","millions",!0],["writes per day","24 batches",!0],["latency needed","minutes",!0],["rows changed at once","hundreds",!0]],"fine, and merge is the call for it"],["a web app's basket",[["rows read per query","one",!1],["writes per second","thousands",!1],["latency needed","milliseconds",!1],["rows changed at once","one",!1]],"the wrong tool: use an application database"],["per-second sensor stream",[["rows read per query","millions",!0],["writes per second","one",!1],["latency needed","seconds",!1],["rows changed at once","none",!0]],"workable only if writes are batched first"]];function o(){var o=a[r],i="";o[1].forEach(function(e,t){var n=50+66*t;i+=g(300,n+34,e[0],"lab","end"),i+=p(320,n,240,50,e[2]?"live":"purge",e[1],null),i+=g(600,n+34,e[2]?"suits this design":"fights this design",(e[2],"val"),"start")}),i+=g(450,344,o[2],"val"),i+=g(450,380,"the reason is copy-on-write and one commit per write, not a policy","lab"),e.innerHTML=i,t.textContent=o[0];var l=o[1].filter(function(e){return e[2]}).length;n.innerHTML="<b>"+o[0]+"</b>: <b>"+l+" of 4</b> requirements suit this design. "+o[2]+"."}E("data-f12",function(e){r=+e,o()}),o()}(),function(){var e=h("pg"),t=h("pgHead"),n=h("pgRead"),r=h("pgVer"),a=null,o="";function i(){var e=y(a={files:[],commits:[],v:-1,nextId:0,nextOrder:1041},T(10,0,a));k(a,"WRITE",[e],[]),o="a first write: one file, one commit.",l()}function l(){r.max=a.v,r.value=a.v,s()}function s(){var i=Math.min(+r.value,a.v),l=L(a,i),s="";s+=g(150,32,"the folder","lab"),a.files.forEach(function(e,t){var n,r=40+t%4*100,a=48+70*Math.floor(t/4);n=e.purged?"purge":l.indexOf(e)>=0?e.from===i?"fresh":"live":"retired",s+=p(r,a,90,54,n,e.id.slice(5),e.purged?"deleted":e.rows.length+" rows")}),s+=g(650,32,"the log","lab");var d=Math.max(0,a.commits.length-7);a.commits.slice(d).forEach(function(e,t){var n=48+34*t;s+=b(450,n+24,870,n+24,1,w.rl),s+=g(460,n+18,"v"+e.v,"val","start"),s+=g(510,n+18,e.op,"val","start"),s+=g(730,n+18,"+"+e.add.length+(e.rem.length?"  −"+e.rem.length:""),"val","start"),e.v===i&&(s+=g(830,n+18,"reading","lab","start"))});var c=l.some(function(e){return e.purged});s+=g(450,368,c?"this version names files that vacuum deleted: it can no longer be read":"rows a reader gets at version "+i+": "+x(a,i),"val"),s+=g(450,410,o,"lab"),e.innerHTML=s,t.textContent="version "+a.v+" · "+L(a,a.v).length+" file(s)",n.innerHTML="reading at version <b>"+i+"</b> of <b>"+a.v+"</b>: <b>"+(c?"unreadable, the files are gone":x(a,i)+" rows across "+l.length+" file(s)")+"</b>. The folder holds <b>"+a.files.filter(function(e){return!e.purged}).length+"</b> file(s)."}h("pgApp").addEventListener("click",function(){var e=y(a,T(10,0,a));k(a,"WRITE (append)",[e],[]),o="ten rows appended: one new file, nothing removed.",l()}),h("pgUpd").addEventListener("click",function(){var e=L(a,a.v);if(e.length){var t=e[0],n=y(a,t.rows.slice());k(a,"UPDATE",[n],[t]),o="one row changed: its whole file was rewritten and the old one unlisted.",l()}}),h("pgDel").addEventListener("click",function(){var e=L(a,a.v);if(e.length){var t=e[e.length-1],n=y(a,t.rows.slice(0,Math.max(1,t.rows.length-4)));k(a,"DELETE",[n],[t]),o="rows deleted: a smaller file replaces the original.",l()}}),h("pgMrg").addEventListener("click",function(){var e=L(a,a.v);if(e.length){var t=e[0],n=y(a,t.rows.slice()),r=y(a,T(3,0,a));k(a,"MERGE",[n,r],[t]),o="merge: matched rows rewritten, new rows inserted, all in one commit.",l()}}),h("pgOpt").addEventListener("click",function(){var e=L(a,a.v);if(e.length<2)return o="nothing to compact: fewer than two files.",void s();var t=[];e.forEach(function(e){t=t.concat(e.rows)});var n=y(a,t);k(a,"OPTIMIZE",[n],e),o=e.length+" files folded into 1: same rows, fewer files to open.",l()}),h("pgVac").addEventListener("click",function(){var e=L(a,a.v),t=0;a.files.forEach(function(n){e.indexOf(n)<0&&!n.purged&&(n.purged=!0,t++)}),a.v,o=t?"vacuum deleted "+t+" unlisted file(s): versions before "+a.v+" can no longer be read.":"vacuum found nothing to delete.",s()}),h("pgRes").addEventListener("click",function(){if(a.v<1)return o="there is no version 1 yet.",void s();var e=L(a,1),t=L(a,a.v);if(e.some(function(e){return e.purged}))return o="restore to version 1 is impossible: vacuum already deleted the files that version named.",void s();var n=e.filter(function(e){return t.indexOf(e)<0}),r=t.filter(function(t){return e.indexOf(t)<0});n.forEach(function(e){e.to=null}),k(a,"RESTORE",[],r),n.forEach(function(e){a.commits[a.commits.length-1].add.push(e.id),e.from=a.v}),o="restore wrote a NEW commit whose file list matches version 1. History was extended, not rewound.",l()}),h("pgReset").addEventListener("click",i),r.addEventListener("input",s),i()}(),document.querySelectorAll(".term").forEach(function(e){function t(t){e.classList.toggle("hot",t)}e.addEventListener("mouseenter",function(){t(!0)}),e.addEventListener("mouseleave",function(){t(!1)}),e.addEventListener("click",function(){t(!e.classList.contains("hot"))})}),d=h("pfill"),c=h("ptxt"),f=2*Math.PI*23,d.style.strokeDasharray=f,d.style.strokeDashoffset=f,window.addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight);t=Math.min(1,Math.max(0,t||0)),d.style.strokeDashoffset=f*(1-t),c.textContent=Math.round(100*t)+"%"},{passive:!0}),u=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),u.unobserve(e.target))})},{threshold:.05,rootMargin:"0px 0px -4% 0px"}),document.querySelectorAll(".reveal").forEach(function(e){u.observe(e)}),function(){var e=h("weeds"),t=h("weedsHint");function n(){var n=e.hidden;e.hidden=!n,t.setAttribute("aria-expanded",String(n)),t.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,r=(t.tagName||"").toLowerCase();"input"===r||"textarea"===r||t.isContentEditable||(e.preventDefault(),n())}}),t.addEventListener("click",n),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),n())})}()}();
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>
