@@ -6,7 +6,8 @@
     ".css": "text/css",
     ".js": "text/javascript",
     ".json": "application/json",
-    ".svg": "image/svg+xml"
+    ".svg": "image/svg+xml",
+    ".pdf": "application/pdf"
   },
   "globalHeaders": {
     "cache-control": "public, max-age=600, must-revalidate"
@@ -30,6 +31,12 @@
     {
       "route": "/preview",
       "statusCode": 404
+    },
+    {
+      "route": "/preview/*",
+      "headers": {
+        "X-Robots-Tag": "noindex, nofollow"
+      }
     }
   ]
 }
