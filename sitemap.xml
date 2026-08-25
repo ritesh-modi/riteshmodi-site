@@ -57,6 +57,10 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/generative-ai</loc>
+    <lastmod>2026-08-22</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/grc-building-blocks-lesson</loc>
     <lastmod>2026-07-26</lastmod>
   </url>
@@ -77,12 +81,20 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/history-of-generative-ai</loc>
+    <lastmod>2026-08-22</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/how-data-becomes-an-equation</loc>
     <lastmod>2026-08-01</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/how-models-learn</loc>
     <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai</loc>
+    <lastmod>2026-08-22</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/is-it-actually-thinking</loc>
@@ -113,12 +125,24 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/playground-controls</loc>
+    <lastmod>2026-08-22</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/postgres-partitioning-explainer</loc>
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/predicting-the-next-character</loc>
+    <lastmod>2026-08-22</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/prompt-engineering-explainer</loc>
     <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/prompting-techniques</loc>
+    <lastmod>2026-08-22</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/rate-limiting-explainer</loc>

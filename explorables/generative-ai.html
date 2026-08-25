@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generative AI: a machine that produces instead of choosing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Karla:wght@400;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v10:#F0EBE0;--v11:#E3DCCC;--v4:#14180F;--v6:#3E4536;--v5:#636B57;--v13:#C8C2B0;--v0:#2F5D3A;--v1:#BFD4BE;--v12:#A3452C;--v15:#96701A;--v14:#2F5D3A;--v7:680px;--v16:1080px;--v9:26px;--v3:"Fraunces",Georgia,serif;--v2:"Karla",system-ui,sans-serif;--v8:"Roboto Mono",ui-monospace,Menlo,monospace}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v10);color:var(--v4);font-family:var(--v2);font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v7);margin:0 auto;padding:0 var(--v9);position:relative}.wide{max-width:var(--v16);margin:0 auto;padding:0 var(--v9)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}.divider{max-width:var(--v7);margin:0 auto;height:1px;background:var(--v13)}h1,h2,h3{font-family:var(--v3);font-weight:700;line-height:1.1;margin:0;letter-spacing:-.012em}h2{font-size:clamp(29px,3.9vw,41px);margin:0 0 24px}h3{font-size:20px;margin:0 0 10px}p{margin:0 0 22px}strong{font-weight:600;color:var(--v4)}.lede{font-size:clamp(20px,2.6vw,25px);line-height:1.46;color:var(--v6)}.eyebrow{font-family:var(--v8);font-size:12px;letter-spacing:.05em;color:var(--v5);margin:0 0 14px}.pull{font-family:var(--v3);font-size:clamp(23px,3.2vw,31px);line-height:1.3;font-weight:500;color:var(--v0);border-left:3px solid var(--v0);padding-left:24px;margin:40px 0}.note{background:var(--v11);padding:20px 22px;margin-top:26px;font-size:16.5px;color:var(--v6)}.intu{border:1px solid var(--v13);border-left:3px solid var(--v0);padding:22px 24px;margin:30px 0;background:var(--v11);font-size:17.5px;line-height:1.64}.intu i{font-family:var(--v8);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:11px;font-style:normal}.intu b{color:var(--v4);font-weight:600}.fig{border:1px solid var(--v13);background:var(--v10);margin:34px 0}.fig > .eyebrow{margin:0;padding:14px 20px;border-bottom:1px solid var(--v13);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline}.fig-body{padding:32px 30px}.fig svg{display:block;width:100%;height:auto}.fig figcaption{padding:0 30px 22px;font-size:14.5px;color:var(--v5);line-height:1.55}.cand{display:grid;grid-template-columns:96px 1fr 58px;gap:10px;align-items:center;font-family:var(--v8);font-size:12.5px;margin-bottom:6px}.cand span:first-child{text-align:right;color:var(--v6);overflow:hidden;white-space:nowrap}.cand i{display:block;height:20px;background:var(--v1);font-style:normal;transition:width .3s ease,background .3s ease}.cand em{font-style:normal;color:var(--v5);font-variant-numeric:tabular-nums}.cand.picked i{background:var(--v0)}.cand.picked span:first-child{color:var(--v0);font-weight:500}.cand.picked em{color:var(--v0)}.cand.cut i{background:repeating-linear-gradient(45deg,transparent,transparent 4px,var(--v13) 4px,var(--v13) 8px)}.cand.cut span:first-child,.cand.cut em{color:var(--v13)}.bars{margin:0}button{font-family:var(--v8);font-size:12.5px;padding:9px 14px;border:1px solid var(--v13);background:var(--v10);cursor:pointer;color:var(--v6);transition:all .16s}button:hover{border-color:var(--v0);color:var(--v0)}button.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}label{font-family:var(--v8);font-size:12px;color:var(--v5);display:block;margin-bottom:6px}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:20px}.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}.num{font-family:var(--v8);font-size:16px;color:var(--v4);font-variant-numeric:tabular-nums}.k{font-family:var(--v8);font-size:12px;color:var(--v5)}.chip{display:inline-block;font-family:var(--v8);font-size:12px;padding:3px 8px;border:1px solid var(--v13);margin:0 4px 4px 0;background:var(--v10)}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{color:var(--v0)}.dimmed [data-part]:not(.hot){opacity:.22;transition:opacity .2s}.rail{position:fixed;right:20px;top:18px;z-index:100;font-family:var(--v8);font-size:12px;color:var(--v5);background:var(--v11);border:1px solid var(--v13);padding:6px 10px;font-variant-numeric:tabular-nums}@media(max-width:700px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,430px);max-width:1280px;margin:0 auto;padding:0 var(--v9)}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.wide.sg svg{display:block;width:100%;height:auto}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:75vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.28;transition:opacity .35s}.col.stp.on{opacity:1}[data-gel]{opacity:.12;transition:opacity .5s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.col.stp{opacity:1}}@media(max-width:900px){.bleed.scrolly{grid-template-columns:1fr;gap:0}.wide.sg{order:-1;height:44vh;width:100%;background:var(--v10);border-bottom:1px solid var(--v13);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:28px 0}}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}[hidden]{display:none}.hint{font-family:var(--v8);font-size:12px;letter-spacing:.06em;color:var(--v5);text-align:center;cursor:pointer;padding:30px 0}.hint kbd{border:1px solid var(--v13);padding:1px 5px;color:var(--v6)}.hint:hover,.hint:focus-visible{color:var(--v0)}details{border-top:1px solid var(--v13);padding:16px 0}summary{cursor:pointer;font-family:var(--v3);font-weight:500;font-size:19px}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}@media(max-width:760px){body{font-size:17.5px}.fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:600px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v13)}.fig figcaption{padding:0 16px 20px}.wide.sg .fig-body svg{min-width:420px}.cand{grid-template-columns:80px 1fr 50px}}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Old classifiers picked an answer off a list. Watch a sentence become numbers, then a spread of odds, and make the sampling choice for yourself.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/generative-ai">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Generative AI: a machine that produces instead of choosing">
+  <meta property="og:description" content="Watch a sentence become numbers, then a spread of odds you sample from yourself.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/generative-ai">
+  <meta property="og:image" content="https://www.loopingly.com/og/generative-ai.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Generative AI: a machine that produces instead of choosing">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Generative AI: a machine that produces instead of choosing">
+  <meta name="twitter:description" content="Watch a sentence become numbers, then a spread of odds you sample from yourself.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/generative-ai.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Generative AI: a machine that produces instead of choosing","description":"Old classifiers picked an answer off a list. Watch a sentence become numbers, then a spread of odds, and make the sampling choice for yourself.","url":"https://www.loopingly.com/explorables/generative-ai","image":"https://www.loopingly.com/og/generative-ai.png","datePublished":"2026-08-22","dateModified":"2026-08-22","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"How generative AI models produce text"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"A machine that produces instead of choosing"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<div class="rail" id="rail">start</div>
+
+<header class="hero" style="padding:clamp(64px,11vh,120px) 0 clamp(40px,6vh,80px)">
+  <div class="col">
+    <p style="font-family:var(--v8);font-size:12px;letter-spacing:.06em;color:var(--v0);margin:0 0 26px">no maths required · every figure is yours to drive</p>
+    <h1 style="font-size:clamp(38px,6.4vw,70px);line-height:1.05;letter-spacing:-.02em;margin:0 0 28px;max-width:15ch">A machine that produces instead of choosing</h1>
+    <p class="lede" style="max-width:34ch">Older software could sort your post into spam and not-spam. It could not write you a letter. What changed is smaller and stranger than it sounds, and you can watch the whole of it happen.</p>
+  </div>
+</header>
+<div class="wide">
+  <div class="fig" style="margin:0">
+    <p class="eyebrow"><span>the model's guess at the next piece of text</span><span id="heroLab">rolling</span></p>
+    <div class="fig-body" style="padding:24px 22px">
+      <p class="num" id="heroSent" style="margin:0 0 18px;font-size:17px;line-height:1.6;min-height:52px">The lighthouse keeper</p>
+      <div class="bars" id="heroBars"></div>
+    </div>
+  </div>
+</div>
+
+
+<section>
+<div class="col reveal">
+  <h2>The old machines chose from a list. This one does not have a list.</h2>
+  <p>Before any mechanism, the shape of the change, because it is easy to miss how specific it is.</p>
+  <p>For about fifteen years the useful, working, everywhere-in-your-life kind of <strong>artificial intelligence</strong> was a sorting machine. Artificial intelligence just means getting a computer to do something we would call intelligent if a person did it, and until recently the thing it did was decide which box something belonged in.</p>
+  <p>Your email provider looked at a message and put it in one of two boxes: spam or not spam. Your bank looked at a payment and put it in one of two boxes: fraud or fine. Your phone looked at a photo and put a name to the face. A system like this is a <strong>classifier</strong>, and the box it picks is a <strong>label</strong>.</p>
+  <p>Classifiers are genuinely clever and they run the world. But notice the ceiling built into them: <em>the answer already exists before the question is asked</em>. Somebody wrote down the list of boxes. The machine's entire job is to pick one. Ask a spam filter to write you a poem and the request is not hard, it is meaningless, because a poem is not on the list.</p>
+  <p><strong>Generative</strong> systems have no list. Asked for a poem about a lighthouse, the machine produces a poem about a lighthouse, and that particular arrangement of words has, in all likelihood, never existed before. Not retrieved. Not assembled from a template. Produced.</p>
+  <p>Both kinds learn from <strong>training data</strong>: a large pile of examples they are shown while being built. The difference is what they learn to do with it. One learns to sort the pile. The other learns to make more of it.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f1">
+    <p class="eyebrow"><span>figure 1 · sorting against producing</span><span id="f1mode">classifier</span></p>
+    <div class="fig-body">
+      <div class="row">
+        <button data-f1="c" class="on">the sorting kind</button>
+        <button data-f1="g">the producing kind</button>
+      </div>
+      <div class="grid2" style="gap:20px;align-items:start">
+        <div>
+          <p class="k" style="margin:0 0 10px">what goes in</p>
+          <div id="f1in" class="num" style="font-size:14px;line-height:1.6;border:1px solid var(--v13);padding:14px;min-height:96px"></div>
+        </div>
+        <div>
+          <p class="k" style="margin:0 0 10px" id="f1outlab">what comes out</p>
+          <div id="f1out" style="min-height:96px"></div>
+        </div>
+      </div>
+      <div class="row" style="margin:22px 0 0">
+        <button id="f1run">run it</button>
+        <button id="f1again">give me another</button>
+        <span class="k" id="f1note">press run</span>
+      </div>
+    </div>
+    <figcaption>The left panel is the input, the right is the output. In <em>the sorting kind</em>, the output is a fixed set of boxes with a confidence bar on each: the bars move between runs, but the boxes never change, because they were decided by a person in advance. Switch to <em>the producing kind</em> and the right panel has no boxes at all. Press <em>give me another</em> in each mode and watch what varies: in one, only the numbers; in the other, the thing itself.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <div class="intu">
+    <i>picture it</i>
+    A sorting office and a print shop. The sorting office is fast, reliable and indispensable, and every letter that leaves it arrived in a sack that morning. The print shop takes a description and hands back a page that was blank an hour ago. <b>The sorting office is not a worse print shop, it is not a print shop at all, and no amount of making it faster turns it into one.</b>
+  </div>
+  <p>So the interesting question is not what generative systems can produce. It is what would have to be true for a machine to produce anything at all, given that it cannot copy and has no list. Answering that takes four ideas, and the first is that the machine never sees your words in the first place.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>Text has to become numbers before anything can happen to it</h2>
+  <p>A computer multiplies numbers. That is the whole of what it does at the bottom. So the first thing done to any text you send is to convert it into numbers, and it happens in two steps that get conflated constantly.</p>
+  <p>Step one is chopping. Text is cut into <strong>tokens</strong>: chunks from a fixed list called the <strong>vocabulary</strong>, decided once before the model was built and never changed after. A token is usually a common short word, or a fragment of a longer word, or a space plus the word following it, or a single mark of punctuation. Roughly four characters on average.</p>
+  <p>It matters that these are tokens and not words, because almost every explanation of this technology says "word" and then everything downstream is slightly wrong. The model has never seen a word. <span class="k">lighthouse</span> may well be two tokens. A rare surname may be five. The model's world is made of these chunks and its whole sense of language is built on them.</p>
+  <p>Step two is turning each token into an <strong>embedding</strong>: a list of numbers, of fixed length, standing for that token. A list of numbers like this is called a <strong>vector</strong>, and ours are 4,096 numbers long. No single position in the list means anything you could name. What matters is the arrangement: tokens used in similar ways end up with similar lists, so <span class="k">harbour</span> and <span class="k">port</span> sit near each other and neither sits near <span class="k">saxophone</span>.</p>
+  <p>That nearness is not decoration. It is the only reason the machine can handle a sentence it has never seen: a new arrangement of familiar regions is still somewhere it can reason about. And the text you type in, the thing that starts all this, is called the <strong>prompt</strong>.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f2">
+    <p class="eyebrow"><span>figure 2 · chopped, then placed</span><span id="f2count">7 tokens</span></p>
+    <div class="fig-body">
+      <div class="row">
+        <button data-f2="0" class="on">the lighthouse keeper waited</button>
+        <button data-f2="1">unseaworthiness</button>
+        <button data-f2="2">port, harbour, saxophone</button>
+      </div>
+      <div id="f2chips" style="margin-bottom:22px;min-height:34px"></div>
+      <svg viewBox="0 0 620 260" role="img" aria-label="Tokens placed in a space where similar meanings sit close together">
+        <g id="f2map"></g>
+      </svg>
+    </div>
+    <figcaption>Above, the sentence cut into tokens, one chip each, showing exactly where the cuts fall. Below, a map: each token from the current example is placed as a dot, and distance between dots stands for how similarly those tokens get used. The real space has 4,096 directions and cannot be drawn, so this is a flattened stand-in with two, which is how such maps are always made. Click the third example and watch two of the three dots land together while the third sits far off.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <div class="intu">
+    <i>picture it</i>
+    A vast library where books are shelved not by title but by what they are about, so that anything on tides is in one aisle and anything on brass instruments is three floors away. Nobody labelled the aisles. The arrangement emerged from noticing which books get borrowed together. <b>Once things are arranged that way, "find me something like this" becomes a matter of walking a short distance, which is a thing a machine can do.</b>
+  </div>
+  <p>Text is now numbers arranged so that closeness means similarity. That is the raw material. What the machine actually does with it is one operation, repeated, and it is far narrower than most people expect.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col reveal">
+  <h2>The machine does exactly one thing, and it is smaller than you think</h2>
+  <p>Given some text, produce a guess about what comes next. That is the entire operation. Everything a generative text system appears to do, every explanation, every translation, every argument, is that one move performed over and over.</p>
+  <p>But the guess is not a single answer, and this is the detail that almost every plain-language account leaves out, taking most of the real understanding with it.</p>
+  <p>The model does not decide the next token is <span class="k">waited</span>. It produces a number for <em>every single token in its vocabulary</em>, all 100,000 of them, saying how likely each is to come next. A <strong>probability</strong> is just a number between 0 and 1 saying how likely something is, and a complete set of them, one per possibility, adding up to 1, is a <strong>probability distribution</strong>.</p>
+  <p>So the output of the machine, at every step, is a distribution over a hundred thousand possibilities. Almost all of them get essentially zero. A handful get most of the weight. The figure below shows the top few, which is all anyone ever looks at, but keep the shape of the real thing in mind: an enormous list, nearly all of it flat.</p>
+  <p>To produce more than one token, the chosen token is added to the end of the text and the same question is asked again. Feeding its own output back in as input is called <strong>autoregressive</strong> generation, and the text it is looking at when it answers is its <strong>context</strong>.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f3">
+    <p class="eyebrow"><span>figure 3 · one step, a hundred thousand candidates</span><span id="f3ctx">context: 3 tokens</span></p>
+    <div class="fig-body">
+      <p class="num" id="f3sent" style="margin:0 0 20px;font-size:17px;line-height:1.6;min-height:52px"></p>
+      <div class="bars" id="f3bars"></div>
+      <div class="row" style="margin:22px 0 0">
+        <button id="f3take">take the top one</button>
+        <button id="f3reset">start over</button>
+        <span class="k" id="f3note">the bars are the model's guess for what follows</span>
+      </div>
+    </div>
+    <figcaption>Each row is one candidate token: its text on the left, a bar whose length is its probability, and that probability as a percentage on the right. Only the top eight of about a hundred thousand are drawn; everything below them is a very long tail of near-zero. Press <em>take the top one</em>: the winner joins the sentence above and a completely fresh set of candidates is computed, because the question being asked has changed. Probabilities here are illustrative, picked to show how the distribution behaves rather than measured from a model.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>Two things in that figure deserve to be said out loud.</p>
+  <p>First, the distribution is sometimes sharp and sometimes flat. After <span class="k">the lighthouse keeper waited until</span>, the leading candidate takes 41 percent, because the grammar of the sentence has narrowed things considerably. One step earlier it took 34 percent, spread across many more plausible options. The model is, in effect, telling you how constrained the moment is.</p>
+  <p>Second, nothing here is being retrieved. There is no stored poem, no library of sentences to copy. There is a set of numbers that, given some text, produce a guess about the next piece of text. Everything else is that guess, run repeatedly.</p>
+  <div class="intu">
+    <i>picture it</i>
+    A weather forecaster who never says "it will rain". She says: 70 percent rain, 20 percent cloud, 8 percent sun, and a long tail of unlikely things including hail. That full spread is her actual output. Reducing it to "it will rain" is something <b>you</b> do afterwards, and doing so throws away the part that told you how sure she was.
+  </div>
+  <p>Which raises the question that the "take the top one" button quietly begs. If the model always hands back a distribution, who decides which token actually gets used? And why, if you ask the same question twice, do you get two different answers?</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>Choosing from the spread is a separate decision, and it is yours</h2>
+  <p>The model produces the distribution. Something else picks a token out of it, and that something is a rule you can change without touching the model at all.</p>
+  <p>The simplest rule is: always take the highest one. That is called <strong>greedy decoding</strong>, and it makes the system completely deterministic. The same prompt gives the same answer every time, word for word, forever. It also, in practice, produces flat and repetitive text that has a habit of getting stuck in loops.</p>
+  <p>The usual rule instead is <strong>sampling</strong>: pick at random, but weighted by the probabilities. A candidate at 60 percent gets chosen about six times in ten; a candidate at 4 percent gets chosen about four times in a hundred. Not chosen often, but not impossible either, and that is where the variety comes from.</p>
+  <p>This is the real answer to why the same prompt gives different answers. Not that the machine is moody or thinking afresh. A weighted die is being rolled at every token, and the same first roll going differently sends the entire rest of the text down another path.</p>
+  <p>And there is a dial on the die. <strong>Temperature</strong> reshapes the distribution before the roll. Below 1 it exaggerates the differences, making likely candidates even more likely and the output more predictable. Above 1 it flattens them, giving unlikely candidates a real chance, and the output gets more surprising and less reliable in equal measure. At 0 it collapses to greedy decoding.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f4">
+    <p class="eyebrow"><span>figure 4 · the same guess, reshaped and rolled</span><span id="f4verdict">balanced</span></p>
+    <div class="fig-body">
+      <div class="bars" id="f4bars"></div>
+      <div style="margin-top:22px">
+        <label for="f4temp">temperature: <span class="num" id="f4tv">1.0</span></label>
+        <input type="range" id="f4temp" min="0" max="20" step="1" value="10">
+      </div>
+      <div class="row" style="margin:20px 0 0">
+        <button id="f4roll">roll once</button>
+        <button id="f4roll20">roll twenty times</button>
+        <button id="f4greedy">use greedy instead</button>
+        <button id="f4reset">reset counts</button>
+      </div>
+      <p class="k" id="f4tally" style="margin:14px 0 0;line-height:1.7">no rolls yet</p>
+    </div>
+    <figcaption>The same eight candidates as the previous figure, with the long tail dropped and the eight rescaled to add up to 100 percent, which is why the leader reads slightly higher here than it did there. The bars now show the distribution <em>after</em> temperature has reshaped it, so dragging the slider changes the bars themselves, not just the outcome. Roll once and the chosen candidate is filled in solid. Roll twenty times and the tally below counts how often each won, which is the honest way to see what a probability means. Set temperature to zero and the same candidate wins all twenty, every time.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>Sit with the twenty-roll tally for a moment, because it demolishes a common misreading. The leading candidate is not "the answer". It is a candidate that wins about seven times out of twenty and loses the other thirteen. Over a 300-token reply that die is rolled 300 times, and the chance of any two replies coming out identical is effectively nil.</p>
+  <p class="pull">Variety is not the model thinking differently. It is the same guess, rolled again.</p>
+  <p>This also explains a common frustration honestly. When a system gives a good answer and then a worse one to the same question, nothing has broken and nothing has been changed. You are seeing two draws from one distribution, which is the design working as intended.</p>
+  <div class="intu">
+    <i>picture it</i>
+    A jar of beads, mostly green, some blue, one or two red. Drawing without looking gives green most times, blue sometimes, red rarely. Temperature is a hand that adjusts the mix before you reach in: turn it down and the jar becomes almost entirely green, turn it up and the colours even out. <b>The jar is the model's opinion; the reach is a separate act, and only the second one is random.</b>
+  </div>
+  <p>Everything so far describes a machine that already has its opinions. Where did they come from? Nobody wrote the probability of <span class="k">keeper</span> following <span class="k">the lighthouse</span> into a table anywhere.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col reveal">
+  <h2>Nobody wrote the rules. The machine was corrected until it stopped being wrong.</h2>
+  <p>Here is where "it learns the patterns" usually appears and the explanation stops. It is worth pushing through, because the actual method is simple enough to hold in your head and it explains several later things that otherwise look like magic.</p>
+  <p>A model is a very large collection of numbers called <strong>parameters</strong>. Ours has twelve billion of them. They are arranged in a structure called a <strong>neural network</strong>, which for our purposes means: the input numbers get multiplied by the parameters in a fixed order, layer after layer, and whatever falls out the far end is the answer. The structure never changes. Only the values of the parameters do, and only during training.</p>
+  <p>At the start those twelve billion numbers are set randomly. The model is not ignorant in an interesting way; it is noise. Shown <span class="k">the lighthouse</span>, it produces a distribution that is essentially flat across all hundred thousand tokens.</p>
+  <p><strong>Training</strong> is then a loop, and it has four steps that repeat until the electricity bill becomes intolerable.</p>
+  <p>Take a real piece of text from the training data and hide what comes next. Let the model guess: it produces a distribution. Measure how wrong that guess was, by checking how much probability it gave to the token that actually came next; that measure of wrongness is called the <strong>loss</strong>. Then nudge every one of the twelve billion parameters a tiny amount in whichever direction would have made the loss smaller. That nudging is <strong>gradient descent</strong>.</p>
+  <p>Then do it again with the next piece of text. And again, trillions of times.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f5">
+    <p class="eyebrow"><span>figure 5 · guess, measure, nudge, repeat</span><span id="f5stage">untrained</span></p>
+    <div class="fig-body">
+      <p class="k" style="margin:0 0 8px">shown this, with the next token hidden</p>
+      <p class="num" id="f5text" style="margin:0 0 18px;font-size:16px">the lighthouse ____</p>
+      <div class="bars" id="f5bars"></div>
+      <svg viewBox="0 0 620 90" role="img" aria-label="Loss falling as training proceeds"><g id="f5loss"></g></svg>
+      <div class="row" style="margin:16px 0 0">
+        <button id="f5one">show it one example</button>
+        <button id="f5many">show it a thousand</button>
+        <button id="f5reset">back to random</button>
+        <span class="k" id="f5note">the parameters are still random</span>
+      </div>
+    </div>
+    <figcaption>The bars are the model's guess for the hidden token, and the true answer is marked. The line below is the loss, the measure of wrongness, plotted as training proceeds: down is better. Press <em>show it one example</em> and watch the bar for the correct token creep up while the loss ticks down by a barely visible amount. That barely visible amount is the point. Press <em>show it a thousand</em> to see what the same tiny correction does when it happens often enough.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>Two consequences of that loop are worth stating, because both get misunderstood constantly.</p>
+  <p>The first: nobody chose what the model learned. No one wrote a grammar rule, a fact, or a style guide into it. The parameters arrived at their values purely by being wrong slightly less often, over and over. Grammar, facts, tone and the shape of an argument all appear because getting them right lowers the loss on real text. They were never specified, only rewarded.</p>
+  <p>The second: this is why nobody can point inside a model and show you where something is stored. Knowing that lighthouses are on coasts is not a line in a file. It is a faint tilt spread across billions of numbers that also do a thousand other jobs. The model can be examined, but not read.</p>
+  <div class="intu">
+    <i>picture it</i>
+    Learning to throw darts blindfolded, with someone calling out only "left" or "high" after each throw. No one explains the geometry, the weight of the dart or the physics of the flight. Ten thousand throws later your arm is extremely good, and you still cannot say what you do differently. <b>The skill is real and it lives in an adjustment you could not write down, which is exactly the situation these models are in.</b>
+  </div>
+  <p>One loop, repeated. What turns it into something that can write a passable cover letter is not a cleverer loop. It is the size of what you point it at.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>The loop is old. What is new is how obscenely much of it there is.</h2>
+  <p>Guess-measure-nudge dates to the 1980s. It was understood, published, and mostly disappointing for thirty years. What changed was not the idea but its <strong>scale</strong>, meaning simply how much of everything is thrown at it, and the change is hard to feel without numbers.</p>
+  <p>Our illustrative model reads four trillion tokens during training. That is roughly three billion pages: more than any person could read in ten thousand lifetimes, and a real fraction of the readable public internet plus a great many books.</p>
+  <p>It carries twelve billion parameters, each one nudged on essentially every example. And the training run consumes a quantity of <strong>compute</strong>, which is the total number of arithmetic operations performed, that takes thousands of specialised chips several weeks and costs millions of pounds in electricity and hardware.</p>
+  <p>This first, enormous, general phase is called <strong>pretraining</strong>. Its only goal is the next-token guess on ordinary text. Nobody is teaching it to be helpful yet, and it is worth being clear that what comes out of pretraining is not a chat assistant. It is a machine that continues text.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f6">
+    <p class="eyebrow"><span>figure 6 · what changes when you make it bigger</span><span id="f6size">12B parameters</span></p>
+    <div class="fig-body">
+      <div class="row" id="f6btns"></div>
+      <p class="k" style="margin:0 0 8px">asked to continue: <span class="num" style="font-size:13px">the lighthouse keeper wrote in the log that</span></p>
+      <p class="num" id="f6out" style="margin:0 0 20px;font-size:15px;line-height:1.7;min-height:80px;border-left:2px solid var(--v13);padding-left:14px"></p>
+      <svg viewBox="0 0 620 120" role="img" aria-label="Training cost against model size"><g id="f6bars"></g></svg>
+      <div class="grid2" style="margin-top:20px">
+        <div><span class="k">parameters</span><br><span class="num" id="f6p">12 billion</span></div>
+        <div><span class="k">tokens read in training</span><br><span class="num" id="f6t">4 trillion</span></div>
+        <div><span class="k">rough training cost</span><br><span class="num" id="f6c">£2.4m</span></div>
+      </div>
+    </div>
+    <figcaption>Four model sizes, each with a sample of the kind of continuation it manages for the same opening. The text samples are written to illustrate the failure modes at each scale, not generated live. The bar is training cost, which rises far faster than the size does, because a bigger model is also fed more data and each example costs more to process. Click through from smallest to largest and watch grammar arrive before coherence, and coherence arrive before anything worth reading.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>The pattern in that figure is the whole reason this technology arrived when it did. At small scale the output is grammatical nonsense. At medium scale it is locally sensible and globally incoherent, sentences fine, paragraph adrift. Somewhere past a threshold it becomes something you would not immediately identify as machine-made.</p>
+  <p>Nothing in the method changed between those points. The loop is identical. Abilities that were absent simply appear as the scale rises, which is why the field spent several years mostly building bigger things rather than cleverer ones.</p>
+  <div class="intu">
+    <i>picture it</i>
+    A single ant is not a slightly worse colony. It is not doing colony-shaped things badly; the things a colony does are not present in it at all. Bridges, farming and air conditioning appear somewhere between one ant and a million, without any ant being redesigned. <b>Quantity turning into a different kind of behaviour is unsettling to reason about and is nonetheless what happened here.</b>
+  </div>
+  <p>Still, everything so far produces a text continuer, not an assistant. Feed our pretrained model a question and the honest thing for it to do is carry on in the same vein, which often means producing more questions.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>A text continuer is not an assistant, and the gap is deliberately closed</h2>
+  <p>This step is missing from most explanations, and its absence makes the whole thing seem more mysterious than it is. Between "predicts the next token" and "answers your question helpfully" there is a distinct phase, and it was invented because the raw thing was disappointing to use.</p>
+  <p>Give a purely pretrained model the input <span class="k">What is a lighthouse for?</span> and the statistically natural continuation is not an answer. Text on the internet containing that sentence is often a list of quiz questions, or a forum post, or a worksheet. So it continues in kind: more questions, a heading, a page of exam paper. It is not malfunctioning. It is doing precisely what it was trained to do.</p>
+  <p><strong>Fine-tuning</strong> is further training on a much smaller, deliberately chosen set of examples, which shifts the model's behaviour without rebuilding it. Where pretraining is trillions of tokens of whatever there was, fine-tuning might be tens of thousands of carefully written examples.</p>
+  <p>The first kind is <strong>instruction tuning</strong>: thousands of examples of a request followed by a good response to it. This alone transforms the experience, because it makes "a helpful answer" the statistically natural continuation of "a question".</p>
+  <p>The second kind uses <strong>human feedback</strong>. People are shown two of the model's responses to the same prompt and asked which is better. Those judgements train a second model to predict human preference, and that preference model is then used to nudge the first one toward responses people prefer. Bending a model toward what people actually want is generally called <strong>alignment</strong>.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f7">
+    <p class="eyebrow"><span>figure 7 · the same question, three stages in</span><span id="f7stagelab">after pretraining</span></p>
+    <div class="fig-body">
+      <p class="k" style="margin:0 0 10px">you type</p>
+      <p class="num" id="f7q" style="margin:0 0 20px;font-size:16px"></p>
+      <p class="k" style="margin:0 0 10px">it produces</p>
+      <p class="num" id="f7a" style="margin:0 0 8px;font-size:15px;line-height:1.7;min-height:104px;border-left:2px solid var(--v0);padding-left:14px"></p>
+      <div class="row" style="margin:20px 0 0">
+        <button data-f7="0" class="on">after pretraining only</button>
+        <button data-f7="1">after instruction tuning</button>
+        <button data-f7="2">after human feedback</button>
+      </div>
+      <div class="row" style="margin:0">
+        <button id="f7q2">try a different question</button>
+        <span class="k" id="f7note"></span>
+      </div>
+    </div>
+    <figcaption>One question, three stages of the same model. The responses are written to show the characteristic failure of each stage rather than generated live. Move through the three buttons in order: the first continues rather than answers, the second answers but badly judges what was wanted, the third is what you would recognise from a chat assistant. Press <em>try a different question</em> to see the same three-stage pattern on a request where the failures look different.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>Two things follow that are worth carrying around.</p>
+  <p>The model's personality, its willingness to help, its refusals and its habitual tone are not emergent properties of reading the internet. They were installed in this phase, by choices people made about which responses were better. Different choices produce a noticeably different assistant from the identical pretrained model.</p>
+  <p>And the phase is small and cheap relative to pretraining, often well under a percent of the total compute. Nearly all the capability comes from the enormous general phase; nearly all the behaviour you actually experience comes from the tiny one on the end.</p>
+  <div class="intu">
+    <i>picture it</i>
+    Someone who has read the entire library and never been in a conversation. The knowledge is there and the interaction is hopeless: they continue your sentences, answer a different question, deliver a lecture when you wanted a yes. A few months of being told "shorter", "he was asking about the ferry", "just answer him" does not add knowledge. <b>It changes what they do with the knowledge they already had, and it is the entire difference between unusable and useful.</b>
+  </div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col reveal">
+  <h2>It can only see what is in front of it, and that space has an edge</h2>
+  <p>Everything the model considers when producing a token is inside its context. That space has a hard maximum, measured in tokens, called the <strong>context window</strong>. Ours holds 128,000 tokens, roughly three hundred pages.</p>
+  <p>Two facts about that window explain a great deal of everyday behaviour.</p>
+  <p>The first is <strong>statelessness</strong>: between one message and the next, the model remembers nothing. Nothing at all. It has no store of your conversation. What actually happens is that the entire conversation so far is re-sent with every message, so that the appearance of memory is produced by resending the past, not by retaining it.</p>
+  <p>The second follows immediately. Since the whole conversation is re-sent each time, a long conversation eats the window. Once the total exceeds 128,000 tokens, something has to go, and the usual something is the oldest part. From your side this looks like the assistant forgetting what you agreed at the start, and that is exactly what it is: those tokens are no longer in front of it.</p>
+  <p>This also disposes of a common worry and confirms another. The model is not learning from your conversation: nothing you type changes a single parameter. But everything you paste is in front of it for the rest of that conversation, and is sent again with every message you write.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f8">
+    <p class="eyebrow"><span>figure 8 · what fits, and what falls off</span><span id="f8used">3% of the window</span></p>
+    <div class="fig-body">
+      <svg viewBox="0 0 620 150" role="img" aria-label="Conversation filling the context window"><g id="f8fig"></g></svg>
+      <div class="row" style="margin:20px 0 0">
+        <button id="f8add">send another message</button>
+        <button id="f8paste">paste a long document</button>
+        <button id="f8reset">start a fresh chat</button>
+      </div>
+      <div class="grid2" style="margin-top:20px">
+        <div><span class="k">in the window</span><br><span class="num" id="f8tok">3,400 tokens</span></div>
+        <div><span class="k">pushed out and forgotten</span><br><span class="num" id="f8lost">0 tokens</span></div>
+      </div>
+    </div>
+    <figcaption>The long bar is the 128,000-token context window. Each block inside it is one turn of the conversation, oldest at the left. Press <em>send another message</em> repeatedly and watch the bar fill, remembering that every earlier block is being re-sent each time. Press <em>paste a long document</em> to add 60,000 tokens at once. When the bar overflows, the leftmost blocks turn hatched and drop out: that is the model forgetting the beginning, and the counter tallies what is gone.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <div class="intu">
+    <i>picture it</i>
+    A desk with room for exactly forty sheets of paper and a colleague who can only respond to what is on it. Every time you ask something, you lay out the whole correspondence again from the beginning. Ask enough and the earliest sheets get pushed off the far edge onto the floor. <b>Nothing was forgotten in any mental sense, because nothing was ever held; the sheet is simply no longer on the desk.</b>
+  </div>
+  <p>That covers text end to end. But the same phrase, generative AI, also covers the systems that make pictures, and those work by a genuinely different mechanism. Accounts that say images work "in a similar way" are, unfortunately, wrong.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>Pictures are not written left to right. They are uncovered from static.</h2>
+  <p>An image model does not produce a picture pixel by pixel in reading order, and it does not predict the next pixel from the previous ones. It uses a method called <strong>diffusion</strong>, and the idea is odd enough to be worth taking slowly, because it is genuinely elegant.</p>
+  <p>Start with training, which runs backwards from what you would expect. Take a real photograph and add a little <strong>noise</strong>, meaning random speckle of the sort an old television showed with no signal. Add a little more. Keep going for a few hundred rounds until the image is indistinguishable from pure static.</p>
+  <p>Now train a model to undo one single step of that: given a slightly noisy image, predict what the slightly less noisy version looked like. This is an ordinary guess-measure-nudge problem, and the correct answer is known for free, because you added the noise yourself and kept the original.</p>
+  <p>Once that model works, run it in reverse to generate. Begin with a rectangle of pure random static, which contains no picture and never did. Ask the model to make it slightly less noisy. Then again. And again, perhaps fifty times. <strong>Denoising</strong> static that never held an image produces one, because at each step the model pushes the pixels toward what a plausible image would look like.</p>
+  <p>Your prompt steers it. The text is turned into numbers by the same kind of process from earlier, and those numbers are fed into every denoising step, so that at each stage the model is not asked for a plausible image but for a plausible image <em>of a lighthouse at dusk</em>.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f9">
+    <p class="eyebrow"><span>figure 9 · fifty steps out of the static</span><span id="f9step">step 0 of 50 · pure noise</span></p>
+    <div class="fig-body">
+      <svg viewBox="0 0 620 230" role="img" aria-label="An image emerging from noise over successive denoising steps"><g id="f9fig"></g></svg>
+      <div style="margin-top:20px">
+        <label for="f9slider">denoising step: <span class="num" id="f9sv">0</span> of 50</label>
+        <input type="range" id="f9slider" min="0" max="50" step="1" value="0">
+      </div>
+      <div class="row" style="margin:18px 0 0">
+        <button id="f9run">run all fifty</button>
+        <button data-f9p="0" class="on">prompt: a lighthouse</button>
+        <button data-f9p="1">prompt: a bowl of pears</button>
+      </div>
+    </div>
+    <figcaption>A schematic of the process rather than a real image model. The panel is a grid of cells whose shading starts completely random. Drag the slider and each step nudges every cell toward the target shape, exactly as denoising nudges pixels toward a plausible image. Change the prompt and drag again from zero: the same starting static resolves into a different arrangement, because the prompt is fed into every step and not just the first.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p>Three things fall out of this that people ask about constantly.</p>
+  <p>It explains why image generation has a visible number of steps and why stopping early gives you something blurry and half-formed rather than a partial picture. It explains why the same prompt gives different images: the starting static is random, so a different starting point resolves somewhere else. And it explains why the whole image arrives at once, unlike text arriving word by word, since every part of the picture is being refined simultaneously.</p>
+  <div class="intu">
+    <i>picture it</i>
+    A sculptor and a block of marble, with the sharp end of it kept intact. There is no statue inside the block and never was. What guides the chisel is a trained sense of what a figure looks like, applied one small stroke at a time. <b>Start with a different block and you get a different statue, which is precisely why the same instruction never produces the same image twice.</b>
+  </div>
+  <p>Two mechanisms, then, under one name. Both learned from examples, both producing rather than choosing. And both with a specific, structural failure that follows from how they work.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>It invents things because plausible and true are different targets</h2>
+  <p>A <strong>hallucination</strong> is a confident, fluent, entirely fabricated statement: a citation to a paper that does not exist, a quoted price that was never charged, a plausible date for an event that happened elsewhere. It is the most-discussed weakness of these systems and it is usually explained as a bug or a gap in the training data. It is neither, and understanding why makes it far easier to work with.</p>
+  <p>Go back to the loss. The model was rewarded, trillions of times, for one thing: assigning high probability to whatever token actually came next in real text. Nothing in that objective mentions truth. Truth was never measured, never scored and never nudged toward. What was measured was whether the continuation looked like the sort of thing that follows.</p>
+  <p>Now consider a request for a source on lighthouse construction. Real text contains millions of citations, and they have a shape: an author, a year, a title with certain kinds of words, a journal name. The model has learned that shape extremely well. Producing something with exactly that shape is what its training optimised for. Whether the paper exists is a fact about the world, and the model has no mechanism that checks facts about the world at generation time.</p>
+  <p>So the output is not a lie, and it is not a malfunction. It is a very good answer to the question the machine was actually trained on, which was never the question you were asking.</p>
+  <p>This also explains the two most useful practical rules. Hallucination is worst for specifics that are highly patterned but individually arbitrary, which is precisely what citations, statistics, dates, prices and legal references are. And a model's confident tone carries no information about correctness, because fluency was the objective and confidence is just more fluency.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f10">
+    <p class="eyebrow"><span>figure 10 · which questions are dangerous</span><span id="f10risk">low risk</span></p>
+    <div class="fig-body">
+      <div class="row" id="f10btns"></div>
+      <p class="num" id="f10ans" style="margin:0 0 8px;font-size:15px;line-height:1.7;min-height:76px;border-left:2px solid var(--v13);padding-left:14px"></p>
+      <svg viewBox="0 0 620 100" role="img" aria-label="Two axes: how patterned an answer is and how arbitrary its specifics"><g id="f10fig"></g></svg>
+      <p class="k" id="f10why" style="margin:14px 0 0;line-height:1.7"></p>
+    </div>
+    <figcaption>Four kinds of question. For each, the two bars show how strongly patterned the <em>form</em> of the answer is and how arbitrary the <em>specifics</em> are. Risk is high where both bars are high, because the model can produce the shape perfectly with nothing anchoring the contents. Click through all four: the safest and the most dangerous questions look identical in the answer they produce, which is the entire problem.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <div class="intu">
+    <i>picture it</i>
+    Someone who has read ten thousand legal judgements and absorbed the rhythm of them completely: the citation format, the cadence, the way a precedent gets introduced. Ask for a supporting case and they can produce one in the correct form instantly, and they have no way to check whether it was ever decided. <b>The fluency and the fabrication come from the same skill, so you cannot have one without risking the other.</b>
+  </div>
+  <p>Hallucination gets the attention. Several other limits matter as much or more, and a couple of them are about the world rather than the machine.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col reveal">
+  <h2>Six limits, and only two of them are about the machine being wrong</h2>
+  <p>Each of these follows from something already established, rather than being a caveat bolted on at the end.</p>
+  <p><strong>Bias.</strong> The model absorbed the statistical tendencies of its training data, including the ones nobody wanted. If nurses are overwhelmingly described as women in the text it read, that association is now a tilt in the parameters, and it will show up in what it generates. This is not the model having views. It is the data's tendencies reproduced faithfully, which is the one thing the training loop is guaranteed to do.</p>
+  <p><strong>The knowledge cutoff.</strong> Training finished on a date, and the parameters have not changed since. A model's grasp of the world is frozen at that moment, so it may confidently describe as current something long since replaced. Some systems patch this by searching and putting results into the context window, which is a genuinely different mechanism from knowing: the fact is in front of it, not in it.</p>
+  <p><strong>Provenance.</strong> The training data came from somewhere, largely from the public internet, largely without the authors being asked. Whether that constitutes fair use is under active litigation in several countries, and reasonable people disagree sharply. It is not settled, and anyone telling you it obviously is, in either direction, is telling you their position rather than the law.</p>
+  <p><strong>Cost and energy.</strong> Training runs consume power on an industrial scale, and every individual response costs a small amount of electricity too. Multiplied across hundreds of millions of daily users, running these systems is a meaningful and rising share of data-centre demand.</p>
+  <p><strong>Synthetic media.</strong> The same capability produces convincing fake photographs, cloned voices and fabricated video. This is not a misuse of a flawed system; it is the intended capability pointed somewhere harmful, which makes it much harder to engineer away than a bug.</p>
+  <p><strong>It does not understand in the way you do.</strong> Worth stating carefully, because both overclaiming and dismissal are common. The model has no body, no continuous experience, no stake in anything and no way to check a claim against the world. It also demonstrably does something more than recite, since it handles genuinely novel combinations. What to call that is contested, and the honest position is that we do not have good language for it yet.</p>
+</div>
+
+<div class="wide reveal">
+  <div class="fig" id="f11">
+    <p class="eyebrow"><span>figure 11 · which limit bites here</span><span id="f11count">0 of 6 flagged</span></p>
+    <div class="fig-body">
+      <div class="row" id="f11btns"></div>
+      <p class="num" id="f11task" style="margin:0 0 18px;font-size:15.5px;line-height:1.6;min-height:48px"></p>
+      <div id="f11flags"></div>
+      <p class="k" id="f11say" style="margin:16px 0 0;line-height:1.7"></p>
+    </div>
+    <figcaption>Five ordinary tasks somebody might bring to one of these systems. For each, the six limits are listed with a filled marker where that limit genuinely applies and a hollow one where it does not. Click through the tasks: summarising a document you supplied is largely safe, because you brought the facts, while asking for last quarter's figures trips three limits at once. The point is that the risk is a property of the task, not of the machine.</figcaption>
+  </div>
+</div>
+
+<div class="col reveal">
+  <p class="note">Every number on this page describes one illustrative model: 12 billion parameters, 4 trillion training tokens, a 100,000-token vocabulary, 4,096-number embeddings and a 128,000-token context window. These are plausible mid-range figures chosen so the page can compute rather than assert. They are not the specifications of any particular product, and real systems vary by more than an order of magnitude in every one of them.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+
+<section>
+<div class="col reveal">
+  <h2>The whole journey, from a pile of text to the words on your screen</h2>
+  <p>Every piece is now in place. Here is the entire path in order, with the panel beside these steps filling in as you go.</p>
+</div>
+
+<div class="bleed scrolly" id="sc1">
+  <div class="col ss">
+    <div class="col stp" data-step="0"><p>It starts with a pile of text: several trillion tokens of books, articles, code and web pages. Nothing has been taught yet. This is raw material, and its contents will determine everything the model later tends toward.</p></div>
+    <div class="col stp" data-step="1"><p>Pretraining runs the loop. Hide a token, guess it, measure the wrongness, nudge twelve billion parameters. Repeat for weeks across thousands of chips. What comes out continues text convincingly and is not yet useful to talk to.</p></div>
+    <div class="col stp" data-step="2"><p>Fine-tuning follows, on a far smaller set of written examples and human preference judgements. This costs a fraction of a percent as much and supplies nearly all the behaviour you would recognise: answering rather than continuing, and knowing when to stop.</p></div>
+    <div class="col stp" data-step="3"><p>Now the model is finished and frozen. Using it to produce an answer is called <strong>inference</strong>, and no parameter changes during it, ever. The same fixed numbers serve every user of the system.</p></div>
+    <div class="col stp" data-step="4"><p>You type a prompt. It is cut into tokens and placed into the context window, along with everything earlier in the conversation, because the model retains nothing between messages.</p></div>
+    <div class="col stp" data-step="5"><p>The model produces a probability distribution over its whole vocabulary. Something samples a token from it, weighted by those probabilities and shaped by temperature. That token joins the context, and the question is asked again, until a stopping token comes up. What you read is the trace of that loop.</p></div>
+  </div>
+  <div class="wide sg"><div class="fig" style="margin:0">
+    <p class="eyebrow"><span>the whole path</span><span id="sc1lab">raw text</span></p>
+    <div class="fig-body" style="padding:24px 20px">
+      <div class="row" style="margin-bottom:14px"><button id="sc1next">advance</button><button id="sc1back">back</button></div>
+      <svg viewBox="0 0 460 340" role="img" aria-label="The full pipeline from training data to generated output">
+        <g id="sc1fig"></g>
+      </svg>
+    </div>
+  </div></div>
+</div>
+
+<div class="col reveal">
+  <p>Notice where the line falls. Everything above inference happened once, months ago, at enormous cost, and is identical for everybody. Everything below happens in a second, costs a fraction of a penny, and is yours alone. People often picture the model consulting or learning while it answers. It is doing neither. It is a fixed set of numbers being multiplied.</p>
+</div>
+</section>
+
+<section style="text-align:center">
+  <div class="col reveal">
+    <h2 style="max-width:19ch;margin:0 auto 26px">A guess, weighted, rolled, and appended</h2>
+    <p class="lede" style="max-width:36ch;margin:0 auto">There is no list of answers, no retrieval, and nothing being consulted. There is a machine corrected trillions of times until its guess about what comes next stopped being wrong so often, and a die rolled against that guess, once per word.</p>
+  </div>
+</section>
+
+
+<section>
+<div class="col reveal">
+  <h2>Now build a request and watch it behave</h2>
+  <p>Everything adjustable at once: what you ask for, how the die is weighted, and how much room the conversation has. Three presets stand for real situations where the right settings genuinely differ.</p>
+</div>
+<div class="wide reveal">
+  <div class="fig" id="f12">
+    <p class="eyebrow"><span>figure 12 · your settings, their consequences</span><span id="f12v">a factual question</span></p>
+    <div class="fig-body">
+      <div class="row">
+        <button data-pp="fact" class="on">a factual question</button>
+        <button data-pp="story">a bedtime story</button>
+        <button data-pp="doc">a long document to summarise</button>
+      </div>
+      <div class="grid2">
+        <div><label for="q1">temperature: <span class="num" id="q1v">0.3</span></label><input type="range" id="q1" min="0" max="20" step="1" value="3"></div>
+        <div><label for="q2">how patterned but arbitrary the answer is: <span class="num" id="q2v">high</span></label><input type="range" id="q2" min="0" max="3" step="1" value="3"></div>
+        <div><label for="q3">conversation length so far: <span class="num" id="q3v">4,000</span></label><input type="range" id="q3" min="500" max="200000" step="500" value="4000"></div>
+        <div><label for="q4">answer length: <span class="num" id="q4v">200</span></label><input type="range" id="q4" min="20" max="1200" step="20" value="200"></div>
+      </div>
+      <svg viewBox="0 0 620 120" role="img" aria-label="Resulting behaviour profile"><g id="f12fig"></g></svg>
+      <div class="grid2" style="margin-top:20px">
+        <div><span class="k">two runs will differ</span><br><span class="num" id="r1">rarely</span></div>
+        <div><span class="k">risk of invented specifics</span><br><span class="num" id="r2">high</span></div>
+        <div><span class="k">fits in the window</span><br><span class="num" id="r3">yes</span></div>
+        <div><span class="k">dice rolled for this answer</span><br><span class="num" id="r4">200</span></div>
+      </div>
+      <p class="k" id="r5" style="margin:16px 0 0;line-height:1.7"></p>
+    </div>
+    <figcaption>Move one dial at a time and read the advice line underneath. Low temperature on a factual question is the right call and does nothing whatsoever about hallucination, since a confidently wrong answer is exactly what the highest-probability path produces. Raising temperature for a story is right for the same reason it is wrong for a citation. Pushing conversation length past the window is what makes the model forget your opening instructions.</figcaption>
+  </div>
+</div>
+</section>
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<section class="weeds" id="weeds" hidden aria-labelledby="weedsHint">
+<div class="col">
+  <h2>Into the weeds</h2>
+  <details><summary>What temperature actually does to the numbers</summary>
+    <p>Before the model's raw scores become probabilities they are divided by the temperature, then normalised so they sum to one. Dividing by a number below 1 spreads the scores further apart, so the leader pulls away and sampling almost always picks it. Dividing by a number above 1 squashes them together, so the tail gets a real share. At exactly 0 the division is undefined and the implementation simply takes the maximum, which is why temperature 0 and greedy decoding are the same thing.</p>
+  </details>
+  <details><summary>Top-k and top-p, the other two dials</summary>
+    <p>Temperature is rarely used alone. Top-k keeps only the k most likely candidates and discards the rest before sampling. Top-p, also called nucleus sampling, keeps however many candidates are needed for their probabilities to add up to p, so it keeps few when the model is confident and many when it is not. Both exist to stop the very long tail of near-zero candidates from occasionally producing something bizarre, which raw temperature on its own allows.</p>
+  </details>
+  <details><summary>Why the model stops</summary>
+    <p>The vocabulary contains a special end-of-text token. Stopping is not a separate mechanism: the model assigns that token a probability like any other, and when it is sampled, generation ends. Fine-tuning is largely what teaches a model to give that token high probability at a sensible point, which is why purely pretrained models tend to run on and on.</p>
+  </details>
+  <details><summary>Retrieval, and why it is not the same as knowing</summary>
+    <p>Many systems search a document store or the web and paste the results into the context window before the model answers. This reduces hallucination substantially because the specifics are now in front of the model rather than being reconstructed from patterns. It does not eliminate it, since the model can still misread, over-generalise, or fill a gap between retrieved passages, and it works only for material the search actually finds.</p>
+  </details>
+  <details><summary>Where the "billions of parameters" figure does and does not matter</summary>
+    <p>Parameter count is a poor single measure of capability. A carefully trained smaller model routinely beats a larger, more carelessly trained one, and how much data a model saw matters at least as much as how big it is. Mixture-of-experts designs complicate the comparison further, since they carry a very large total parameter count while using only a small fraction of it for any given token.</p>
+  </details>
+</div>
+</section>
+
+<footer style="padding:60px 0 80px;border-top:1px solid var(--v13)">
+<div class="col">
+  <p class="k" style="line-height:1.9">Structure follows the standard account of generative models: tokenisation and embeddings, next-token prediction as a distribution, sampling and temperature, gradient-based pretraining followed by fine-tuning, and diffusion for images. Illustrative model figures are stated in the note above the pipeline. Sample outputs in figures 6, 7, 10 and 11 are written to show characteristic behaviour, not generated live. Written August 2026.</p>
+</div>
+</footer>
+<script>!function(){"use strict";var t=128e3,e=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;function n(t){return document.getElementById(t)}function a(t,e,n){return'<div class="cand '+(n||"")+'"><span>'+t+'</span><i style="width:'+Math.max(1,100*e).toFixed(1)+'%"></i><em>'+(100*e).toFixed(1)+"%</em></div>"}function r(t,e){if(e<=0){var n=Math.max.apply(null,t);return t.map(function(t){return t===n?1:0})}var a=t.map(function(t){return Math.exp(t/e)}),r=a.reduce(function(t,e){return t+e},0);return a.map(function(t){return t/r})}function o(t){for(var e=Math.random(),n=0,a=0;a<t.length;a++)if(e<=(n+=t[a]))return a;return t.length-1}var i=n("rail");addEventListener("scroll",function(){var t=document.documentElement,e=t.scrollTop/(t.scrollHeight-t.clientHeight||1);i.textContent=Math.round(100*Math.min(1,Math.max(0,e)))+"% read"},{passive:!0});var s=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),s.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll(".reveal").forEach(function(t){s.observe(t)});var l={"The lighthouse keeper":[["  waited",.34],["  had",.19],["  lit",.12],["  climbed",.09],["  was",.07],["  looked",.05],["  turned",.04],["  noticed",.03]],"The lighthouse keeper waited":[["  until",.28],["  for",.24],["  in",.13],["  three",.08],["  a",.07],["  patiently",.06],["  by",.04],["  through",.03]],"The lighthouse keeper waited until":[["  the",.41],["  dawn",.16],["  it",.1],["  she",.08],["  midnight",.07],["  morning",.06],["  they",.04],["  after",.03]],"The lighthouse keeper waited until the":[["  storm",.22],["  fog",.16],["  tide",.14],["  morning",.12],["  wind",.09],["  boat",.07],["  light",.06],["  sea",.05]],"The lighthouse keeper waited until the storm":[["  passed",.37],["  had",.18],["  broke",.11],["  died",.09],["  cleared",.08],["  moved",.05],["  reached",.04],["  finally",.03]]},h=[["  and",.24],["  the",.18],["  to",.13],["  in",.1],["  with",.08],["  before",.07],["  as",.05],["  then",.04]];function c(t){return l[t]||h}!function(){var t="The lighthouse keeper",r=n("heroBars"),i=n("heroSent"),s=n("heroLab");function l(e){var n=c(t);r.innerHTML=n.map(function(t,n){return a(t[0].trim(),t[1],n===e?"picked":"")}).join(""),i.textContent=t,s.textContent=null==e?"guessing":'sampled "'+n[e][0].trim()+'"'}if(l(null),!e){var h=0;setInterval(function(){if(0===h){var e=o(c(t).map(function(t){return t[1]}));l(e),h=1,window.__heroPick=e}else{var n=c(t);(t=(t+n[window.__heroPick][0]).replace(/\s+/g," ")).split(" ").length>9&&(t="The lighthouse keeper"),l(null),h=0}},1500)}}(),function(){var t="c",e=n("f1in"),r=n("f1out"),o=n("f1note"),i=n("f1mode"),s=n("f1outlab"),l=["Subject: URGENT - claim your parcel refund now, click here within 24h","Subject: Tuesday standup moved to 10:30, calendar updated","Subject: Congratulations!! You have been selected for a prize draw"],h=["write two lines about a lighthouse at dusk","write two lines about a lighthouse at dusk","write two lines about a lighthouse at dusk"],c=["The lamp turns over water going grey,\nand counts the minutes out to no one there.","At dusk the tower takes the last of the light\nand hands it back in slow deliberate turns.","Grey water, and a lamp that keeps its time\nlong after anyone has stopped to watch."],u=0;function d(n){if("c"===t){if(e.textContent=l[u%l.length],s.textContent="what comes out: two fixed boxes",n){var d=u%l.length===1?.04:.91+.06*Math.random();r.innerHTML=a("spam",d,d>.5?"picked":"")+a("not spam",1-d,d>.5?"":"picked")}else r.innerHTML='<p class="k">press run</p>';o.textContent=n?"the boxes are the same as last time, only the bars moved":"press run",i.textContent="classifier"}else e.textContent=h[u%h.length],s.textContent="what comes out: no boxes at all",r.innerHTML=n?'<p class="num" style="font-size:14px;line-height:1.7;white-space:pre-line;margin:0">'+c[u%c.length]+"</p>":'<p class="k">press run</p>',o.textContent=n?"nothing on this list existed before it was produced":"press run",i.textContent="generator"}n("f1run").addEventListener("click",function(){d(!0)}),n("f1again").addEventListener("click",function(){u++,d(!0)}),document.querySelectorAll("[data-f1]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f1"),document.querySelectorAll("[data-f1]").forEach(function(t){t.classList.toggle("on",t===e)}),d(!1)})}),d(!1)}(),function(){var t=[{toks:["the"," light","house"," keeper"," wait","ed"],pts:[["the",.12,.82],["light",.62,.3],["house",.68,.24],["keeper",.74,.36],["wait",.3,.62],["ed",.16,.74]]},{toks:["un","sea","worth","iness"],pts:[["un",.2,.3],["sea",.72,.62],["worth",.4,.24],["iness",.24,.2]]},{toks:["port",","," harbour",","," saxophone"],pts:[["port",.7,.66],["harbour",.76,.7],["saxophone",.22,.18]]}],e=n("f2chips"),a=n("f2map"),r=n("f2count"),o=0;function i(){var n=t[o];e.innerHTML=n.toks.map(function(t){return'<span class="chip">'+t.replace(/ /g,"·")+"</span>"}).join(""),r.textContent=n.toks.length+" tokens";var i="";i+='<rect x="34" y="14" width="556" height="212" fill="none" stroke="var(--v13)" stroke-width="1.5" shape-rendering="crispEdges"/>',n.pts.forEach(function(t){var e=34+556*t[1],n=226-212*t[2];i+='<circle cx="'+e.toFixed(1)+'" cy="'+n.toFixed(1)+'" r="6" fill="var(--v0)"/>',i+='<text x="'+(e+11).toFixed(1)+'" y="'+(n+5).toFixed(1)+'" font-family="var(--v8)" font-size="12" fill="var(--v6)">'+t[0]+"</text>"}),i+='<text x="34" y="248" font-family="var(--v8)" font-size="12" fill="var(--v5)">closer together means used more similarly</text>',a.innerHTML=i,document.querySelectorAll("[data-f2]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f2")===o)})}document.querySelectorAll("[data-f2]").forEach(function(t){t.addEventListener("click",function(){o=+t.getAttribute("data-f2"),i()})}),i()}(),function(){var t="The lighthouse keeper",e=t,r=n("f3bars"),o=n("f3sent"),i=n("f3ctx"),s=n("f3note");function l(){var t=c(e);o.textContent=e,r.innerHTML=t.map(function(t){return a(t[0].trim(),t[1],"")}).join("");var n=1-t.reduce(function(t,e){return t+e[1]},0);r.insertAdjacentHTML("beforeend",'<p class="k" style="margin:10px 0 0">plus about '+99992..toLocaleString()+" more candidates sharing the remaining "+(100*n).toFixed(1)+"%</p>"),i.textContent="context: "+e.split(" ").length+" tokens";var l=t[0];s.textContent="the leading candidate has "+(100*l[1]).toFixed(0)+"% of the weight"}n("f3take").addEventListener("click",function(){var t=c(e);e=(e+t[0][0]).replace(/\s+/g," "),l()}),n("f3reset").addEventListener("click",function(){e=t,l()}),l()}(),function(){var t=c("The lighthouse keeper"),e=t.map(function(t){return Math.log(t[1])}),i=n("f4bars"),s=n("f4tally"),l=n("f4verdict"),h=n("f4temp"),u=t.map(function(){return 0}),d=!1,f=null;function v(){return d?0:+h.value/10}function p(){return r(e,v())}function g(){var e=p();i.innerHTML=t.map(function(t,n){return a(t[0].trim(),e[n],n===f?"picked":"")}).join(""),n("f4tv").textContent=d?"0.0 (greedy)":v().toFixed(1),l.textContent=0===v()?"always the same":v()<.7?"predictable":v()>1.4?"unpredictable":"balanced";var r=u.reduce(function(t,e){return t+e},0);r?s.innerHTML="out of "+r+" rolls: "+t.map(function(t,e){return u[e]?"<strong>"+t[0].trim()+"</strong> "+u[e]:null}).filter(Boolean).join(" · "):s.textContent="no rolls yet",n("f4greedy").classList.toggle("on",d)}function m(){var t=p();f=o(t),u[f]++}n("f4roll").addEventListener("click",function(){m(),g()}),n("f4roll20").addEventListener("click",function(){for(var t=0;t<20;t++)m();g()}),n("f4greedy").addEventListener("click",function(){d=!d,g()}),n("f4reset").addEventListener("click",function(){u=t.map(function(){return 0}),f=null,g()}),h.addEventListener("input",function(){d=!1,g()}),g()}(),function(){var t=["keeper","tower","lamp","saxophone","waited","the","harbour","of"],e=0,o=[],i=n("f5bars"),s=n("f5note"),l=n("f5stage");function h(){return r([.2+3.2*Math.min(1,Math.log10(1+e)/4),.15,.12,.05,.1,.08,.06,.04],1)}function c(){var t=h()[0];return-Math.log(t)}function u(){var r=h();i.innerHTML=t.map(function(t,e){return a(t+(0===e?"  (correct)":""),r[e],0===e?"picked":"")}).join(""),l.textContent=0===e?"untrained":e.toLocaleString()+" examples seen",s.textContent=0===e?"the parameters are still random":"loss "+c().toFixed(3)+" · correct token now at "+(100*r[0]).toFixed(1)+"%";var u="";if(u+='<line x1="34" y1="70" x2="594" y2="70" stroke="var(--v13)" stroke-width="1.5" shape-rendering="crispEdges"/>',u+='<text x="34" y="86" font-family="var(--v8)" font-size="12" fill="var(--v5)">loss, lower is better</text>',o.length>1){var d="";o.forEach(function(t,e){var n=34+e/(o.length-1)*560,a=70-Math.min(60,(2.4-t)/2.4*60);d+=(e?"L":"M")+n.toFixed(1)+" "+a.toFixed(1)+" "}),u+='<path d="'+d+'" stroke="var(--v0)" stroke-width="2.5" fill="none"/>'}n("f5loss").innerHTML=u}function d(t){e+=t,o.push(c()),o.length>60&&o.shift(),u()}n("f5one").addEventListener("click",function(){d(1)}),n("f5many").addEventListener("click",function(){d(1e3)}),n("f5reset").addEventListener("click",function(){e=0,o=[],u()}),o.push(c()),u()}(),function(){var t=[{n:"1 million",p:"1 million",t:"2 billion",c:"£300",out:"the the of a keeper light and the the storm of in the a the and lighthouse of of the"},{n:"100 million",p:"100 million",t:"40 billion",c:"£8,000",out:"the wind was very wind and he saw the boat of the sea. the lighthouse was a keeper and the log wrote the storm on tuesday of the light."},{n:"1 billion",p:"1 billion",t:"300 billion",c:"£90,000",out:"the wind had turned in the night and the sea was rough. he had checked the lamp twice. the boat from the mainland did not arrive, and he noted the temperature of the harbour, which was warm for June, and the ferry timetable had changed again."},{n:"12 billion",p:"12 billion",t:"4 trillion",c:"£2.4m",out:"the wind had backed to the north-west overnight and the swell was running hard against the point. He noted that the relief boat had not come, that the oil would last nine more days at the present rate, and that this was the third week running he had written the same thing."}],e=n("f6btns"),a=3;function r(){var e=t[a];n("f6out").textContent=e.out,n("f6size").textContent=e.n+" parameters",n("f6p").textContent=e.p,n("f6t").textContent=e.t,n("f6c").textContent=e.c;var r=[300,8e3,9e4,24e5],o=Math.max.apply(null,r),i="",s=110;t.forEach(function(t,e){var n=14+26*e,l=Math.max(2,440*Math.pow(r[e]/o,.32));i+='<rect x="110" y="'+n+'" width="'+l.toFixed(1)+'" height="18" fill="'+(e===a?"var(--v0)":"var(--v1)")+'" shape-rendering="crispEdges"/>',i+='<text x="100" y="'+(n+14)+'" text-anchor="end" font-family="var(--v8)" font-size="12" fill="'+(e===a?"var(--v4)":"var(--v5)")+'">'+t.n+"</text>",i+='<text x="'+(s+l+8).toFixed(1)+'" y="'+(n+14)+'" font-family="var(--v8)" font-size="12" fill="var(--v5)">'+t.c+"</text>"}),i+='<text x="110" y="118" font-family="var(--v8)" font-size="12" fill="var(--v5)">training cost, drawn on a compressed scale so the small ones stay visible</text>',n("f6bars").innerHTML=i,document.querySelectorAll("[data-f6]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f6")===a)})}t.forEach(function(t,n){e.insertAdjacentHTML("beforeend",'<button data-f6="'+n+'"'+(3===n?' class="on"':"")+">"+t.n+"</button>")}),document.querySelectorAll("[data-f6]").forEach(function(t){t.addEventListener("click",function(){a=+t.getAttribute("data-f6"),r()})}),r()}(),function(){var t=[{q:"What is a lighthouse for?",a:["What is a lighthouse for? What is a harbour wall for? What is a buoy for? Answer all three questions in no more than 200 words. Turn over for section B.","A lighthouse is a tower with a light. Lighthouses are found on coasts. Lighthouses are found on rocks. Lighthouses are found at harbour entrances. Lighthouses have a light. The light is bright. Ships see the light.","It marks a hazard or a harbour entrance for ships at sea. The light flashes in a pattern unique to that tower, so a navigator can identify which one they are looking at and fix their position from it. Many are automated now, though the towers still operate."],n:["it continued the text as a worksheet, because that is what such sentences usually precede","it answers now, but repetitively, and does not judge what would actually be useful","it answers the question that was meant, at a sensible length, and stops"]},{q:"My flight is delayed six hours. Any advice?",a:["My flight is delayed six hours. Any advice? Posted by user4471 on 3 March. 14 replies. Sort by: newest. Log in to reply to this thread.","You should check with the airline. You should check your rights. You should eat something. You should charge your phone. You should check the gate. You should check the time. You should ask staff.","Six hours usually crosses the threshold for compensation on European departures, so keep the delay notice. Ask at the desk whether they will cover a meal, since many airlines will if asked and few offer. Then it is worth finding out whether the delay is crew or aircraft, because one tends to resolve faster."],n:["it produced a forum page, because the question looked like a forum post","it gives advice, but generic and undifferentiated, with no sense of what matters most","it prioritises, gives a reason for each, and sounds like someone who has been there"]}],e=0,a=0;function r(){n("f7q").textContent=t[e].q,n("f7a").textContent=t[e].a[a],n("f7note").textContent=t[e].n[a],n("f7stagelab").textContent=["after pretraining","after instruction tuning","after human feedback"][a],document.querySelectorAll("[data-f7]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f7")===a)})}document.querySelectorAll("[data-f7]").forEach(function(t){t.addEventListener("click",function(){a=+t.getAttribute("data-f7"),r()})}),n("f7q2").addEventListener("click",function(){e=(e+1)%t.length,r()}),r()}(),function(){var e=[3400],a=0;function r(){for(var r=e.reduce(function(t,e){return t+e},0);r>t&&e.length>1;)a+=e.shift(),r=e.reduce(function(t,e){return t+e},0);var o="";o+='<rect x="30" y="44" width="560" height="44" fill="none" stroke="var(--v13)" stroke-width="1.5" shape-rendering="crispEdges"/>';var i=0;e.forEach(function(n,a){var r=n/t*560;o+='<rect x="'+(30+i).toFixed(1)+'" y="44" width="'+Math.max(1,r-1).toFixed(1)+'" height="44" fill="var(--v0)" opacity="'+(.45+.55*a/Math.max(1,e.length-1)).toFixed(2)+'" shape-rendering="crispEdges"/>',i+=r}),o+='<text x="30" y="32" font-family="var(--v8)" font-size="12" fill="var(--v5)">oldest</text>',o+='<text x="590" y="32" text-anchor="end" font-family="var(--v8)" font-size="12" fill="var(--v5)">128,000 tokens</text>',o+='<text x="30" y="112" font-family="var(--v8)" font-size="12" fill="'+(a?"var(--v12)":"var(--v5)")+'">'+(a?a.toLocaleString()+" tokens have dropped off the left and are gone":e.length+" turns, all still visible to the model")+"</text>",n("f8fig").innerHTML=o,n("f8tok").textContent=r.toLocaleString()+" tokens",n("f8lost").textContent=a.toLocaleString()+" tokens",n("f8used").textContent=Math.round(r/t*100)+"% of the window"}n("f8add").addEventListener("click",function(){e.push(1200+Math.round(2600*Math.random())),r()}),n("f8paste").addEventListener("click",function(){e.push(6e4),r()}),n("f8reset").addEventListener("click",function(){e=[3400],a=0,r()}),r()}(),function(){for(var t=n("f9slider"),a=0,r=null,o=[],i=0;i<234;i++)o.push(Math.random());function s(t,e,n){if(0===n){var a=t>=12&&t<=14&&e>=1?1:0,r=e>=7&&t>=9&&t<=17?1:0,o=0===e&&t>=11&&t<=15?1:0;return Math.max(a,r,o)?.92:.12}var i=Math.hypot((t-8)/4,(e-5)/3),s=Math.hypot((t-17)/4,(e-5)/3);return i<1||s<1?.85:.12}function l(){for(var e=+t.value,r=e/50,i="",l=0;l<9;l++)for(var h=0;h<26;h++){i+='<rect x="'+(32+22*h)+'" y="'+(14+22*l)+'" width="20" height="20" fill="var(--v0)" opacity="'+(o[26*l+h]*(1-r)+s(h,l,a)*r).toFixed(3)+'" shape-rendering="crispEdges"/>'}i+='<text x="32" y="222" font-family="var(--v8)" font-size="12" fill="var(--v5)">'+(0===e?"pure random static, containing no picture":e<20?"shapes beginning to separate from the noise":e<45?"the subject is legible":"fully denoised")+"</text>",n("f9fig").innerHTML=i,n("f9sv").textContent=e,n("f9step").textContent="step "+e+" of 50"+(0===e?" · pure noise":"")}t.addEventListener("input",l),n("f9run").addEventListener("click",function(){return r?(clearInterval(r),void(r=null)):(t.value=0,l(),e?(t.value=50,void l()):void(r=setInterval(function(){if(+t.value>=50)return clearInterval(r),void(r=null);t.value=+t.value+1,l()},55)))}),document.querySelectorAll("[data-f9p]").forEach(function(t){t.addEventListener("click",function(){a=+t.getAttribute("data-f9p"),document.querySelectorAll("[data-f9p]").forEach(function(e){e.classList.toggle("on",e===t)}),l()})}),l()}(),function(){var t=[{n:"summarise this email",pat:.3,arb:.1,a:"The supplier is raising unit prices by 4% from October and wants confirmation by the 12th.",w:"You supplied the text, so the specifics are in front of it rather than reconstructed. Low risk."},{n:"explain how tides work",pat:.5,arb:.15,a:"The moon pulls the ocean toward it, and the earth turning underneath that bulge produces roughly two high tides a day.",w:"Widely repeated general knowledge with no arbitrary specifics to invent. Low risk."},{n:"give me a citation for that",pat:.95,arb:.95,a:"Hartley, R. and Nwosu, A. (2019). Tidal loading and coastal foundation stress. Journal of Coastal Engineering, 61(3), 244-259.",w:"The form is highly patterned and every specific is arbitrary. This is the worst case, and the output looks identical whether or not the paper exists."},{n:"what did this company earn last quarter",pat:.85,arb:.9,a:"Revenue was £412.6m, up 7.2% year on year, with operating margin at 14.1%.",w:"Financial figures have a strong shape and arbitrary contents, and they also postdate training. Very high risk."}],e=n("f10btns"),a=0;function r(){var e=t[a];n("f10ans").textContent=e.a,n("f10why").textContent=e.w;var r=e.pat*e.arb;n("f10risk").textContent=r>.6?"very high risk":r>.3?"moderate risk":"low risk";var o="";[["how patterned the form is",e.pat],["how arbitrary the specifics are",e.arb]].forEach(function(t,e){var n=18+34*e;o+='<rect x="210" y="'+n+'" width="'+Math.max(2,340*t[1])+'" height="22" fill="'+(t[1]>.7?"var(--v12)":"var(--v0)")+'" shape-rendering="crispEdges"/>',o+='<text x="200" y="'+(n+16)+'" text-anchor="end" font-family="var(--v8)" font-size="12" fill="var(--v5)">'+t[0]+"</text>"}),o+='<text x="210" y="94" font-family="var(--v8)" font-size="12" fill="var(--v5)">risk is high only where both bars are high</text>',n("f10fig").innerHTML=o,document.querySelectorAll("[data-f10]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f10")===a)})}t.forEach(function(t,n){e.insertAdjacentHTML("beforeend",'<button data-f10="'+n+'"'+(0===n?' class="on"':"")+">"+t.n+"</button>")}),document.querySelectorAll("[data-f10]").forEach(function(t){t.addEventListener("click",function(){a=+t.getAttribute("data-f10"),r()})}),r()}(),function(){var t=["bias","knowledge cutoff","provenance","cost and energy","synthetic media","no real understanding"],e=[{n:"summarise a document I pasted",f:[0,0,0,1,0,1],t:"Summarise this 40-page tender document and list the deadlines.",s:"You brought the facts, so the cutoff and provenance barely apply. It still costs energy, and it can still misjudge what mattered."},{n:"shortlist job applicants",f:[1,0,0,1,0,1],t:"Rank these 200 CVs for a warehouse supervisor role.",s:"The training data carries hiring tendencies that nobody chose. This is the classic case where bias does concrete harm to individuals."},{n:"what were last quarter's figures",f:[0,1,0,1,0,1],t:"What did the company report for Q2 this year?",s:"This postdates training, so the honest answer is that it does not know, and the fluent answer is a fabrication."},{n:"make an image in an artist's style",f:[0,0,1,1,1,0],t:"Draw a harbour at dusk in the style of a named living illustrator.",s:"Their work was very likely in the training data and they were not asked. This is where the provenance question stops being abstract."},{n:"write a bedtime story",f:[1,0,0,1,0,0],t:"A story about a lighthouse keeper and a lost seal pup.",s:"Close to the safest use there is. Nothing needs to be true, and the only real caution is whose stories it learned from."}],a=n("f11btns"),r=0;function o(){var a=e[r];n("f11task").textContent=a.t,n("f11say").textContent=a.s,n("f11count").textContent=a.f.reduce(function(t,e){return t+e},0)+" of 6 flagged",n("f11flags").innerHTML=t.map(function(t,e){return'<span class="chip'+(a.f[e]?" on":"")+'">'+(a.f[e]?"● ":"○ ")+t+"</span>"}).join(""),document.querySelectorAll("[data-f11]").forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-f11")===r)})}e.forEach(function(t,e){a.insertAdjacentHTML("beforeend",'<button data-f11="'+e+'"'+(0===e?' class="on"':"")+">"+t.n+"</button>")}),document.querySelectorAll("[data-f11]").forEach(function(t){t.addEventListener("click",function(){r=+t.getAttribute("data-f11"),o()})}),o()}(),function(){var t=n("sc1fig"),e=n("sc1lab"),a=["raw text","pretraining","fine-tuning","the finished model","your prompt","generation"];function r(t,e,n,a,r,o,i){var s='<rect x="'+t+'" y="'+e+'" width="'+n+'" height="'+a+'" fill="'+(o?i||"var(--v1)":"none")+'" stroke="'+(o?"var(--v0)":"var(--v13)")+'" stroke-width="1.5" shape-rendering="crispEdges"/>';return s+='<text x="'+(t+n/2)+'" y="'+(e+a/2+5)+'" text-anchor="middle" font-family="var(--v8)" font-size="12" fill="'+(o?"var(--v4)":"var(--v5)")+'">'+r+"</text>"}function o(t,e,n,a){return'<line x1="'+t+'" y1="'+e+'" x2="'+t+'" y2="'+n+'" stroke="'+(a?"var(--v0)":"var(--v13)")+'" stroke-width="1.5"/><polygon points="'+t+","+n+" "+(t-5)+","+(n-8)+" "+(t+5)+","+(n-8)+'" fill="'+(a?"var(--v0)":"var(--v13)")+'"/>'}function i(n){var i="";i+=r(120,10,220,38,"4 trillion tokens of text",n>=0),i+=o(230,48,64,n>=1),i+=r(120,64,220,38,"pretraining · weeks",n>=1),i+=o(230,102,118,n>=2),i+=r(120,118,220,38,"fine-tuning · human feedback",n>=2),i+=o(230,156,172,n>=3),i+=r(100,172,260,42,"the model · 12bn frozen numbers",n>=3,"var(--v0)"),n>=3&&(i+='<text x="230" y="199" text-anchor="middle" font-family="var(--v8)" font-size="12" fill="#fff">the model · 12bn frozen numbers</text>'),i+='<line x1="20" y1="228" x2="440" y2="228" stroke="var(--v13)" stroke-width="1" stroke-dasharray="4 4"/>',i+='<text x="20" y="243" font-family="var(--v8)" font-size="11" fill="var(--v5)">above: once, months ago · below: every time you ask</text>',i+=r(20,258,180,36,"your prompt",n>=4),i+=r(240,258,200,36,"context window",n>=4),n>=4&&(i+='<line x1="200" y1="276" x2="238" y2="276" stroke="var(--v0)" stroke-width="1.5"/>'),i+=o(230,294,312,n>=5),i+=r(120,312,220,24,"sample a token, repeat",n>=5),t.innerHTML=i,e.textContent=a[n]||a[0]}var s=[].slice.call(document.querySelectorAll("#sc1 .stp")),l=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(s.forEach(function(e){e.classList.toggle("on",e===t.target)}),i(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});s.forEach(function(t){l.observe(t)});var h=0;function c(t){h=Math.max(0,Math.min(5,h+t)),s.forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-step")===h)}),i(h)}n("sc1next").addEventListener("click",function(){c(1)}),n("sc1back").addEventListener("click",function(){c(-1)}),i(0)}(),function(){var e=["very low","low","moderate","high"];function a(){var a=+n("q1").value/10,r=+n("q2").value,o=+n("q3").value,i=+n("q4").value;n("q1v").textContent=a.toFixed(1)+(0===a?" (greedy)":""),n("q2v").textContent=e[r],n("q3v").textContent=o.toLocaleString(),n("q4v").textContent=i,n("r1").textContent=0===a?"never · identical every time":a<.5?"rarely":a<1.2?"noticeably":"every time, a lot";var s=r/3;n("r2").textContent=s>.7?"high":s>.4?"moderate":"low",n("r2").style.color=s>.7?"var(--v12)":s>.4?"var(--v15)":"var(--v14)";var l=o+i<=t;n("r3").textContent=l?"yes":"no · the opening will drop off",n("r3").style.color=l?"var(--v14)":"var(--v12)",n("r4").textContent=i.toLocaleString();var h=[];a>1.2&&s>.5?h.push("High temperature on a question with arbitrary specifics is the worst combination available: you are widening the spread precisely where the tail is wrong."):a<.4&&s>.7?h.push("Low temperature is right here, and note that it does not reduce the risk of invention. It only makes the same invention arrive reliably."):a>1.2&&s<.4?h.push("High temperature suits this. Nothing needs to be true, so a wider spread just buys variety."):h.push("A reasonable setting for this kind of request."),l||h.push("The conversation now exceeds the window, so the earliest turns are being dropped and any instruction you gave at the start is gone."),n("r5").textContent=h.join(" ");var c="",u=560;c+='<rect x="30" y="34" width="560" height="30" fill="none" stroke="var(--v13)" stroke-width="1.5" shape-rendering="crispEdges"/>',c+='<rect x="30" y="34" width="'+Math.min(u,u*(o+i)/t).toFixed(1)+'" height="30" fill="'+(l?"var(--v0)":"var(--v12)")+'" shape-rendering="crispEdges"/>',c+='<text x="30" y="26" font-family="var(--v8)" font-size="12" fill="var(--v5)">context window</text>',c+='<text x="590" y="26" text-anchor="end" font-family="var(--v8)" font-size="12" fill="var(--v4)">'+(o+i).toLocaleString()+" / 128,000</text>",c+='<text x="30" y="90" font-family="var(--v8)" font-size="12" fill="var(--v5)">'+i+" tokens out means "+i+" separate weighted rolls</text>",n("f12fig").innerHTML=c}["q1","q2","q3","q4"].forEach(function(t){n(t).addEventListener("input",a)});var r={fact:[3,3,4e3,200],story:[14,0,2e3,600],doc:[4,1,9e4,400]};document.querySelectorAll("[data-pp]").forEach(function(t){t.addEventListener("click",function(){var e=r[t.getAttribute("data-pp")];["q1","q2","q3","q4"].forEach(function(t,a){n(t).value=e[a]}),n("f12v").textContent=t.textContent,document.querySelectorAll("[data-pp]").forEach(function(e){e.classList.toggle("on",e===t)}),a()})}),a()}(),function(){var t=n("weeds"),e=n("weedsHint");function a(){var n=t.hidden;t.hidden=!n,e.setAttribute("aria-expanded",String(n)),e.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(t.setAttribute("tabindex","-1"),t.focus({preventScroll:!0}),t.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!(t.metaKey||t.ctrlKey||t.altKey)){var e=t.target,n=(e.tagName||"").toLowerCase();"input"===n||"textarea"===n||e.isContentEditable||(t.preventDefault(),a())}}),e.addEventListener("click",a),e.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),a())})}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

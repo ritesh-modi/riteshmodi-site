@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Every control on the OpenAI Playground, explained</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#EFECE6;--v19:#E3DFD7;--v10:#1C1815;--v12:#4B443C;--v11:#6E675E;--v21:#D2CCC1;--v0:#856527;--v16:#1B1713;--v17:#E8E2D8;--v20:#9C3F2B;--v24:#7C5E18;--v22:#3D6049;--v13:680px;--v25:1080px;--v15:26px;--v2:"Zilla Slab",Georgia,serif;--v1:"IBM Plex Sans",system-ui,sans-serif;--v14:"IBM Plex Mono",ui-monospace,Menlo,monospace;--v7:12px;--v9:15px;--v3:19px;--v8:24px;--v5:32px;--v4:46px;--v6:86px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.04;letter-spacing:-.018em;margin:0}h2{font-size:clamp(30px,4.2vw,46px);margin:0 0 26px}h3{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.5vw,32px);line-height:1.16;margin:0 0 16px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px;color:var(--v10)}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:clamp(20px,2.2vw,24px);line-height:1.4;color:var(--v12)}.eyebrow{font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;text-transform:uppercase;color:var(--v11);margin:0}header{padding:clamp(52px,7vw,96px) 0 clamp(48px,6vw,84px)}.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:5vw;align-items:center;max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}h1{font-size:clamp(40px,6.2vw,86px);max-width:12ch}.hero-kick{font-family:var(--v14);font-size:var(--v7);letter-spacing:.12em;text-transform:uppercase;color:var(--v0);margin:0 0 24px}.hero-lede{margin:28px 0 0;max-width:32em}@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}h1{max-width:none}}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:14px 20px;border-bottom:1px solid var(--v21);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;text-transform:uppercase;color:var(--v11);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v0);font-weight:500}.fig-body{padding:32px 30px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:16px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.62;color:var(--v11);padding:14px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig-read{font-family:var(--v14);font-size:var(--v9);color:var(--v12);margin:20px 0 0;line-height:1.8}.fig-read b{color:var(--v10);font-weight:500}.fig svg{display:block;width:100%;height:auto}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:600px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v21);border-radius:3px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;font-size:var(--v3);line-height:1.62}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.17em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu b{font-weight:600}.intu p{margin:0}.note{background:var(--v19);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v9);line-height:1.72;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v11);font-family:var(--v14);font-size:var(--v7);letter-spacing:.09em;cursor:pointer;padding:38px 0;margin:0}.note.hint kbd{font-family:var(--v14);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;color:var(--v12);background:var(--v19)}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.5vw,32px);line-height:1.26;color:var(--v0);border-left:3px solid var(--v0);padding-left:28px;margin:44px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.04em;padding:9px 15px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}input[type=range]{width:100%;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:6px;padding:28px 30px;margin:32px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:1.8;overflow-x:auto}.panel b{color:#D9AE5F;font-weight:500}.panel i{color:#9A9086;font-style:normal}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:20px 0}.panel.weeds summary{font-family:var(--v2);font-weight:600;font-size:var(--v3);cursor:pointer}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:16px 0 0;font-size:var(--v9);line-height:1.75;color:var(--v12)}.panel.weeds{animation:weedsIn .4s cubic-bezier(.4,0,.2,1)}@keyframes weedsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){.panel.weeds{animation:none}}.rail{position:fixed;right:22px;bottom:22px;width:54px;height:54px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,430px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly.right{grid-template-columns:minmax(0,430px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.wide.sg svg{display:block;width:100%;height:auto}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:76vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.26;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.42;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:46vh;width:100%;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:28px 0}.col.stp p{font-size:var(--v3)}}.ref{border-bottom:1px dotted var(--v0);cursor:help}.ref.hot{background:var(--v19)}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Every control on the OpenAI Playground, one at a time. Move reasoning effort, verbosity and text format, and watch what each one changes in the request.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/playground-controls">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Every control on the OpenAI Playground, explained">
+  <meta property="og:description" content="Move each Playground control and watch what it changes in the request.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/playground-controls">
+  <meta property="og:image" content="https://www.loopingly.com/og/playground-controls.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Every control on the OpenAI Playground, explained">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Every control on the OpenAI Playground, explained">
+  <meta name="twitter:description" content="Move each Playground control and watch what it changes in the request.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/playground-controls.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Every control on the OpenAI Playground, explained","description":"Every control on the OpenAI Playground, one at a time. Move reasoning effort, verbosity and text format, and watch what each one changes in the request.","url":"https://www.loopingly.com/explorables/playground-controls","image":"https://www.loopingly.com/og/playground-controls.png","datePublished":"2026-08-22","dateModified":"2026-08-22","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"The OpenAI Playground controls and model parameters"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Every control on the Playground"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg data-decor viewBox="0 0 54 54"><circle class="tk" cx="27" cy="27" r="23"/><circle class="fl" id="pfill" cx="27" cy="27" r="23"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+
+<header class="hero" data-hero="control-panel-becomes-request">
+  <div class="hero-grid">
+    <div>
+      <p class="hero-kick">platform.openai.com &middot; the settings panel</p>
+      <h1>Every control on the Playground, explained</h1>
+      <p class="lede hero-lede">That left-hand panel is not a preferences screen. Every dropdown on it writes one line of a request that gets sent to a model, and this page walks through what each line does, what it costs, and when you would change it.</p>
+    </div>
+    <div class="fig" style="margin:0">
+      <div class="fig-head"><span>the panel, as a request</span><span id="heroState">defaults</span></div>
+      <div class="fig-body"><svg id="heroFig" viewBox="0 0 470 300" role="img" aria-label="Settings panel controls turning into lines of a JSON request"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-hero-t="panel">the panel</button>
+        <button class="chip" data-hero-t="json">what it sends</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The panel is a form that writes one message to a machine</h2>
+    <p>Open that page and it looks like a settings screen, the kind where you tick boxes and things quietly improve. It is not one. Nothing on that panel changes your account, your preferences, or the software. Every control writes a value into a single message that gets sent, once, when you press the arrow.</p>
+    <p>The message is called a <b>request</b>. Each value inside it is a <b>parameter</b>. The thing that receives it is a <b>model</b>: a program that takes text in and produces text out. What comes back is a <b>response</b>.</p>
+    <p>That is the whole loop, and holding it makes the rest of this page much easier. You are not configuring an application. You are filling in a form, sending it, and getting one answer back. Change a dropdown and nothing happens until you send again, because the dropdown only edits the form.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>Figure 1 &middot; one control, one line</span><span id="f1Read">click a control on the left</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 330" role="img" aria-label="Each panel control mapped to the line of the request it writes"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" id="f1All">show every line</button>
+        <button class="chip" id="f1Clear">clear</button>
+      </div>
+      <div class="fig-cap"><b>Click any control in the left column.</b> The line it writes lights up on the right. Controls that write nothing when left alone are the ones sitting at their default.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>This is also why the <code>Code</code> button in the top right matters more than it looks. It shows you the exact request the panel has built, in a language you can paste into a program. The panel is a friendly way to write that text. The text is the real thing.</p>
+    <div class="intu"><i>picture it</i><p>A form at a post office counter. The boxes you tick decide how the parcel travels: next day or surface mail, insured or not, signature required. The clerk does not remember your preferences, and ticking a box changes nothing until you hand the form over. <b>The panel is that form, the send arrow is handing it over, and the model is the postal system that acts on exactly what is written.</b> Every question on this page is really a question about one box on the form.</p></div>
+    <p>Before the individual boxes make sense, one of them needs unpacking first, because it is the only one that is not a dropdown and it is where most of your influence actually lives.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The big text box is standing orders, not your question</h2>
+    <p>Two places on that screen accept typing, and beginners routinely use the wrong one.</p>
+    <p>The large box on the left, under the heading Prompt, is where you put instructions that should apply to <em>every</em> exchange: who the model is being, what tone to use, what it must never do, what shape the answer should take. This is the <b>system prompt</b>, sometimes called the developer message. The placeholder text on screen is telling you exactly this when it says "describe desired model behavior".</p>
+    <p>The box at the bottom right, the one saying "Ask anything", is where you put the actual thing you want to know right now. That is a <b>user message</b>.</p>
+    <p>In the Responses API this box is sent as <code>instructions</code>, a field separate from the conversation itself, which is why it survives when messages do not.</p>
+    <p>The distinction is a <b>role</b>. Every piece of text in the request is tagged with who it came from: <code>system</code> for standing orders, <code>user</code> for the person, <code>assistant</code> for what the model said back. The model treats them differently on purpose, and it weights the system role more heavily as a standing instruction.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>Figure 2 &middot; the same words in two roles</span><span id="f2Read">instruction in the system role</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 440" role="img" aria-label="The same instruction placed in the system role and in the user role"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f2="sys">put it in the prompt box</button>
+        <button class="chip" data-f2="usr">put it in the chat box</button>
+        <button class="chip" data-f2="turn">then send three more messages</button>
+      </div>
+      <div class="fig-cap"><b>Click through the three states.</b> Watch what survives to the fourth exchange. The instruction in the system role is re-sent every time; the one typed into chat scrolls into history.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>Put "answer in one sentence" in the chat box and it works, once. Three exchanges later the model has drifted back to paragraphs, and this confuses people constantly. It has not forgotten or disobeyed. That instruction is now an old message some distance back in a growing pile, while a system prompt is re-sent, in full, at the top of every single request.</p>
+    <div class="intu"><i>picture it</i><p>A new assistant on their first morning. The note taped to their monitor saying "always cc me on client email" is read every day, because it is stuck where they cannot miss it. The same words said once in a corridor on Tuesday get followed on Tuesday. <b>The prompt box is the note on the monitor; the chat box is the corridor.</b> Neither is more forceful in the moment, and only one of them is still there on Friday.</p></div>
+    <p>So what goes in it? The placeholder offers three hints, tone, tool usage and response style, and a durable prompt has more than that. The parts that earn their place, roughly in this order: <b>role and scope</b>, who the model is acting as and what is outside its remit; <b>the task</b>, stated once and plainly; <b>the output contract</b>, meaning format, length, and what to do when it cannot answer; and <b>constraints</b>, the things it must never do. Put the durable material at the top and anything that changes at the bottom, for a reason that turns out to be financial rather than tidy, and which comes up again later on this page.</p>
+    <p>One piece of older advice is worth actively unlearning here. Guides written for earlier models tell you to script the procedure: first do this, then do that, then check the other. A reasoning model plans internally, and a rigid script fights that. The current guidance is to give a clear goal, strong constraints and an explicit output contract without prescribing every intermediate step, and for longer work to define what counts as done and how the model should check itself. Describe the destination and the boundaries; leave the route alone.</p>
+    <p>Underneath the prompt box sits <b>Add messages to prompt</b>, which lets you write out an example exchange: a user message and the ideal assistant reply, saved as part of the prompt itself. This is how you show rather than tell. If describing your desired format takes a paragraph, two worked examples usually beat it, and this is where they live.</p>
+    <p>Everything you type in either box gets chopped up before the model sees it, into the unit that every other control on the panel is quietly measured in.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Everything on this panel is measured in tokens</h2>
+    <p>The model does not read letters or words. Text is first cut into <b>tokens</b>, chunks of roughly four characters, and those chunks are what gets counted, billed and limited. Scroll through one short request to see where they go.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>Figure 3 &middot; where a request's tokens go</span><span id="sc1Read">a short request</span></div>
+        <div class="fig-body"><svg id="sc1fig" viewBox="0 0 520 340" role="img" aria-label="Tokens of a request divided into input, reasoning and output"></svg></div>
+        <div class="fig-cap"><b>Click any step to jump to it.</b> Each square is one token. The counts are the real ones from a worked example in OpenAI's reasoning documentation.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><h3>Your text becomes squares</h3><p>The system prompt and your question are cut into tokens. In this example that comes to 75 of them. These are the <b>input tokens</b>, and you pay for every one.</p></div>
+      <div class="col stp" data-step="1"><h3>The model thinks, in tokens</h3><p>Before writing a word of the answer, a reasoning model works through the problem privately. That working is made of tokens too: 1,024 of them here. You never see them.</p></div>
+      <div class="col stp" data-step="2"><h3>Then it answers</h3><p>The visible reply is another 162 tokens. So the total charged as output is 1,186, of which fewer than one in seven is text you actually receive.</p></div>
+      <div class="col stp" data-step="3"><h3>The whole pile has a ceiling</h3><p>Input plus thinking plus answer must fit inside the <b>context window</b>, the model's fixed working space. Hit the ceiling mid-thought and you get a truncated response having paid for everything up to that point.</p></div>
+      <div class="col stp" data-step="4"><h3>This is why the dropdowns matter</h3><p>Almost every control on the panel changes the size of one of these three blocks. That is the single idea the rest of this page rests on.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The proportions in that figure are worth staring at. The thinking block dwarfs both the question and the answer, and it is invisible, and it is billed at the same rate as visible output. A response that looks short can be expensive, and nothing on screen tells you so unless you go looking at the usage numbers.</p>
+    <div class="intu"><i>picture it</i><p>A taxi meter that runs while the driver sits at the kerb planning the route. You are charged for the planning and the driving at the same rate, the planning happens before the car moves, and the receipt shows one total. <b>A short trip with a long think is not a cheap trip</b>, and the only way to know the split is to read the itemised bill rather than glance at the distance travelled.</p></div>
+    <p>The context window deserves one more sentence, because beginners meet it as a confusing error rather than a concept. It is not memory in any lasting sense. It is a desk of fixed size: everything the model can consider must be laid out on it at once, and when the desk is full something falls off the edge.</p>
+    <p>With tokens in hand, the dropdowns can be taken one at a time, starting with the one that changes the most.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The model dropdown is the biggest decision on the panel</h2>
+    <p>Your screenshot reads <code>gpt-5.4-mini</code>. Three things are packed into that string, and reading it is a skill worth ten minutes.</p>
+    <p><code>gpt</code> is the family. <code>5.4</code> is the generation, and the numbers climb over time as new ones ship. <code>mini</code> is the size tier: a smaller, cheaper, faster sibling of the full model. You will also meet suffixes naming a specific dated <b>snapshot</b>, which pins you to one exact version so that a model update cannot silently change your results.</p>
+    <p>Three things move together as you go up the tiers, and only two of them move in your favour. Capability rises. Cost per token rises. <b>Latency</b>, the delay before you get an answer, rises too.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span>Figure 4 &middot; what a tier buys and what it costs</span><span id="f4Read">mid tier</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 300" role="img" aria-label="Capability, cost and latency across model size tiers"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f4="0">smallest / fastest</button>
+        <button class="chip on" data-f4="1">mid</button>
+        <button class="chip" data-f4="2">full size</button>
+        <button class="chip" data-f4="3">the heaviest option</button>
+      </div>
+      <div class="fig-cap"><b>Click through the tiers.</b> Bar lengths show the shape of the trade, not measured benchmarks. Real numbers for a specific model live on OpenAI's model and pricing pages.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The practical advice runs opposite to instinct. Start at the smallest model that could plausibly work, and move up only when you have seen it fail at your actual task. Starting at the top hides which parts of your problem were ever hard, and you pay for that ignorance on every request afterwards.</p>
+    <div class="intu"><i>picture it</i><p>Hiring for a job you have not written down yet. The most expensive candidate can certainly do it, and hiring them teaches you nothing about what the job needed. Start with someone cheaper and the first thing they struggle with is the actual requirement, revealed for free. <b>The failures of a small model are a specification for what you really need</b>, which is information you cannot buy by starting at the top.</p></div>
+    <p>One caution about the dropdown itself: not every model supports every control below it on the panel. Options grey out or vanish depending on what you pick, and this alarms people who assume they have broken something. They have not. The panel is showing what that model accepts, which is why one setting is worth understanding before any of the others.</p>
+    <p>That setting is the one that decides whether the model gets to think before it speaks.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Some models think first, in tokens you are never shown</h2>
+    <p>Older models began writing the instant the request arrived, one token after another, with no stage in between. A <b>reasoning model</b> inserts a stage: before it writes anything you will see, it produces a stretch of private working, breaking the problem down and considering approaches. That working is made of <b>reasoning tokens</b>.</p>
+    <p>Three facts about those tokens carry every setting in the next few sections, and each one surprises people.</p>
+    <p><b>You do not see them.</b> The raw reasoning is not returned by the interface. <b>You are billed for them</b>, at the output rate. And <b>they take up room</b> in the context window, competing with your prompt and your answer for the same fixed space.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span>Figure 5 &middot; with and without a thinking stage</span><span id="f5Read">reasoning model</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 300" role="img" aria-label="A request with and without a reasoning stage"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f5="off">no thinking stage</button>
+        <button class="chip on" data-f5="on">with a thinking stage</button>
+      </div>
+      <div class="fig-cap"><b>Switch between the two.</b> Same question, same visible answer length. The difference is the block in the middle, which you pay for and never read.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>This is the trade the whole reasoning section of the panel exists to manage. Thinking buys accuracy on problems with steps in them: multi-stage arithmetic, debugging, planning, anything where a wrong first move stays wrong. It buys nothing at all on "what is the capital of France", and you still pay for it.</p>
+    <div class="intu"><i>picture it</i><p>Working out a sum on scrap paper before writing the answer on the form. The scrap paper is thrown away and never handed in, so the marker sees only the final figure. But the paper cost something, the time spent scribbling was real, and on a hard sum it is the only reason the figure is right. <b>Reasoning tokens are the scrap paper: discarded, invisible, charged for, and sometimes the entire reason the answer works.</b></p></div>
+    <p>The documentation makes a point worth passing on, because it saves beginners a lot of wasted money: treat thinking as a tuning knob rather than the first thing you reach for when quality drops. A vague prompt does not get less vague by being thought about harder. Fix the instructions first, then turn this dial.</p>
+    <p>Which brings us to the dial itself.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Reasoning effort is the dial you will actually use</h2>
+    <p>This dropdown says how much thinking to do before answering. It is the single most consequential setting on the panel after the model itself, and it is the one to experiment with first.</p>
+    <p>The old choice was three-way: low, medium, high. It has grown. Depending on the model, the supported values can include <code>none</code>, <code>minimal</code>, <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code> and <code>max</code>. Which ones exist is model-dependent rather than universal, so the dropdown will show you a different list for different models, and that is expected rather than broken.</p>
+    <p>Defaults are model-dependent too. GPT-5.5, for instance, defaults to medium, described as the best starting point for its balance of quality, reliability and performance.</p>
+    <p>One detail that reads as a footnote and is not: the models reason <em>adaptively</em>. Setting a high effort does not force long thinking on an easy question. It raises the ceiling rather than the floor, so the model spends fewer tokens on simple tasks and more on complex ones within whatever setting you choose.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig6">
+      <div class="fig-head"><span>Figure 6 &middot; the effort dial</span><span id="f6Head">effort <b>medium</b></span></div>
+      <div class="fig-body">
+        <svg id="f6" viewBox="0 0 900 330" role="img" aria-label="Reasoning effort levels with their token cost, latency and typical uses"></svg>
+        <div class="fig-read" id="f6Read"></div>
+      </div>
+      <div class="fig-ctl" style="display:block">
+        <input type="range" id="f6Slider" min="0" max="5" step="1" value="2" aria-label="Reasoning effort">
+        <div style="display:flex;justify-content:space-between;font-family:var(--v14);font-size:var(--v7);color:var(--v11);margin-top:9px">
+          <span>none</span><span>low</span><span>medium</span><span>high</span><span>xhigh</span><span>max</span>
+        </div>
+      </div>
+      <div class="fig-cap"><b>Drag the dial.</b> The guidance under each setting is OpenAI's own description of what that level is for. Token bars show the shape of the growth, not measured counts.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The official guidance for each rung is worth having in one place, because the names alone do not tell you when to use them.</p>
+    <p><code>none</code> is for latency-critical work that gains nothing from reasoning: voice, fast retrieval, classification. For latency-sensitive cases the advice is to try <code>low</code> first and drop to <code>none</code> only if you need to. <code>low</code> gives efficient reasoning for a modest delay, suited to tool use, planning and multi-step decisions where speed and cost matter: data analysis, drafting, support workflows.</p>
+    <p><code>medium</code> is the default for most work, the balanced point where quality and reliability matter and the task involves planning and judgement. <code>high</code> is for hard reasoning, complex debugging and deep planning, and the documentation suggests evaluating both medium and high rather than assuming higher is better.</p>
+    <p><code>xhigh</code> is for deep research and long agentic runs, and comes with an explicit warning: use it only when your tests show a clear benefit that justifies the extra latency and cost. <code>max</code> sits above that for the most complex tasks, worth evaluating if you are already on xhigh.</p>
+    <div class="intu"><i>picture it</i><p>Telling a colleague how long they have before you need an answer. Five minutes and you get a first instinct. A day and you get something checked. A week and they will go and read the literature. <b>You are not making them smarter, you are buying a different amount of their attention</b>, and asking for a week on a question with an obvious answer wastes six days for no better result. It also means the answer arrives a week later, which is sometimes the thing that matters most.</p></div>
+    <div class="note"><b>The failure worth knowing about.</b> Because thinking happens before any visible text, a request can run out of room during the thinking stage and return nothing usable at all. You are still billed for the input and the reasoning. If you cap output length, leave generous headroom; OpenAI suggests reserving at least 25,000 tokens for reasoning and output when starting out.</div>
+    <p>There is a second reasoning control on the panel, sitting directly above this one, and the two are routinely mistaken for versions of each other.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Reasoning mode is a separate lever, not a bigger effort</h2>
+    <p>Your screenshot shows <b>Reasoning mode</b> set to standard. GPT-5.6 models support <code>standard</code> and <code>pro</code>, with standard as the default, and pro intended for difficult tasks that need more model work and can tolerate higher latency and token usage.</p>
+    <p>Here is the part that gets misread. Mode and effort are <em>independent</em>. Mode selects standard or pro execution; effort controls how much reasoning happens within whichever mode you picked. They are not two names for one slider, and setting one does not set the other. If you leave effort alone, GPT-5.6 defaults to medium in both modes.</p>
+    <p>So there are four corners, not a single line: standard at low effort, standard at high effort, pro at low effort, pro at high effort. They are different things to buy.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>Figure 7 &middot; two levers, four corners</span><span id="f7Read">standard &middot; medium</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 370" role="img" aria-label="Reasoning mode and reasoning effort as two independent axes"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f7m="standard">standard</button>
+        <button class="chip" data-f7m="pro">pro</button>
+        <button class="chip" data-f7e="low">low effort</button>
+        <button class="chip on" data-f7e="medium">medium effort</button>
+        <button class="chip" data-f7e="high">high effort</button>
+      </div>
+      <div class="fig-cap"><b>Set the mode and the effort separately.</b> The marker moves on two axes because they are two axes. Nothing you do to one changes the other.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>What pro mode actually does is aggregate the model work performed to produce the final answer, billing those tokens at the selected model's standard rates. It performs more model work than standard mode, which increases token usage and cost. There is no separate pro price list here; you pay the model's usual rate for a larger amount of work.</p>
+    <div class="intu"><i>picture it</i><p>The difference between giving a researcher more time and giving them a team. More time is effort: the same person, thinking longer. A team is mode: several passes at the problem, pooled into one answer. <b>You can give a team five minutes or give one person a week, and those are different purchases</b> that happen to both cost more than one person for five minutes.</p></div>
+    <p>For a beginner the honest advice is: leave this on standard. Reach for pro when you have a genuinely hard task, you have already tried high effort on standard, and you can wait. It is not the setting that fixes a disappointing answer, and it is an easy way to spend a lot of tokens on a question that never needed them.</p>
+    <p>Everything so far has been about the invisible half of the response. The next control governs the half you actually read.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Verbosity sets the answer's length, and nothing else</h2>
+    <p>This one is refreshingly simple, and it is constantly confused with the previous two. <b>Verbosity</b> takes low, medium or high, and it steers how long the visible answer is. Low gives you terse replies. High gives you thorough ones with more explanation and context.</p>
+    <p>It does not change how hard the model thinks. Effort governs the private working; verbosity governs the public text. You can pair them however you like, and two of the four combinations are genuinely useful in ways beginners rarely discover on their own.</p>
+    <p><b>High effort with low verbosity</b> is the combination worth knowing about: think hard, then just tell me the answer. That is what you want for a difficult classification, a yes-or-no judgement on a tricky case, or a single number that took real work to compute.</p>
+    <p><b>Low effort with high verbosity</b> is its mirror: don't labour over it, but write it out fully. Useful for drafting and explanation where the task is easy but the output should be complete.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span>Figure 8 &middot; thinking and talking are separate</span><span id="f8Read">medium effort &middot; medium verbosity</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 310" role="img" aria-label="A grid of reasoning effort against verbosity showing which token block each one moves"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f8="0">low effort, low verbosity</button>
+        <button class="chip" data-f8="1">high effort, low verbosity</button>
+        <button class="chip on" data-f8="2">medium and medium</button>
+        <button class="chip" data-f8="3">low effort, high verbosity</button>
+        <button class="chip" data-f8="4">high effort, high verbosity</button>
+      </div>
+      <div class="fig-cap"><b>Click each pairing.</b> Watch which of the two token blocks moves. They move independently, which is the entire point of having two controls.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>Asking a structural engineer whether a wall can come down. How long she spends checking is one question. Whether she replies "yes" or sends four pages on load paths is a completely different one. <b>A one-word answer can sit on top of a week of checking, and a very long reply can be produced without much thought at all.</b> Length is not evidence of care, in engineers or in models.</p></div>
+    <p>A related control lives elsewhere, in the API rather than this dropdown: a hard cap on output tokens. Verbosity is a request about style, and the model interprets it. A cap is a wall, and hitting it truncates the reply mid-sentence. Use verbosity to ask for brevity; use a cap to protect yourself from a runaway bill, not to shape prose.</p>
+    <p>One control down from verbosity is the setting that decides whether you get any glimpse of the thinking at all.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Summary shows an account of the thinking, not the thinking</h2>
+    <p>The raw reasoning tokens are not exposed. What the <b>Summary</b> setting gives you is a written summary of the model's reasoning, produced separately and returned alongside the answer.</p>
+    <p>The values you will meet are <code>auto</code>, <code>concise</code> and <code>detailed</code>, and support varies by model: the computer-use model supports concise while o4-mini supports detailed, and setting <code>auto</code> gets you the most detailed summariser that particular model offers. For most reasoning models today auto amounts to detailed. Your screenshot shows auto, which is the sensible default.</p>
+    <p>Two practical notes. Summaries are opt-in, so nothing appears unless you ask. And with the newest reasoning models you may need to complete organisation verification before summarisers are available, which catches people out as a mysterious missing feature rather than a permissions step.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>Figure 9 &middot; what comes back with a summary on</span><span id="f9Read">summary: auto</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 300" role="img" aria-label="The response output array with and without a reasoning summary item"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f9="off">summary off</button>
+        <button class="chip on" data-f9="auto">summary: auto</button>
+      </div>
+      <div class="fig-cap"><b>Switch the summary on and off.</b> With it on, the response carries an extra item before the message: a reasoning block holding summary text.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>What is it for? Debugging, mostly, and trust. When an answer is wrong in a puzzling way, the summary often shows you the model misread the question three steps back, which points at a prompt fix rather than a settings fix. It is also what powers those "thinking about..." lines you see in chat interfaces.</p>
+    <div class="intu"><i>picture it</i><p>A minute-taker's account of a meeting you did not attend. It tells you what was decided and roughly why, written afterwards by someone summarising. It is not a recording, and a detail absent from the minutes might still have been said. <b>The summary is a description of the reasoning rather than the reasoning itself</b>, which makes it useful for understanding and unreliable as proof of exactly what happened.</p></div>
+    <p>Worth knowing: at the lowest effort settings there may be little or no reasoning to summarise, so asking for a summary can return nothing. That is consistent behaviour rather than a fault.</p>
+    <p>So far every control has shaped what the model says. One control decides the shape it must say it in.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Text format decides between prose and a guaranteed shape</h2>
+    <p>Set to <code>text</code>, the model replies in ordinary language. That is what you want when a person is reading the answer, and it is the right default for the Playground.</p>
+    <p>The alternatives matter the moment a <em>program</em> is reading the answer instead. <b>JSON</b> is a plain-text format for structured data, all labelled fields and values, which code can read reliably and humans find fussy. A <b>schema</b> is a description of exactly which fields must be present and what type each one is.</p>
+    <p>Choose a JSON schema format and you get <b>structured outputs</b>: the model is constrained to produce output matching the shape you defined. Not asked politely. Constrained.</p>
+    <p>The mechanism is worth knowing because it explains the guarantee. Rather than being asked and then checked, the model is constrained during generation: a grammar engine masks tokens that would break the schema before they can be produced, so a non-conforming response is not rejected afterwards, it is unable to occur. In the Responses API the schema goes under <code>text.format</code>, with <code>type</code>, <code>name</code>, <code>schema</code> and <code>strict</code> as siblings.</p>
+    <p>There is an older middle option, <code>json_object</code>, usually called JSON mode. It guarantees valid JSON syntax and nothing about your fields, and it is now regarded as legacy. Valid JSON of the wrong shape still breaks your program, so this setting solves the smaller half of the problem.</p>
+    <p>The difference between asking and constraining is the whole value. Write "reply as JSON with name and age" in your prompt and it usually works, then one day the model wraps it in a code fence, or adds a friendly sentence first, or names the field <code>full_name</code>. Your program crashes on the exception rather than the rule, at whatever hour it happens.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span>Figure 10 &middot; asked nicely against guaranteed</span><span id="f10Read">plain text</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 320" role="img" aria-label="The same answer as prose, as requested JSON, and as schema-constrained JSON"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f10="text">text</button>
+        <button class="chip" data-f10="ask">JSON asked for in the prompt</button>
+        <button class="chip" data-f10="schema">JSON schema</button>
+      </div>
+      <div class="fig-cap"><b>Click through the three.</b> The middle one shows the failure modes that appear occasionally rather than always, which is what makes them expensive to find.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>The difference between asking people to write their date of birth "in the usual format" and handing them a form with three labelled boxes: day, month, year. Nearly everyone gets the request right. The form makes the wrong answer impossible to write down. <b>A schema is the boxes</b>, and the reason to prefer it has nothing to do with how well the request usually works and everything to do with the day it does not.</p></div>
+    <p>When to use which: text for anything a person reads, and for exploring in the Playground. A schema whenever the output feeds code, populates a database, or gets compared against other outputs. If you are extracting fields from documents, classifying into fixed categories, or building anything that runs unattended, this is the setting that turns an occasional mystery crash into a non-event.</p>
+    <p>Two limits that catch people, and both are about mistaking a structural guarantee for a factual one. A schema can require a priority field restricted to low, medium or high; it cannot make the model pick the right one. And if you hand it text that has nothing to do with your schema, it will often fill the required fields anyway, so OpenAI's own advice is to give explicit instructions for input that cannot produce a valid answer. Include a field for "not found" rather than forcing a confident value into every box.</p>
+    <p>Structured outputs also add a failure mode that did not exist before: the model may return a refusal instead of your object. Code that goes straight to parsing will break on it, so check for the refusal first. A useful summary of the whole feature is typed output from an uncertain reader.</p>
+    <p>The panel's remaining sections are about not retyping all of this tomorrow.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Variables turn one prompt into a reusable form</h2>
+    <p>Write a prompt that summarises one particular contract and you have solved today. Write it with a <b>variable</b> where the contract goes and you have built a tool.</p>
+    <p>A variable is a named placeholder inside your prompt text. Add one in the Variables section, and the same prompt can be run against a hundred different inputs by swapping the value rather than editing the instructions. This matters more than it sounds: when the instructions are edited each time, you can never tell whether a better result came from the new input or from the wording you changed along the way.</p>
+    <p>The two buttons above the prompt box serve the same end. <b>Templates</b> gives you prepared starting points. <b>Generate prompt</b> goes the other way: describe what you want in plain language and it drafts a structured prompt for you, which you then edit. For a beginner staring at an empty box, that draft is a genuinely useful thing to react to, and reacting to a draft is easier than starting from nothing.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig11">
+      <div class="fig-head"><span>Figure 11 &middot; one prompt, many runs</span><span id="f11Read">no variables</span></div>
+      <div class="fig-body"><svg id="f11" viewBox="0 0 900 300" role="img" aria-label="A prompt with a variable filled by three different values"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f11="hard">values typed into the prompt</button>
+        <button class="chip" data-f11="var">a variable in the prompt</button>
+        <button class="chip" id="f11Run">run it three times</button>
+      </div>
+      <div class="fig-cap"><b>Switch to the variable version, then run it.</b> With the value pulled out, the instructions stay byte-identical across all three runs, which is what makes the comparison mean anything.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A rubber stamp against handwriting the same letter every time. The stamp leaves a blank for the name, so a hundred letters go out identical except where they are meant to differ. Handwrite them and every copy differs slightly, and when one recipient reacts badly <b>you cannot tell whether it was the letter or that day's handwriting</b>. Variables are the blank on the stamp.</p></div>
+    <p>Saving is not just tidiness. A saved prompt becomes an object with an id like <code>pmpt_123</code> and a version number, and your code can call it by that id, passing values for the variables at run time rather than carrying the prompt text around. That is what makes the Playground a place to author something rather than a scratchpad: edit and save a new version, and every caller pointing at that id picks it up without a code change. Worth knowing the current limit too, which is that these saved prompts are created and edited in the interface rather than through the API.</p>
+    <p>Generate prompt has one trap worth naming. The prompt it writes is fluent and looks authoritative, and beginners tend to accept it whole. Read it as a first draft from someone who has never met your problem: the structure is usually good, the specifics are guesses. The parts that matter, your actual constraints and edge cases, are the parts it could not have known.</p>
+    <p>All of this so far assumes the model works alone with the text you gave it. The last section of the panel removes that assumption.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Hosted tools let the model go and get things</h2>
+    <p>A model on its own can only work from the text in front of it. A <b>tool</b> is a capability you switch on that the model can choose to use partway through answering. Scroll through one request that uses one.</p>
+  </div>
+  <div class="bleed scrolly right" id="sc2">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>Figure 12 &middot; a request that calls a tool</span><span id="sc2Read">tools available: 1</span></div>
+        <div class="fig-body"><svg id="sc2fig" viewBox="0 0 520 340" role="img" aria-label="A request pausing to call a tool and resuming with the result"></svg></div>
+        <div class="fig-cap"><b>Click any step to jump to it.</b> The token blocks grow as the loop goes round, which is the cost of giving a model hands.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><h3>You switch a tool on</h3><p>The request now carries a list of what the model is allowed to use. Switching one on is permission, not an instruction: the model decides whether it needs it.</p></div>
+      <div class="col stp" data-step="1"><h3>The model starts, then stops</h3><p>Partway through, it decides it cannot answer from what it has. Instead of guessing, it emits a <b>tool call</b>: a structured request naming the tool and what it wants.</p></div>
+      <div class="col stp" data-step="2"><h3>The tool runs</h3><p>Because these are <b>hosted tools</b>, this happens on OpenAI's side. A web search is performed, a file is searched, code is executed. You write no plumbing.</p></div>
+      <div class="col stp" data-step="3"><h3>The result comes back as more input</h3><p>Whatever the tool returned is appended and the model resumes with it in context. Note what just happened to your token count: those results are input tokens you are now paying for.</p></div>
+      <div class="col stp" data-step="4"><h3>And it can go round again</h3><p>One answer may involve several loops. This is why tool-using requests are slower and dearer than they look, and why reasoning effort interacts with them so strongly.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The ones you are most likely to meet: <b>web search</b>, for anything current or beyond what the model was trained on. <b>File search</b>, which retrieves from vector stores of documents you have uploaded. <b>Code interpreter</b>, which runs Python in a sandbox that already has numpy, pandas and matplotlib, and is the honest way to do arithmetic and data analysis rather than trusting a model to compute in its head. <b>Image generation</b>, which can stream previews and take multi-turn edits. And <b>MCP and connectors</b>, an open protocol for reaching services outside OpenAI entirely.</p>
+    <p>Further down the list sit the ones aimed at agents rather than chat: <b>computer use</b>, <b>shell</b>, <b>apply patch</b>, and <b>tool search</b>, which defers a large set of tool definitions until runtime so the model loads only what this turn needs. That last one exists because tool definitions are themselves tokens, and a remote server exposing dozens of endpoints can add hundreds of tokens of names and schemas to every request before you have asked anything.</p>
+    <p>These are billed separately from tokens, and the amounts are worth knowing before you switch four of them on: code interpreter is priced per container, file search charges for vector storage per day plus a rate per thousand calls, and the remote MCP tool adds no fee of its own, so you simply pay for the tokens it produces.</p>
+    <div class="intu"><i>picture it</i><p>The difference between a consultant answering from memory in the room and one who says "give me a minute, I'll look it up". The second is slower, bills for the time spent looking, and is right about things that changed last week. <b>Switching on a tool is telling them they are allowed to leave the room</b>; they still decide whether the question needs it.</p></div>
+    <p>Two cautions. Tools make results non-reproducible: the same request twice can retrieve different pages and give different answers, which is a feature for currency and a problem for testing. And every tool result is text entering your context window, so a chatty tool can crowd out the room reasoning needs.</p>
+    <p>That accounts for every control the panel offers. The next thing worth understanding is a control it pointedly does not.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Temperature is missing, and its absence is the lesson</h2>
+    <p>Anyone who has used the older Playground will notice something gone. There is no <b>temperature</b> slider on that panel. No top_p, no frequency penalty, no presence penalty. For years those were the first things a beginner was told to adjust, and now they are not there at all.</p>
+    <p>They were not moved or hidden. The model you have selected does not accept them.</p>
+    <p>Here is what they did. At each step a model produces a probability for every possible next token, and <b>sampling</b> is the act of choosing one. Temperature reshapes those probabilities before the choice: low values concentrate weight on the likeliest token, making output repeatable and flat, while high values flatten the distribution and let unlikely tokens through, which reads as creativity or as nonsense depending on how far you pushed it. <b>Top_p</b> did a related job by a different route, keeping only the most probable tokens whose weights sum to a threshold and discarding the rest.</p>
+    <p>Reasoning models disable them. Send one anyway and you do not get a slightly different answer, you get a 400 error saying the parameter is not supported. Temperature, top_p and n are fixed at 1; the frequency and presence penalties are fixed at 0.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig14">
+      <div class="fig-head"><span>Figure 14 &middot; what temperature did, and why it left</span><span id="f14Read">temperature 1.0</span></div>
+      <div class="fig-body"><svg id="f14" viewBox="0 0 900 320" role="img" aria-label="A next-token probability distribution reshaped by temperature, and the error a reasoning model returns"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip" data-f14="0">temperature 0.2</button>
+        <button class="chip on" data-f14="1">temperature 1.0</button>
+        <button class="chip" data-f14="2">temperature 1.8</button>
+        <button class="chip" data-f14="3">send it to a reasoning model</button>
+      </div>
+      <div class="fig-cap"><b>Reshape the distribution, then try the last button.</b> The bars are a made-up five-token example so the reshaping is visible; the error text is the real one the API returns.</div>
+    </div>
+  </div>
+  <div class="col">
+    <p>The rule has an exception, and it is the reason the panel looks inconsistent from one session to the next. On GPT-5.1 and later, temperature, top_p and logprobs come back when <b>reasoning effort is set to none</b>. With the thinking stage switched off there is no calibrated process to disturb, so the sampling dials mean something again and the panel offers them. Turn effort up and they disappear. Availability is not decided by the model name alone; it depends on whether that model is currently reasoning, which is why two people on the same model can honestly disagree about whether the setting exists.</p>
+    <p>Older GPT-5 models and the Pro variants reject temperature at any effort level. If you meet these dials, on a non-reasoning model or at effort none, tune one and leave the other at 1 rather than moving both, and do not expect temperature 0 to give you identical output twice: determinism depends on how the model is served, not on anything you can set from here.</p>
+    <p>Why remove a knob people liked? Because these models do not generate in one clean pass. Their internal process involves rounds of reasoning, verification and selection, and that process is calibrated. Letting a caller flatten the probabilities underneath it would disturb machinery that was tuned as a whole. OpenAI chose to reject the parameter rather than accept it and quietly ignore it, so you always find out when a setting would have had no effect.</p>
+    <div class="intu"><i>picture it</i><p>The tuning pegs on a piano. On a simple instrument, loosening one string is a legitimate way to change the sound. Inside a machine that tunes itself between every note, a peg you can turn from outside is not a feature, it is a way to break the tuning. <b>The peg was removed because the instrument now does that job internally</b>, and the two steering controls you were given instead, effort and verbosity, act on the process rather than on the strings.</p></div>
+    <p>The practical consequence: if you are following a tutorial written before all this, and it tells you to set temperature to 0.2 for reliable extraction, that advice no longer applies to these models. Reach for a schema instead. If it tells you to raise temperature for more varied output, ask for variety in the prompt, or run the request more than once.</p>
+    <p>One more thing the panel does not show you, and it is the one that pays for itself fastest.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Two more settings live behind the Code button</h2>
+    <p>The panel is a friendly subset. A handful of things that matter appear only in the request itself, which is why the <code>Code</code> button is worth pressing early rather than at the end.</p>
+    <p><b>Max output tokens</b> is a hard ceiling on everything the model generates, reasoning included. It is not a style request the way verbosity is; it is a wall, and hitting it returns a response marked incomplete. The dangerous version, worth repeating because it costs real money quietly, is running out during the thinking stage and receiving nothing at all while still paying for the input and the reasoning.</p>
+    <p><b>Prompt caching</b> is the one nobody tells beginners about, and it is the reason the last section said to put durable material at the top of your prompt. Requests repeat a great deal: the same system instructions, the same tool definitions, the same opening messages. When a request arrives carrying a prefix the system has recently processed, it can be routed to a server that already computed that prefix and reuse the work instead of doing it again. It applies automatically, costs nothing extra to use, and can cut time to first token by up to 80 percent and input token costs by up to 90 percent.</p>
+    <p>The mechanism is what makes the ordering rule non-negotiable rather than a matter of taste. Caching works on a <em>prefix</em>: the opening stretch of the request, which must run to at least 1,024 tokens to be eligible at all. A change <b>before</b> that point changes the prefix and you lose the hit. A change <b>after</b> it does not invalidate anything. So stable content first, byte-identical, every time; the part that varies last. Reword your system prompt between runs and you have thrown the discount away on every request that follows.</p>
+    <p>This is also the second, harder argument for Variables. Pulling the changing value out of the instructions is not only good experimental hygiene, it keeps the prefix identical, which is what the cache is matching on. Edit the wording by hand each run and you pay full price each run.</p>
+    <div class="note"><b>Three ways people lose a hit without noticing.</b> Repeated content alone does not guarantee one, so a prefix that was never written to the cache cannot be read from it. Anything before the boundary counts, which includes tool definitions and <em>the order they are listed in</em>, structured output schemas, and images, so reordering a tools array quietly costs money. And hit rates fall at high volume against a single cache key; the guidance is to keep each key to roughly fifteen requests a minute and partition larger workloads across stable keys. Newer models let you place the cache boundary yourself instead of relying on automatic placement, which is worth reading up on once your prompts are long enough to matter.</div>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig15">
+      <div class="fig-head"><span>Figure 15 &middot; what the panel does not show</span><span id="f15Read">max output tokens</span></div>
+      <div class="fig-body"><svg id="f15" viewBox="0 0 900 300" role="img" aria-label="Max output tokens as a ceiling and prompt caching as a reused prefix"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f15="0">max output tokens</button>
+        <button class="chip" data-f15="1">the failure it causes</button>
+        <button class="chip" data-f15="2">prompt caching</button>
+        <button class="chip" data-f15="3">put the stable part first</button>
+      </div>
+      <div class="fig-cap"><b>Click through all four.</b> The last two are the same request in two orders, and only one of them can reuse its prefix.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>A kitchen prepping the same base sauce every morning. Make it once and ladle from it all day and the cost is paid once. Start each dish from raw onions because you reordered the recipe card, and you pay full price for the identical work every time. <b>Caching rewards you for not fiddling</b>, which is the opposite of the instinct that makes people tweak a system prompt between every run.</p></div>
+    <p>There is also <b>streaming</b>, which sends the answer token by token as it is produced rather than in one block at the end. It changes nothing about cost or quality and everything about how waiting feels, which is why almost every chat interface uses it. The Playground streams by default; your own code has to ask.</p>
+    <p>All of which leaves the four things around the edges of the screen.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Store logs, Compare, Code and the word Draft</h2>
+    <p>These four sit around the edges and none of them change what the model says.</p>
+    <p><b>Store logs</b>, the toggle at the bottom of the Model section, controls whether the request and its response are retained so you can look at them later in your dashboard. On is convenient: you get a history to debug against and to build evaluations from. Off is what you want when the content is sensitive, and turning it off has a technical consequence worth knowing, because stateless requests handle reasoning continuity differently across turns.</p>
+    <p><b>Compare</b>, top right, runs the same prompt against two configurations side by side. This is the most underused control on the page. Every question this explainer raises, whether high effort is worth it, whether the mini model is enough, is answerable in about a minute here, on your actual task, rather than by argument.</p>
+    <p><b>Code</b> shows the request as code you can paste into a program. When you are done experimenting, this is the door out of the Playground and into something real.</p>
+    <p><b>Draft</b> and "Unsaved changes" are ordinary document status. Your work is not saved yet. Save it and it becomes a named, versioned prompt you can reuse.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig13">
+      <div class="fig-head"><span>Figure 13 &middot; the controls around the edges</span><span id="f13Read">store logs</span></div>
+      <div class="fig-body"><svg id="f13" viewBox="0 0 900 290" role="img" aria-label="Store logs, Compare, Code and Draft and what each one affects"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-f13="0">store logs</button>
+        <button class="chip" data-f13="1">compare</button>
+        <button class="chip" data-f13="2">code</button>
+        <button class="chip" data-f13="3">draft</button>
+      </div>
+      <div class="fig-cap"><b>Click each one.</b> The diagram shows where it acts: on the request, on the answer, or on neither.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>picture it</i><p>The parts of a kitchen that are not cooking. The notebook where you write what you tried, the two pans on the hob so you can taste the difference, the written-up recipe you hand to someone else, and the label saying this one is not finished. <b>None of them change the food, and without them you cannot repeat a success or explain it to anyone.</b></p></div>
+    <div class="note"><b>Where this page stops being reliable.</b> This panel changes often. Model names, which effort levels a given model accepts, defaults, and which controls appear at all have all moved in the last year and will move again. Everything here was checked against OpenAI's documentation on 17 August 2026; the concepts are stable, the specific values are not. When the panel disagrees with this page, the panel is right, and the model page for whatever you have selected is the place to settle it.</div>
+    <p>The useful order to work in, if you want one: write the prompt properly first, pick the smallest plausible model, leave effort at its default, and change exactly one thing at a time with Compare open. Most of the disappointment beginners have with these settings comes from turning three dials at once and then reasoning about which one helped.</p>
+    <p class="pull">Every dropdown on that panel buys tokens, time, or certainty. Knowing which one you are short of is most of the skill.</p>
+  </div>
+</section>
+
+<p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<div class="col">
+  <div class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+    <h3>Into the weeds</h3>
+    <details><summary>Why reasoning models prefer the Responses API</summary><p>There are two ways to talk to these models. Chat Completions is the older shape and is still supported; the Responses API is the newer one, and OpenAI states you get improved model intelligence and performance by using Responses with reasoning models. Part of the reason is that Responses can carry reasoning state between turns rather than throwing it away, so the model resumes rather than restarting. The Code button will show you which one the panel is building.</p></details>
+    <details><summary>What replaced temperature, exactly</summary><p>Nothing replaced it one-for-one, which is why the transition confuses people. Sampling parameters acted on token selection; the controls you get now act on the process. Reasoning effort changes how much work happens before generation, and verbosity changes how long the result is. If what you actually wanted from a low temperature was reliable structure, the honest replacement is a JSON schema, which guarantees the thing temperature only ever made more likely. If what you wanted was variety, ask for it in the prompt or sample the request more than once.</p></details>
+    <details><summary>Where the older parameters still work</summary><p>Non-reasoning models still accept temperature, top_p, and the frequency and presence penalties, so the older advice is not wrong everywhere, just wrong for the models on this panel. This is also why libraries and wrappers break in a characteristic way: code that always attaches a temperature works fine until someone selects a reasoning model, then returns a 400 that looks like an authentication or version problem rather than a parameter one. If you build a model picker, strip sampling parameters when a reasoning model is chosen.</p></details>
+    <details><summary>Watching the cache actually work</summary><p>The response usage object reports a <code>cached_tokens</code> figure, which is the only honest way to know whether your prefix is being reused rather than assumed. Send the same long prompt twice in quick succession and compare: the first is a write, the second should read. Cached prefixes fall out of use after a short idle period, in the region of five to ten minutes on automatic caching, so a workload that trickles will hit less often than one that runs steadily. Caching is scoped to your organisation, so nothing leaks between accounts, and it is compatible with zero data retention because the cache stores computation rather than your content.</p></details>
+    <details><summary>JSON mode against strict schemas</summary><p>Three settings look similar and are not. Plain text is free-form. JSON mode, the older <code>json_object</code> option, guarantees the output parses as JSON and says nothing about which fields appear. A strict JSON schema guarantees the shape itself. The middle option is now treated as legacy for good reason: valid JSON with the wrong field names breaks your code exactly as thoroughly as invalid JSON, and it does so intermittently, which is worse. Note also that strict mode rejects some JSON Schema features outright rather than ignoring them, so a schema that works elsewhere may need trimming.</p></details>
+    <details><summary>Reasoning that survives between turns</summary><p>There is a `reasoning.context` parameter with values `current_turn` and `all_turns`. The GPT-5.6 family supports `all_turns` and uses it by default, rendering compatible reasoning items from earlier turns into the next sample; earlier models default to `current_turn`. This is continuity rather than exposure, since the reasoning items stay opaque and their text is never returned. It only has an effect when the request can reach earlier response items, which is why it interacts with whether you store responses.</p></details>
+    <details><summary>What happens to reasoning when you turn Store logs off</summary><p>In stateless mode, which applies when store is false or your organisation uses Zero Data Retention, reasoning items come back with an `encrypted_content` property by default. You can pass that to later calls to preserve continuity without OpenAI retaining anything. It is a neat resolution of a real tension: you keep the benefit of continued reasoning without the storage, at the cost of having to replay the history yourself.</p></details>
+    <details><summary>Reserving room, and the silent expensive failure</summary><p>If generated tokens hit the context limit or your max output cap, you get a response with status `incomplete` and a reason of `max_output_tokens`. The nasty version is that this can happen before any visible output at all, so you pay for input and reasoning and receive nothing. OpenAI recommends reserving at least 25,000 tokens for reasoning and output while you are learning what your prompts need.</p></details>
+    <details><summary>Seeing the actual token split</summary><p>The response carries a usage object, and inside `output_tokens_details` there is a `reasoning_tokens` count. That is the only honest way to know what your effort setting is costing you. The worked example in the documentation shows 75 input tokens against 1,186 output tokens, of which 1,024 were reasoning. Check this on your own prompts before deciding an effort level is affordable.</p></details>
+    <details><summary>The phase field, for tool-heavy workflows</summary><p>For long-running or tool-heavy flows with some GPT-5 models, assistant messages carry a `phase` field: `commentary` for intermediate updates like preambles before tool calls, and `final_answer` for the completed answer. It is optional but recommended, because a missing or dropped phase can cause a preamble to be treated as a final answer, which looks like the model stopping early for no reason.</p></details>
+    <details><summary>Prompting a reasoning model differently</summary><p>The old advice to spell out every intermediate step works against these models. The guidance is to give a clear goal, strong constraints and an explicit output contract, without prescribing every step, and to define what counts as done for agentic work. Treating effort as a tuning knob rather than the main quality lever belongs to the same idea: describe the destination well and let it choose the route.</p></details>
+  </div>
+</div>
+
+<footer class="col" style="padding:60px 0 90px;color:var(--v11);font-family:var(--v14);font-size:var(--v7);line-height:1.9">
+  <p>Control names and layout follow the Playground screenshot supplied by the reader. Behaviour of reasoning effort, reasoning mode, summaries, context and token accounting is taken from OpenAI's reasoning guide and response-length documentation, checked 17 August 2026. Token counts in Figure 3 are the worked example from that guide. Bars marked illustrative show the shape of a trade-off rather than measurements. This panel changes frequently; check the model page for whichever model you have selected.</p>
+</footer>
+
+<script>!function(){"use strict";var e={paper:"#EFECE6",paper2:"#E3DFD7",ink:"#1C1815",soft:"#4B443C",faint:"#6E675E",rule:"#D2CCC1",accent:"#856527",risk:"#9C3F2B",warn:"#7C5E18",safe:"#3D6049"},t=Math.round;function n(n,a,o,r,i){n=t(n),a=t(a),o=t(o);var s=e.paper2,c=e.rule,l="none";return"think"===r?(s=e.accent,c=e.accent):"out"===r?(s=e.ink,c=e.ink):"gone"===r&&(s="none",c=e.faint,l="3 2"),"<rect "+(i||"")+' x="'+n+'" y="'+a+'" width="'+o+'" height="'+o+'" rx="1.5" fill="'+s+'" stroke="'+c+'" stroke-width="1.2" stroke-dasharray="'+l+'"/>'}function a(e,t,a,o,r,i,s){r=r||20,i=i||10,s=s||3;for(var c="",l=0;l<a;l++)c+=n(e+l%r*(i+s),t+Math.floor(l/r)*(i+s),i,o);return c}function o(n,a,o,r,i,s){return'<text x="'+t(n)+'" y="'+t(a)+'" text-anchor="'+(i||"start")+'" fill="'+(r||e.faint)+'" font-family="IBM Plex Mono,ui-monospace,monospace" font-size="'+(s||12)+'" letter-spacing=".02em">'+o+"</text>"}function r(t,n,a,r,i){return o(t,n,a,r||e.ink,i,15)}function i(n,a,o,r,i,s,c,l){return"<rect "+(l||"")+' x="'+t(n)+'" y="'+t(a)+'" width="'+t(o)+'" height="'+t(r)+'" rx="4" fill="'+(s||"none")+'" fill-opacity="'+(void 0===c?1:c)+'" stroke="'+(i||e.rule)+'" stroke-width="1.5" shape-rendering="crispEdges"/>'}function s(n,a,o,r,i,s){return'<rect x="'+t(n)+'" y="'+t(a)+'" width="'+t(o)+'" height="'+r+'" rx="2" fill="'+e.paper2+'"/><rect x="'+t(n)+'" y="'+t(a)+'" width="'+t(o*i)+'" height="'+r+'" rx="2" fill="'+s+'"/>'}function c(e,t){var n=document.getElementById(e);n&&(n.innerHTML=t)}function l(e,t){var n=document.getElementById(e);n&&(n.innerHTML=t)}var u=document.getElementById("pfill"),f=document.getElementById("ptxt"),d=2*Math.PI*23;u&&(u.style.strokeDasharray=d,u.style.strokeDashoffset=d,addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollHeight-e.clientHeight,n=t>0?e.scrollTop/t:0;n=Math.min(1,Math.max(0,n)),u.style.strokeDashoffset=d*(1-n),f.textContent=Math.round(100*n)+"%"},{passive:!0}));var h=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),h.unobserve(e.target))})},{threshold:.05,rootMargin:"0px 0px -4% 0px"});function g(e,t){var n=[].slice.call(document.querySelectorAll("#"+e+" .stp")),a=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(n.forEach(function(t){t.classList.toggle("on",t===e.target)}),t(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});n.forEach(function(e){a.observe(e),e.addEventListener("click",function(){n.forEach(function(t){t.classList.toggle("on",t===e)}),t(+e.getAttribute("data-step"))})}),t(0)}document.querySelectorAll(".reveal").forEach(function(e){h.observe(e)}),addEventListener("scroll",function(){document.querySelectorAll(".reveal:not(.in)").forEach(function(e){e.getBoundingClientRect().top<.94*innerHeight&&e.classList.add("in")})},{passive:!0});var p=[{k:"model",c:"Model",j:'"model": "gpt-5.4-mini"'},{k:"prompt",c:"Prompt",j:'"instructions": "You are..."'},{k:"format",c:"Text format",j:'"text": { "format": ... }'},{k:"mode",c:"Reasoning mode",j:'"reasoning": { "mode": "standard"'},{k:"effort",c:"Reasoning effort",j:'              "effort": "medium"'},{k:"summary",c:"Summary",j:'              "summary": "auto" }'},{k:"verb",c:"Verbosity",j:'"text": { "verbosity": "medium" }'},{k:"store",c:"Store logs",j:'"store": true'},{k:"tools",c:"Hosted tools",j:'"tools": [ ... ]'}];!function(){var t="panel";function a(){var a="";"panel"===t?(a+=o(20,26,"the settings panel",e.faint),p.forEach(function(t,r){var s=44+26*r;a+=i(20,s,290,20,e.rule,e.paper2,.6),a+=o(30,s+14,t.c,e.soft),a+=n(292,s+5,10,r<3?"in":r<6?"think":"out")}),a+=o(20,292,"nine controls",e.accent)):(a+=o(20,26,"the request it writes",e.faint),a+=o(20,46,"{",e.soft),p.forEach(function(t,n){a+=o(34,64+22*n,t.j,n<3?e.ink:n<6?e.accent:e.soft)}),a+=o(20,64+22*p.length,"}",e.soft),a+=o(20,292,"one message, sent once",e.accent)),c("heroFig",a),l("heroState","panel"===t?"nine controls":"one request"),document.querySelectorAll("[data-hero-t]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-hero-t")===t)})}document.querySelectorAll("[data-hero-t]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-hero-t"),a()})}),a(),matchMedia("(prefers-reduced-motion:reduce)").matches||setTimeout(function(){"panel"===t&&(t="json",a())},1400)}(),function(){var n={},a=null;function r(){var r="";r+=o(30,28,"the control",e.faint),r+=o(470,28,"the line it writes",e.faint),p.forEach(function(t,s){var c=48+30*s,l=n[t.k]||a===t.k;r+=i(30,c,300,24,l?e.accent:e.rule,e.paper2,l?.18:.6),r+=o(42,c+16,t.c,l?e.ink:e.soft),l&&(r+='<line x1="336" y1="'+(c+12)+'" x2="462" y2="'+(c+12)+'" stroke="'+e.accent+'" stroke-width="1.5" shape-rendering="crispEdges"/>',r+=o(470,c+16,t.j,e.ink))}),p.forEach(function(e,n){var a,o,i,s;r+=(a=30,o=48+30*n,i=300,s=24,"<rect "+('data-f1k="'+e.k+'"')+' x="'+t(a)+'" y="'+t(o)+'" width="'+t(i)+'" height="'+t(s)+'" fill="rgba(0,0,0,0)" style="cursor:pointer"/>')}),c("f1",r),l("f1Read",a?a+" selected":Object.keys(n).length?"all nine lines":"click a control on the left")}document.getElementById("f1").addEventListener("click",function(e){var t=e.target.closest("[data-f1k]");if(t){var o=t.getAttribute("data-f1k");a=a===o?null:o,n[o]=!0,r()}}),document.getElementById("f1All").addEventListener("click",function(){p.forEach(function(e){n[e.k]=!0}),r()}),document.getElementById("f1Clear").addEventListener("click",function(){n={},a=null,r()}),r()}(),function(){var t="sys";function n(){var n="",a="turn"===t?4:1;n+=o(30,28,"what gets sent on exchange "+a,e.faint);var r=52;"sys"!==t&&"turn"!==t||(n+=i(30,r,840,40,e.accent,e.accent,.16),n+=o(44,r+25,'system  "answer in one sentence"   re-sent every time',e.ink),r+=54);for(var s=1;s<=a;s++){"sys"!==t&&1===s&&(n+=i(30,r,840,32,e.rule,e.paper2,.6),n+=o(44,r+21,'user    "answer in one sentence"   said once, on exchange 1',e.soft),r+=38),n+=i(30,r,840,30,e.rule,e.paper2,.45),n+=o(44,r+20,"user    question "+s,e.soft),r+=36,s<a&&(n+=i(30,r,840,30,e.rule,e.paper2,.28),n+=o(44,r+20,"assistant  reply "+s,e.faint),r+=36)}c("f2",n+=o(30,r+22,"usr"===t?"the instruction is one message back, and fading":"turn"===t?"four exchanges later the instruction is still at the top":"one exchange so far","sys"===t||"turn"===t?e.accent:e.risk)),l("f2Read","sys"===t?"instruction in the system role":"usr"===t?"instruction typed into chat":"four exchanges later"),document.querySelectorAll("[data-f2]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-f2")===t)})}document.querySelectorAll("[data-f2]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f2"),n()})}),n()}(),g("sc1",function(t){var n="";n+=o(20,24,"each square is one token",e.faint),n+=o(20,52,"input  75",t>=0?e.ink:e.faint),n+=a(20,62,75,"in",24,8,3);var r=62+11*Math.ceil(3.125)+26;t>=1&&(n+=o(20,r-8,"reasoning  1,024   (shown as 1 square per 8)",e.accent),n+=a(20,r+2,128,"think",24,8,3));var s=r+2+11*Math.ceil(128/24)+26;t>=2&&(n+=o(20,s-8,"visible answer  162",e.ink),n+=a(20,s+2,20,"out",24,8,3)),t>=3&&(n+=i(12,40,496,258,e.accent,"none",1),n+=o(20,314,"all of it must fit the context window",e.accent)),t>=4&&(n+=o(20,332,"every dropdown resizes one of these three blocks",e.ink)),c("sc1fig",n),l("sc1Read",["a short request","+1,024 thinking","+162 answer","one fixed desk","what the panel controls"][t]||"")}),function(){var t=[{n:"smallest / fastest",cap:.34,cost:.12,lat:.14,use:"classification, routing, high volume, simple extraction"},{n:"mid",cap:.58,cost:.32,lat:.34,use:"drafting, summarising, everyday chat assistants"},{n:"full size",cap:.84,cost:.68,lat:.66,use:"agentic coding, research, work you would give a specialist"},{n:"the heaviest option",cap:.97,cost:1,lat:1,use:"the hardest problems, where waiting is acceptable"}],n=1;function a(){var a=t[n],i="";i+=o(30,30,"tier: "+a.n,e.accent),[["capability",a.cap,e.accent],["cost per token",a.cost,e.risk],["latency, the wait",a.lat,e.warn]].forEach(function(t,n){var a=64+54*n;i+=o(30,a,t[0],e.soft),i+=s(30,a+10,760,18,t[1],t[2])}),i+=o(30,244,"good for",e.faint),i+=r(30,268,a.use,e.ink),c("f4",i+=o(30,292,"only the first bar is something you want more of",e.faint)),l("f4Read",a.n),document.querySelectorAll("[data-f4]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-f4")===n)})}document.querySelectorAll("[data-f4]").forEach(function(e){e.addEventListener("click",function(){n=+e.getAttribute("data-f4"),a()})}),a()}(),function(){var t=!0;function n(){var n="";n+=o(30,30,"the same question, the same answer",e.faint),n+=o(30,64,"you send  40 tokens",e.soft),n+=a(30,74,40,"in",20,10,3);var i=140;t?(n+=o(30,i,"it thinks  240 tokens   billed, invisible",e.accent),n+=a(30,i+10,60,"think",20,10,3),i+=94):(n+=o(30,i,"no thinking stage",e.faint),n+=a(30,i+10,60,"gone",20,10,3),i+=94),n+=o(30,i,"you read  40 tokens",e.ink),n+=a(30,i+10,40,"out",20,10,3),n+=o(560,74,"what you pay for",e.faint),n+=r(560,100,t?"320 tokens":"80 tokens",t?e.accent:e.ink),n+=o(560,126,t?"four fifths of it never reaches you":"nothing hidden, nothing checked",e.faint),n+=o(560,170,"better on",e.faint),c("f5",n+=r(560,196,t?"problems with steps":"lookups and simple text",e.ink)),l("f5Read",t?"reasoning model":"no thinking stage"),document.querySelectorAll("[data-f5]").forEach(function(e){e.classList.toggle("on","on"===e.getAttribute("data-f5")===t)})}document.querySelectorAll("[data-f5]").forEach(function(e){e.addEventListener("click",function(){t="on"===e.getAttribute("data-f5"),n()})}),n()}(),function(){var n=[{n:"none",t:0,lat:.04,for:"latency-critical work that gains nothing from reasoning",use:"voice, fast retrieval, classification"},{n:"low",t:.12,lat:.2,for:"efficient reasoning for a modest delay",use:"data analysis, drafting, coding, support workflows"},{n:"medium",t:.3,lat:.4,for:"the default: quality and reliability, planning and judgement",use:"agentic coding, research, spreadsheets and slides"},{n:"high",t:.55,lat:.62,for:"hard reasoning, complex debugging, deep planning",use:"agentic coding, long-horizon research, knowledge work"},{n:"xhigh",t:.8,lat:.84,for:"long runs; use only when your tests show a clear benefit",use:"security and code review, deeper research"},{n:"max",t:1,lat:1,for:"maximum reasoning for your most complex tasks",use:"evaluate against xhigh before committing"}],a=2;function i(){var i=n[a],u="";u+=o(30,26,"reasoning tokens spent before a word is written",e.faint);for(var f=0;f<n.length;f++){var d=30+140*f,h=f===a,g=t(10+84*n[f].t);u+='<rect x="'+d+'" y="'+(140-g)+'" width="96" height="'+g+'" rx="3" fill="'+(h?e.accent:e.paper2)+'" stroke="'+(h?e.accent:e.rule)+'" stroke-width="1.5"/>',u+=o(d+48,160,n[f].n,h?e.ink:e.faint,"middle")}u+='<line x1="30" y1="141" x2="870" y2="141" stroke="'+e.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',u+=o(30,196,"the wait",e.soft),u+=s(120,184,540,16,i.lat,e.warn),u+=o(680,196,"longer",e.faint),u+=o(30,236,"what this level is for",e.accent),u+=r(30,260,i.for,e.ink),u+=o(30,286,"common uses: "+i.use,e.faint),c("f6",u+=o(30,312,"supported levels vary by model; the dropdown shows what yours accepts",e.faint)),l("f6Head","effort <b>"+i.n+"</b>"),l("f6Read","At <b>"+i.n+"</b>: "+i.for+"."),document.querySelectorAll("[data-f6]").forEach(function(e){})}document.getElementById("f6Slider").addEventListener("input",function(){a=+this.value,i()}),i()}(),function(){var n="standard",a="medium",r=["low","medium","high"];function u(){var u="",f=180,d=60,h=180;u+=i(f,d,560,h,e.rule,e.paper2,.35),u+='<line x1="180" y1="150" x2="740" y2="150" stroke="'+e.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',u+=o(f,46,"effort, left to right: low, medium, high",e.faint),u+=o(30,100,"pro","pro"===n?e.accent:e.faint),u+=o(30,216,"standard","standard"===n?e.accent:e.faint),u+=o(30,280,"mode, bottom to top",e.faint);var g=f+(r.indexOf(a)+.5)*(560/3),p="pro"===n?105:195;u+='<circle cx="'+t(g)+'" cy="'+t(p)+'" r="15" fill="'+e.accent+'"/>',u+=o(g,p+42,n+" + "+a,e.ink,"middle");var m=("pro"===n?2:1)*(r.indexOf(a)+1);u+=o(30,326,"relative model work",e.soft),u+=s(220,314,540,m/6,e.accent),c("f7",u+=o(30,356,"pro performs more model work than standard, billed at the model’s standard rates",e.faint)),l("f7Read",n+" &middot; "+a),document.querySelectorAll("[data-f7m]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-f7m")===n)}),document.querySelectorAll("[data-f7e]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-f7e")===a)})}document.querySelectorAll("[data-f7m]").forEach(function(e){e.addEventListener("click",function(){n=e.getAttribute("data-f7m"),u()})}),document.querySelectorAll("[data-f7e]").forEach(function(e){e.addEventListener("click",function(){a=e.getAttribute("data-f7e"),u()})}),u()}(),function(){var t=[{e:"low",v:"low",th:18,ou:12,note:"quick and terse: routing, tagging, short lookups"},{e:"high",v:"low",th:96,ou:12,note:"think hard, then just tell me: hard judgement calls, one-line verdicts"},{e:"medium",v:"medium",th:48,ou:40,note:"the default pairing for general work"},{e:"low",v:"high",th:18,ou:96,note:"easy task, full write-up: drafting and explanation"},{e:"high",v:"high",th:96,ou:96,note:"the expensive corner: deep work, written out at length"}],n=2;function i(){var i=t[n],s="";s+=o(30,30,"reasoning effort moves this block",e.accent),s+=a(30,44,i.th,"think",24,10,3);var u=44+13*Math.ceil(i.th/24)+34;s+=o(30,u,"verbosity moves this one",e.ink),s+=a(30,u+14,i.ou,"out",24,10,3),s+=o(30,268,"effort "+i.e+"  +  verbosity "+i.v,e.accent),c("f8",s+=r(30,292,i.note,e.ink)),l("f8Read",i.e+" effort &middot; "+i.v+" verbosity"),document.querySelectorAll("[data-f8]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-f8")===n)})}document.querySelectorAll("[data-f8]").forEach(function(e){e.addEventListener("click",function(){n=+e.getAttribute("data-f8"),i()})}),i()}(),function(){var t=!0;function n(){var n="";n+=o(30,30,"what comes back in the response",e.faint);var a=56;t&&(n+=i(30,a,840,96,e.accent,e.accent,.14),n+=o(44,a+24,'type: "reasoning"',e.soft),n+=o(44,a+48,"summary: a written account of how it approached the problem,",e.ink),n+=o(44,a+70,"produced separately. Not the raw reasoning tokens.",e.ink),a+=112),n+=i(30,a,840,80,e.rule,e.paper2,.55),n+=o(44,a+26,'type: "message"',e.soft),n+=o(44,a+52,"the answer you asked for",e.ink),c("f9",n+=o(30,t?282:200,t?"auto gives the most detailed summariser that model offers":"nothing appears unless you opt in",t?e.accent:e.faint)),l("f9Read",t?"summary: auto":"summary off"),document.querySelectorAll("[data-f9]").forEach(function(e){e.classList.toggle("on","auto"===e.getAttribute("data-f9")===t)})}document.querySelectorAll("[data-f9]").forEach(function(e){e.addEventListener("click",function(){t="auto"===e.getAttribute("data-f9"),n()})}),n()}(),function(){var t="text",n={text:{h:"ordinary prose",lines:["The customer is Ada Lovelace, aged 36, and she","seems fairly happy with the service overall."],col:"ink",note:"perfect for a person, unusable for a program"},ask:{h:"asked for JSON in the prompt: three real runs",lines:['run 1   {"name": "Ada Lovelace", "age": 36}','run 2   ```json  {"name": "Ada Lovelace", ...  <- fenced','run 3   Sure! Here is the JSON: {"full_name": ...  <- renamed'],col:"risk",note:"right most of the time, which is the expensive kind of wrong"},schema:{h:"a schema you defined",lines:['run 1   {"name": "Ada Lovelace", "age": 36}','run 2   {"name": "Ada Lovelace", "age": 36}','run 3   {"name": "Ada Lovelace", "age": 36}'],col:"safe",note:"the shape is constrained, so the odd run cannot happen"}};function a(){var a=n[t],s="",u=e[a.col];s+=o(30,30,a.h,u),s+=i(30,50,840,32+30*a.lines.length,u,u,.1),a.lines.forEach(function(t,n){s+=o(48,84+30*n,t,e.ink)});var f=82+30*a.lines.length+34;s+=r(30,f,a.note,u),c("f10",s+=o(30,f+30,"schema"===t?"use this whenever code reads the answer":"ask"===t?"the failures are occasional, so tests pass and production does not":"use this whenever a person reads the answer",e.faint)),l("f10Read","text"===t?"plain text":"ask"===t?"asked for, not guaranteed":"schema-constrained"),document.querySelectorAll("[data-f10]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-f10")===t)})}document.querySelectorAll("[data-f10]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f10"),a()})}),a()}(),function(){var t="hard",n=0,a=["contract_A.pdf","contract_B.pdf","contract_C.pdf"];function r(){var r="";r+=o(30,28,"the prompt",e.faint),r+=i(30,44,840,44,"var"===t?e.accent:e.rule,"var"===t?e.accent:e.paper2,"var"===t?.14:.55),r+=o(46,72,"var"===t?"Summarise the risks in {{document}} in five bullets.":"Summarise the risks in contract_A.pdf in five bullets.",e.ink),r+=o(30,124,"three runs",e.faint);for(var s=0;s<3;s++){var u=142+44*s,f=s<n;r+=i(30,u,840,36,f?e.accent:e.rule,e.paper2,f?.12:.4),"var"===t?(r+=o(46,u+23,"document = "+a[s],f?e.ink:e.faint),r+=o(560,u+23,f?"instructions: byte-identical":"",e.accent)):(r+=o(46,u+23,"edit the prompt by hand, swap the filename",f?e.ink:e.faint),r+=o(560,u+23,f?"instructions: drifted":"",e.risk))}c("f11",r+=o(30,290,"var"===t?"only the input changed, so a difference in output means something":"the wording moved too, so you cannot attribute the difference","var"===t?e.accent:e.risk)),l("f11Read","var"===t?"a variable in the prompt":"no variables"),document.querySelectorAll("[data-f11]").forEach(function(e){e.classList.toggle("on",e.getAttribute("data-f11")===t)})}document.querySelectorAll("[data-f11]").forEach(function(e){e.addEventListener("click",function(){t=e.getAttribute("data-f11"),n=0,r()})}),document.getElementById("f11Run").addEventListener("click",function(){n=0;var e=setInterval(function(){n++,r(),n>=3&&clearInterval(e)},420)}),r()}(),g("sc2",function(t){var n="";n+=o(20,26,"one request, with a tool switched on",e.faint),n+=i(20,44,480,44,t>=0?e.accent:e.rule,e.accent,t>=0?.12:0),n+=o(34,72,"tools: [ web_search ]   permission, not an order",e.ink),t>=1&&(n+=i(20,104,480,40,e.rule,e.paper2,.5),n+=o(34,130,'the model stops and asks: search "…"',e.ink)),t>=2&&(n+=i(20,158,480,40,e.rule,e.paper2,.5),n+=o(34,184,"the tool runs on OpenAI’s side",e.soft)),t>=3&&(n+=o(20,224,"the result comes back as input tokens you pay for",e.ink),n+=a(20,236,72,"in",24,8,3)),t>=4&&(n+='<path d="M480 250 C 505 250, 505 120, 480 120" fill="none" stroke="'+e.accent+'" stroke-width="2"/>',n+=o(20,312,"and it can loop again: slower and dearer than it looks",e.accent)),c("sc2fig",n),l("sc2Read",["tools available: 1","the model asks","the tool runs","+72 input tokens","the loop"][t]||"")}),function(){var t=[{n:"store logs",w:"neither",d:"keeps a copy of the request and the response for later",why:"on for debugging and building tests; off for sensitive content"},{n:"compare",w:"neither",d:"runs one prompt against two configurations side by side",why:"the fastest way to settle any question this page raised"},{n:"code",w:"neither",d:"shows the exact request as code you can paste into a program",why:"the door out of the Playground and into something real"},{n:"draft",w:"neither",d:"a document status: your work is not saved yet",why:"save it to get a named, versioned prompt you can reuse"}],n=0;function a(){var a=t[n],s="";s+=i(30,50,250,70,e.rule,e.paper2,.5),s+=o(44,90,"your request",e.soft),s+=i(330,50,250,70,e.rule,e.paper2,.5),s+=o(344,90,"the model",e.soft),s+=i(630,50,240,70,e.rule,e.paper2,.5),s+=o(644,90,"the answer",e.soft),s+='<line x1="280" y1="85" x2="330" y2="85" stroke="'+e.rule+'" stroke-width="1.5"/>',s+='<line x1="580" y1="85" x2="630" y2="85" stroke="'+e.rule+'" stroke-width="1.5"/>',s+=i(30,150,840,52,e.accent,e.accent,.12),s+=o(46,182,a.n+" sits beside all three and changes none of them",e.ink),s+=o(30,236,"what it does",e.faint),s+=r(30,260,a.d,e.ink),c("f13",s+=o(30,284,a.why,e.faint)),l("f13Read",a.n),document.querySelectorAll("[data-f13]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-f13")===n)})}document.querySelectorAll("[data-f13]").forEach(function(e){e.addEventListener("click",function(){n=+e.getAttribute("data-f13"),a()})}),a()}(),function(){var n=1,a=[.46,.24,.15,.09,.06],s=["Paris","the","a","France","my"];function u(){var u,f,d,h="";if(3===n)h+=o(30,34,"the request",e.faint),h+=i(30,50,840,58,e.rule,e.paper2,.5),h+=o(46,84,'{ "model": "gpt-5.4-mini", "temperature": 0.2, ... }',e.ink),h+=o(30,146,"what comes back",e.risk),h+=i(30,162,840,86,e.risk,e.risk,.1),h+=o(46,196,"400  unsupported_parameter",e.risk),h+=o(46,222,"\"Unsupported parameter: 'temperature' is not supported with this model.\"",e.ink),h+=o(30,284,"not ignored, not clamped: refused, so you always know it had no effect",e.faint);else{var g=[.2,1,1.8][n],p=(u=g,f=a.map(function(e){return Math.pow(e,1/u)}),d=f.reduce(function(e,t){return e+t},0),f.map(function(e){return e/d}));h+=o(30,30,'next token after "I grew up in Paris, so my first language is"',e.faint),p.forEach(function(n,a){var r=60+168*a,i=t(180*n);h+='<rect x="'+r+'" y="'+(240-i)+'" width="120" height="'+i+'" rx="3" fill="'+(0===a?e.accent:e.paper2)+'" stroke="'+(0===a?e.accent:e.rule)+'" stroke-width="1.5"/>',h+=o(r+60,236-i-8,(100*n).toFixed(0)+"%",e.soft,"middle"),h+=o(r+60,262,s[a],0===a?e.ink:e.faint,"middle")}),h+='<line x1="40" y1="241" x2="870" y2="241" stroke="'+e.rule+'" stroke-width="1.5" shape-rendering="crispEdges"/>',h+=r(30,296,g<.5?"concentrated: the likeliest token nearly always wins, output repeats":g>1.5?"flattened: unlikely tokens get a real chance, which reads as invention":"the model’s own distribution, untouched",e.ink)}c("f14",h),l("f14Read",3===n?"400 unsupported_parameter":"temperature "+[.2,1,1.8][n].toFixed(1)),document.querySelectorAll("[data-f14]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-f14")===n)})}document.querySelectorAll("[data-f14]").forEach(function(e){e.addEventListener("click",function(){n=+e.getAttribute("data-f14"),u()})}),u()}(),function(){var t=0;function n(){var n="";if(0===t||1===t){var s=1===t;n+=o(30,30,"everything generated counts against the ceiling",e.faint),n+=o(30,64,"reasoning",e.accent),n+=a(140,52,s?96:40,"think",24,10,3);var u=52+13*Math.ceil((s?96:40)/24)+30;n+=o(30,u+12,"answer",e.ink),n+=a(140,u,s?0:24,"out",24,10,3),s&&(n+=o(140,u+12,"nothing left: no visible answer at all",e.risk)),n+='<line x1="700" y1="40" x2="700" y2="'+(u+40)+'" stroke="'+(s?e.risk:e.ink)+'" stroke-width="2.5"/>',n+=o(710,54,"max_output_tokens",s?e.risk:e.soft),n+=r(30,278,s?"status: incomplete. You paid for the input and the thinking, and received nothing.":"a hard wall, not a style request: leave generous headroom",s?e.risk:e.ink)}else{var f=3===t;n+=o(30,30,f?"stable material first, variable part last":"the variable part mixed into the opening",f?e.safe:e.warn),n+=i(30,50,840,64,f?e.safe:e.warn,f?e.safe:e.warn,.12),n+=o(46,80,f?"[ long system prompt, identical every call ]":"[ system prompt with today’s date spliced in ]",e.ink),n+=o(46,102,"then: the user question",e.soft),n+=o(30,152,"on the next call, the shared opening is",e.faint),n+=i(30,170,840,58,e.rule,e.paper2,.5),n+=o(46,206,f?"served from cache at a reduced rate":"reprocessed in full, at full price",f?e.safe:e.warn),n+=r(30,272,f?"identical prefixes are cheaper, so resist rewording between runs":"one changed word near the top throws away the whole saving",f?e.safe:e.warn)}c("f15",n),l("f15Read",["max output tokens","the silent failure","prompt caching","stable part first"][t]),document.querySelectorAll("[data-f15]").forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-f15")===t)})}document.querySelectorAll("[data-f15]").forEach(function(e){e.addEventListener("click",function(){t=+e.getAttribute("data-f15"),n()})}),n()}(),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),n=e.closest("section");function a(a){e.classList.toggle("hot",a),n.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",a)}),n.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",a)})}e.addEventListener("mouseenter",function(){a(!0)}),e.addEventListener("mouseleave",function(){a(!1)}),e.addEventListener("click",function(){a(!e.classList.contains("hot"))})}),function(){var e=document.getElementById("weeds"),t=document.getElementById("weedsHint");function n(){var n=e.hidden;e.hidden=!n,t.setAttribute("aria-expanded",String(n)),t.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,a=(t.tagName||"").toLowerCase();"input"===a||"textarea"===a||t.isContentEditable||(e.preventDefault(),n())}}),t.addEventListener("click",n),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),n())})}()}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

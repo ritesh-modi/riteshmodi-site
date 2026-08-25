@@ -5,8 +5,56 @@
   <link href="https://www.loopingly.com/feed.xml" rel="self"/>
   <link href="https://www.loopingly.com/explorables"/>
   <id>https://www.loopingly.com/</id>
-  <updated>2026-08-18T00:00:00Z</updated>
+  <updated>2026-08-22T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>Prompting techniques, and when to use each</title>
+    <link href="https://www.loopingly.com/explorables/prompting-techniques"/>
+    <id>https://www.loopingly.com/explorables/prompting-techniques</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Eleven prompting techniques against one task. Fence off pasted text so it cannot give orders, force a shape, sample five times and count the answers.</summary>
+  </entry>
+  <entry>
+    <title>Predicting the next character</title>
+    <link href="https://www.loopingly.com/explorables/predicting-the-next-character"/>
+    <id>https://www.loopingly.com/explorables/predicting-the-next-character</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Fill a 625-box count grid by hand, smooth it so unseen pairs stop breaking it, then train an eight-number embedding and watch the loss come down.</summary>
+  </entry>
+  <entry>
+    <title>Every control on the Playground</title>
+    <link href="https://www.loopingly.com/explorables/playground-controls"/>
+    <id>https://www.loopingly.com/explorables/playground-controls</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Every control on the OpenAI Playground, one at a time. Move reasoning effort, verbosity and text format, and watch what each one changes in the request.</summary>
+  </entry>
+  <entry>
+    <title>How twenty companies run generative AI</title>
+    <link href="https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai"/>
+    <id>https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Twenty production deployments across six layers. Resize the retrieval chunks until they ruin an answer, turn the queue dial, and find each system's scar.</summary>
+  </entry>
+  <entry>
+    <title>A history of generative AI, 1948 to now</title>
+    <link href="https://www.loopingly.com/explorables/history-of-generative-ai"/>
+    <id>https://www.loopingly.com/explorables/history-of-generative-ai</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Play Shannon's 1948 letter-guessing game, drag n across a bigram table until counting collapses, then watch backpropagation pick up where it failed.</summary>
+  </entry>
+  <entry>
+    <title>A machine that produces instead of choosing</title>
+    <link href="https://www.loopingly.com/explorables/generative-ai"/>
+    <id>https://www.loopingly.com/explorables/generative-ai</id>
+    <updated>2026-08-22T00:00:00Z</updated>
+    <published>2026-08-22T00:00:00Z</published>
+    <summary>Old classifiers picked an answer off a list. Watch a sentence become numbers, then a spread of odds, and make the sampling choice for yourself.</summary>
+  </entry>
   <entry>
     <title>Medallion architecture on ten rows a day</title>
     <link href="https://www.loopingly.com/explorables/medallion-ten-rows-a-day"/>

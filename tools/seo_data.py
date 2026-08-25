@@ -105,6 +105,12 @@ EXPLORABLES = {
         short="The GenAI vocabulary, in the order the ideas actually depend on each other.",
         about="Generative AI terminology"),
 
+    "generative-ai": dict(
+        desc="Old classifiers picked an answer off a list. Watch a sentence become numbers, then a "
+             "spread of odds, and make the sampling choice for yourself.",
+        short="Watch a sentence become numbers, then a spread of odds you sample from yourself.",
+        about="How generative AI models produce text"),
+
     "grc-building-blocks": dict(
         desc="A reference for the seven pieces every GRC programme is built from: what each "
              "block is, what it is not, and the question it answers when an auditor asks.",
@@ -135,6 +141,12 @@ EXPLORABLES = {
         short="Risk, control, asset, incident, exception, vendor: what goes in each row.",
         about="GRC operating registers"),
 
+    "history-of-generative-ai": dict(
+        desc="Play Shannon's 1948 letter-guessing game, drag n across a bigram table until counting "
+             "collapses, then watch backpropagation pick up where it failed.",
+        short="Play Shannon's letter-guessing game, then watch pure counting collapse.",
+        about="The history of generative AI from 1948 to the present"),
+
     "how-data-becomes-an-equation": dict(
         desc="Eight days of a lemonade stand, worked by hand into a line, a cluster and a "
              "policy — supervised, unsupervised and reinforcement learning from one table.",
@@ -146,6 +158,12 @@ EXPLORABLES = {
              "learning rate yourself and watch gradient descent converge, crawl, or diverge.",
         short="Set the learning rate and watch gradient descent converge, crawl, or diverge.",
         about="Loss, gradient descent and backpropagation"),
+
+    "how-twenty-companies-run-generative-ai": dict(
+        desc="Twenty production deployments across six layers. Resize the retrieval chunks until "
+             "they ruin an answer, turn the queue dial, and find each system's scar.",
+        short="Resize retrieval chunks until they ruin the answer, then find each system's scar.",
+        about="Generative AI systems in production"),
 
     "is-it-actually-thinking": dict(
         desc="Short answer: no — it is autocomplete that read the internet. See the one trick "
@@ -189,17 +207,35 @@ EXPLORABLES = {
         short="Tip the scale with your finger, then watch it solved as a subset-sum table.",
         about="Partition equal subset sum, LeetCode 416"),
 
+    "playground-controls": dict(
+        desc="Every control on the OpenAI Playground, one at a time. Move reasoning effort, "
+             "verbosity and text format, and watch what each one changes in the request.",
+        short="Move each Playground control and watch what it changes in the request.",
+        about="The OpenAI Playground controls and model parameters"),
+
     "postgres-partitioning-explainer": dict(
         desc="Drag a project id and watch the planner skip seven of eight partitions, then see "
              "why retention stops being a slow DELETE and becomes an instant DROP.",
         short="Watch the planner skip seven of eight partitions, then DROP instead of DELETE.",
         about="PostgreSQL table partitioning"),
 
+    "predicting-the-next-character": dict(
+        desc="Fill a 625-box count grid by hand, smooth it so unseen pairs stop breaking it, then "
+             "train an eight-number embedding and watch the loss come down.",
+        short="Fill a 625-box count grid by hand, then train a small network on the same job.",
+        about="Character-level language models and neural networks"),
+
     "prompt-engineering-explainer": dict(
         desc="Climb from a plain question to ReAct agents on one stubborn problem, and watch "
              "exactly which change of wording moves the answer and which changes nothing.",
         short="From zero-shot to ReAct on one stubborn problem. See which wording matters.",
         about="Prompt engineering techniques"),
+
+    "prompting-techniques": dict(
+        desc="Eleven prompting techniques against one task. Fence off pasted text so it cannot give "
+             "orders, force a shape, sample five times and count the answers.",
+        short="Run eleven prompting techniques against one task and see which change the answer.",
+        about="Prompt engineering techniques for large language models"),
 
     "rate-limiting-explainer": dict(
         desc="Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, "

@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting the next character: from a count table to a small neural network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>:root{--v18:#F2ECEC;--v19:#E7DEDF;--v10:#1D1418;--v12:#4A3B40;--v11:#6B5A5F;--v21:#D6C8CB;--v0:#8A2F4A;--v16:#1D1418;--v17:#EFE4E6;--v20:#A03A20;--v24:#7A5A12;--v22:#2E6A55;--v13:680px;--v25:1080px;--v15:26px;--v2:"Space Grotesk",system-ui,sans-serif;--v1:"IBM Plex Sans",system-ui,-apple-system,sans-serif;--v14:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;--v7:13px;--v9:15px;--v3:19px;--v8:24px;--v5:30px;--v4:46px;--v6:82px;--v23:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto};:root{--v23:0s}}body{margin:0;background:var(--v18);color:var(--v10);font-family:var(--v1);font-size:var(--v3);line-height:1.66;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v13);margin:0 auto;padding:0 var(--v15);position:relative}.wide{max-width:var(--v25);margin:0 auto;padding:0 var(--v15)}.bleed{width:100%;margin:0}section{padding:clamp(74px,9vw,124px) 0}section + section{border-top:1px solid var(--v21)}h1,h2{font-family:var(--v2);font-weight:700;line-height:1.05;letter-spacing:-.025em;margin:0}h2{font-size:clamp(29px,4.1vw,46px);margin:0 0 26px;max-width:15em}h3{font-family:var(--v2);font-weight:600;font-size:clamp(22px,2.5vw,30px);line-height:1.16;letter-spacing:-.015em;margin:0 0 16px}p{margin:0 0 22px}b,strong{font-weight:600}code{font-family:var(--v14);font-size:var(--v9);background:var(--v19);padding:2px 6px;border-radius:3px;color:var(--v10)}kbd{font-family:var(--v14);font-size:var(--v7);border:1px solid var(--v21);border-radius:3px;padding:2px 7px;background:var(--v19);color:var(--v12)}a{color:var(--v0)}.lede{font-family:var(--v2);font-weight:500;font-size:clamp(20px,2.2vw,24px);line-height:1.42;letter-spacing:-.012em;color:var(--v12)}header{padding:clamp(46px,7vw,88px) 0 clamp(50px,7vw,92px)}.hero-kick{font-family:var(--v14);font-size:var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v11);margin:0 0 clamp(18px,3vw,30px)}h1{font-size:clamp(38px,7.4vw,82px);max-width:12em}.hero-lede{margin:clamp(22px,3vw,32px) 0 0;max-width:34em}.hero-fig{margin:clamp(32px,4vw,50px) 0 0}.fig{border:1px solid var(--v21);background:var(--v19);border-radius:6px;margin:34px 0 0;overflow:hidden}.fig-head{padding:13px 20px;border-bottom:1px solid var(--v21);font-family:var(--v14);font-size:var(--v7);letter-spacing:.08em;text-transform:uppercase;color:var(--v11);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.fig-head b{color:var(--v0);font-weight:500}.fig-body{padding:32px 30px;background:var(--v18)}.fig-ctl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;padding:15px 20px;border-top:1px solid var(--v21);background:var(--v19)}.fig-ctl label{font-family:var(--v14);font-size:var(--v7);color:var(--v11);letter-spacing:.06em;text-transform:uppercase}.fig-cap{font-family:var(--v14);font-size:var(--v7);line-height:1.65;color:var(--v11);padding:14px 20px;border-top:1px solid var(--v21)}.fig-cap b{color:var(--v0);font-weight:500}.fig svg{display:block;width:100%;height:auto}@media(max-width:760px){.fig-body{padding:22px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-body svg{min-width:600px}.fig-body::-webkit-scrollbar{height:6px}.fig-body::-webkit-scrollbar-thumb{background:var(--v21);border-radius:3px}}.intu{border-left:3px solid var(--v0);background:var(--v19);border-radius:0 6px 6px 0;padding:22px 26px;margin:32px 0;line-height:1.6}.intu i{font-family:var(--v14);font-size:var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v0);font-style:normal;display:block;margin-bottom:11px}.intu p{margin:0}.intu p + p{margin-top:14px}.note{background:var(--v19);border-radius:5px;padding:20px 24px;margin:30px 0 0;font-size:var(--v9);line-height:1.7;color:var(--v12)}.note b{color:var(--v10);font-weight:600}.note.hint{background:none;text-align:center;color:var(--v11);cursor:pointer;font-family:var(--v14);font-size:var(--v7);letter-spacing:.08em;padding:38px 0;margin:0}.note.hint:hover,.note.hint:focus-visible{color:var(--v0)}.pull{font-family:var(--v2);font-weight:600;font-size:clamp(23px,2.5vw,30px);line-height:1.26;letter-spacing:-.018em;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:42px 0}.chip{font-family:var(--v14);font-size:var(--v7);letter-spacing:.03em;padding:9px 14px;border:1px solid var(--v21);border-radius:3px;background:var(--v18);color:var(--v12);cursor:pointer;transition:all .16s}.chip:hover{border-color:var(--v0);color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:var(--v18)}input[type=range]{width:100%;max-width:440px;accent-color:var(--v0);cursor:pointer;margin:0}.panel{background:var(--v16);color:var(--v17);border-radius:6px;padding:24px 26px;margin:30px 0 0;font-family:var(--v14);font-size:var(--v9);line-height:1.75;overflow-x:auto;white-space:pre}.panel b{color:#E79BB0;font-weight:400}.panel i{color:#9A8A8E;font-style:normal}.panel.weeds{background:none;color:var(--v10);padding:0;margin:0;white-space:normal;font-family:var(--v1);font-size:var(--v3);overflow:visible}.panel.weeds[hidden]{display:none}.panel.weeds details{border-top:1px solid var(--v21);padding:18px 0}.panel.weeds summary{font-family:var(--v2);font-weight:600;font-size:var(--v3);cursor:pointer;letter-spacing:-.012em}.panel.weeds summary::marker{color:var(--v0)}.panel.weeds p{margin:14px 0 0;font-size:var(--v9);line-height:1.72;color:var(--v12)}.rail{position:fixed;right:20px;bottom:20px;width:52px;height:52px;z-index:60;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--v19);border:1px solid var(--v21)}.rail svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.rail circle{fill:none;stroke-width:2.5}.rail .tk{stroke:var(--v21)}.rail .fl{stroke:var(--v0);stroke-linecap:round}.rail span{font-family:var(--v14);font-size:var(--v7);color:var(--v12)}@media(max-width:640px){.rail{display:none}}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,430px);max-width:1280px;margin:0 auto;padding:0 var(--v15)}.bleed.scrolly.right{grid-template-columns:minmax(0,430px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg > *{width:100%;max-width:560px;min-width:0}.fig svg,.wide.sg svg{display:block;width:100%;height:auto}.col.ss{padding:36vh 0 40vh;max-width:none}.col.stp{min-height:74vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.26;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}.col.stp p{font-size:var(--v8);line-height:1.42;margin:0;color:var(--v12)}.col.stp.on p{color:var(--v10)}[data-gel]{opacity:.1;transition:opacity var(--v23)}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel],.col.stp{transition:none}}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:44vh;width:100%;background:var(--v18);border-bottom:1px solid var(--v21);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:26px 0}.col.stp p{font-size:var(--v3)}}.ref{text-decoration:underline dotted var(--v0);text-underline-offset:5px;cursor:help}.ref.hot{color:var(--v0)}.fig.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}.lb{font-family:var(--v14);font-size:var(--v7);fill:var(--v11);letter-spacing:.02em}.vl{font-family:var(--v14);font-size:var(--v9);fill:var(--v10)}.vs{font-family:var(--v14);font-size:var(--v9);fill:var(--v12)}.vr{font-family:var(--v14);font-size:var(--v9);fill:var(--v18)}.hd{font-family:var(--v14);font-size:var(--v7);fill:var(--v10);letter-spacing:.02em}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:var(--v18)}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Fill a 625-box count grid by hand, smooth it so unseen pairs stop breaking it, then train an eight-number embedding and watch the loss come down.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/predicting-the-next-character">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Predicting the next character: from a count table to a small neural network">
+  <meta property="og:description" content="Fill a 625-box count grid by hand, then train a small network on the same job.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/predicting-the-next-character">
+  <meta property="og:image" content="https://www.loopingly.com/og/predicting-the-next-character.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Predicting the next character: from a count table to a small neural network">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Predicting the next character: from a count table to a small neural network">
+  <meta name="twitter:description" content="Fill a 625-box count grid by hand, then train a small network on the same job.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/predicting-the-next-character.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Predicting the next character: from a count table to a small neural network","description":"Fill a 625-box count grid by hand, smooth it so unseen pairs stop breaking it, then train an eight-number embedding and watch the loss come down.","url":"https://www.loopingly.com/explorables/predicting-the-next-character","image":"https://www.loopingly.com/og/predicting-the-next-character.png","datePublished":"2026-08-22","dateModified":"2026-08-22","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Character-level language models and neural networks"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Predicting the next character"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div class="rail" aria-hidden="true">
+  <svg viewBox="0 0 52 52"><circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pfill" cx="26" cy="26" r="22"/></svg>
+  <span id="ptxt">0%</span>
+</div>
+
+
+<header class="hero">
+  <div class="wide">
+    <p class="hero-kick">80 occupation names &middot; 25 characters &middot; 671 transitions</p>
+    <h1>Predicting the next character</h1>
+    <p class="lede hero-lede">Everything a small language model does can be built twice: once as a table you fill in by counting, and once as a network that learns. This is both, on the same tiny pile of words, with every number on the page computed from the real run.</p>
+    <div class="fig hero-fig" id="figH">
+      <div class="fig-head"><span>every pair of adjacent characters in the corpus</span><span id="hRead">counts</span></div>
+      <div class="fig-body"><svg id="hFig" viewBox="0 0 900 520" role="img" aria-label="A 25 by 25 grid of counts of character pairs"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-h="count">show counts</button>
+        <button class="chip" data-h="prob">show probabilities</button>
+      </div>
+      <div class="fig-cap"><b>Darker means larger.</b> Rows are the current character, columns are the next one. This grid is the entire first model.</div>
+    </div>
+  </div>
+</header>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A word is a list of characters with a marker at each end</h2>
+    <p>Take one word from the training pile: <code>baker</code>. Five characters. A model that predicts the next character needs to know two more things that the five characters do not say. Where does the word begin, and where does it stop?</p>
+    <p>Both problems are solved with one extra symbol. Write the word as <code>. b a k e r .</code> and the question <em>what comes first</em> becomes an ordinary next-character question: what follows the dot. The question <em>when do I stop</em> becomes: predict a dot.</p>
+    <p>The <span class="ref" data-ref="dot">dot</span> is not punctuation. It is a character the model can predict like any other, and it does two jobs with one symbol because start and end never appear in the same position.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig1">
+      <div class="fig-head"><span>figure 1 &middot; one word, six pairs</span><span id="f1Read">baker</span></div>
+      <div class="fig-body"><svg id="f1" viewBox="0 0 900 260" role="img" aria-label="A word written out with dot markers and split into adjacent pairs"></svg></div>
+      <div class="fig-ctl" id="f1Ctl"></div>
+      <div class="fig-cap"><b>Click a word, then click any pair below it.</b> A word of five letters gives six pairs, because both dots count.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel"><i># the corpus: 80 occupation names, lower case, one word each</i>
+DEFAULT_WORDS = [<b>"baker"</b>, <b>"farmer"</b>, <b>"teacher"</b>, <b>"nurse"</b>, <b>"doctor"</b>, ...]
+
+<i># every word becomes dot, characters, dot</i>
+chs = [<b>"."</b>] + list(word) + [<b>"."</b>]</div>
+    <div class="intu"><i>in plain words</i>
+      <p>The model never sees a word. It sees a run of characters, and it is asked the same question at every position: given what is here, what character comes next?</p>
+      <p><b>The dot turns the two awkward questions into that same one question.</b> Starting a word is predicting what follows a dot. Ending a word is predicting a dot.</p>
+    </div>
+    <p>Across all 80 words this gives 671 pairs. That number is the whole training set, and it is small enough that you will feel the limits of it later.</p>
+    <p>Before anything can be counted, the characters need names the computer can use. A grid cannot be indexed by the letter <code>k</code>.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The vocabulary is a numbering you build once and never change</h2>
+    <p>Collect every distinct character in the corpus and sort them. These 80 occupations use 24 letters: no <code>q</code> and no <code>x</code>. Put the dot at the front and you have 25 symbols, numbered 0 to 24.</p>
+    <p>The dot goes first on purpose. Index 0 is the one you will type most often, since every generation starts there.</p>
+    <p>Two dictionaries carry the numbering in both directions. <code>stoi</code> takes a character and gives its index, which is what you need when reading text in. <code>itos</code> takes an index and gives the character, which is what you need when writing text out. They are the same information twice, and building both saves you from reversing a dictionary in the middle of a loop.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig2">
+      <div class="fig-head"><span>figure 2 &middot; 25 symbols, 25 numbers</span><span id="f2Read">click a character</span></div>
+      <div class="fig-body"><svg id="f2" viewBox="0 0 900 250" role="img" aria-label="The vocabulary as characters with their indices, and the two lookups"></svg></div>
+      <div class="fig-ctl" id="f2Ctl"></div>
+      <div class="fig-cap"><b>Click any cell.</b> The panel shows the same fact read in both directions.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel"><i># every distinct character, sorted, with the dot pushed to index 0</i>
+chars = [<b>"."</b>] + sorted(set(<b>""</b>.join(words)))
+stoi  = {ch: i <b>for</b> i, ch <b>in</b> enumerate(chars)}
+itos  = {i: ch <b>for</b> ch, i <b>in</b> stoi.items()}</div>
+    <div class="intu"><i>in plain words</i>
+      <p>Every character now has a fixed seat number. <b>The number carries no meaning at all</b>: <code>b</code> being 2 and <code>c</code> being 3 does not make them similar, and nothing in either model will treat 2 and 3 as close together.</p>
+      <p>The numbers are addresses, used to find a row in a table. That is the only job they do.</p>
+    </div>
+    <p>One thing to watch. The vocabulary is built from the training corpus, so a character that never appeared in it has no seat. Feed this model a name with an <code>x</code> in it and <code>stoi["x"]</code> raises an error rather than doing something sensible. Small corpora make this easy to hit.</p>
+    <p>With addresses in hand, the first model needs no learning at all. It only needs counting.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Counting every pair fills a grid of 625 boxes</h2>
+    <p>Make a grid with 25 rows and 25 columns, all zeros. Walk through the corpus one pair at a time. For the pair <code>k</code> then <code>e</code>, go to row <code>k</code>, column <code>e</code>, and add one. That is the entire training procedure for the first model, and it takes one pass.</p>
+    <p>A <span class="ref" data-ref="bg">bigram</span> is just that: two adjacent characters treated as one observation. Row means the character you are standing on, column means the character that came next.</p>
+    <p>After 671 pairs the grid holds some large numbers and a great many zeros. <code>er</code> appears 44 times, because a large share of these words are people who do a thing: baker, farmer, welder, printer. <code>r</code> followed by a dot appears 56 times, which is the same fact seen from the other side.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig3">
+      <div class="fig-head"><span>figure 3 &middot; the count grid</span><span id="f3Read">click a cell</span></div>
+      <div class="fig-body"><svg id="f3" viewBox="0 0 900 500" role="img" aria-label="The 25 by 25 count grid with a readout for the selected cell"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="f3Big">show the largest cell</button><button class="chip" id="f3Zero">show an empty cell</button></div>
+      <div class="fig-cap"><b>Click any square.</b> The readout names the pair and its count; the row and column light up so you can see which is which.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">N = torch.zeros((V, V), dtype=torch.int32)
+
+<b>for</b> word <b>in</b> words:
+    chs = [<b>"."</b>] + list(word) + [<b>"."</b>]
+    <b>for</b> ch1, ch2 <b>in</b> zip(chs, chs[1:]):
+        i = stoi[ch1]
+        j = stoi[ch2]
+        N[i, j] += 1</div>
+    <p>The <code>zip(chs, chs[1:])</code> line is the whole trick for walking pairs: one copy of the list starting at the beginning, one starting one step in, zipped together so each step hands you a character and its successor.</p>
+    <div class="intu"><i>in plain words</i>
+      <p>The grid is a tally sheet. Row <code>k</code> is a record of everything that has ever followed a <code>k</code> in this corpus, and nothing else. <b>No learning happened. The counting is the model.</b></p>
+      <p>This is worth pausing on, because it sets the bar. Anything a neural network does here has to beat a tally sheet that took one pass and no arithmetic.</p>
+    </div>
+    <p>Counts are not yet predictions, though. Row <code>k</code> holds ten observations and row <code>e</code> holds a hundred, and a raw count of 5 means something completely different in each.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>A row becomes a prediction when you divide it by its own total</h2>
+    <p>Take row <code>e</code>. It says <code>r</code> happened 44 times, <code>n</code> some number of times, and so on. Add the whole row up, then divide every entry by that total. The counts become fractions that sum to exactly one, and now the row answers a question: given an <code>e</code>, how likely is each of the 25 characters to come next?</p>
+    <p>That set of 25 numbers adding to one is a <span class="ref" data-ref="dist">probability distribution</span>. Every row of the grid becomes one, and the grid becomes 25 separate predictions, one per current character.</p>
+    <p>The division has to be per row, which is what <code>dim=1</code> says: sum along the columns, leaving one total for each row. And <code>keepdim=True</code> keeps that total shaped as a column so the division lines up row by row rather than collapsing into a single number.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig4">
+      <div class="fig-head"><span>figure 4 &middot; one row, normalised</span><span id="f4Read">row: .</span></div>
+      <div class="fig-body"><svg id="f4" viewBox="0 0 900 340" role="img" aria-label="A single row of counts converted to bars of probability that sum to one"></svg></div>
+      <div class="fig-ctl" id="f4Ctl"></div>
+      <div class="fig-cap"><b>Pick a row.</b> Left is the raw count, right is the same row divided by its total. The sum underneath is computed from the bars drawn.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">P = N.float()
+P = P / P.sum(dim=<b>1</b>, keepdim=<b>True</b>)</div>
+    <div class="intu"><i>in plain words</i>
+      <p>Counts say what happened. Probabilities say what to expect. <b>The only difference is the division, and the division is what makes rows comparable to each other.</b></p>
+      <p>A row built from four observations and a row built from four hundred both come out summing to one. That is convenient and slightly dangerous: nothing in the row now tells you how much evidence is behind it.</p>
+    </div>
+    <p>Look at the row for <code>j</code>, which appears in <code>joiner</code>, <code>judge</code> and <code>jeweller</code>. Three observations, and the resulting probabilities look every bit as confident as the row for <code>e</code>, which rests on more than a hundred.</p>
+    <p>There is a worse problem hiding in the same place, and it is not about confidence. Of the 625 boxes in the grid, 411 are still zero.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Adding one to every box buys insurance against words you have not seen</h2>
+    <p>The pair <code>aa</code> never occurs in these 80 words. Its count is zero, so its probability is zero, so the model says it is impossible. Not unlikely. Impossible.</p>
+    <p>That is a strong claim to make from 671 observations, and it has a hard consequence. In a moment we will score the model by taking the logarithm of the probability it assigned to each pair that actually happened. The logarithm of zero is negative infinity. One unseen pair anywhere in the test data and the score for the whole corpus is infinite, no matter how well everything else went.</p>
+    <p><b>Smoothing</b> is the cheap repair: add one to every box before dividing. Every pair now has a small probability instead of none, and pairs that did occur lose a little to pay for it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig5">
+      <div class="fig-head"><span>figure 5 &middot; 411 boxes are empty</span><span id="f5Read">no smoothing</span></div>
+      <div class="fig-body"><svg id="f5" viewBox="0 0 900 500" role="img" aria-label="The grid with empty cells marked, and the effect of adding one to every cell"></svg></div>
+      <div class="fig-ctl">
+        <button class="chip on" data-sm="0">raw counts</button>
+        <button class="chip" data-sm="1">add 1 to every box</button>
+        <button class="chip" data-sm="5">add 5 to every box</button>
+      </div>
+      <div class="fig-cap"><b>Switch the smoothing on.</b> The counter and the two example pairs are recomputed from the grid each time.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">P = (N + <b>1</b>).float()
+P = P / P.sum(dim=<b>1</b>, keepdim=<b>True</b>)</div>
+    <div class="intu"><i>in plain words</i>
+      <p>Adding one everywhere is a way of saying: I have not seen this, but I am not willing to bet my whole score that it can never happen.</p>
+      <p><b>The size of the number you add is how cautious you are.</b> Add a lot and every row drifts toward flat, which means the model has stopped committing to anything the data told it.</p>
+    </div>
+    <p>The cost is measurable and worth seeing. Scored on the same corpus it was built from, the raw model reaches 1.9436 and the smoothed one 2.2506, so smoothing looks strictly worse. That comparison is rigged: the raw model was scored only on pairs it had already seen, which is the one situation where its zeros can never be reached. The moment a new word arrives, the raw model's score is infinite and the smoothed model's is fine.</p>
+    <p>With a probability in every box, the table can finally be asked to produce a word.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Generation is one loop: look up a row, draw from it, move</h2>
+    <p>Start at the dot, which is index 0. Read row 0, which is the distribution over first characters. Draw one character using those probabilities as weights. Whatever you drew becomes the new row to read. Keep going until you draw a dot, then stop.</p>
+    <p>Everything hinges on the word <span class="ref" data-ref="samp">draw</span>. The function <code>torch.multinomial</code> picks an index at random, but not uniformly: a character with probability 0.44 is picked about 44 times in every hundred, and one with 0.01 is picked about once. The high-probability characters are favoured without the low-probability ones being excluded.</p>
+    <p>The <code>generator</code> with a fixed seed makes the randomness repeatable. Same seed, same word, every run. That is not a detail for tidiness; without it you cannot tell whether a change you made improved anything or you simply got a different roll.</p>
+  </div>
+  <div class="bleed scrolly" id="sc1">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>figure 6 &middot; generating one word, seed 42</span><span id="f6Read">at the dot</span></div>
+        <div class="fig-body"><svg id="f6" viewBox="0 0 520 420" role="img" aria-label="The sampling loop: current row, the draw, and the word so far"></svg></div>
+        <div class="fig-ctl">
+          <button class="chip on" data-gen="samp">draw with the weights</button>
+          <button class="chip" data-gen="greedy">always take the largest</button>
+        </div>
+        <div class="fig-cap"><b>Scroll, or click a step.</b> Each draw is the real one this code makes with seed 42.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><p>Standing on the dot. Row 0 says <code>b</code> is the most likely first character, at 0.1143.</p></div>
+      <div class="col stp" data-step="1"><p>The draw comes back <code>c</code>, which had 0.0857. Not the favourite, and not a surprise either: a one in twelve chance came up.</p></div>
+      <div class="col stp" data-step="2"><p>Now standing on <code>c</code>. The favourite here is <code>h</code>. The draw returns <code>l</code>, at 0.0339.</p></div>
+      <div class="col stp" data-step="3"><p>From <code>l</code>, the draw returns <code>j</code> at 0.0213. Two low-probability picks in a row, and the word is already unlike anything in the corpus.</p></div>
+      <div class="col stp" data-step="4"><p>From <code>j</code>, the draw is a dot, so generation stops. The word is <code>clj</code>. Switch to the other button to see what happens if you never gamble at all.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">g = torch.Generator().manual_seed(<b>42</b>)
+ix = stoi[<b>"."</b>]
+out = []
+
+<b>while True</b>:
+    probs = P[ix]
+    ix = torch.multinomial(probs, num_samples=<b>1</b>,
+                           replacement=<b>True</b>, generator=g).item()
+    ch = itos[ix]
+    <b>if</b> ch == <b>"."</b>: <b>break</b>
+    out.append(ch)</div>
+    <div class="intu"><i>in plain words</i>
+      <p>Taking the most likely character every time sounds better and is not. This model, asked to be greedy, produces <code>ban</code>. Then it produces <code>ban</code> again, and again, forever, because nothing in the procedure ever changes.</p>
+      <p><b>The randomness is what makes the model a generator rather than a lookup.</b> It is also why the same model can produce a plausible word and a pile of consonants on two consecutive runs.</p>
+    </div>
+    <p>Real samples from this table: <code>bantontr</code>, <code>glmar</code>, <code>ksmucn</code>, <code>ubaryspofstr</code>. Vowels and consonants alternate roughly the way they should, words end after a plausible number of characters, and <code>er</code> shows up often. None of them is a word.</p>
+    <p>That is a fair description by eye. Eyes are a poor instrument for comparing two models, so the next thing to build is a number.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>One number says how surprised the model was by the truth</h2>
+    <p>Here is the test. Take a real word the model should find plausible, walk its pairs, and at each pair ask what probability the model gave to the character that actually came next. For <code>baker</code> the six answers are 0.1143, 0.0952, 0.0308, 0.1613, 0.4412 and 0.4957.</p>
+    <p>Multiplying six probabilities gives a tiny number, and multiplying six hundred gives a number too small for a computer to hold. So take the logarithm of each one and add instead. Multiplication becomes addition, and the numbers stay in a comfortable range.</p>
+    <p>Log probabilities are negative, since probabilities are below one. Flip the sign to get a positive quantity where smaller is better, and divide by the number of pairs so that long words and short words are on the same scale. That is the <span class="ref" data-ref="nll">negative log-likelihood</span>, and when a model is being trained against it, the same quantity is called the loss.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig7">
+      <div class="fig-head"><span>figure 7 &middot; scoring the word baker</span><span id="f7Read">6 pairs</span></div>
+      <div class="fig-body"><svg id="f7" viewBox="0 0 900 320" role="img" aria-label="Each pair of the word baker with its probability and log probability, and the running total"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="f7Step">add the next pair</button><button class="chip" id="f7All">add all six</button><button class="chip" id="f7Reset">clear</button></div>
+      <div class="fig-cap"><b>Add the pairs one at a time.</b> The running total and the final score are computed from the probabilities shown.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">log_likelihood = <b>0.0</b>
+n = <b>0</b>
+
+<b>for</b> word <b>in</b> words:
+    chs = [<b>"."</b>] + list(word) + [<b>"."</b>]
+    <b>for</b> ch1, ch2 <b>in</b> zip(chs, chs[1:]):
+        prob = P[stoi[ch1], stoi[ch2]]
+        log_likelihood += torch.log(prob)
+        n += <b>1</b>
+
+nll = -log_likelihood / n</div>
+    <div class="intu"><i>in plain words</i>
+      <p>The score is the average surprise per character. A model that gave every real pair a high probability was rarely surprised, and its number is low.</p>
+      <p><b>There is a fixed reference point worth memorising.</b> A model that ignores the data and guesses uniformly among 25 characters scores the natural logarithm of 25, which is 3.219. Anything above that is worse than knowing nothing.</p>
+    </div>
+    <p>The word <code>baker</code> scores 1.8911, which is better than the corpus average of 2.2506, and that makes sense: <code>baker</code> is short and full of common pairs. A single word's score is not a measurement of the model, only of the fit between that model and that word.</p>
+    <p>So we have a bar to beat: 2.2506, from a table that took one pass through the data. To beat it, something has to change about what the model is allowed to look at.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Two characters of memory would need 15,625 rows and you have 671</h2>
+    <p>The table's weakness is easy to name. Standing on <code>e</code>, it gives the same answer whether the word so far is <code>bak</code> or <code>arch</code>. One character of memory is all it has.</p>
+    <p>The obvious repair is a bigger table: index by the last two characters instead of one. That means 25 times 25 rows, each with 25 columns. Three characters of memory means 15,625 rows. The table grows by a factor of 25 for every character of <b>context</b> you add.</p>
+    <p>The data does not grow at all. There are 671 observations, and there always will be. Spread across 15,625 rows, almost every row is empty, and a row built from zero or one observation predicts nothing useful no matter how you smooth it.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig8">
+      <div class="fig-head"><span>figure 8 &middot; rows needed against rows you can fill</span><span id="f8Read">1 character of context</span></div>
+      <div class="fig-body"><svg id="f8" viewBox="0 0 900 300" role="img" aria-label="How the number of table rows grows with context length against a fixed number of observations"></svg></div>
+      <div class="fig-ctl">
+        <label for="f8Slider">characters of context</label>
+        <input type="range" id="f8Slider" min="1" max="4" step="1" value="1">
+      </div>
+      <div class="fig-cap"><b>Drag from 1 to 4.</b> Rows needed is 25 raised to that power; observations stay at 671, and the average per row is the division of the two.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>in plain words</i>
+      <p>A counting table has to see a situation before it can say anything about it, and the number of possible situations multiplies every time you widen the window.</p>
+      <p><b>This is the exact problem the neural model exists to solve.</b> It does not store a row per situation. It stores a few thousand numbers that get reused across every situation, so a context it has never met can still produce a sensible answer.</p>
+    </div>
+    <p>The gap is not subtle. With three characters of context there are 15,625 possible rows and 671 observations, so on average each row would hold 0.04 observations. Nearly all of them would be empty boxes filled in by smoothing, which is another way of saying the model would be guessing uniformly.</p>
+    <p class="pull">The counting model does not fail because counting is naive. It fails because the table grows faster than any corpus can fill it.</p>
+    <p>So the second model keeps the wider window and throws away the table.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Every position in every word becomes one training example</h2>
+    <p>Fix a window width. The code uses three, which it calls the <b>block size</b>: the model always sees exactly the last three characters and predicts the fourth.</p>
+    <p>Start each word with the window full of dots, because at the beginning there are no previous characters and the dot is what stands for nothing-here. For <code>baker</code> the first example is: given <code>. . .</code>, the answer is <code>b</code>. Then slide the window one step, dropping the oldest character and appending the one just used, and the second example is: given <code>. . b</code>, the answer is <code>a</code>.</p>
+    <p>Keep sliding to the end, including the final dot as an answer so the model learns where words stop. Five letters give six examples, one per position, exactly as the pair-walk did.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig9">
+      <div class="fig-head"><span>figure 9 &middot; the window sliding through baker</span><span id="f9Read">0 of 6 examples</span></div>
+      <div class="fig-body"><svg id="f9" viewBox="0 0 900 340" role="img" aria-label="A three character window sliding through a word, producing one training example per position"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="f9Step">slide one step</button><button class="chip" id="f9All">all six</button><button class="chip" id="f9Reset">back to the start</button></div>
+      <div class="fig-cap"><b>Slide the window.</b> The left column is X, one row of three indices; the right column is Y, the single index that follows.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel"><b>for</b> word <b>in</b> words:
+    context = [stoi[<b>"."</b>]] * block_size
+    <b>for</b> ch <b>in</b> list(word) + [<b>"."</b>]:
+        ix = stoi[ch]
+        X.append(context.copy())
+        Y.append(ix)
+        context = context[<b>1</b>:] + [ix]      <i># drop oldest, append newest</i></div>
+    <p>Note <code>context.copy()</code>. Without it every row of X would point at the same list, which keeps being modified, and all 671 rows would end up identical. It is a one-word fix for a bug that produces a model that trains happily and learns nothing.</p>
+    <div class="intu"><i>in plain words</i>
+      <p>X is a table of 671 rows, each holding three numbers. Y is a column of 671 answers. <b>The model's whole job is to turn a row of X into a good guess at the matching entry of Y.</b></p>
+      <p>The window never grows and never looks further back than three. A word like <code>photographer</code> is not learned as a word; it is learned as ten separate small questions.</p>
+    </div>
+    <p>Something to keep in mind about the split that comes next. The script takes the last 15 percent of these rows as held-out data, which cuts through the middle of a word and leaves the validation set made of whichever occupations happen to be at the end of the list. Splitting by whole word instead is a small change and a much more honest test, and it is what the numbers later on this page use.</p>
+    <p>Now the model has to do something with three indices. Not compare them, not average them. They are addresses.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Each character gets eight numbers that the training is allowed to change</h2>
+    <p>Build a table with 25 rows, one per character, and 8 columns. Fill it with random numbers. Row 5 is now the description of character 5, and it means nothing at all yet.</p>
+    <p>Writing <code>C[X]</code> takes every index in X and replaces it with that character's row. A batch of 32 examples, each three characters wide, comes out as 32 by 3 by 8 numbers. No arithmetic has happened; this is a lookup.</p>
+    <p>What makes this different from the counting table is that these numbers are <b>parameters</b>: training adjusts them. If treating <code>a</code> and <code>o</code> similarly makes the model's guesses better, nothing stops their rows from drifting toward each other, and then anything learned about <code>a</code> partly transfers to <code>o</code>. That transfer is how the model handles contexts it has never seen.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig10">
+      <div class="fig-head"><span>figure 10 &middot; the embedding table after training</span><span id="f10Read">click a character</span></div>
+      <div class="fig-body"><svg id="f10" viewBox="0 0 900 340" role="img" aria-label="Each character's eight learned numbers, with its nearest neighbours by direction"></svg></div>
+      <div class="fig-ctl" id="f10Ctl"></div>
+      <div class="fig-cap"><b>Click a character.</b> Its eight real numbers are drawn as cells; the three below are the characters whose rows point most nearly the same way.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">C = torch.randn((vocab_size, embed_dim))   <i># 25 x 8, random to begin</i>
+emb = C[X]                                <i># (32, 3, 8): three lookups per example</i></div>
+    <div class="intu"><i>in plain words</i>
+      <p>The counting table had one number per situation, and a situation it never saw was a blank. Here every character carries eight numbers that are reused in every situation it appears in. <b>Evidence about a character in one context improves its answer in every other context.</b></p>
+      <p>That is the entire reason this model can be given a wider window without needing 15,625 rows of data.</p>
+    </div>
+    <p>Be careful about how much you read into these numbers. After 750 steps on 80 words, <code>a</code>'s nearest neighbour is <code>o</code>, which is pleasing and might be chance. Eight columns is a size chosen because it is small enough to print, and the columns have no individual meanings: no column is the vowel column. Only the pattern across all eight is used.</p>
+    <p>Three lookups per example leaves 24 numbers. Turning those into a guess is the network.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The network is two multiplications with a squash in between</h2>
+    <p>The three embeddings for one example sit as 3 rows of 8. Lay them end to end into one row of 24, which is what <code>emb.view(emb.shape[0], -1)</code> does. The <code>-1</code> means work out this dimension from the total, so a batch of 32 becomes 32 by 24 without you having to type 24.</p>
+    <p>Flattening keeps position information: the first eight numbers are always the oldest character in the window, the last eight always the newest. The network can treat them differently because they arrive in different slots.</p>
+    <p>Then multiply by a 24 by 64 matrix, add a bias of 64 numbers, and pass the result through <code>tanh</code>, which squashes every value into the range from minus one to one. Without that squash the two multiplications would collapse into a single one and the model could only draw straight-line relationships. Then multiply by a 64 by 25 matrix and add 25 more numbers. Twenty five outputs, one per character. These are the <span class="ref" data-ref="lg">logits</span>: raw scores, not yet probabilities.</p>
+  </div>
+  <div class="bleed scrolly right" id="sc2">
+    <div class="wide sg">
+      <div class="fig" style="margin:0">
+        <div class="fig-head"><span>figure 11 &middot; the shape of one batch</span><span id="f11Read">input</span></div>
+        <div class="fig-body"><svg id="f11" viewBox="0 0 520 400" role="img" aria-label="A batch changing shape through the lookup, the flatten, the hidden layer and the output layer"></svg></div>
+        <div class="fig-ctl"><button class="chip" id="f11Prm">show the parameter counts</button></div>
+        <div class="fig-cap"><b>Scroll, or click a step.</b> Every shape and count here is from the running model.</div>
+      </div>
+    </div>
+    <div class="col ss">
+      <div class="col stp" data-step="0"><p>In goes a batch of 32 examples, each three indices wide. Just numbers naming characters: 32 by 3.</p></div>
+      <div class="col stp" data-step="1"><p><code>C[X]</code> replaces each index with its eight numbers. 32 by 3 by 8. Still no arithmetic, only lookups.</p></div>
+      <div class="col stp" data-step="2"><p>The three rows of eight are laid end to end: 32 by 24. Position is preserved, so the oldest character stays in the first eight slots.</p></div>
+      <div class="col stp" data-step="3"><p>Multiply by W1, add b1, squash with tanh. 32 by 64. This is the only place the model mixes the three characters together.</p></div>
+      <div class="col stp" data-step="4"><p>Multiply by W2, add b2. 32 by 25: one score per character in the vocabulary. Five tensors, 3,425 numbers, and that is the whole model.</p></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">emb = self.C[X]                          <i># (32, 3, 8)</i>
+x = emb.view(emb.shape[<b>0</b>], -<b>1</b>)             <i># (32, 24)</i>
+h = torch.tanh(x @ self.W1 + self.b1)    <i># (32, 64)</i>
+logits = h @ self.W2 + self.b2           <i># (32, 25)</i></div>
+    <div class="intu"><i>in plain words</i>
+      <p>A logit is a score, and only its size relative to the other 24 matters. A logit of 8 next to a logit of 2 is a strong preference; two logits of 8 and 8 is no preference at all, even though the numbers are large.</p>
+      <p><b>The network never outputs a character.</b> It outputs 25 scores and hands them on, which is what makes the next step interchangeable: the same scores can be turned into a loss for training or into a draw for generating.</p>
+    </div>
+    <p>Count the numbers being learned: 200 in the embedding table, 1,536 in W1, 64 in b1, 1,600 in W2, 25 in b2. Total 3,425. The counting table had 625 boxes, so this model is about five times larger, and it is being asked to do considerably more with a window three times as wide.</p>
+    <p>Twenty five scores, and one of them corresponds to the character that actually came next. Turning that into a single number to improve is the last piece before training.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Cross entropy is the same score as before, applied to scores instead of counts</h2>
+    <p>Take the 25 logits. Exponentiate each one, which makes them all positive, then divide by their total so they sum to one. That is <b>softmax</b>, and it turns scores into a probability distribution exactly like a normalised row of the counting table.</p>
+    <p>Now look up the probability given to the character that actually came next, take its logarithm, flip the sign. That is the same negative log-likelihood from before. Doing both steps at once is what <code>F.cross_entropy</code> is, and it takes logits rather than probabilities on purpose: computing the softmax and the logarithm together avoids exponentiating a large number and then immediately taking its log, which loses precision and can overflow.</p>
+    <p>Because it is the same measurement, the two models are directly comparable. A cross entropy of 2.4 from the network means the same thing as an NLL of 2.4 from the table.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig12">
+      <div class="fig-head"><span>figure 12 &middot; 25 scores, one answer</span><span id="f12Read">context: b a k</span></div>
+      <div class="fig-body"><svg id="f12" viewBox="0 0 900 340" role="img" aria-label="The distribution the trained network gives for a context, and the loss for each possible correct answer"></svg></div>
+      <div class="fig-ctl" id="f12Ctl"></div>
+      <div class="fig-cap"><b>Click any bar</b> to see the loss the model would pay if that character were the right answer. The real answer for this context is <code>e</code>.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel"><b>def</b> loss(self, X, Y):
+    <b>return</b> F.cross_entropy(self.forward(X), Y)</div>
+    <div class="intu"><i>in plain words</i>
+      <p>The loss only ever looks at the probability of the one right answer. Everything the model spent on the other 24 characters is charged for indirectly, because probabilities have to sum to one, so any weight put elsewhere was taken from the answer.</p>
+      <p><b>Being confidently wrong is punished far harder than being unsure.</b> A probability of 0.5 costs 0.69. A probability of 0.01 costs 4.6.</p>
+    </div>
+    <p>Here is the moment the wider window earns its place. Given the context <code>b a k</code>, the trained network puts 0.62 on <code>e</code>. The counting table, which can only see the <code>k</code>, puts 0.17 on it. Same corpus, same answer, and the difference is entirely that one model knew a <code>b</code> and an <code>a</code> came before.</p>
+    <p>That comparison is on a context the model has seen. Getting it to hold on words it has never met is what training is for, and training is where the interesting failure lives.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Training is four lines repeated: measure, blame, nudge, clear</h2>
+    <p>Pick 32 rows of X at random. Run them through the network and get a loss. Call <code>loss.backward()</code>, which works out, for each of the 3,425 numbers, whether nudging it up would raise the loss or lower it, and by how much. That quantity is the <b>gradient</b>. Then move every number a small step in the direction that lowers the loss.</p>
+    <p>The step size is the <b>learning rate</b>, 0.1 here. Too small and training crawls. Too large and each move overshoots, and the loss bounces around instead of settling.</p>
+    <p>The gradients must be cleared before each pass, which is what setting <code>p.grad = None</code> does. PyTorch adds new gradients to whatever is already there, so skipping the clear means every step is being steered partly by measurements from steps you have already taken.</p>
+    <p>The 32 rows are a <b>batch</b>. Using a sample rather than all 562 rows makes each step much cheaper and slightly wrong, which is a trade almost always worth taking: many noisy steps beat a few exact ones.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig13">
+      <div class="fig-head"><span>figure 13 &middot; one pass through the loop</span><span id="f13Read">ready</span></div>
+      <div class="fig-body"><svg id="f13" viewBox="0 0 900 350" role="img" aria-label="The four stages of one training step with the real loss at that point"></svg></div>
+      <div class="fig-ctl"><button class="chip" id="f13Go">run one step</button><button class="chip" id="f13Hun">run 100 steps</button><button class="chip" id="f13Reset">back to step 0</button></div>
+      <div class="fig-cap"><b>Run a step, then a hundred.</b> The loss shown is read from the recorded training run at that step count.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">idx = torch.randint(<b>0</b>, n, (batch_size,))
+loss = model.loss(X_tr[idx], Y_tr[idx])
+
+<b>for</b> p <b>in</b> model.parameters():
+    p.grad = <b>None</b>                  <i># clear, or gradients accumulate</i>
+loss.backward()                    <i># fill in every p.grad</i>
+
+<b>for</b> p <b>in</b> model.parameters():
+    <b>with</b> torch.no_grad():
+        p -= lr * p.grad           <i># the actual learning</i></div>
+    <div class="intu"><i>in plain words</i>
+      <p>Nothing in this loop knows anything about language. It knows one number, the loss, and which way to push each of 3,425 dials to make that number smaller.</p>
+      <p><b>All of the structure in the output comes from the data, through that one number.</b> The loop would run identically on any other pile of text.</p>
+    </div>
+    <p>At step 0, before any learning, the loss is 3.442. Guessing uniformly among 25 characters would score 3.219, so the random starting point is slightly worse than knowing nothing, which is what random should mean. After 100 steps it is 2.251, and after 750 it is 1.413.</p>
+    <p>Falling loss looks like progress. It is worth asking, carefully, what exactly is getting better.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The training loss keeps falling long after the model stops improving</h2>
+    <p>Hold out twelve of the eighty occupations before training starts. Fit on the other sixty eight, and every so often measure the loss on the twelve the model has never seen. Two numbers now, and they do not do the same thing.</p>
+    <p>The <b>training loss</b> falls the whole way, from 3.442 to 0.601 after ten thousand steps. The <b>validation loss</b> falls to 2.410 at around step 750, and then turns around and climbs to 4.209.</p>
+    <p>That climb is <b>overfitting</b>, and the name is exact: the model is still getting better at the sixty eight words in front of it, by learning them specifically, and that specific knowledge is worthless on any other word. With 3,425 parameters and 562 training examples there is easily enough capacity to memorise.</p>
+    <p>The repair is <b>early stopping</b>: keep the version from around step 750 and throw the rest away. The script's default of ten thousand steps trains straight past the useful model and hands you the memorised one.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig14">
+      <div class="fig-head"><span>figure 14 &middot; two losses, ten thousand steps</span><span id="f14Read">step 0</span></div>
+      <div class="fig-body"><svg id="f14" viewBox="0 0 900 380" role="img" aria-label="Training and validation loss curves crossing, with the best validation point marked"></svg></div>
+      <div class="fig-ctl">
+        <label for="f14Slider">training steps</label>
+        <input type="range" id="f14Slider" min="0" max="14" step="1" value="0">
+      </div>
+      <div class="fig-cap"><b>Drag the slider through the run.</b> Both curves are the recorded losses from the real training run at those step counts.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>in plain words</i>
+      <p>The training loss measures how well the model has fitted the answers it was shown. The validation loss measures whether any of that is useful elsewhere. <b>Only the second one is a measurement of the model.</b></p>
+      <p>Watch the samples change alongside it. At ten thousand steps this model happily produces <code>teacher</code>, <code>translator</code> and <code>painter</code>, which are not achievements. They are words from the training list, reproduced.</p>
+    </div>
+    <p>Two things to keep in mind. The gap between the two curves is a size signal: a large gap with a small corpus usually means the model is too big or trained too long, and both are cheap to fix. And the validation set here is twelve words, so its loss is a noisy number, which is why the curve wobbles near the bottom rather than turning at one clean point.</p>
+    <p>Stopping at 750 gives a model worth sampling from. What comes out of it depends on one more choice, made after training is over.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>Temperature reshapes the distribution without touching the model</h2>
+    <p>Divide the logits by a number before the softmax. That number is the <b>temperature</b>, and it changes nothing that was learned. Same weights, same scores, different shape to the distribution they turn into.</p>
+    <p>Divide by 0.5 and the differences between logits double, so the leader pulls away and the tail is crushed. Divide by 1.5 and the differences shrink, so the distribution flattens and unlikely characters get a real chance. At exactly 1 the logits are used as they are.</p>
+    <p>The effect on generated words is direct. Low temperature gives safe, repetitive, often memorised output. High temperature gives variety and more nonsense. There is no correct setting, only a choice about which failure you would rather have.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig15">
+      <div class="fig-head"><span>figure 15 &middot; the same scores at three temperatures</span><span id="f15Read">T = 1.0</span></div>
+      <div class="fig-body"><svg id="f15" viewBox="0 0 900 390" role="img" aria-label="One context's probability distribution redrawn at three temperatures, with the words each setting produces"></svg></div>
+      <div class="fig-ctl" id="f15Ctl"></div>
+      <div class="fig-cap"><b>Change the temperature and the context.</b> Bars and words are the real output of the trained model at that setting.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="panel">probs = torch.softmax(logits / temperature, dim=<b>1</b>)
+ix = torch.multinomial(probs, <b>1</b>, generator=g).item()</div>
+    <div class="intu"><i>in plain words</i>
+      <p>Temperature is a knob on the sampling, not on the model. Turning it down does not make the model more accurate; it makes it less willing to take its own low-probability options.</p>
+      <p><b>It cannot add knowledge and it cannot remove a mistake.</b> If the model is confidently wrong, a low temperature makes it wrong more consistently.</p>
+    </div>
+    <p>One thing that catches people out: temperature has no effect on the loss. The loss is measured on the distribution the model actually produces, at temperature 1. Reporting a low-temperature sample as evidence the model improved is comparing two different things.</p>
+    <p>Which leaves the question the whole project exists to answer. Two models, one corpus. Which one is actually better?</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The network wins by a tenth of a nat, and not for the reason you would guess</h2>
+    <p>To compare fairly, both models get the same sixty eight training words and are scored on the same twelve held-out ones. The counting table, fitted on those sixty eight, scores 2.496. The network, stopped at its best point, scores 2.410. A win of 0.086.</p>
+    <p>That is a real improvement and a small one. On a corpus of eighty words it is roughly what there is to win.</p>
+    <p>Now the part that is easy to get wrong. Run the same experiment with the window set to one character, so the network sees exactly what the counting table sees, and it scores 2.379. Better than the three-character network. The window was not what helped.</p>
+    <p>What helped is that the network's numbers are shared. Every character's eight numbers are adjusted by every example that character appears in, so a rare context still gets an answer assembled from things the model learned elsewhere. The counting table has to fill each row from that row's own observations, and on 671 observations most rows are nearly empty.</p>
+  </div>
+  <div class="wide">
+    <div class="fig" id="fig16">
+      <div class="fig-head"><span>figure 16 &middot; scored on the same twelve words</span><span id="f16Read">held-out loss</span></div>
+      <div class="fig-body"><svg id="f16" viewBox="0 0 900 340" role="img" aria-label="Held-out loss for the counting table and for networks with different window sizes"></svg></div>
+      <div class="fig-ctl" id="f16Ctl"></div>
+      <div class="fig-cap"><b>Click a bar.</b> Every value is a measured held-out loss; lower is better, and 3.219 is what guessing uniformly costs.</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="intu"><i>in plain words</i>
+      <p>A wider window is only useful if there is enough data to say something about what fills it. Eighty words cannot support three characters of context, so the extra width mostly adds parameters to overfit with.</p>
+      <p><b>The lesson is not that context does not matter.</b> It is that context and corpus size are one decision, not two, and this corpus is the small one.</p>
+    </div>
+    <p>What would change the answer is more words. The same code on tens of thousands of names shows the wider window paying off clearly, because then there is enough evidence behind each pattern for the model to have something to generalise from. Nothing about the architecture has to change; only the pile of text does.</p>
+    <p class="pull">Guessing the next character is the whole mechanism. Everything else is how much you can afford to remember while you do it.</p>
+    <p>A last thing worth holding on to. Both models here are doing exactly what a large language model does: assign a probability to every possible next symbol, draw one, move along. What separates them from a real system is the size of the vocabulary, the width of the window, and the number of parameters. Not the idea.</p>
+  </div>
+</section>
+
+
+<section class="reveal">
+  <div class="col">
+    <h2>The whole project in one screen</h2>
+    <p>Count pairs. Divide by row totals. Add one so nothing is impossible. Draw from a row and move. Score with the log of the probability you gave the truth. Then, when the table cannot grow any further, swap the rows for a few thousand shared numbers, slide a window over the text, and push those numbers downhill until a held-out score stops improving.</p>
+    <p>Run it yourself with <code>python build.py --tiny</code> for five hundred steps, or <code>--full</code> for ten thousand, which will show you the overfitting rather than tell you about it.</p>
+    <div class="note">Every number on this page comes from running the code with the 80 occupation corpus: the 625 counts, the 411 empty boxes, the score of 2.2506, the trace for <code>baker</code>, the embedding rows, the probability distributions, the loss curve and the held-out comparison. The two models were compared on a split by whole word, sixty eight to train and twelve held out, because the script's default split cuts through the middle of words and leaves an easier test than it looks.</div>
+  </div>
+</section>
+
+<p class="note hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">press <kbd>s</kbd> for the deeper cuts</p>
+
+<section class="panel weeds" id="weeds" hidden aria-labelledby="weedsHint">
+  <div class="col">
+    <h3>Into the weeds</h3>
+    <details><summary>Why is the loss in nats rather than bits?</summary>
+      <p>Because <code>torch.log</code> is the natural logarithm. Divide by 0.693 to convert to bits if you want to talk about compression: 2.41 nats is about 3.48 bits per character. Nothing changes except the unit, but do not compare a nats figure with a bits figure from somewhere else.</p></details>
+    <details><summary>What does the +1 smoothing actually assume?</summary>
+      <p>That every pair was seen once before you started counting. It is a strong and fairly arbitrary claim, and it treats an unseen <code>aa</code> as exactly as plausible as an unseen <code>qz</code>. Better schemes back off to a simpler model for unseen cases rather than spreading probability flat. For a corpus this size the difference is small; for a real one it is not.</p></details>
+    <details><summary>Why initialise W1 and W2 by dividing by the square root of the input size?</summary>
+      <p>To keep the numbers coming out of each layer at roughly the same scale as the numbers going in. Without it, a 24-wide input multiplied by random weights produces values with a much larger spread, <code>tanh</code> saturates near plus or minus one, and the gradients through it become tiny. The model still trains, just slowly and badly at the start.</p></details>
+    <details><summary>Could the bias b1 be dropped?</summary>
+      <p>Mostly yes, with almost no effect here. It lets each hidden unit shift its own threshold, which matters more with normalisation layers absent and inputs uncentred. It is 64 numbers out of 3,425, so it is cheap either way.</p></details>
+    <details><summary>Why does the validation curve wobble instead of turning at a single point?</summary>
+      <p>It is measured on 109 examples from twelve words. That is a small sample, so the number moves around by a few hundredths for reasons that have nothing to do with the model getting better or worse. Pick the stopping point from the shape of the curve, not from the single lowest value.</p></details>
+    <details><summary>What is the fastest way to make this model actually good?</summary>
+      <p>More data, by a long way. Everything else on the list, wider windows, more hidden units, better initialisation, a learning rate schedule, is a smaller lever than going from 80 words to 30,000. The order of work is: get more text, then stop early, then make the model bigger.</p></details>
+    <details><summary>Why does the greedy sample loop forever?</summary>
+      <p>Because the whole procedure is deterministic and stateless beyond the current character. If <code>b</code> leads to <code>a</code> and <code>a</code> leads to <code>n</code> and <code>n</code> leads to a dot, that is the only word this model will ever say. Real systems that use greedy decoding avoid the trap by having far more context, so the state is never quite the same twice.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="col">
+    <div class="note">
+      <p style="margin:0 0 10px"><b>Reproducing it.</b> Corpus of 80 occupations, vocabulary of 25 symbols, 671 transitions. Bigram model with add-one smoothing. Neural model: block size 3, embedding width 8, hidden width 64, batch 32, learning rate 0.1, 3,425 parameters, seed 0. Loss curves recorded at fixed checkpoints on a split by whole word.</p>
+      <p style="margin:0">Written August 2026. The design of this build follows Andrej Karpathy's makemore, which is where the bigram-then-MLP progression comes from.</p>
+    </div>
+  </div>
+</footer>
+<script>var CH=[".","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","v","w","y","z"],NMAT=[[0,6,11,8,5,3,3,3,1,1,3,0,4,5,1,0,11,2,3,6,0,0,4,0,0],[0,0,0,5,1,0,0,0,0,3,0,1,1,1,12,0,1,8,1,2,1,1,1,0,1],[0,3,1,0,0,3,0,0,0,2,0,0,3,0,0,1,0,2,0,0,2,0,0,0,0],[1,1,0,0,0,2,0,0,9,5,0,2,1,0,0,3,0,0,0,8,2,0,0,0,0],[0,1,0,0,0,6,0,1,0,3,0,0,0,0,0,1,0,1,0,0,2,0,0,0,0],[2,3,0,6,1,3,1,0,0,0,0,1,3,1,4,1,2,44,2,1,0,0,1,1,0],[1,1,0,0,0,2,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,0,0,0,2,0,0,0,3,0,0,1,0,1,0,0,2,0,0,0,0,0,0,0],[2,1,0,0,0,7,0,0,0,4,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0],[0,5,1,5,0,2,0,1,0,0,0,0,2,0,8,1,0,1,12,7,0,2,0,0,0],[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0],[0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0],[0,4,0,0,2,5,0,0,0,2,0,0,1,0,0,5,1,0,0,0,1,0,0,1,0],[0,2,1,0,0,3,0,0,0,4,0,0,0,1,0,0,1,0,0,0,1,0,0,0,0],[6,1,0,1,2,6,0,1,0,4,0,1,0,0,0,0,0,0,1,5,1,0,0,0,0],[0,0,1,2,1,0,2,4,0,1,0,1,2,1,2,1,0,17,1,3,0,0,0,0,0],[0,1,0,0,0,2,0,0,3,0,0,0,1,0,0,4,0,5,0,1,1,0,0,0,0],[56,6,1,2,1,4,0,0,0,7,0,0,0,1,0,5,2,0,1,2,0,1,0,1,0],[0,0,0,2,0,2,0,0,2,3,0,0,1,2,0,2,0,0,1,11,1,0,0,0,0],[11,2,0,1,0,13,0,0,2,1,0,0,0,0,0,12,0,3,0,1,3,0,0,0,0],[0,1,1,2,2,0,0,0,0,1,0,0,1,1,0,0,0,4,1,2,0,0,0,0,0],[0,0,0,0,0,3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0],[1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,2,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],EMB=[[-1.34,-1.26,-.42,-.8,1.03,.59,-.49,-2.97],[.4,-1.4,.86,-.08,-.16,1.5,.92,.17],[-1.58,-1.71,.56,.99,.68,-1.68,-.31,1.89],[1.03,-.52,-.53,.72,1.49,1.35,1.37,-1.05],[-.83,-.06,-.61,.37,.14,.01,.73,.72],[-.21,.87,-.02,-.06,.68,2.9,-1.79,-1.7],[-.64,.96,.99,.26,-.26,-.54,.57,-.45],[-.51,.79,1.7,3.53,-1.51,-.94,1.88,-.67],[-.5,1.06,.79,1.55,-1.73,2.32,-.54,.31],[-2.23,-.89,-.45,-.68,-1.16,1.41,-.06,1.23],[-.02,.75,-.86,-.05,.84,-.41,1.05,.41],[-.34,2.27,-1.98,.03,-1.07,-.91,-0,.7],[1.66,-1.39,.38,.5,-2.74,-1.77,-.28,.18],[.15,.07,.36,.56,.34,-1.04,.75,-.88],[-.1,-2.61,-.32,.34,1,.19,-1.03,-.07],[-.72,-.44,2.16,-.55,.35,1.26,1.03,1.14],[-.72,-.47,-.83,.48,.78,.64,2.3,-1.11],[.07,.4,-.69,-1.5,.12,-.9,-.41,.28],[.06,-.07,.22,1.38,.57,.76,-.3,.04],[.52,-.73,-2.1,.13,-.71,.25,.29,.11],[.9,-1.16,.34,-.31,1.12,-.27,.75,.58],[.22,.21,-.22,.51,-.36,-1.13,.27,-1.39],[-.12,-.27,-1.71,-.16,1.21,.07,1.47,.84],[-.68,-1.91,-.73,-.55,-.87,-1.35,-.91,-1.92],[-1.1,-.76,.04,.39,-.26,1.28,.01,-.87]],NBR={".":[["z",.643],["y",.641],["e",.498]],a:[["o",.679],["u",.479],["z",.475]],b:[["d",.476],["n",.474],["u",.318]],c:[["p",.724],["a",.469],["w",.468]],d:[["w",.719],["j",.589],["i",.515]],e:[["z",.544],[".",.498],["h",.479]],f:[["g",.681],["m",.564],["v",.415]],g:[["f",.681],["m",.6],["v",.48]],h:[["s",.511],["e",.479],["z",.463]],i:[["z",.554],["d",.515],["o",.394]],j:[["w",.822],["d",.589],["k",.501]],k:[["j",.501],["r",.453],["t",.354]],l:[["y",.409],["v",.374],["g",.292]],m:[["v",.808],["g",.6],["f",.564]],n:[["y",.481],["b",.474],["u",.46]],o:[["a",.679],["i",.394],["u",.334]],p:[["c",.724],["w",.605],["d",.505]],r:[["k",.453],["j",.304],["y",.215]],s:[["h",.511],["c",.46],["e",.426]],t:[["w",.513],["k",.354],["d",.313]],u:[["a",.479],["n",.46],["w",.449]],v:[["m",.808],["y",.528],["g",.48]],w:[["j",.822],["d",.719],["p",.605]],y:[[".",.641],["v",.528],["n",.481]],z:[[".",.643],["i",.554],["e",.544]]},NPROB={"...":{.5:[1e-4,.1429,.0379,.0448,.0577,.0086,.0138,.0016,.0042,.0017,.0241,0,.0085,.0706,.0023,.002,.2101,.0142,.0221,.3036,4e-4,0,.0288,0,0],"1.0":[.003,.1088,.056,.0609,.0691,.0266,.0338,.0114,.0186,.0117,.0447,.0017,.0265,.0765,.0138,.0127,.1319,.0342,.0428,.1585,.0057,.0011,.0489,.0011,2e-4],1.5:[.0081,.0885,.0569,.0601,.0654,.0346,.0406,.0197,.0272,.02,.0489,.0055,.0345,.07,.0223,.0212,.1006,.0409,.0475,.1137,.0124,.0041,.0519,.004,.0013]},"..b":{.5:[0,.1881,3e-4,.0015,1e-4,.0604,0,3e-4,0,.4779,0,0,.0086,0,1e-4,.1187,0,.0488,3e-4,.0041,.0907,0,0,0,0],"1.0":[2e-4,.1713,.0071,.0155,.0032,.097,.0013,.007,.001,.273,.0017,2e-4,.0366,.0028,.003,.136,.0012,.0873,.0069,.0254,.1189,4e-4,.0016,.0012,3e-4],1.5:[.0017,.1425,.017,.0288,.0101,.0976,.0056,.0169,.0045,.1945,.0067,.0015,.0509,.0091,.0096,.1223,.0053,.0909,.0167,.0399,.1118,.0023,.0064,.0052,.0023]},bak:{.5:[.0265,.0507,0,3e-4,0,.913,0,0,0,0,0,1e-4,3e-4,0,0,4e-4,0,0,2e-4,0,1e-4,0,0,.0083,0],"1.0":[.1059,.1465,4e-4,.0117,3e-4,.6216,1e-4,1e-4,9e-4,.0019,4e-4,.0065,.0104,1e-4,3e-4,.0136,4e-4,3e-4,.0081,.001,.0071,.0013,6e-4,.0594,.0011],1.5:[.1279,.1587,.0031,.0294,.0028,.416,.0014,8e-4,.0052,.0086,.003,.0198,.0273,.0013,.0026,.0325,.003,.0027,.0231,.0058,.021,.0069,.0041,.087,.0062]},ain:{.5:[.0019,1e-4,0,2e-4,.0042,.0908,0,0,5e-4,.1513,0,2e-4,.0013,1e-4,5e-4,9e-4,1e-4,0,0,.7478,1e-4,0,0,0,0],"1.0":[.0234,.0058,.001,.0068,.0351,.1625,.0019,.001,.0125,.2098,5e-4,.0076,.0194,.0039,.0126,.0162,.0039,.0011,.0018,.4664,.0046,9e-4,5e-4,4e-4,3e-4],1.5:[.0417,.0165,.0051,.0182,.0546,.1517,.0079,.0052,.0275,.1799,.003,.0196,.0368,.0127,.0276,.0326,.0126,.0053,.0076,.3064,.014,.0048,.0033,.0029,.0024]},tea:{.5:[.0272,0,.0018,.0273,.0847,1e-4,.0194,.025,.0045,.1074,4e-4,.0019,.0092,.0042,.1242,4e-4,.0231,.0378,2e-4,.4734,8e-4,.0266,0,2e-4,0],"1.0":[.0511,8e-4,.0131,.0511,.0901,.0032,.0431,.049,.0207,.1015,.0061,.0134,.0297,.0202,.1091,.0065,.0471,.0602,.0039,.213,.009,.0505,.0022,.0041,.0015],1.5:[.0543,.0033,.0219,.0543,.0793,.0086,.0485,.0528,.0298,.0858,.0132,.0223,.0378,.0292,.0901,.0137,.0514,.0606,.0097,.1407,.017,.0539,.0066,.0102,.0052]}},BROW={"...":[.0108,.0753,.1075,.086,.0538,.0323,.043,.0323,.0215,.0215,.043,.0108,.0323,.0538,.0215,.0108,.1075,.0323,.043,.0753,.0108,.0108,.043,.0108,.0108],"..b":[.027,.0811,.0541,.027,.027,.0811,.027,.027,.027,.0811,.027,.027,.0541,.027,.027,.0541,.027,.0541,.027,.027,.0811,.027,.027,.027,.027],bak:[.0333,.0333,.0333,.0333,.0333,.1667,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0333,.0667,.0333,.0333,.0333,.0333,.0333,.0333],ain:[.1,.04,.02,.04,.06,.1,.02,.04,.02,.1,.02,.04,.02,.02,.02,.02,.02,.02,.04,.12,.04,.02,.02,.02,.02],tea:[.0172,.0172,.0172,.0862,.0345,.0172,.0172,.0172,.0172,.0517,.0172,.0345,.0345,.0345,.1724,.0172,.0345,.1207,.0345,.0517,.0345,.0345,.0345,.0172,.0345]},CURVE=[{step:0,train:3.442,val:3.373},{step:100,train:2.251,val:2.597},{step:200,train:2.015,val:2.513},{step:300,train:1.854,val:2.437},{step:400,train:1.724,val:2.419},{step:500,train:1.624,val:2.454},{step:750,train:1.413,val:2.41},{step:1e3,train:1.218,val:2.529},{step:1500,train:.973,val:2.746},{step:2e3,train:.804,val:3.03},{step:3e3,train:.686,val:3.461},{step:4e3,train:.645,val:3.676},{step:6e3,train:.619,val:3.878},{step:8e3,train:.603,val:4.103},{step:1e4,train:.601,val:4.209}],SWEEP={1:{best_val:2.379,at_step:2e3,params:2401},2:{best_val:2.45,at_step:750,params:2913},3:{best_val:2.41,at_step:750,params:3425},4:{best_val:2.517,at_step:400,params:3937},5:{best_val:2.446,at_step:300,params:4449}},NSAMP={.5:["programer","protor","phem","puor","phnter","eninter","tocranser","teator"],"1.0":["puoiyer","","sisisn","arse","actor","plosisler","wurenor","rauser"],1.5:["puoiygr","","sirk","nrarse","amuomdglnpisler","wurenoskrzian","icmisn","aw"]},BSAMP=["wwhercssotach","letocsokjenericor","bantontr","glmar","pvacmgr","ubaryspofstr","ksmucn"],TRACE=[{a:".",b:"b",p:.1143,logp:-2.1691},{a:"b",b:"a",p:.0952,logp:-2.3514},{a:"a",b:"k",p:.0308,logp:-3.4812},{a:"k",b:"e",p:.1613,logp:-1.8245},{a:"e",b:"r",p:.4412,logp:-.8183},{a:"r",b:".",p:.4957,logp:-.7019}],XYB=[[[".",".","."],"b"],[[".",".","b"],"a"],[[".","b","a"],"k"],[["b","a","k"],"e"],[["a","k","e"],"r"],[["k","e","r"],"."]],VALW=["professor","barber","blacksmith","electrician","librarian","geologist","lecturer","waiter","publisher","cleaner","director","miner"],FACT={words:80,V:25,trans:671,zeros:411,cells:625,nll:2.2506,nll_raw:1.9436,pairs:671,params:3425,pbreak:{C:200,W1:1536,b1:64,W2:1600,b2:25},bigval:2.496,best:{step:750,train:1.413,val:2.41},trw:68,vaw:12,trp:562,vap:109,uniform:3.219,bakernll:1.8911,pairs_ex:{".b":{count:11,p_raw:.13750000298023224,p_smooth:.11428571492433548},er:{count:44,p_raw:.5714285969734192,p_smooth:.44117647409439087},or:{count:17,p_raw:.43589743971824646,p_smooth:.28125},"r.":{count:56,p_raw:.6222222447395325,p_smooth:.4956521689891815},aa:{count:0,p_raw:0,p_smooth:.015384615398943424}}},STRACE=[{from:".",to:"c",p:.0857,top:"b",ptop:.1143},{from:"c",to:"l",p:.0339,top:"h",ptop:.1695},{from:"l",to:"j",p:.0213,top:"e",ptop:.1277},{from:"j",to:".",p:.0357,top:"e",ptop:.0714}],GREEDY="ban";
+</script>
+
+<script>
+(function(){
+"use strict";
+var REDUCE=(typeof matchMedia==='function')&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+function E(id){return document.getElementById(id);}
+function set(id,h){var e=E(id); if(e) e.innerHTML=h;}
+function txt(id,s){var e=E(id); if(e) e.textContent=s;}
+var R=Math.round;
+function fx(n,k){return Number(n).toFixed(k);}
+
+/* ---------- THE ATOM: one cell, four states ----------
+   empty = nothing observed · val = a value · key = the cell under attention
+   heat  = a value drawn as intensity                                       */
+function cell(x,y,w,h,st,s,o){
+  o=o||{}; x=R(x);y=R(y);w=R(w);h=R(h);
+  var fill='none',stroke='var(--v21)',cls='vl',dash='',sw=1.5,fo='';
+  if(st==='val'){fill='var(--v19)';}
+  else if(st==='key'){fill='var(--v0)';stroke='var(--v0)';cls='vr';}
+  else if(st==='heat'){fill='var(--v0)';fo=' fill-opacity="'+(o.op||0).toFixed(3)+'"';cls='vl';}
+  else {dash=' stroke-dasharray="4 3"';cls='vs';}
+  if(o.mark){stroke='var(--'+o.mark+')';sw=2.5;}
+  var g='<g'+(o.part?' data-part="'+o.part+'"':'')+(o.gel?' data-gel="'+o.gel+'"':'')+'>';
+  g+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="3" fill="'+fill+'"'+fo+
+     ' stroke="'+stroke+'" stroke-width="'+sw+'"'+dash+' shape-rendering="crispEdges"/>';
+  if(s!==''&&s!=null){
+    var an=o.left?'':' text-anchor="middle"', tx=o.left? x+10 : x+w/2;
+    g+='<text class="'+(o.cls||cls)+'"'+an+' x="'+R(tx)+'" y="'+R(y+h/2+5)+'">'+s+'</text>';
+  }
+  g+='</g>';
+  return g;
+}
+function lab(x,y,s,an){return '<text class="lb"'+(an?' text-anchor="'+an+'"':'')+' x="'+R(x)+'" y="'+R(y)+'">'+s+'</text>';}
+function head(x,y,s){return '<text class="hd" x="'+R(x)+'" y="'+R(y)+'">'+s+'</text>';}
+function val(x,y,s,an){return '<text class="vl"'+(an?' text-anchor="'+an+'"':'')+' x="'+R(x)+'" y="'+R(y)+'">'+s+'</text>';}
+function arrow(x1,y1,x2,y2){return '<path d="M'+R(x1)+' '+R(y1)+' L'+R(x2)+' '+R(y2)+
+  '" stroke="var(--v11)" stroke-width="1.5" marker-end="url(#ar)"/>';}
+var DEFS='<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">'+
+  '<path d="M0 0 L10 5 L0 10 z" fill="var(--v11)"/></marker></defs>';
+function wrap(x,y,w,s,cls){
+  cls=cls||'lb';
+  var cw=(cls==='lb'||cls==='hd')?7.8:9.0, per=Math.max(8,Math.floor(w/cw));
+  var ws=s.split(' '),ls=[],cur='';
+  for(var i=0;i<ws.length;i++){
+    if((cur+' '+ws[i]).trim().length>per){ls.push(cur);cur=ws[i];} else cur=(cur?cur+' ':'')+ws[i];
+  }
+  if(cur)ls.push(cur);
+  ls=ls.slice(0,6);
+  var o='';
+  for(var j=0;j<ls.length;j++) o+='<text class="'+cls+'" x="'+R(x)+'" y="'+R(y+j*20)+'">'+ls[j]+'</text>';
+  return o;
+}
+function chips(host,items,cur,fn){
+  var e=E(host); if(!e) return;
+  e.innerHTML=items.map(function(t,i){return '<button class="chip'+(i===cur?' on':'')+'" data-i="'+i+'">'+t+'</button>';}).join('');
+  e.querySelectorAll('.chip').forEach(function(b){
+    b.addEventListener('click',function(){
+      e.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); fn(+b.getAttribute('data-i'));
+    });
+  });
+}
+function group(sel,attr,fn){
+  document.querySelectorAll(sel).forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll(sel).forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); fn(b.getAttribute(attr));
+    });
+  });
+}
+
+/* derived from the real count matrix */
+var V=CH.length;
+var ROWSUM=NMAT.map(function(r){return r.reduce(function(a,b){return a+b;},0);});
+var MAXN=0; NMAT.forEach(function(r){r.forEach(function(v){if(v>MAXN)MAXN=v;});});
+function prow(i,sm){
+  var s=0,out=[],j;
+  for(j=0;j<V;j++) s+=NMAT[i][j]+sm;
+  for(j=0;j<V;j++) out.push((NMAT[i][j]+sm)/s);
+  return out;
+}
+function esc(c){return c==='.'?'\u00b7':c;}
+
+/* ================= the grid, shared by the hero, figure 3 and figure 5 ========= */
+var CS=16;
+function gridSVG(o){
+  var s='',i,j;
+  for(i=0;i<V;i++){
+    s+=lab(o.x0-8,o.y0+i*CS+12,esc(CH[i]),'end');
+    s+=lab(o.x0+i*CS+CS/2,o.y0-8,esc(CH[i]),'middle');
+  }
+  var P=(o.mode==='prob');
+  for(i=0;i<V;i++){
+    var pr=P?prow(i,o.sm||0):null;
+    for(j=0;j<V;j++){
+      var v=NMAT[i][j];
+      var t=P? Math.min(1,pr[j]/0.6) : v/MAXN;
+      t=Math.pow(Math.min(1,t),0.55);
+      var selr=o.sel&&o.sel[0]===i, selc=o.sel&&o.sel[1]===j;
+      var st='heat';
+      if(selr&&selc) st='key';
+      else if(o.zero&&v===0) st='empty';
+      s+=cell(o.x0+j*CS,o.y0+i*CS,CS,CS,st,'',{op:0.06+0.30*t,
+        mark:(!(selr&&selc)&&(selr||selc))?'accent':null});
+    }
+  }
+  return s;
+}
+function gridHits(svgId,x0,y0,fn){
+  var host=E(svgId);
+  for(var a=0;a<V;a++)for(var b=0;b<V;b++){
+    var r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x',x0+b*CS); r.setAttribute('y',y0+a*CS);
+    r.setAttribute('width',CS); r.setAttribute('height',CS);
+    r.setAttribute('fill','rgba(0,0,0,0)'); r.style.cursor='pointer';
+    r.addEventListener('click',(function(a,b){return function(){fn(a,b);};})(a,b));
+    host.appendChild(r);
+  }
+}
+
+/* ================= HERO ================= */
+var hMode='count';
+function drawHero(){
+  var s=DEFS+gridSVG({x0:110,y0:76,mode:hMode,sm:hMode==='prob'?1:0});
+  s+=lab(110,40,'next character','start');
+  s+=lab(96,46,'current','end');
+  var b=[['pairs counted',String(FACT.trans)],['boxes in the grid',String(FACT.cells)],
+         ['boxes still empty',String(FACT.zeros)],['most common pair','e then r, 44 times'],
+         ['score of this model',String(FACT.nll)]];
+  s+=head(600,76,hMode==='count'?'raw counts':'probabilities, add-one');
+  for(var i=0;i<b.length;i++){
+    s+=lab(600,118+i*48,b[i][0]);
+    s+=val(600,142+i*48,b[i][1]);
+  }
+  s+=wrap(600,368,272,hMode==='count'?'Each square holds how many times that pair occurred in the 80 words.'
+    :'Every row now adds to one, so every row is a prediction of the next character.');
+  set('hFig',s); txt('hRead',hMode==='count'?'counts':'probabilities');
+}
+group('[data-h]','data-h',function(k){hMode=k;drawHero();});
+drawHero();
+
+/* ================= FIGURE 1 = one word, six pairs ================= */
+var W1=['baker','nurse','welder','architect'], w1=0, p1=-1;
+function drawF1(){
+  var w=W1[w1], chs=['.'].concat(w.split('')).concat(['.']), s=DEFS, i, C=42;
+  s+=head(40,26,'the word, written for the model');
+  for(i=0;i<chs.length;i++)
+    s+=cell(40+i*(C+8),40,C,C,(i===0||i===chs.length-1)?'key':'val',esc(chs[i]),
+            {part:(i===0||i===chs.length-1)?'dot':null});
+  s+=head(40,132,'every adjacent pair');
+  for(i=0;i<chs.length-1;i++){
+    var xx=40+i*126, on=(i===p1);
+    s+=cell(xx,146,54,40,on?'key':'val',esc(chs[i]));
+    s+=cell(xx+58,146,54,40,on?'key':'val',esc(chs[i+1]));
+    s+='<rect x="'+xx+'" y="146" width="112" height="40" fill="rgba(0,0,0,0)" data-p1="'+i+'" style="cursor:pointer"/>';
+  }
+  var msg;
+  if(p1<0) msg='Click a pair. Each one is a question: given the left character, predict the right one.';
+  else if(p1===0) msg='The first pair asks what starts a word, because the left side is the dot.';
+  else if(p1===chs.length-2) msg='The last pair asks the model to predict a dot, which is how it learns where to stop.';
+  else msg='Given '+esc(chs[p1])+', the answer is '+esc(chs[p1+1])+'. That is one observation for the count grid.';
+  s+=wrap(40,222,820,msg);
+  set('f1',s); txt('f1Read',w+' \u00b7 '+(chs.length-1)+' pairs');
+  E('f1').querySelectorAll('[data-p1]').forEach(function(h){
+    h.addEventListener('click',function(){p1=+h.getAttribute('data-p1');drawF1();});
+  });
+}
+chips('f1Ctl',W1,0,function(i){w1=i;p1=-1;drawF1();});
+drawF1();
+
+/* ================= FIGURE 2 = the vocabulary ================= */
+var v2=-1;
+function drawF2(){
+  var s=DEFS,i,C=28;
+  s+=head(40,26,'25 symbols, sorted, with the dot pushed to the front');
+  for(i=0;i<V;i++){
+    var x=40+i*33;
+    s+=cell(x,40,C,C,i===v2?'key':'val',esc(CH[i]));
+    s+=lab(x+C/2,86,String(i),'middle');
+    s+='<rect x="'+x+'" y="40" width="'+C+'" height="52" fill="rgba(0,0,0,0)" data-v2="'+i+'" style="cursor:pointer"/>';
+  }
+  if(v2<0) s+=wrap(40,134,820,'Click a cell. The two dictionaries hold this same numbering, read in opposite directions.');
+  else{
+    s+=head(40,134,'the two lookups');
+    s+=cell(40,148,380,44,'val','stoi["'+CH[v2]+'"]  gives  '+v2,{left:true});
+    s+=cell(440,148,380,44,'val','itos['+v2+']  gives  "'+CH[v2]+'"',{left:true});
+    s+=wrap(40,222,820, v2===0? 'Index 0 is the dot. Every generated word starts by reading row 0, which is why it takes the front seat.'
+      : 'The number '+v2+' says nothing about the character itself. It is an address for finding a row.');
+  }
+  set('f2',s); txt('f2Read',v2<0?'click a character':'"'+CH[v2]+'" is index '+v2);
+  E('f2').querySelectorAll('[data-v2]').forEach(function(h){
+    h.addEventListener('click',function(){v2=+h.getAttribute('data-v2');drawF2();});
+  });
+}
+(function(){
+  var picks=['.','a','e','k','r','z'];
+  chips('f2Ctl',picks.map(function(c){return c==='.'?'the dot':c;}),-1,function(i){v2=CH.indexOf(picks[i]);drawF2();});
+})();
+drawF2();
+
+/* ================= FIGURE 3 = the count grid ================= */
+var sel3=null;
+function drawF3(){
+  var s=DEFS+gridSVG({x0:90,y0:60,mode:'count',sel:sel3});
+  s+=lab(90,24,'next character','start');
+  s+=lab(76,30,'current','end');
+  s+=head(540,60,'the selected box');
+  if(!sel3) s+=wrap(540,74,330,'Click any square. Rows are the character you are standing on; columns are the character that follows it.');
+  else{
+    var i=sel3[0],j=sel3[1],n=NMAT[i][j];
+    s+=cell(540,60,150,42,'val','row  '+esc(CH[i]),{left:true});
+    s+=cell(700,60,170,42,'val','col  '+esc(CH[j]),{left:true});
+    s+=cell(540,114,330,48,n?'key':'val','"'+esc(CH[i])+esc(CH[j])+'" occurred '+n+(n===1?' time':' times'),
+            {left:true,mark:n?null:'risk'});
+    s+=lab(540,190,'row total: '+ROWSUM[i]+' observations');
+    s+=wrap(540,216,330, n===0? 'Never observed. As a raw probability this is zero, which the model reports as impossible.'
+      : 'Of the '+ROWSUM[i]+' characters that followed "'+esc(CH[i])+'", '+n+' were "'+esc(CH[j])+'".');
+  }
+  set('f3',s);
+  txt('f3Read',sel3? '"'+esc(CH[sel3[0]])+esc(CH[sel3[1]])+'" = '+NMAT[sel3[0]][sel3[1]] : 'click a cell');
+  gridHits('f3',90,60,function(a,b){sel3=[a,b];drawF3();});
+}
+E('f3Big').addEventListener('click',function(){
+  var bi=0,bj=0,a,b;
+  for(a=0;a<V;a++)for(b=0;b<V;b++) if(NMAT[a][b]>NMAT[bi][bj]){bi=a;bj=b;}
+  sel3=[bi,bj]; drawF3();
+});
+E('f3Zero').addEventListener('click',function(){var a=CH.indexOf('a');sel3=[a,a];drawF3();});
+drawF3();
+
+/* ================= FIGURE 4 = one row, normalised ================= */
+var r4=0;
+function drawF4(){
+  var i=r4, pr=prow(i,0), s=DEFS, j;
+  s+=head(40,26,'row "'+esc(CH[i])+'" as counts');
+  s+=head(470,26,'divided by the row total, '+ROWSUM[i]);
+  var order=[];
+  for(j=0;j<V;j++) order.push([j,NMAT[i][j],pr[j]]);
+  order.sort(function(a,b){return b[1]-a[1];});
+  var top=order[0], shown=order.slice(0,8), sum=0;
+  for(j=0;j<V;j++) sum+=pr[j];
+  for(var k=0;k<shown.length;k++){
+    var y=46+k*28;
+    s+=lab(40,y+14,esc(CH[i])+' then '+esc(CH[shown[k][0]]));
+    s+='<rect x="150" y="'+y+'" width="'+R(250*shown[k][1]/Math.max(1,top[1]))+'" height="17" rx="2" fill="var(--v0)" fill-opacity="0.28"/>';
+    s+=val(440,y+14,String(shown[k][1]),'end');
+    s+='<rect x="470" y="'+y+'" width="'+R(290*shown[k][2]/Math.max(1e-9,top[2]))+'" height="17" rx="2" fill="var(--v0)"/>';
+    s+=val(866,y+14,fx(shown[k][2],4),'end');
+  }
+  s+=lab(40,332,'the 17 smaller entries are not drawn, and are still part of the total');
+  s+=cell(470,268,396,44,'val','all 25 probabilities add to '+fx(sum,4),{left:true});
+  set('f4',s); txt('f4Read','row '+esc(CH[i])+' \u00b7 '+ROWSUM[i]+' observations');
+}
+(function(){
+  var picks=['.','e','r','k','j','a'];
+  chips('f4Ctl',picks.map(function(c){return 'row '+(c==='.'?'dot':c);}),0,function(i){r4=CH.indexOf(picks[i]);drawF4();});
+})();
+drawF4();
+
+/* ================= FIGURE 5 = smoothing ================= */
+var sm5=0;
+function drawF5(){
+  var s=DEFS+gridSVG({x0:90,y0:60,mode:'count',zero:(sm5===0)}),a,b,zeros=0;
+  s+=lab(90,24,'dashed squares were never observed','start');
+  for(a=0;a<V;a++)for(b=0;b<V;b++) if(NMAT[a][b]===0) zeros++;
+  s+=head(540,60,sm5?'after adding '+sm5+' to every box':'raw counts');
+  s+=cell(540,60,330,44,'val',(sm5?0:zeros)+' boxes hold zero of '+FACT.cells,{left:true,mark:sm5?null:'risk'});
+  var ia=CH.indexOf('a'), ie=CH.indexOf('e'), ir=CH.indexOf('r');
+  var paa=prow(ia,sm5)[ia], per=prow(ie,sm5)[ir];
+  s+=lab(540,136,'"aa", never observed');
+  s+=cell(540,146,330,44,'val',sm5? 'p = '+fx(paa,5) : 'p = 0     log p = minus infinity',{left:true,mark:sm5?null:'risk'});
+  s+=lab(540,222,'"er", observed 44 times');
+  s+=cell(540,232,330,44,'val','p = '+fx(per,4),{left:true});
+  s+=wrap(540,306,330, sm5? 'Nothing is impossible now. The pairs that did occur gave up a little probability to pay for it.'
+    : 'One unseen pair anywhere in the test data makes the score for the whole corpus infinite.');
+  set('f5',s);
+  txt('f5Read',sm5?'add '+sm5+' to every box':'no smoothing');
+}
+group('[data-sm]','data-sm',function(k){sm5=+k;drawF5();});
+drawF5();
+
+/* ================= FIGURE 6 = the sampling loop (scrolly) ================= */
+var gen6='samp', st6=0;
+function drawF6(){
+  var s=DEFS,i;
+  if(gen6==='greedy'){
+    s+=head(30,26,'always taking the largest probability');
+    var g=GREEDY.split('');
+    s+=cell(30,42,60,50,'key','\u00b7');
+    for(i=0;i<g.length;i++) s+=cell(30+(i+1)*66,42,60,50,'val',g[i]);
+    s+=cell(30+(g.length+1)*66,42,60,50,'key','\u00b7');
+    s+=head(30,140,'run it again');
+    for(i=0;i<3;i++) s+=cell(30,156+i*56,460,46,'val',GREEDY,{left:true});
+    s+=wrap(30,352,460,'The same word every time, because nothing in the procedure ever varies. A generator that can say one word is a lookup.');
+    txt('f6Read','greedy: '+GREEDY);
+    set('f6',s); return;
+  }
+  var t=STRACE, k=Math.min(st6,t.length-1), cur=t[k];
+  s+=head(30,26,'standing on');
+  s+=cell(30,40,64,56,'key',esc(cur.from),{gel:'a'});
+  s+=lab(110,62,'row '+CH.indexOf(cur.from)+' of the grid');
+  s+=lab(110,84,'largest here: '+esc(cur.top)+' at '+cur.ptop);
+  s+=head(30,140,'the draw');
+  s+=cell(30,154,64,56,st6>=t.length?'val':'key',esc(cur.to),{gel:'b'});
+  s+=lab(110,176,'drew '+esc(cur.to)+', which had p = '+cur.p);
+  s+=lab(110,198,cur.to===cur.top?'the favourite came up':'not the favourite');
+  s+=head(30,254,'the word so far');
+  var built='';
+  for(i=0;i<=k;i++) if(t[i].to!=='.') built+=t[i].to;
+  for(i=0;i<6;i++){
+    var ch=built[i];
+    s+=cell(30+i*70,268,62,56,ch?'val':'empty',ch?ch:'',{gel:'c'});
+  }
+  s+=wrap(30,362,460, k===t.length-1? 'A dot was drawn, so generation stops. The word is "'+built+'".'
+    : 'The character just drawn becomes the next row to read. That is the entire loop.');
+  set('f6',s);
+  txt('f6Read',k===t.length-1?'stopped: '+built:'step '+(k+1)+' of '+t.length);
+  E('f6').querySelectorAll('[data-gel]').forEach(function(g){g.classList.add('show');});
+}
+group('[data-gen]','data-gen',function(k){gen6=k;drawF6();});
+drawF6();
+
+/* ================= FIGURE 7 = scoring the word baker ================= */
+var n7=0;
+function drawF7(){
+  var s=DEFS,i,sum=0;
+  s+=head(40,26,'each pair of ". b a k e r ." and the probability the model gave it');
+  for(i=0;i<TRACE.length;i++){
+    var t=TRACE[i], on=(i<n7), x=40+i*138;
+    s+=cell(x,44,62,44,on?'key':'empty',on?esc(t.a):'');
+    s+=cell(x+66,44,62,44,on?'val':'empty',on?esc(t.b):'');
+    if(on){
+      s+=lab(x,116,'p = '+t.p);
+      s+=lab(x,140,'log p = '+t.logp);
+      sum+=t.logp;
+    }
+  }
+  s+=head(40,196,'running total of log probabilities');
+  s+=cell(40,210,400,46,'val',n7?fx(sum,4):'nothing added yet',{left:true});
+  s+=head(470,196,'score so far, sign flipped and averaged');
+  s+=cell(470,210,396,46,n7===TRACE.length?'key':'val',
+          n7? fx(-sum/n7,4)+'  over '+n7+(n7===1?' pair':' pairs') : 'add a pair to begin',{left:true});
+  s+=wrap(40,290,826, n7===TRACE.length?
+    'The finished score for "baker" is '+FACT.bakernll+'. The whole corpus averages '+FACT.nll+', so this word fits the model better than most.'
+    : 'Probabilities multiply, which drives the number toward zero. Logarithms turn that multiplication into addition and keep it readable.');
+  set('f7',s); txt('f7Read',n7+' of 6 pairs');
+}
+E('f7Step').addEventListener('click',function(){n7=Math.min(TRACE.length,n7+1);drawF7();});
+E('f7All').addEventListener('click',function(){n7=TRACE.length;drawF7();});
+E('f7Reset').addEventListener('click',function(){n7=0;drawF7();});
+drawF7();
+
+/* ================= FIGURE 8 = rows needed against rows you can fill ============ */
+function drawF8(k){
+  var rows=Math.pow(25,k), s=DEFS;
+  var obs=FACT.trans, per=obs/rows;
+  s+=head(40,26,'a counting table with '+k+(k===1?' character':' characters')+' of context');
+  var maxlog=Math.log(Math.pow(25,4));
+  function bar(y,label,v,c){
+    var w=R(700*Math.log(Math.max(1,v))/maxlog);
+    return lab(40,y+16,label)+
+      '<rect x="240" y="'+y+'" width="'+Math.max(2,w)+'" height="26" rx="3" fill="var(--'+c+')" fill-opacity="'+(c==='accent'?1:0.35)+'"/>'+
+      '';
+  }
+  s+=bar(60,'rows the table needs',rows,'accent');
+  s+=val(866,78,rows.toLocaleString('en-GB'),'end');
+  s+=bar(110,'pairs you actually have',obs,'ink-faint');
+  s+=val(866,128,obs.toLocaleString('en-GB'),'end');
+  s+=lab(240,168,'bars are drawn on a logarithmic scale, or the first one would not fit');
+  s+=head(40,214,'observations per row, on average');
+  s+=cell(40,228,300,50,per<1?'val':'key',fx(per,2),{mark:per<1?'risk':null});
+  s+=wrap(370,250,496, per>=5? 'Enough evidence behind each row for the counts to mean something.'
+    : (per>=1? 'Thin. Many rows rest on a single observation, which is barely evidence at all.'
+             : 'Almost every row is empty. Smoothing fills them in, which means the model is guessing uniformly for nearly every context it meets.'));
+  set('f8',s);
+  txt('f8Read',k+(k===1?' character':' characters')+' of context \u00b7 '+rows.toLocaleString('en-GB')+' rows');
+}
+E('f8Slider').addEventListener('input',function(){drawF8(+this.value);});
+drawF8(1);
+
+/* ================= FIGURE 9 = the sliding window ================= */
+var n9=0;
+function drawF9(){
+  var s=DEFS,i,C=44;
+  s+=head(40,26,'X: the three characters in the window');
+  s+=head(500,26,'Y: the character that follows');
+  for(i=0;i<XYB.length;i++){
+    var on=(i<n9), y=44+i*46;
+    for(var j=0;j<3;j++)
+      s+=cell(40+j*(C+6),y,C,C-6,on?'val':'empty',on?esc(XYB[i][0][j]):'');
+    if(on) s+=arrow(190,y+19,240,y+19);
+    s+=cell(500,y,C,C-6,on?'key':'empty',on?esc(XYB[i][1]):'');
+    if(on) s+=lab(560,y+24,i===0?'the window starts full of dots':
+                  (i===XYB.length-1?'predicting the dot is how it learns to stop':
+                   'oldest character dropped, newest appended'));
+  }
+  s+=wrap(40,332,826, n9===0? 'Slide the window. Each position of the window is one training example, and the word gives six of them.'
+    : 'X is '+n9+(n9===1?' row':' rows')+' of three indices; Y is '+n9+' single answers. Across all 80 words this makes '+FACT.pairs+' examples.');
+  set('f9',s); txt('f9Read',n9+' of 6 examples');
+}
+E('f9Step').addEventListener('click',function(){n9=Math.min(XYB.length,n9+1);drawF9();});
+E('f9All').addEventListener('click',function(){n9=XYB.length;drawF9();});
+E('f9Reset').addEventListener('click',function(){n9=0;drawF9();});
+drawF9();
+
+/* ================= FIGURE 10 = the embedding table ================= */
+var c10='e';
+function drawF10(){
+  var i=CH.indexOf(c10), v=EMB[i], s=DEFS, k;
+  var mx=0; EMB.forEach(function(r){r.forEach(function(x){mx=Math.max(mx,Math.abs(x));});});
+  s+=head(40,26,'the row for "'+esc(c10)+'": eight learned numbers');
+  for(k=0;k<8;k++){
+    var t=Math.abs(v[k])/mx;
+    s+=cell(40+k*88,42,80,60,'heat',fx(v[k],2),{op:0.06+0.30*t});
+    s+=lab(40+k*88+40,120,'col '+k,'middle');
+  }
+  s+=head(40,168,'characters whose rows point most nearly the same way');
+  var nb=NBR[c10];
+  for(k=0;k<nb.length;k++){
+    var y=184+k*48;
+    s+=cell(40,y,60,40,'key',esc(nb[k][0]));
+    s+=lab(112,y+24,'direction match '+nb[k][1]);
+    var vv=EMB[CH.indexOf(nb[k][0])];
+    for(var m=0;m<8;m++)
+      s+=cell(300+m*40,y+4,34,32,'heat','',{op:0.06+0.30*Math.abs(vv[m])/mx});
+  }
+  s+=wrap(640,204,226,'Similar rows mean the network treats these characters alike. On 80 words this is weak evidence, not a discovery.');
+  set('f10',s); txt('f10Read','"'+esc(c10)+'" \u00b7 8 numbers');
+}
+(function(){
+  var picks=['.','a','e','i','o','r','t','z'];
+  chips('f10Ctl',picks.map(function(c){return c==='.'?'the dot':c;}),2,function(i){c10=picks[i];drawF10();});
+})();
+drawF10();
+
+/* ================= FIGURE 11 = the shape of one batch (scrolly) ============== */
+var st11=0, prm11=false;
+var SH=[['X, a batch of examples','32 x 3','indices only'],
+        ['C[X], the lookup','32 x 3 x 8','200 numbers in C'],
+        ['flattened','32 x 24','no numbers changed'],
+        ['tanh(x @ W1 + b1)','32 x 64','1,536 + 64'],
+        ['h @ W2 + b2, the logits','32 x 25','1,600 + 25']];
+function drawF11(){
+  var s=DEFS,i;
+  for(i=0;i<SH.length;i++){
+    var on=(i<=st11), y=26+i*74;
+    s+=cell(30,y,300,54,on?(i===st11?'key':'val'):'empty',on?SH[i][0]:'',{left:true,gel:'g'+i});
+    s+=cell(342,y,150,54,on?'val':'empty',on?SH[i][1]:'',{gel:'g'+i});
+    if(on&&prm11) s+=lab(30,y+72,SH[i][2]);
+    if(i<SH.length-1) s+=arrow(180,y+58,180,y+72);
+  }
+  s+=cell(30,396,462,0,'val','');
+  s+=head(30,392,prm11? 'five tensors, '+FACT.params.toLocaleString('en-GB')+' numbers in total' : 'the whole model is five tensors');
+  set('f11',s);
+  txt('f11Read',SH[Math.min(st11,4)][1]);
+  E('f11').querySelectorAll('[data-gel]').forEach(function(g){g.classList.add('show');});
+}
+E('f11Prm').addEventListener('click',function(){prm11=!prm11;this.classList.toggle('on',prm11);drawF11();});
+drawF11();
+
+/* ================= FIGURE 12 = 25 scores, one answer ================= */
+var ctx12='bak', pick12=-1;
+function drawF12(){
+  var p=NPROB[ctx12]['1.0'], s=DEFS, i;
+  var order=[];
+  for(i=0;i<V;i++) order.push([i,p[i]]);
+  order.sort(function(a,b){return b[1]-a[1];});
+  var shown=order.slice(0,10), mx=shown[0][1];
+  s+=head(40,26,'context "'+ctx12.split('').map(esc).join(' ')+'": what the trained network expects next');
+  for(i=0;i<shown.length;i++){
+    var x=40+i*84, h=R(150*shown[i][1]/mx), on=(shown[i][0]===pick12);
+    s+='<rect x="'+x+'" y="'+(210-h)+'" width="70" height="'+Math.max(2,h)+'" rx="3" fill="var(--v0)" fill-opacity="'+(on?1:0.35)+'"/>';
+    s+=cell(x,216,70,38,on?'key':'val',esc(CH[shown[i][0]]));
+    s+=lab(x+35,272,fx(shown[i][1],3),'middle');
+    s+='<rect x="'+x+'" y="50" width="70" height="204" fill="rgba(0,0,0,0)" data-b12="'+shown[i][0]+'" style="cursor:pointer"/>';
+  }
+  if(pick12>=0){
+    var pv=p[pick12], loss=-Math.log(pv);
+    s+=cell(40,296,400,38,'val','if "'+esc(CH[pick12])+'" is the answer, loss = '+fx(loss,4),{left:true,
+      mark:loss>3?'risk':null});
+    s+=lab(460,320,pick12===CH.indexOf('e')?'this is the real answer for this context':'the model would be charged for its confidence elsewhere');
+  } else s+=wrap(40,306,826,'Click a bar. The loss is minus the logarithm of the probability drawn above it, and nothing else enters the sum.');
+  set('f12',s);
+  txt('f12Read','context: '+ctx12.split('').map(esc).join(' '));
+  E('f12').querySelectorAll('[data-b12]').forEach(function(h){
+    h.addEventListener('click',function(){pick12=+h.getAttribute('data-b12');drawF12();});
+  });
+}
+(function(){
+  var picks=['...','..b','bak','ain','tea'];
+  chips('f12Ctl',picks.map(function(c){return c.split('').map(esc).join(' ');}),2,function(i){
+    ctx12=picks[i]; pick12=-1; drawF12();
+  });
+})();
+drawF12();
+
+/* ================= FIGURE 13 = one pass through the loop ================= */
+var st13=0, step13=0;
+var LOOP=[['pick 32 rows at random','a batch out of '+FACT.trp],
+          ['run them forward, get a loss','one number'],
+          ['loss.backward()','one gradient per number'],
+          ['p -= 0.1 * p.grad','all 3,425 move a little']];
+function lossAt(step){
+  var i;
+  for(i=0;i<CURVE.length;i++) if(CURVE[i].step>=step) break;
+  i=Math.min(i,CURVE.length-1);
+  return CURVE[i];
+}
+function drawF13(){
+  var s=DEFS,i;
+  for(i=0;i<LOOP.length;i++){
+    var x=40+i*212, on=(i<st13);
+    s+=cell(x,40,196,64,on?(i===st13-1?'key':'val'):'empty',on?String(i+1):'');
+    s+=wrap(x,128,190,on?LOOP[i][0]:'');
+    if(on) s+=lab(x,186,LOOP[i][1]);
+    if(i<3) s+=arrow(x+200,72,x+208,72);
+  }
+  var c=lossAt(step13);
+  s+=head(40,232,'training loss at step '+step13);
+  s+=cell(40,246,300,50,'val',fx(c.train,3));
+  s+='<rect x="370" y="256" width="496" height="20" rx="3" fill="var(--v19)" stroke="var(--v21)" stroke-width="1"/>';
+  s+='<rect x="370" y="256" width="'+R(496*Math.min(1,c.train/3.5))+'" height="20" rx="3" fill="var(--v0)"/>';
+  s+=wrap(370,300,496,step13===0?'Guessing uniformly among 25 characters scores '+FACT.uniform+'. This model starts at 3.442, slightly worse.'
+        :'Started at 3.442, now '+fx(c.train,3)+'.');
+  set('f13',s);
+  txt('f13Read','step '+step13+' \u00b7 loss '+fx(c.train,3));
+}
+E('f13Go').addEventListener('click',function(){
+  st13=st13>=4?1:st13+1;
+  if(st13===4) step13=Math.min(10000,step13+ (step13<1000?100:1000));
+  drawF13();
+});
+E('f13Hun').addEventListener('click',function(){st13=4;step13=Math.min(10000,step13+100);drawF13();});
+E('f13Reset').addEventListener('click',function(){st13=0;step13=0;drawF13();});
+drawF13();
+
+/* ================= FIGURE 14 = the knob: two losses over the run =============== */
+function drawF14(k){
+  var s=DEFS,i;
+  var X0=70,Y0=40,W=740,H=250;
+  var maxL=4.4, n=CURVE.length;
+  function px(i){return X0+W*i/(n-1);}
+  function py(v){return Y0+H*(1-(maxL-v)/maxL*1);}
+  function pt(v){return Y0+H*(v/maxL);}
+  s+='<line x1="'+X0+'" y1="'+(Y0+H)+'" x2="'+(X0+W)+'" y2="'+(Y0+H)+'" stroke="var(--v21)" stroke-width="1.5" shape-rendering="crispEdges"/>';
+  s+='<line x1="'+X0+'" y1="'+Y0+'" x2="'+X0+'" y2="'+(Y0+H)+'" stroke="var(--v21)" stroke-width="1.5" shape-rendering="crispEdges"/>';
+  for(i=0;i<=4;i++){
+    var v=maxL*i/4;
+    s+=lab(X0-10,pt(maxL-v)+5,fx(maxL-v,1),'end');
+  }
+  var dt='',dv='';
+  for(i=0;i<n;i++){
+    dt+=(i?'L':'M')+R(px(i))+' '+R(pt(CURVE[i].train))+' ';
+    dv+=(i?'L':'M')+R(px(i))+' '+R(pt(CURVE[i].val))+' ';
+  }
+  s+='<path d="'+dt+'" fill="none" stroke="var(--v11)" stroke-width="2"/>';
+  s+='<path d="'+dv+'" fill="none" stroke="var(--v0)" stroke-width="3"/>';
+  var bi=0;
+  for(i=0;i<n;i++) if(CURVE[i].val<CURVE[bi].val) bi=i;
+  s+='<line x1="'+R(px(bi))+'" y1="'+Y0+'" x2="'+R(px(bi))+'" y2="'+(Y0+H)+'" stroke="var(--v0)" stroke-width="1.5" stroke-dasharray="4 4"/>';
+  s+=lab(px(bi)+8,Y0+16,'best held-out score, step '+CURVE[bi].step);
+  s+='<circle cx="'+R(px(k))+'" cy="'+R(pt(CURVE[k].train))+'" r="6" fill="var(--v11)"/>';
+  s+='<circle cx="'+R(px(k))+'" cy="'+R(pt(CURVE[k].val))+'" r="6" fill="var(--v0)"/>';
+  s+=lab(X0,Y0+H+26,'step 0');
+  s+=lab(X0+W,Y0+H+26,'step 10,000','end');
+  s+=cell(70,326,360,44,'val','training loss   '+fx(CURVE[k].train,3),{left:true});
+  s+=cell(450,326,360,44,'key','held-out loss   '+fx(CURVE[k].val,3),{left:true,
+     mark:CURVE[k].val>CURVE[bi].val+0.3?'risk':null});
+  set('f14',s);
+  txt('f14Read','step '+CURVE[k].step.toLocaleString('en-GB')+' \u00b7 train '+fx(CURVE[k].train,3)+' \u00b7 held-out '+fx(CURVE[k].val,3));
+}
+E('f14Slider').addEventListener('input',function(){drawF14(+this.value);});
+drawF14(0);
+
+/* ================= FIGURE 15 = temperature ================= */
+var T15='1.0', c15='bak';
+function drawF15(){
+  var p=NPROB[c15][T15], s=DEFS, i;
+  var order=[];
+  for(i=0;i<V;i++) order.push([i,p[i]]);
+  order.sort(function(a,b){return b[1]-a[1];});
+  var shown=order.slice(0,10);
+  s+=head(40,26,'context "'+c15.split('').map(esc).join(' ')+'" at temperature '+T15);
+  for(i=0;i<shown.length;i++){
+    var x=40+i*84, h=R(160*shown[i][1]);
+    s+='<rect x="'+x+'" y="'+(220-Math.max(2,h))+'" width="70" height="'+Math.max(2,h)+'" rx="3" fill="var(--v0)"/>';
+    s+=cell(x,226,70,36,'val',esc(CH[shown[i][0]]));
+    s+=lab(x+35,280,fx(shown[i][1],3),'middle');
+  }
+  s+=lab(40,206,'bars are on a fixed scale, so the shape is comparable across the three settings');
+  s+=head(40,308,'words this model produces at T = '+T15);
+  s+=cell(40,320,826,44,'val',NSAMP[T15].slice(0,6).join('   '),{left:true});
+  set('f15',s);
+  txt('f15Read','T = '+T15+' \u00b7 largest is '+fx(shown[0][1],3));
+}
+(function(){
+  var e=E('f15Ctl');
+  e.innerHTML='<button class="chip" data-t15="0.5">T = 0.5</button>'+
+    '<button class="chip on" data-t15="1.0">T = 1.0</button>'+
+    '<button class="chip" data-t15="1.5">T = 1.5</button>'+
+    '<button class="chip" id="f15Ctx">change the context</button>';
+  e.querySelectorAll('[data-t15]').forEach(function(b){
+    b.addEventListener('click',function(){
+      e.querySelectorAll('[data-t15]').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); T15=b.getAttribute('data-t15'); drawF15();
+    });
+  });
+  var ctxs=['bak','...','tea','ain'], ci=0;
+  E('f15Ctx').addEventListener('click',function(){ci=(ci+1)%ctxs.length;c15=ctxs[ci];drawF15();});
+})();
+drawF15();
+
+/* ================= FIGURE 16 = the held-out comparison ================= */
+var BARS=[
+ {n:'counting table, 1 character',v:FACT.bigval,k:'bigram',
+  w:'Fitted on the same 68 words. Every row filled from its own observations only.'},
+ {n:'network, 1 character',v:SWEEP['1'].best_val,k:'n1',
+  w:'The same amount of context as the table, and better. The gain is from sharing numbers between characters, not from a wider window.'},
+ {n:'network, 3 characters',v:SWEEP['3'].best_val,k:'n3',
+  w:'Three times the context and no better. On 80 words there is not enough evidence to support the wider window.'},
+ {n:'network, 5 characters',v:SWEEP['5'].best_val,k:'n5',
+  w:'More parameters, more to overfit with, and the best score arrives after only 300 steps.'},
+ {n:'network, 3 characters, trained to 10,000',v:CURVE[CURVE.length-1].val,k:'over',
+  w:'The same model as the third bar, trained past its best point. This is what the script default produces.'},
+ {n:'guessing uniformly',v:FACT.uniform,k:'unif',
+  w:'The reference point. Anything at or above this line has learned nothing useful.'}
+];
+var s16=-1;
+function drawF16(){
+  var s=DEFS,i,mx=4.4;
+  s+=head(40,26,'held-out loss on the same twelve words, lower is better');
+  for(i=0;i<BARS.length;i++){
+    var y=44+i*38, w=R(560*BARS[i].v/mx), on=(i===s16);
+    s+=lab(40,y+16,BARS[i].n);
+    s+='<rect x="300" y="'+y+'" width="'+w+'" height="24" rx="3" fill="var(--'+
+       (BARS[i].k==='unif'?'ink-faint':(BARS[i].k==='over'?'risk':'accent'))+')" fill-opacity="'+(on?1:0.45)+'"/>';
+    s+=val(875,y+18,fx(BARS[i].v,3),'end');
+    s+='<rect x="40" y="'+y+'" width="835" height="24" fill="rgba(0,0,0,0)" data-b16="'+i+'" style="cursor:pointer"/>';
+  }
+  s+=wrap(40,296,826, s16<0? 'Click a bar. Every value here was measured by training on 68 occupations and scoring on the 12 held out.'
+    : BARS[s16].w);
+  set('f16',s);
+  txt('f16Read',s16<0?'held-out loss':BARS[s16].n+' \u00b7 '+fx(BARS[s16].v,3));
+  E('f16').querySelectorAll('[data-b16]').forEach(function(h){
+    h.addEventListener('click',function(){s16=+h.getAttribute('data-b16');drawF16();});
+  });
+}
+chips('f16Ctl',['the table','the best network','the overfitted one'],-1,function(i){
+  s16=[0,1,4][i]; drawF16();
+});
+drawF16();
+
+/* ================= page mechanics ================= */
+var pf=E('pfill'), C2=2*Math.PI*22;
+pf.style.strokeDasharray=C2; pf.style.strokeDashoffset=C2;
+addEventListener('scroll',function(){
+  var h=document.documentElement, p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  p=Math.min(1,Math.max(0,p||0));
+  pf.style.strokeDashoffset=C2*(1-p);
+  txt('ptxt',R(p*100)+'%');
+},{passive:true});
+
+var ro=new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+},{threshold:0.06,rootMargin:'0px 0px -4% 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+document.querySelectorAll('.ref').forEach(function(t){
+  var k=t.getAttribute('data-ref'), sec=t.closest('section');
+  function on(v){
+    t.classList.toggle('hot',v);
+    sec.querySelectorAll('.fig').forEach(function(f){ f.classList.toggle('dimmed',v); });
+    sec.querySelectorAll('[data-part="'+k+'"]').forEach(function(p){ p.classList.toggle('hot',v); });
+  }
+  t.addEventListener('mouseenter',function(){on(true);});
+  t.addEventListener('mouseleave',function(){on(false);});
+  t.addEventListener('click',function(){on(!t.classList.contains('hot'));});
+});
+
+function scrolly(id,render){
+  var steps=[].slice.call(document.querySelectorAll('#'+id+' .stp'));
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        steps.forEach(function(s){s.classList.toggle('on',s===e.target);});
+        render(+e.target.getAttribute('data-step'));
+      }
+    });
+  },{rootMargin:'-45% 0px -45% 0px',threshold:0});
+  steps.forEach(function(s){
+    io.observe(s);
+    s.addEventListener('click',function(){
+      steps.forEach(function(x){x.classList.toggle('on',x===s);});
+      render(+s.getAttribute('data-step'));
+    });
+  });
+  if(steps.length) render(0);
+}
+scrolly('sc1',function(i){
+  gen6='samp'; st6=i;
+  document.querySelectorAll('[data-gen]').forEach(function(b){
+    b.classList.toggle('on',b.getAttribute('data-gen')==='samp');
+  });
+  drawF6();
+});
+scrolly('sc2',function(i){ st11=i; drawF11(); });
+
+(function(){
+  var weeds=E('weeds'), hint=E('weedsHint');
+  function toggle(){
+    var open=weeds.hidden;
+    weeds.hidden=!open;
+    hint.setAttribute('aria-expanded',String(open));
+    hint.innerHTML=open ? 'press <kbd>s</kbd> to hide the deeper cuts' : 'press <kbd>s</kbd> for the deeper cuts';
+    if(open){ weeds.setAttribute('tabindex','-1'); weeds.focus({preventScroll:true});
+              weeds.scrollIntoView({behavior:REDUCE?'auto':'smooth',block:'start'}); }
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='s'&&e.key!=='S') return;
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var t=e.target, tag=(t.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||t.isContentEditable) return;
+    e.preventDefault(); toggle();
+  });
+  hint.addEventListener('click',toggle);
+  hint.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();} });
+})();
+})();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

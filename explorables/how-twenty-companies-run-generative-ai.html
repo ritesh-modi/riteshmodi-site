@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How twenty companies actually run generative AI in production</title>
+<style>:root{--v11:#E9EAE7;--v12:#DCDED9;--v3:#15181A;--v5:#3D4347;--v4:#5E6569;--v14:#C4C7C2;--v0:#2C5D5A;--v9:#141719;--v10:#E2E4E0;--v13:#A8412F;--v16:#7A5715;--v6:680px;--v17:1080px;--v8:26px;--v7:ui-monospace,"SF Mono",Menlo,Consolas,monospace;--v2:system-ui,-apple-system,"Segoe UI",Helvetica,sans-serif;--v1:Georgia,"Times New Roman",serif;--v15:.5s cubic-bezier(.4,0,.2,1)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto};:root{--v15:0s}}body{margin:0;background:var(--v11);color:var(--v3);font-family:var(--v1);font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v6);margin:0 auto;padding:0 var(--v8);position:relative}.wide{max-width:var(--v17);margin:0 auto;padding:0 var(--v8)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}.divider{max-width:var(--v6);margin:0 auto;height:1px;background:var(--v14)}h1,h2,h3{font-family:var(--v2);line-height:1.06;margin:0;letter-spacing:-.025em}h2{font-size:clamp(29px,4.4vw,42px);font-weight:700;margin:0 0 24px;max-width:15ch}h3{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 8px}p{margin:0 0 22px}a{color:var(--v0)}strong{font-weight:700}.lede{font-family:var(--v1);font-size:clamp(21px,3vw,27px);line-height:1.44;color:var(--v5);max-width:26ch;margin:0}.pull{font-family:var(--v2);font-size:27px;font-weight:600;line-height:1.28;letter-spacing:-.02em;color:var(--v0);border-left:2px solid var(--v0);padding-left:24px;margin:40px 0}.eyebrow{font-family:var(--v7);font-size:12px;letter-spacing:.09em;color:var(--v4);margin:14px 0 0;line-height:1.5;text-transform:none}.eyebrow b{color:var(--v5);font-weight:400}.intu{border:1px solid var(--v14);border-left:3px solid var(--v0);border-radius:0 5px 5px 0;padding:22px 24px;margin:30px 0;background:var(--v12);font-size:17px;line-height:1.62}.intu i{font-family:var(--v7);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:11px;font-style:normal}.intu b{color:var(--v3)}.note{background:var(--v12);border-radius:5px;padding:20px 22px;margin:28px 0;font-size:17px;color:var(--v5);line-height:1.6}.fig{border:1px solid var(--v14);background:var(--v11);border-radius:5px;margin:34px 0;overflow:hidden}.fig h3{padding:16px 24px 0}.fig .eyebrow{padding:0 24px 16px;margin-top:6px;border-bottom:1px solid var(--v14)}.fig-b{padding:26px 24px 30px}.fig svg,.wide.sg svg,.col.weeds svg{display:block;width:100%;height:auto}.fig.dimmed [data-part]:not(.hot){opacity:.22;transition:opacity .2s}.panel{background:var(--v9);color:var(--v10);border-radius:5px;padding:20px 22px;font-family:var(--v7);font-size:14px;line-height:1.62}.panel b{color:#fff;font-weight:500}.rail{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:0;list-style:none}.chip{font-family:var(--v7);font-size:12px;padding:8px 12px;border:1px solid var(--v14);border-radius:16px;background:var(--v11);cursor:pointer;transition:all .18s;color:var(--v5);line-height:1.2}.chip:hover{border-color:var(--v0)}.chip.on{background:var(--v0);border-color:var(--v0);color:#fff}.btn{font-family:var(--v7);font-size:12px;padding:9px 14px;border:1px solid var(--v3);border-radius:4px;background:var(--v11);cursor:pointer;color:var(--v3);line-height:1.2}.btn:hover{background:var(--v3);color:var(--v11)}.cap{font-family:var(--v7);font-size:12px;color:var(--v4);letter-spacing:.02em;line-height:1.55}.cap b{color:var(--v3);font-weight:400}.ref{text-decoration:underline dotted var(--v0);text-underline-offset:3px;cursor:help}.ref.hot{background:rgba(44,93,90,.14)}[data-part].hot{opacity:1}input[type=range]{width:100%;accent-color:var(--v0);margin:0}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}.rail.dial{position:fixed;right:18px;bottom:18px;z-index:100;margin:0;display:block;font-family:var(--v7);font-size:12px;color:var(--v4);background:var(--v12);border:1px solid var(--v14);border-radius:4px;padding:7px 10px;letter-spacing:.06em}.rail.dial b{color:var(--v0);font-weight:400}.col.hero{padding:clamp(64px,11vh,120px) var(--v8) clamp(40px,6vw,64px);max-width:var(--v17)}.col.hero h1{font-size:clamp(46px,7.4vw,84px);font-weight:700;letter-spacing:-.035em;line-height:1.02;max-width:17ch;margin:0 0 26px}.col.hero .lede{max-width:44ch;font-size:clamp(20px,2.6vw,23px)}.col.hero .cap{margin-top:34px}.bleed.scrolly{position:relative;display:grid;gap:5vw;grid-template-columns:minmax(0,1fr) minmax(0,420px);max-width:1280px;margin:0 auto;padding:0 var(--v8)}.bleed.scrolly.right{grid-template-columns:minmax(0,420px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly>*{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:0;display:flex;align-items:center;justify-content:center}.wide.sg>*{width:100%;max-width:560px;min-width:0}.col.ss{padding:38vh 0 42vh;max-width:none}.col.stp{min-height:74vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0;opacity:.28;transition:opacity .35s;cursor:pointer}.col.stp.on{opacity:1}[data-gel]{opacity:.1;transition:opacity .5s ease}[data-gel].show{opacity:1}@media (prefers-reduced-motion:reduce){[data-gel]{transition:none}.col.stp{opacity:1}}.lab{font-family:var(--v7);font-size:12px;letter-spacing:.02em;fill:var(--v4)}.val{font-family:var(--v7);font-size:14px;fill:var(--v3)}.sub{font-family:var(--v7);font-size:12px;letter-spacing:.02em;fill:var(--v5)}.inv{font-family:var(--v7);font-size:12px;letter-spacing:.02em;fill:var(--v11)}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:44vh;width:100%;background:var(--v11);border-bottom:1px solid var(--v14);z-index:5}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:26px 0}}@media(max-width:760px){.fig-b{padding:22px 14px 26px;overflow-x:auto;-webkit-overflow-scrolling:touch}.fig-b svg{min-width:560px}.fig-b::-webkit-scrollbar{height:6px}.fig-b::-webkit-scrollbar-thumb{background:var(--v14);border-radius:3px}}.weeds[hidden]{display:none}.col.weeds details{border-top:1px solid var(--v14);padding:16px 0}.col.weeds summary{cursor:pointer;font-family:var(--v2);font-weight:600;font-size:19px}.col.weeds details p{margin:14px 0 0;font-size:17px;color:var(--v5)}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Twenty production deployments across six layers. Resize the retrieval chunks until they ruin an answer, turn the queue dial, and find each system's scar.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="How twenty companies actually run generative AI in production">
+  <meta property="og:description" content="Resize retrieval chunks until they ruin the answer, then find each system's scar.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai">
+  <meta property="og:image" content="https://www.loopingly.com/og/how-twenty-companies-run-generative-ai.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="How twenty companies actually run generative AI in production">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How twenty companies actually run generative AI in production">
+  <meta name="twitter:description" content="Resize retrieval chunks until they ruin the answer, then find each system's scar.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/how-twenty-companies-run-generative-ai.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"How twenty companies actually run generative AI in production","description":"Twenty production deployments across six layers. Resize the retrieval chunks until they ruin an answer, turn the queue dial, and find each system's scar.","url":"https://www.loopingly.com/explorables/how-twenty-companies-run-generative-ai","image":"https://www.loopingly.com/og/how-twenty-companies-run-generative-ai.png","datePublished":"2026-08-22","dateModified":"2026-08-22","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Generative AI systems in production"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How twenty companies run generative AI"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<div class="rail dial" id="dial"><b id="dialN">0</b>%</div>
+
+<header class="col hero">
+  <h1>How twenty companies actually run generative AI in production</h1>
+  <p class="lede">Every tile below is one shipped deployment: what goes in, what comes out, who checks it, and how long it has been running. Tap one.</p>
+  <div class="fig" style="margin-top:38px">
+    <div class="fig-b">
+      <svg id="f0" viewBox="0 0 1000 400" role="img" aria-label="Twenty deployment tiles, coloured by output type"></svg>
+      <p class="cap" id="f0out" style="margin-top:16px;min-height:3.2em"></p>
+    </div>
+  </div>
+  <p class="cap">Reading time about an hour if you operate the figures. Snapshot: August 2026. Sources at the foot.</p>
+</header>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>The work arrives whether or not anyone has time for it</h2>
+<p>A doctor at Kaiser Permanente finishes a twenty minute appointment. The patient leaves. What stays behind is a note that has to be written: what was said, what was found, what was decided, what happens next. It goes into the medical record, and other clinicians will act on it. Writing it takes real minutes, and those minutes come out of the same day that the next patient is waiting in.</p>
+<p>Now multiply. Kaiser runs 40 hospitals and more than 600 medical offices across eight states and the District of Columbia. Every appointment in that system produces one of these notes. Nobody has to decide whether the work exists. It exists.</p>
+<p>That is the shape of almost every deployment in this piece, so it is worth drawing before anything else. Not a technology, not a model: a <span class="ref" data-ref="q">queue of identical jobs</span> that keeps arriving. One patient visit. One customer message. One product photograph. One contract. One page of a regulatory filing. Each is a <span class="ref" data-ref="t">unit of work</span>, and the only question any company is really asking is what happens to each one.</p>
+
+<div class="intu"><i>picture it</i>
+  Think of a tray on a desk that never empties. Overnight, someone slides another hundred slips into it. Each slip is one job, and each job has to end up somewhere: done by a machine, done by a person, done by a machine and checked by a person, or bounced because nobody could handle it. <b>Everything in this piece is a claim about where the slips go.</b> The models change, the slips do not.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Four things that can happen to one job</h3>
+<p class="eyebrow"><b>Figure 1.</b> Click any tile to cycle it through the four states. The counter underneath re-tallies as you go.</p>
+<div class="fig-b">
+<svg id="f1" viewBox="0 0 1000 300" role="img" aria-label="A grid of forty work tiles that change state when clicked"></svg>
+<p class="cap" id="f1out" style="margin-top:18px"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>Those four states are the whole vocabulary. A <b>raw</b> tile is a job that has arrived and had nothing done to it. A <b>machine</b> tile was produced by a model and went out as it was. A <b>checked</b> tile was drafted by a model and read by a person before it counted. An <b>escalated</b> tile was handed to a human, either because the machine declined it or because the machine got it wrong.</p>
+<p>Hold on to the difference between machine and checked, because it is the single most consequential design decision in every deployment here, and it is the one that press releases are vaguest about. At Kaiser the ambient tool drafts the note and the clinician reviews it before it enters the record; the organisation says plainly that its clinicians are the medical decision makers. Every tile in that deployment is a checked tile, by policy. In other deployments the model's output goes straight to a customer with nobody in between.</p>
+<p>Kaiser's tool has supported more than four million encounters. That number only means something once you know which of the four states those four million tiles are in. So the first real question is not how good the model is. It is what the model is even being handed.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>The model has never read your refund policy</h2>
+<p>Try this one in your head. A passenger types to an airline: <i>can I bring my Labrador, Max, in the cabin?</i></p>
+<p>To answer, you need two completely different kinds of knowing. First, that a Labrador is a dog and that a named pet is still a pet. That is ordinary world knowledge, and a language model trained on the open internet has plenty of it. Second, you need that airline's live pet policy: the weight limit, the carrier dimensions, which routes allow it, what it costs. A model trained on the open internet does not have that, and it has no way to tell that it does not have it.</p>
+<p>This is the failure that every enterprise deployment starts from, and it is worth being precise about the mechanism rather than calling it hallucination and moving on. A language model produces the next piece of text that is plausible given the text so far. Plausible is not the same as true, and it is definitely not the same as <i>true at this company today</i>. Asked about a pet policy it has never seen, the model will still produce a pet policy, because a fluent pet policy is exactly what plausibly follows the question.</p>
+
+<div class="intu"><i>picture it</i>
+  You have hired someone brilliant, well read, and completely new. On day one they can write, summarise, translate and argue. Ask them where the fire extinguisher is and they will confidently point at a wall. They are not lying. They have simply never been in the building, and nothing about being well read tells them that. <b>The fix is never a better hire. It is showing them the floor plan before they answer.</b>
+</div>
+
+<p>Showing them the floor plan has a name. Everything a model can see when it answers, the question plus whatever text you have placed alongside it, is called the <span class="ref" data-ref="ctx">context</span>. The question by itself is a thin context. The question with the airline's actual pet policy pasted in beside it is a fat one, and the answer changes completely.</p>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Same model, same question, two contexts</h3>
+<p class="eyebrow"><b>Figure 2.</b> Click the two buttons to move the policy text in and out of the context. Watch which parts of the answer survive.</p>
+<div class="fig-b">
+<div class="rail" id="f2chips">
+  <button class="chip on" data-g="0">question only</button>
+  <button class="chip" data-g="1">question + the airline's policy</button>
+</div>
+<svg id="f2" viewBox="0 0 1000 300" role="img" aria-label="A context window filling with retrieved policy text"></svg>
+<p class="cap" id="f2out" style="margin-top:18px;min-height:5.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>Air India shipped exactly this, and shipped it early. Its assistant AI.g went live in May 2023, which makes it one of the oldest generative deployments in this piece. It now takes about 40,000 questions a day across more than 1,300 topics, and has resolved more than 13 million conversations. The airline reports that 97% are handled without a person and 3% go to a contact centre agent. Call volumes stayed roughly flat while passenger traffic doubled.</p>
+<p>The Labrador question is Air India's own example, and the airline's point about it is precise: nobody wrote a rule for Labradors. The model knew that a Labrador is a dog. The pet policy, fetched and placed in the context, supplied the rest.</p>
+<p class="pull">The intelligence was general. The correctness was fetched.</p>
+<p>Which raises the obvious question. If the answer depends on pasting the right document into the context, and a large company has hundreds of thousands of documents, how does anything know which one to paste?</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>Retrieval is a paste job, and that is the whole trick</h2>
+<p>Morgan Stanley's advisors sit on top of a research archive of roughly 350,000 documents. Decades of analyst notes, market commentary, product rules. Before 2023, finding the paragraph that answered a client's question meant knowing it existed and remembering where. Advisors describe searches that used to run half an hour.</p>
+<p>The archive was never the problem. The archive was an asset. The problem was that a question in English and a document in a folder had no way of finding each other.</p>
+<p>The technique that connects them is called <b>retrieval augmented generation</b>, which everyone shortens to RAG, and which is less exotic than the name suggests. Three moves, done in order, every single time somebody asks something.</p>
+</div>
+
+<div class="bleed scrolly" id="sc1">
+  <div class="wide sg">
+    <div class="fig" style="margin:0">
+      <div class="fig-b">
+        <svg id="f3" viewBox="0 0 640 460" role="img" aria-label="A retrieval pipeline filling stage by stage"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="col ss">
+    <div class="col stp on" data-step="0"><h3>Cut the archive into pieces</h3><p>A 90 page research note is not a useful thing to fetch, because most of it is irrelevant to any one question and the context has a size limit. So every document is split into passages of a few hundred words. Each passage is called a <span class="ref" data-ref="chunk">chunk</span>. Morgan Stanley's 350,000 documents become millions of chunks. This is done once, in advance, not while the advisor waits.</p></div>
+    <div class="col stp" data-step="1"><h3>Give every chunk a set of coordinates</h3><p>Each chunk is run through a model that turns text into a list of numbers, typically several hundred of them. That list is called an <span class="ref" data-ref="emb">embedding</span>, and its useful property is that passages about similar things land near each other, even when they share no words. A chunk about "cabin pets" sits near a question about "my Labrador" because the numbers encode meaning rather than spelling. The whole set of coordinates is the index.</p></div>
+    <div class="col stp" data-step="2"><h3>Turn the question into the same kind of coordinates</h3><p>When the advisor types a question, the question goes through that same embedding model. Now the question is a point in the same space as every chunk, and "which passages are relevant" becomes an arithmetic question: which points are nearest. That is the move that makes the archive searchable by meaning.</p></div>
+    <div class="col stp" data-step="3"><h3>Paste the nearest few in, and only then ask the model</h3><p>The top handful of chunks, usually between three and ten, are pasted into the context above the question. The model reads them and answers. It is not recalling the archive. It is reading photocopies that were handed to it a quarter second earlier, which is why it can also print where each claim came from.</p></div>
+    <div class="col stp" data-step="4"><h3>The citation is the audit trail</h3><p>Because the system knows which chunks it pasted, it can attach them to the answer. This is what makes retrieval acceptable in regulated work. An advisor can click through to the source note. At Novo Nordisk the same mechanism runs in reverse: once a human expert approves a definition, it is stored and reused verbatim in every future document on that topic, so the approved words are retrieved rather than regenerated.</p></div>
+  </div>
+</div>
+
+<div class="col">
+<div class="intu"><i>picture it</i>
+  A librarian who has not read your books but is extremely fast. You ask a question at the desk. She does not answer from memory. She walks the stacks, pulls four pages, drops them in front of you, and only then talks you through what they say, pointing at each page as she goes. If the pages are wrong, her answer is wrong, and she will still sound certain. <b>Retrieval moves the accuracy problem out of the model and into the filing.</b> That is a much better place for it, because filing is something a company can inspect and fix.
+</div>
+<p>Retrieval also explains something that otherwise looks strange, which is how fast some of these systems were built. Moderna's first internal assistant, mChat, went from nothing to running in about two weeks in early 2023. It reached more than 80% internal adoption. Nobody trained a model. The company already had its documents; retrieval is mostly plumbing between an index and an existing model.</p>
+<p>It also explains the shape of the biggest reported win in this whole set. Novo Nordisk's clinical study reports run to 300 pages and summarise a drug trial for regulators. Staff writers averaged 2.3 of them a year. The company built NovoScribe on retrieval plus approved text, and reports that drafting fell from ten to fifteen weeks to about ten minutes, with review cycles roughly halved. More than fifty writers on a report became three working with the model. The company has said its annual spend on the model is less than one writer's salary.</p>
+<p>Ten minutes is not a claim that a machine wrote a regulatory submission unsupervised. It is a claim about the drafting step, with the review step still there. Pfizer's version is smaller and easier to believe: scientists face roughly 20,000 documents per drug programme, and its VOX platform lets them ask in plain language or by voice, which the company estimates saves up to 16,000 hours of searching a year.</p>
+<p>Everything so far has assumed the work arrives as text. Most of it does not.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>A conversation is not text until something turns it into text</h2>
+<p>Go back to the Kaiser exam room. The job that arrives is not a document. It is two people talking, with interruptions, an accent, a rustle of paper, a name said once. Before any language model can touch that, the sound has to become words.</p>
+<p>That conversion has a name and a separate model. Morgan Stanley's meeting tool, Debrief, runs Zoom audio through Whisper, a speech recognition model, and then hands the transcript to a language model that writes the client note and the follow up actions, which land in the CRM. Two models, in a line, doing two different jobs. Kaiser's ambient tool does the same thing in an exam room, in more than fourteen languages and across more than fifty specialties.</p>
+<p>The general word for the kind of thing going in or coming out is <b>modality</b>: text, speech, images, video, code, structured data. Every deployment in this piece is a path from one modality to another, and the path is usually the most concrete thing you can know about it.</p>
+
+<div class="intu"><i>picture it</i>
+  A translator who only reads. Whatever you want translated has to reach her as writing, and whatever she produces comes back as writing. If you arrive with a cassette, someone types it up first. If you need it spoken aloud at the other end, someone reads it out. Those two someones are separate hires with separate skills. <b>Most systems that look like one clever machine are three plain ones standing in a row</b>, and knowing which row a company built tells you more than knowing which model they licensed.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>The same pipeline, six different pairs of ends</h3>
+<p class="eyebrow"><b>Figure 3.</b> Click a path to redraw it. The middle stays a language model in every case; only the ends change.</p>
+<div class="fig-b">
+<div class="rail" id="f4chips">
+  <button class="chip on" data-m="s2t">speech to text</button>
+  <button class="chip" data-m="t2t">text to text</button>
+  <button class="chip" data-m="t2i">text to image</button>
+  <button class="chip" data-m="t2v">text to video</button>
+  <button class="chip" data-m="t2s">text to speech</button>
+  <button class="chip" data-m="s2s">speech to speech</button>
+</div>
+<svg id="f4" viewBox="0 0 1000 250" role="img" aria-label="A three stage pipeline whose input and output stages change by modality"></svg>
+<p class="cap" id="f4out" style="margin-top:18px;min-height:5.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>Two of those paths are worth sitting with, because they behave very differently from the text ones.</p>
+<p><b>Text to image, at Zalando.</b> The European fashion retailer generates editorial campaign imagery rather than photographing it. By the fourth quarter of 2024 roughly 70% of its editorial campaign images were generated. Its head of content solutions told Reuters that production fell from six to eight weeks down to three or four days, with costs down as much as 90%. The reason he gives is not cost, though. It is speed: a trend surfaces on social media on a Tuesday and is dead in a fortnight, and a six week shoot cannot answer it. When "brat summer" broke, Zalando could ship imagery inside days.</p>
+<p><b>Text to video, at Netflix and Coca-Cola.</b> Netflix's co-chief executive confirmed on an earnings call that a building collapse sequence in the Argentine series <i>El Eternauta</i> was the first generated final footage in a Netflix original, made with its in-house Eyeline Studios roughly ten times faster than conventional visual effects. His argument was budget rather than ambition: at that show's scale the shot was otherwise unaffordable. Coca-Cola went further and made whole holiday commercials this way in 2024 and again in 2025, with about a hundred people on the project, five of them AI specialists generating tens of thousands of clips, and a production calendar that fell from about a year to about a month across roughly 140 countries.</p>
+<p>Notice how the review gate moves. A generated research summary is checked by the advisor who asked for it. A generated commercial is checked by the entire internet, at once, and both Coca-Cola spots drew heavy public criticism. Same technique, wildly different last mile.</p>
+<p>So far each system has had one door and one kind of thing coming through it. Two of the largest deployments here do not.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>One model with several senses is not the same as several models behind one door</h2>
+<p>Two phrases get used as if they were interchangeable, and they describe opposite architectures. It is worth pulling them apart with a concrete question in hand.</p>
+<p>A shopper photographs a broken bracket under a sink and types: <i>what is this and will it fit my tap?</i></p>
+<p>There are two honest ways to build a system that answers. In the first, a single model accepts the photograph and the sentence together, in the same context, and reasons across both. It is <b>multimodal</b>: one model, several senses. In the second, an image model describes the photograph, a text model reasons about the description, and a piece of routing code decides which model sees what. That is <b>multi-model</b>: several specialists, one front door, and a <b>router</b> in the middle choosing between them.</p>
+
+<div class="intu"><i>picture it</i>
+  Multimodal is one doctor who looks at you, listens to you, and reads your chart before speaking, holding all three at once. Multi-model is a clinic: a receptionist decides whether you need the radiologist, the dermatologist or the pharmacist, and each of those only ever sees their own slice. <b>The clinic is cheaper to run and easier to swap staff in and out of. The single doctor notices things that fall between the specialties.</b> Real deployments run both, at different layers.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Two architectures answering the same question</h3>
+<p class="eyebrow"><b>Figure 4.</b> Switch between the two. The layout is deliberately identical, so the only thing that moves is what each box can see.</p>
+<div class="fig-b">
+<div class="rail" id="f5chips">
+  <button class="chip on" data-a="mm">multimodal: one model, several senses</button>
+  <button class="chip" data-a="xm">multi-model: a router and specialists</button>
+</div>
+<svg id="f5" viewBox="0 0 1000 320" role="img" aria-label="A multimodal architecture and a multi-model architecture drawn on the same layout"></svg>
+<p class="cap" id="f5out" style="margin-top:18px;min-height:5.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>JPMorgan Chase built the clinic. Its internal platform, LLM Suite, went live in the summer of 2024 as a front door that routes employees' requests to several outside frontier models while the data stays inside the bank's own environment. The bank's chief analytics officer has described an early contrarian bet: that the models themselves would become a commodity, and that the connective tissue around them was the defensible part. The platform went from zero to 200,000 onboarded users in eight months, reached roughly 250,000 with access, and the bank reports that more than 60% of employees use it. Its retrieval layer is on its fourth generation and now handles several modalities. Roughly 450 production use cases are running, with a stated target of 1,000 by the end of 2026.</p>
+<p>Amazon built the other thing, in the place where the difference is worth the most money. Rufus, its shopping assistant, combines retrieval with a knowledge graph called COSMO that encodes context: who buys a thing, for what, when. Amazon reported that more than 300 million customers used Rufus during 2025, with monthly users up 149% and interactions up 210%, that shoppers who use it are about 60% more likely to complete a purchase, and that it drove close to 12 billion dollars in incremental annualised sales.</p>
+<p>Both companies routed a lot of work through models without ever training one. That distinction matters more than it sounds. Almost nothing in this piece involved building a model. It involved building the pipes.</p>
+<p>And once the pipes exist, a much less comfortable idea becomes available: the model does not have to stop at answering.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>The model stopped answering and started doing</h2>
+<p>Everything so far ends with text appearing on somebody's screen. A person reads it and then does something. Take that person out of the middle and you have the architecture that every vendor in 2026 is calling an agent, and which is easier to understand as a loop than as a noun.</p>
+<p>Give the model a short list of things it is allowed to call: look up an order, check stock, issue a refund up to fifty pounds, write a detection rule. Each of those is a <b>tool</b>. Then let the model, after each result comes back, decide whether it is finished or needs to call another one. That decide, call, read, decide again cycle is the <b>agent loop</b>. There is no new kind of model involved. The change is that the output is wired to something that acts.</p>
+
+<div class="intu"><i>picture it</i>
+  The difference between an assistant who writes you a note saying "you should cancel the 4pm and rebook the flight" and an assistant who has the calendar password. The second one is not smarter. She has been given hands, and the interesting question immediately stops being how good her judgement is and becomes how much she is allowed to touch before someone signs off. <b>An agent is a permission list attached to a language model.</b>
+</div>
+</div>
+
+<div class="bleed scrolly right" id="sc2">
+  <div class="wide sg">
+    <div class="fig" style="margin:0">
+      <div class="fig-b">
+        <svg id="f6" viewBox="0 0 620 470" role="img" aria-label="An agent loop calling tools one at a time"></svg>
+      </div>
+    </div>
+  </div>
+  <div class="col ss">
+    <div class="col stp on" data-step="0"><h3>Something arrives that is not a question</h3><p>Commonwealth Bank's fraud systems watch more than 80 million signals a day across roughly 20 million payments. A cluster of transactions starts to look unusual in a way that no existing rule describes. Under the old arrangement this became a ticket for a human analyst, and the queue of tickets was the bottleneck.</p></div>
+    <div class="col stp" data-step="1"><h3>The model calls a tool instead of writing a paragraph</h3><p>The agent queries the transaction data itself. This is the move that separates an agent from a chatbot: the model emitted a structured call rather than prose, something executed it, and the result came back into the context. The model now knows something it did not know a second ago, and that something came from the bank's live systems.</p></div>
+    <div class="col stp" data-step="2"><h3>It reads the result and decides it is not finished</h3><p>Severity assessed, context pulled, the loop goes round again. Each turn is cheap. A hundred turns is not, which is why real deployments cap the loop and why the cap is a design decision rather than a technicality.</p></div>
+    <div class="col stp" data-step="3"><h3>It produces something executable, not something readable</h3><p>The output is a proposed detection rule. CommBank reports that its agent has contributed to developing or updating three quarters of the bank's card fraud rules, and that its in-house teams built the system in three months.</p></div>
+    <div class="col stp" data-step="4"><h3>A person still signs the rule</h3><p>The bank is explicit that its AI models sit under its risk frameworks with clear human accountability. This is the review gate again, in the highest stakes position it occupies anywhere in this piece: the agent drafts the rule, a human approves it, and the approved rule then runs unsupervised over millions of payments. Fraud losses fell by more than 20% in the first half of the 2026 financial year against the same period the year before.</p></div>
+  </div>
+</div>
+
+<div class="col">
+<p>The consumer versions are less dramatic and more revealing about where this is going. Amazon has given Rufus the ability to buy: it can shop other stores directly, and it will hold a target price and purchase when the price drops. Walmart's Sparky launched in June 2025 as a shopping agent and is now wired into fulfilment, and Walmart reports the value of goods sold through Sparky rising 150% in a quarter, baskets 35% larger than non-Sparky baskets, and weekly active users up over 110% quarter on quarter.</p>
+<p>Both of those numbers deserve a raised eyebrow, and it is the same eyebrow you should raise at every figure in this piece: the customers who choose to use a shopping assistant were probably already the ones intending to buy. Amazon's own framing, "60% more likely to complete a purchase", compares people who used the tool against people who did not, which is not the same as what the tool caused.</p>
+<p>Once a model has hands, the question that has been implicit since the first tile becomes the only question that matters, and it turns out to have a dial attached to it.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>One dial decides how much of the queue the machine keeps</h2>
+<p>Here is the decision, stripped of everything else. A job arrives. The system forms some estimate of how well it can handle this particular one: call it a <b>confidence</b> score, which in practice is assembled from retrieval quality, the customer's wording, sentiment, how unusual the request is, and how expensive a mistake would be. Then it compares that score against a line somebody drew. Above the line, the machine keeps the job. Below it, a human gets it.</p>
+<p>That line is the <b>escalation threshold</b>, and where a company puts it is the single most consequential number in its deployment. Move it down and the machine keeps more work, which is cheaper and faster. Move it down far enough and the machine starts keeping work it should not have kept, and those mistakes reach customers.</p>
+<p>OpenTable built a version of this you can actually see the guts of. Working with Salesforce, its team scores every conversation live: asking for help adds 5, asking for a representative adds 10, typing in capitals and clear frustration takes it to 20. Cross the threshold and the conversation goes to a person. The threshold is adjustable, and they move it: raise it when staffing is tight, lower it at holidays.</p>
+
+<div class="intu"><i>picture it</i>
+  A triage nurse at the door of a busy clinic, with one instruction: send through anyone you are less than X percent sure about. Set X at 99 and almost everyone goes to a doctor, the queue stretches round the block, and the nurse was pointless. Set X at 40 and nobody waits, until the morning someone with chest pain is sent home with paracetamol. <b>There is no correct X. There is only which mistake you would rather make</b>, and that is a business decision wearing a technical costume.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Drag the threshold and watch both costs move</h3>
+<p class="eyebrow"><b>Figure 5.</b> One hundred jobs, each with its own difficulty. Drag the slider to move the line. Tiles above it are kept by the machine, tiles below go to a person, and the red ones are jobs the machine kept and got wrong.</p>
+<div class="fig-b">
+<svg id="f7" viewBox="0 0 1000 340" role="img" aria-label="One hundred work tiles re-sorting as an escalation threshold moves"></svg>
+<div style="margin-top:22px">
+  <label class="cap" for="f7s"><b>escalation threshold</b> &nbsp; low, keep almost everything &nbsp;&rarr;&nbsp; high, escalate almost everything</label>
+  <input type="range" id="f7s" min="0" max="100" value="35" step="1" style="margin-top:10px">
+</div>
+<p class="cap" id="f7out" style="margin-top:18px;min-height:5.4em"></p>
+<div class="rail" id="f7p" style="margin-top:16px">
+  <button class="chip" data-p="34">keep two thirds, as Klarna did</button>
+  <button class="chip" data-p="4">keep 97%, as Air India does</button>
+  <button class="chip" data-p="69">escalate most of it</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>The presets are the argument. Klarna set the dial low and told everyone. In February 2024 the Swedish payments company announced that its OpenAI-powered assistant had handled 2.3 million conversations in its first month, roughly two thirds of all customer service chats, across 23 markets and more than 35 languages. Resolution time fell from 11 minutes to under 2. Repeat contacts fell 25%. The company put the work at the equivalent of 700 full time agents and estimated 40 million dollars of profit improvement for the year, later revising to about 60 million and 853 agent equivalents by the third quarter of 2025.</p>
+<p>Air India sits further left still, containing 97% of 40,000 daily queries, and has run there for years without the reversal Klarna had. The difference is not the model. Airline questions are narrow, authenticated and highly repetitive, and 1,300 topics covers most of the world. Klarna's queue contains disputes, refunds and people who are upset about money.</p>
+<p>Kaiser sits at the other end and never moved: every draft note is reviewed by the clinician before it enters the record. Four million encounters, zero unreviewed tiles. That is not timidity. It is a correct reading of what a mistake costs when the artefact is a medical record.</p>
+<p class="pull">Nobody in this piece found the right setting. They found the setting their queue could survive.</p>
+<p>Which brings us to the more awkward part, because the numbers those companies publish are not measuring the same thing as each other. Sometimes not even close.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>Ninety-seven percent of what, exactly</h2>
+<p>Take one hundred customers who open a chat window. Sixty get an answer from the model and close the window without saying anything. Fifteen get an answer, are unsatisfied, and give up. Twenty ask for a person. Five come back the next day with the same problem.</p>
+<p>Answer quickly: what is the automation rate?</p>
+<p>You can defend 60%. You can defend 80%, if you count everyone who did not reach a human, and giving up counts. You can defend 75% if you count the twenty escalations as failures but not the abandonments. And if the five repeats are logged as new conversations, the denominator changes underneath all of it. Every one of those is a number a company could publish honestly, and they differ by twenty points.</p>
+<p>This is not a hypothetical. Salesforce's own published customer results for Agentforce span 25% to 95%, because the underlying definitions differ: 1-800Accountant reported 90% case deflection during tax week, OpenTable around 70% of enquiries resolved, Pandora 60% deflection, Reddit 46% case deflection, GE Appliances 25%. Salesforce's own benchmark, CRMArena-Pro, put an out-of-the-box agent at roughly 35% accuracy before customisation, which tells you how much of those customer numbers is configuration rather than model.</p>
+
+<div class="intu"><i>picture it</i>
+  A shop that measures success by how few people ask an assistant for help. Empty the shelves and the number goes to a hundred percent. <b>Deflection counts the absence of a human, not the presence of a solved problem</b>, and those two things come apart precisely where the queue is hardest, which is the part any buyer most wants to know about.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>The same hundred conversations, counted three ways</h3>
+<p class="eyebrow"><b>Figure 6.</b> Click each definition. Nothing about the conversations changes; only the rule for what counts as a success. The headline number moves by 22 points.</p>
+<div class="fig-b">
+<div class="rail" id="f8chips">
+  <button class="chip on" data-d="0">deflection: no human involved</button>
+  <button class="chip" data-d="1">resolution: customer confirmed fixed</button>
+  <button class="chip" data-d="2">durable: and did not come back</button>
+</div>
+<svg id="f8" viewBox="0 0 1000 300" role="img" aria-label="One hundred conversation tiles recoloured under three success definitions"></svg>
+<p class="cap" id="f8out" style="margin-top:18px;min-height:5.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>A second, quieter version of the same problem runs through the internal deployments. Morgan Stanley reports that 98% of financial advisor teams have adopted its assistant. JPMorgan reports more than 60% of employees using LLM Suite. Moderna reports its legal department at 100% and an average of about 120 conversations per user per week. Goldman Sachs put its assistant in front of all 46,500 employees in June 2025 after a 10,000 person pilot.</p>
+<p>Adoption is a real signal and a genuinely hard thing to achieve. It is also not output. A tool that everyone opens once a week and a tool that removes a week of work per person produce identical adoption charts. Moderna's per-user conversation count is the more informative number precisely because it is harder to reach by mandate, and Goldman's is more informative still, because it reports an outcome: developers describing roughly 20% higher productivity and 15% fewer post-release bugs.</p>
+<p>None of which tells you the thing a company deciding whether to start most wants to know, which is how long any of this took.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>The demo takes a fortnight and the rollout takes two years</h2>
+<p>Moderna built mChat, an internal assistant on OpenAI's API, in about two weeks in early 2023. It worked, and more than 80% of the company used it.</p>
+<p>Zalando's move to 70% generated editorial imagery is estimated to have taken eighteen to twenty-four months. Both statements are true, and the gap between them is the actual subject of enterprise AI.</p>
+<p>What takes the two years is never the model. It is the index nobody had built, the permissions nobody had mapped, the review step nobody had staffed, the legal sign-off on training data, the connectors into the CRM, and the several months during which the tool exists and nobody uses it. Harvey, the legal platform deployed at A&amp;O Shearman and PwC, publishes a deployment cadence of six to nine months per firm and runs a forward-deployed engineering team that sits inside firms mapping partner-by-partner workflows and rebuilding knowledge bases. That is the real work, and it is not AI work.</p>
+
+<div class="intu"><i>picture it</i>
+  Plumbing a house. Choosing the taps takes an afternoon and it is the only part anyone enjoys. Then someone has to find where the mains comes in, discover the previous owner's improvisations behind the plaster, and get an inspector to sign it. <b>The tap is the model. Everything else is eighteen months.</b> Companies that report fast rollouts almost always had the pipes already, which is why Moderna's two weeks came after years of standardised data infrastructure.
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Eleven deployments, from first pilot to reported scale</h3>
+<p class="eyebrow"><b>Figure 7.</b> Click any bar to read what happened in that gap. The dark segment is pilot, the filled segment is the scaled rollout.</p>
+<div class="fig-b">
+<svg id="f9" viewBox="0 0 1000 430" role="img" aria-label="A timeline of eleven deployments from pilot to scale"></svg>
+<p class="cap" id="f9out" style="margin-top:18px;min-height:5.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>Two patterns fall out of that chart and both are slightly deflating.</p>
+<p>The first is that the earliest movers are ordinary companies with unglamorous problems. Air India shipped in May 2023, before most of the technology industry had a strategy. It shipped a support assistant, which is the least fashionable use case available, and it is still running.</p>
+<p>The second is that almost every deployment here started as a narrow, boring, high-volume workflow with a metric the company already tracked. Note-taking. Research lookup. Order taking. Campaign imagery. Nobody transformed anything. They picked a queue, measured it, and pointed a model at it.</p>
+<p>The ones that went wrong went wrong in the same few ways, and the failures are more instructive than any of the wins.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>Every one of these has a scar</h2>
+<p>Klarna is the important one, because Klarna went first and said so loudly, which means the correction is public in a way most corrections are not.</p>
+<p>In May 2025 its chief executive said the company had let cost dominate the decision and that the result was lower quality, and Klarna began recruiting human agents again, in a flexible pool, with a commitment that a customer can always reach a person. It is worth being accurate about what changed: the assistant still handles roughly two thirds of chats. The company did not reverse the deployment. It moved the threshold back up for the cases where machine parity had not actually held, and it discovered which those were by shipping.</p>
+<p>Then there is what happens when the input is hostile. Taco Bell's parent, Yum! Brands, expanded voice ordering from a hundred-odd US drive-thrus to around 500 restaurants with Nvidia in March 2025. By August it had slowed the rollout: customers complained, and people worked out that the system could be goaded, including one order for 18,000 cups of water. A drive-thru microphone is an open text field pointed at the public, and nothing in a retrieval pipeline anticipates a person who is there to break it.</p>
+<div class="intu"><i>picture it</i>
+  A restaurant kitchen that has never had a customer walk in drunk, never had a supplier send the wrong crate, and never had a food critic in the room. It runs beautifully for a year. None of the three things that eventually close it are about the cooking. <b>A system that has only been tested on the traffic it expected has not been tested.</b> Every failure below entered through a door nobody was watching.
+</div>
+<p>Coca-Cola's is a third kind of failure, and the one with no technical fix. The 2024 and 2025 holiday spots were competently made and widely disliked. For 2025 the company switched from generated humans to animals specifically to dodge the uncanny valley, and its global head of generative AI said the craftsmanship was ten times better. The complaint was never craftsmanship. It was that the audience found out.</p>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>Six ways a working system still fails</h3>
+<p class="eyebrow"><b>Figure 8.</b> Click a failure to see which stage of the pipeline it enters at, and what the fix was.</p>
+<div class="fig-b">
+<div class="rail" id="f10chips">
+  <button class="chip on" data-f="0">quality regression</button>
+  <button class="chip" data-f="1">adversarial input</button>
+  <button class="chip" data-f="2">audience rejection</button>
+  <button class="chip" data-f="3">stale index</button>
+  <button class="chip" data-f="4">metric drift</button>
+  <button class="chip" data-f="5">agent overreach</button>
+</div>
+<svg id="f10" viewBox="0 0 1000 300" role="img" aria-label="A pipeline with a failure highlighted at the stage where it enters"></svg>
+<p class="cap" id="f10out" style="margin-top:18px;min-height:6.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>Salesforce is the uncomfortable one to end on, because it is the vendor. Marc Benioff said in September 2025 that the company had taken its customer support headcount from around 9,000 to around 5,000, with AI handling roughly half of customer interactions and support costs down 17%. Whatever else that is, it is a company selling a product and demonstrating the product on itself in the most legible possible way.</p>
+<p>The honest summary of the failure list is that none of these are model failures. Klarna's was a threshold set by finance. Taco Bell's was an unguarded input. Coca-Cola's was a misread of the audience. The stale index and the drifting metric are operations problems that predate language models by decades.</p>
+<p class="pull">The models mostly worked. The systems around them are where everything happened.</p>
+<p>Which means it is worth drawing that system once, properly, since all twenty are built from the same six layers.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section
+        >
+<div class="col">
+<h2>Twenty deployments, six layers, one shape</h2>
+<p>Strip the branding off every system in this piece and the same stack is underneath. Not because anyone standardised it, but because each layer solves a problem you hit in a fixed order once you try to put a model in front of real work.</p>
+<p>Morgan Stanley's evaluation practice is the layer people skip, and it is the one that separates the deployments that lasted from the ones that got quietly retired. Before Debrief shipped, the team built evaluation datasets covering different meeting types and tested specifically whether the model captured the action items without inventing any. That is not a benchmark score. It is a set of examples from the actual queue, with correct answers written by people who know the work, run again every time anything changes.</p>
+
+<div class="intu"><i>picture it</i>
+  A restaurant. The chef is the model, and hiring a better chef is the part everyone fixates on. But the kitchen also needs a supplier who delivers the right ingredients (retrieval), a pass where dishes are checked before they leave (the review gate), a rule that certain orders always go to the head chef (escalation), someone tasting the same three dishes every week to catch drift (evaluation), and a policy about what the kitchen refuses to cook (guardrails). <b>Swap the chef and the restaurant runs. Remove the pass and it closes.</b>
+</div>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>The stack every one of them converged on</h3>
+<p class="eyebrow"><b>Figure 9.</b> Click a layer to expand it and see which companies are doing what at that level.</p>
+<div class="fig-b">
+<svg id="f11" viewBox="0 0 1000 400" role="img" aria-label="Six stacked architecture layers, expandable on click"></svg>
+<p class="cap" id="f11out" style="margin-top:18px;min-height:6.4em"></p>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p>The layer that gets built last and should be built first is the review gate, and you can predict a deployment's trouble almost perfectly from where it sits. Kaiser put it on every single tile and has run four million encounters without a public incident. CommBank put it on the rule, not the transaction, so a human approves the pattern and the machine then applies it millions of times unsupervised. A&amp;O Shearman's guidance to its lawyers, from the beginning, was that everything coming out of the system must be validated. Coca-Cola's gate was the general public.</p>
+<p>Guardrails are the other layer worth naming, because they are the reason a drive-thru microphone is harder than a research archive. A guardrail is a rule applied outside the model: caps on quantities, refusal of certain topics, no free-text into a payment field. Air India reports no inappropriate responses over more than eighteen months of operation, which is a claim about guardrails and topic scoping rather than about the model's manners.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col">
+<h2>What twenty roll-outs will tell you if you let them</h2>
+<p>Read the roster below in one pass and a small number of things are true of nearly all of it.</p>
+<p>Almost nobody trained a model. They bought access to one, or several, and spent the effort on an index, a router, a review step and an evaluation set. The workflows chosen were narrow and high-volume, with a number the company was already reporting to somebody before the model arrived. Every deployment that survived contact with the public has a place where a human signs, and the companies that had trouble are the ones that moved that place to save money rather than because the work had earned it.</p>
+<div class="intu"><i>picture it</i>
+  Twenty restaurants that all turned out to have bought the same oven. Nobody coordinated it. They each had a queue of orders, each tried a few things, and each arrived at the same arrangement because the arrangement is what the problem demands. <b>The convergence is evidence about the problem, not about the vendors.</b> If you have a queue with a number attached, the shape of what you should build is already largely decided.
+</div>
+<p>And the numbers, all of them, come from the companies that built the things. Every figure in this piece is sourced, and almost none of it is audited.</p>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>The roster</h3>
+<p class="eyebrow"><b>Figure 10.</b> Filter by what the system does, then click any tile for the full record: modality, architecture, live date, scale, published numbers and the caveat.</p>
+<div class="fig-b">
+<div class="rail" id="f12chips">
+  <button class="chip on" data-t="all">all twenty</button>
+  <button class="chip" data-t="rag">retrieval</button>
+  <button class="chip" data-t="agent">agents</button>
+  <button class="chip" data-t="speech">speech</button>
+  <button class="chip" data-t="pixels">images and video</button>
+  <button class="chip" data-t="public">customer facing</button>
+</div>
+<svg id="f12" viewBox="0 0 1000 400" role="img" aria-label="Twenty filterable deployment tiles"></svg>
+<div class="panel" id="f12out" style="margin-top:20px;min-height:11em"></div>
+</div>
+</div>
+</div>
+
+<div class="col">
+<p class="pull">Pick the queue first. The model is the last decision you make, and the least interesting one.</p>
+<p>The thing worth taking from all of this is unglamorous and slightly annoying: none of these companies is doing anything you could not describe to a colleague in four sentences. Fetch the right documents. Put them next to the question. Let the model draft. Decide who checks it. The gap between the companies that got value and the ones that did not is almost entirely in the fourth sentence.</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<div class="col">
+<h2>Now set the dial yourself</h2>
+<div class="intu"><i>picture it</i>
+  A mixing desk with four faders, where every combination sounds like something and only a few sound good. Push the threshold down and the room gets loud and cheap. Push review coverage up and it gets quiet and expensive. <b>The setting you want is the one where the errors you still make are errors you could live with explaining.</b> Try to find it before reading anyone else's press release.
+</div>
+<p>The argument is over. This is the same simulation from the threshold figure with everything unlocked: the queue's difficulty, how expensive an error is, whether a review gate exists, and where the line sits. The presets rebuild three of the deployments you have just read about. Break them.</p>
+</div>
+
+<div class="wide">
+<div class="fig">
+<h3>The routing board</h3>
+<p class="eyebrow"><b>Figure 11.</b> Four controls, one queue of two hundred jobs. The readout underneath is the only honest scoreboard: what shipped, what a person touched, and what went out wrong.</p>
+<div class="fig-b">
+<svg id="f13" viewBox="0 0 1000 320" role="img" aria-label="A two hundred tile routing board driven by four controls"></svg>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin-top:24px">
+  <div><label class="cap" for="p1"><b>threshold</b> <span id="p1v">35</span></label><input type="range" id="p1" min="0" max="100" value="35"></div>
+  <div><label class="cap" for="p2"><b>queue difficulty</b> <span id="p2v">50</span></label><input type="range" id="p2" min="0" max="100" value="50"></div>
+  <div><label class="cap" for="p3"><b>cost of one error</b> <span id="p3v">50</span></label><input type="range" id="p3" min="0" max="100" value="50"></div>
+  <div><label class="cap" for="p4"><b>review gate coverage</b> <span id="p4v">0</span>%</label><input type="range" id="p4" min="0" max="100" value="0"></div>
+</div>
+<div class="rail" id="p5" style="margin-top:20px">
+  <button class="chip" data-q="klarna">Klarna, February 2024</button>
+  <button class="chip" data-q="kaiser">Kaiser, every note reviewed</button>
+  <button class="chip" data-q="taco">Taco Bell, hostile input</button>
+  <button class="btn" data-q="reset">reset</button>
+</div>
+<div class="panel" id="f13out" style="margin-top:20px;min-height:7.5em"></div>
+</div>
+</div>
+</div>
+</section>
+
+<p class="cap" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false"
+   style="text-align:center;cursor:pointer;padding:34px 0;margin:0">press <b>s</b> for the deeper cuts</p>
+
+<section class="col weeds" id="weeds" hidden aria-labelledby="weedsHint">
+<h2>Into the weeds</h2>
+<svg id="f14" viewBox="0 0 900 120" role="img" aria-label="A chunking strip that re-splits when clicked" style="margin:20px 0"></svg>
+<p class="cap" style="margin-bottom:26px">Click the strip to change the chunk size. The first weed explains why this ruins retrieval.</p>
+<details><summary>Why chunk size quietly decides whether retrieval works</summary>
+<p>Chunks that are too small get retrieved without the sentence that qualifies them, so a policy exception arrives without the policy. Chunks that are too large waste context and dilute the match, because a 4,000 word chunk is near everything and near nothing. Most production systems land between 200 and 800 words with an overlap, so a passage that straddles a boundary appears whole in at least one chunk. This is a tuning parameter with no correct value, and it is usually the first thing to check when a grounded system starts answering plausibly and wrongly.</p></details>
+<details><summary>What "the model can now do 97%" hides about the other 3%</summary>
+<p>Escalated work is not a random 3% of the queue. It is systematically the hardest, angriest and most unusual 3%, because that is what the threshold selects for. The consequence is that human agents in a heavily automated support operation face a queue with all the easy work removed, which makes handle times rise, satisfaction fall and burnout worse even when everything is working as designed. Staffing models built on the old average handle time break immediately. Almost no published case study mentions this.</p></details>
+<details><summary>Evaluation sets rot, and nobody notices for months</summary>
+<p>An evaluation set is a fixed list of inputs with known-good outputs, run on every change. The trouble is that the real queue moves: new products, new policies, new slang, a new competitor's name appearing in complaints. A set built in March is scoring a January world by September, and it keeps returning a healthy number while quality falls. The fix is a rotating sample of live traffic labelled by people who do the work, which is expensive, which is why it is the layer most often skipped.</p></details>
+<details><summary>Why "we use several models" usually means cost, not capability</summary>
+<p>Routing between models is normally an economic decision before it is a quality one. The strongest model may cost twenty times the cheapest per unit of work, and most of a real queue is easy. So the router sends the bulk to a small model and reserves the expensive one for hard or high-stakes items, which is the same triage logic as the escalation threshold, applied one layer down. JPMorgan's stated bet that models would become a commodity and the connective layer would not is the strategic version of the same observation.</p></details>
+<details><summary>The adoption number that means something</summary>
+<p>Seats issued is meaningless. Weekly active users is better. The number that actually predicts value is depth per user: Moderna's roughly 120 conversations per user per week, or the share of users who built their own custom assistant, which Moderna put at 40% of weekly actives. Depth is hard to fake with a mandate, because nobody opens a tool a hundred times a week to satisfy a policy. When a case study reports only percentage adoption, the depth number usually exists and was not flattering.</p></details>
+<details><summary>Digital twins, consent, and the part of the Zalando story that is a contract question</summary>
+<p>Zalando's generated imagery includes digital twins of real models, which lets the same face appear across a campaign and on product pages without a shoot. This turns a photographer's day rate into a licensing question: what the model consented to, for how long, in which markets, and whether their likeness can be placed in a scene they never agreed to. H&amp;M built its twins with a modelling agency partly to answer this. There is no settled industry standard, and it is a live legal exposure rather than a technical one.</p></details>
+<details><summary>What ten times faster meant at Netflix, specifically</summary>
+<p>The claim is about one visual effects sequence, not about production generally, and the comparison is against building that shot conventionally at that budget. Netflix's framing was that the shot would not have existed otherwise, which is a different claim from replacing effects work. The generated footage was produced by an in-house studio working with the production's own artists, and everything around it was made normally. The useful reading is that generation lowered the floor on what a mid-budget show could attempt, not that it raised the ceiling.</p></details>
+<details><summary>Why the drive-thru is harder than the research archive</summary>
+<p>Three things compound. The input is speech in noise, so errors enter before any language model sees the words. The output is an order that becomes a physical action within ninety seconds, so there is no review step available. And the input channel is open to the public with no authentication, so it attracts people whose goal is to break it. A research archive has none of these: typed input, an expert reader as the review gate, and an authenticated user with no incentive to sabotage their own work.</p></details>
+</section>
+
+<footer class="col" style="padding:60px 0 90px">
+<p class="cap"><b>Sources.</b> Every number is attributed to the organisation that published it, and none of it is independently audited. Kaiser Permanente and Abridge: Kaiser Permanente press release, August 2024; Permanente Medicine on the NEJM AI quality assurance study, 2025. Air India: airindia.com press releases and Microsoft customer stories. Morgan Stanley: Morgan Stanley press releases, June 2024; OpenAI customer story; CNBC. Klarna: Klarna press release, February 2024; CNBC, Reuters and Bloomberg reporting, May 2025. JPMorgan Chase: jpmorganchase.com technology blog; CIO Dive; VentureBeat. Goldman Sachs: Reuters via Fox Business, June 2025. Commonwealth Bank: commbank.com.au newsroom, February and April 2026. Novo Nordisk: MongoDB and Anthropic case studies. Pfizer: AWS PACT case study. Moderna: OpenAI customer story; Wall Street Journal via Inc. Netflix: Q2 2025 earnings call, reported by TechCrunch and the BBC. Coca-Cola: Hollywood Reporter and Wall Street Journal, November 2025. Zalando: Reuters, May 2025. Amazon: Q3 2025 and Q4 2025 earnings calls. Walmart: corporate.walmart.com, June 2025; Q1 earnings commentary. Yum! Brands: Business Wire, Restaurant Dive, CNBC. Duolingo: Duolingo research white paper on Video Call, 2025; company reporting. Spotify: Spotify newsroom, May 2025. Salesforce: Salesforce metrics pages; Benioff interview, September 2025. A&amp;O Shearman and Harvey: A&amp;O announcement, February 2023; trade reporting, 2026.</p>
+<p class="cap" style="margin-top:20px">Snapshot: August 2026. Figures 5, 6 and 11 are simulations driven by your own inputs, not company data, and are labelled as such in the readouts. Every other figure carries only published numbers.</p>
+</footer>
+
+<script>!function(){"use strict";var e=function(e){return document.getElementById(e)},t=matchMedia("(prefers-reduced-motion:reduce)").matches,a={raw:["none","var(--v14)","1.5","4 3"],mach:["var(--v0)","var(--v0)","1.5",""],rev:["var(--v0)","var(--v3)","2.5",""],esc:["rgba(168,65,47,.20)","var(--v13)","1.5",""]};function r(e,t,r,n,o){var i=a[r]||a.raw,s=o||18;return'<rect x="'+e+'" y="'+t+'" width="'+s+'" height="'+s+'" rx="3" fill="'+i[0]+'" stroke="'+i[1]+'" stroke-width="'+i[2]+'"'+(i[3]?' stroke-dasharray="'+i[3]+'"':"")+' shape-rendering="crispEdges"'+(n||"")+"/>"}function n(e,t,a,r,n){return'<rect x="'+e+'" y="'+t+'" width="'+a+'" height="'+r+'" rx="6" fill="none" stroke="var(--v3)" stroke-width="1.5"'+(n?' stroke-dasharray="6 4"':"")+' shape-rendering="crispEdges"/>'}function o(e,t,a,r,n){return'<text x="'+e+'" y="'+t+'" class="'+(r||"lab")+'" text-anchor="'+(n||"start")+'">'+a+"</text>"}function i(e){var t=e;return function(){return(t=1103515245*t+12345&2147483647)/2147483647}}var s=[{k:"ms",n:"Morgan Stanley",sec:"wealth management",out:"text",io:"speech and text in, text into the CRM",arch:"retrieval over roughly 350,000 research documents; a separate speech model transcribes client meetings before a language model writes the note",live:"Assistant September 2023, Debrief from July 2024",num:"98% of financial advisor teams use the assistant. Searches that ran half an hour return in seconds.",cav:"Adoption, not output. Every draft is reviewed by the advisor before it is sent.",tags:["rag","speech"]},{k:"kl",n:"Klarna",sec:"consumer payments",out:"text",io:"text in, text out, 35 languages",arch:"a customer facing assistant with tool access to refunds, returns and payment records",live:"February 2024, rebalanced May 2025",num:"2.3 million chats in month one, about two thirds of all chats. Resolution 11 minutes down to under 2. Repeat contacts down 25%. Put at 700 agent equivalents, later 853.",cav:"In May 2025 the chief executive said cost had dominated the decision and quality suffered. Humans were reintroduced for complex cases. The assistant still handles two thirds.",tags:["agent","public"]},{k:"jpm",n:"JPMorgan Chase",sec:"banking",out:"text",io:"text and documents in, text out",arch:"LLM Suite routes requests to several outside frontier models inside the bank environment; retrieval layer now in its fourth generation and handling several modalities",live:"summer 2024",num:"Zero to 200,000 onboarded users in eight months. Around 250,000 with access, more than 60% using it. Roughly 450 production use cases, target 1,000 by end of 2026.",cav:"The bank reports $1.5bn saved across fraud, trading and operations. That figure covers all AI work, not this platform alone.",tags:["rag"]},{k:"gs",n:"Goldman Sachs",sec:"banking",out:"text",io:"text and documents in, text and code out",arch:"a firmwide assistant giving controlled access to frontier models, tuned per function",live:"10,000 person pilot, firmwide June 2025",num:"All 46,500 employees given access. Developers report roughly 20% higher productivity and 15% fewer post-release bugs.",cav:"Self reported by developers rather than measured from the repository.",tags:["rag"]},{k:"cba",n:"Commonwealth Bank",sec:"banking",out:"rules",io:"transaction data in, executable detection rules out",arch:"an agent that queries payment data, assesses severity and drafts new fraud detection rules for human approval",live:"built in three months in house, reported April 2026",num:"More than 80 million signals and 20 million payments watched daily. Around 40,000 proactive alerts a day. Fraud losses down over 20% in the first half of FY2026. The agent contributed to three quarters of card fraud rules.",cav:"A person approves each rule. The rule then runs unsupervised over millions of payments.",tags:["agent"]},{k:"kp",n:"Kaiser Permanente",sec:"healthcare",out:"text",io:"exam room speech in, a draft clinical note out",arch:"ambient listening from Abridge, transcription then note generation, wired into the electronic health record",live:"a year of work, general availability August 2024",num:"40 hospitals and 600+ medical offices in eight states and DC. More than 4 million encounters supported. 14+ languages, 50+ specialties.",cav:"Patient consent required. The clinician reviews before anything enters the record. Kaiser states plainly that clinicians, not the model, are the decision makers.",tags:["rag","speech"]},{k:"nn",n:"Novo Nordisk",sec:"pharmaceuticals",out:"text",io:"trial data and approved text in, a 300 page regulatory report out",arch:"NovoScribe: retrieval combined with expert approved wording that is reused verbatim once a human has signed it off",live:"first reported early 2025",num:"Clinical study report drafting from ten to fifteen weeks down to about ten minutes, with review cycles roughly halved. Writers averaged 2.3 reports a year. Over fifty writers on a report became three.",cav:"This is the drafting step. Regulatory review is unchanged. Company reported.",tags:["rag"]},{k:"pf",n:"Pfizer",sec:"pharmaceuticals",out:"text",io:"voice or typed questions in, sourced answers out",arch:"VOX, a search layer over the roughly 20,000 documents a drug programme generates",live:"from 2024",num:"Up to 16,000 scientist hours of searching saved a year, infrastructure costs down 55%, prototype to working version cut from three months to six weeks.",cav:"An estimate of hours saved, not a measurement of hours redeployed.",tags:["rag","speech"]},{k:"mo",n:"Moderna",sec:"biotechnology",out:"text",io:"text in, text and analysis out",arch:"mChat built on an API in about two weeks, then a company wide platform where employees build their own assistants",live:"early 2023, platform from 2024",num:"Over 80% adoption of the first tool. 750 employee built assistants in about two months, later more than 3,000. Around 120 conversations per user per week. Legal at 100%.",cav:"Depth of use is strong. No audited dollar figure has been published.",tags:["rag"]},{k:"nf",n:"Netflix",sec:"streaming",out:"video",io:"text and reference frames in, final footage out",arch:"generation inside an in-house visual effects studio, integrated with conventional post production",live:"the series aired April 2025",num:"A building collapse sequence in El Eternauta, the first generated final footage in a Netflix original, completed about ten times faster than conventional visual effects.",cav:"One sequence. The claim is that the shot would not have been affordable otherwise, which is different from replacing effects work.",tags:["pixels","public"]},{k:"ko",n:"Coca-Cola",sec:"beverages",out:"video",io:"text prompts in, broadcast commercials out",arch:"two outside generation studios producing tens of thousands of clips, human artists selecting and polishing",live:"holiday campaigns 2024 and 2025",num:"Around 100 people on the project, five of them generation specialists. Production calendar from about a year down to about a month, across roughly 140 countries.",cav:"Both years drew heavy public criticism. For 2025 the company switched from generated humans to animals to avoid the uncanny valley. The objection was not craft.",tags:["pixels","public"]},{k:"za",n:"Zalando",sec:"fashion retail",out:"image",io:"text and product data in, editorial campaign imagery out",arch:"generated imagery including digital twins of real models, wired to the product catalogue",live:"roughly 18 to 24 months to reach scale, at scale by Q4 2024",num:"About 70% of editorial campaign images generated in Q4 2024. Production from six to eight weeks down to three or four days. Costs down as much as 90%. Trend response inside 24 hours.",cav:"Digital twins turn a day rate into a licensing question. Consent terms are not standardised across the industry.",tags:["pixels"]},{k:"am",n:"Amazon",sec:"e-commerce",out:"text",io:"text and images in, answers and purchases out",arch:"Rufus: retrieval plus a knowledge graph encoding who buys what and why, now with the ability to purchase",live:"beta February 2024, agentic buying from November 2025",num:"More than 300 million customers in 2025, monthly users up 149%, interactions up 210%. Close to $12bn in incremental annualised sales. Users about 60% more likely to complete a purchase.",cav:"That last figure compares people who chose the tool against people who did not, which is not the same as what the tool caused.",tags:["rag","agent","public"]},{k:"wm",n:"Walmart",sec:"retail",out:"text",io:"text in, plans and orders out",arch:"Sparky, a shopping agent wired to catalogue, inventory, pricing and the fulfilment network, plus Marty for sellers and advertisers",live:"June 2025",num:"Value of goods sold through Sparky up 150% in a quarter. Baskets 35% larger than non-Sparky baskets. Weekly active users up over 110% quarter on quarter.",cav:"Same selection problem as Amazon. Walmart has also begun placing ads inside the assistant.",tags:["agent","public"]},{k:"yb",n:"Yum! Brands",sec:"quick service restaurants",out:"speech",io:"speech in, spoken order confirmation and a kitchen ticket out",arch:"voice ordering at the drive-thru lane, adapting to each restaurant menu and live stock",live:"100+ US drive-thrus in 2024, around 500 restaurants from March 2025",num:"Reported improvements in order accuracy, wait times and team member workload.",cav:"By August 2025 the rollout was slowed after customer complaints and deliberate abuse, including an order for 18,000 cups of water. An open microphone pointed at the public is a hostile input channel.",tags:["speech","public"]},{k:"ai",n:"Air India",sec:"aviation",out:"text",io:"text in, sourced answers out",arch:"AI.g: retrieval over airline policy and live systems, scoped to 1,300 topics",live:"May 2023, one of the oldest deployments here",num:"About 40,000 questions a day, more than 13 million conversations resolved, 97% handled without a person and 3% escalated. Call volumes flat while passenger traffic doubled.",cav:"Narrow, authenticated, highly repetitive traffic. The airline also reports no inappropriate responses over eighteen months, which is a claim about guardrails and topic scoping.",tags:["rag","public"]},{k:"du",n:"Duolingo",sec:"education",out:"speech",io:"learner speech in, spoken conversation and written feedback out",arch:"Video Call and Roleplay: spoken conversation with a character, with facts extracted from the transcript and fed back as context next time",live:"Video Call from July 2024",num:"A controlled study of Japanese learners of English found speaking improvement after a month of use. 148 new courses in a year against 100 in the preceding years. 20,500 skills published in Q1 2026 against 7,100 a quarter in 2025.",cav:"The speaking study is the company research team reporting on the company product.",tags:["speech","public"]},{k:"sp",n:"Spotify",sec:"audio streaming",out:"speech",io:"listening history in, spoken commentary out",arch:"a cloned voice from an acquired speech synthesis company, with generated commentary written against listening data; voice requests added later",live:"February 2023, voice requests May 2025",num:"The English voice was built from about 300 podcast episodes of a real employee. A Spanish voice followed in 2024. Requests available in 60+ markets, now expanded past 75.",cav:"The voice belongs to a named person who still works there and coordinates weekly output with a team of writers and music editors.",tags:["speech","public"]},{k:"sf",n:"Salesforce",sec:"enterprise software",out:"text",io:"text in, text and record updates out",arch:"Agentforce, running on its own support channel as well as being sold",live:"from late 2024, typically five to eleven months per customer to production",num:"Support headcount from around 9,000 to around 5,000. AI handling roughly half of customer interactions. Support costs down 17%.",cav:"Published customer results span 25% to 95% because the definitions differ. The company benchmark put an uncustomised agent near 35%.",tags:["agent","public"]},{k:"ao",n:"A&amp;O Shearman",sec:"law",out:"text",io:"text and matter documents in, drafts and research out",arch:"Harvey, deployed inside the firm with its own precedent vault, house style and confidentiality walls",live:"February 2023, the first big-law firmwide deployment",num:"3,500 lawyers across 43 offices. Around 60% weekly active use in the first year. Roughly 40,000 queries through the assistant in the pilot period.",cav:"The firm head of innovation was blunt from the start: everything coming out of the system must be validated.",tags:["rag"]}],l={text:"var(--v0)",image:"var(--v3)",video:"var(--v3)",speech:"var(--v16)",rules:"var(--v13)"},c=e("dialN");addEventListener("scroll",function(){var e=document.documentElement,t=e.scrollTop/(e.scrollHeight-e.clientHeight||1);c.textContent=Math.round(100*Math.max(0,Math.min(1,t)))},{passive:!0});var d=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),d.unobserve(e.target))})},{threshold:.05,rootMargin:"0px 0px -4% 0px"});document.querySelectorAll("section > .col, section > .wide, .divider").forEach(function(e){e.classList.add("reveal"),d.observe(e)}),function(){for(var t=e("f0"),a=e("f0out"),r="",n=0;n<s.length;n++){var i=s[n],c=16+n%5*196,d=20+92*Math.floor(n/5),h=l[i.out];r+='<g data-i="'+n+'" style="cursor:pointer"><rect x="'+c+'" y="'+d+'" width="176" height="70" rx="4" fill="'+h+'" stroke="'+h+'" stroke-width="1.5" shape-rendering="crispEdges" data-r="'+n+'"/>'+o(c+88,d+32,i.n,"inv","middle")+o(c+88,d+52,i.out,"inv","middle")+'<rect x="'+c+'" y="'+d+'" width="176" height="70" fill="rgba(0,0,0,0)" data-i="'+n+'"/></g>'}t.innerHTML=r,t.querySelectorAll("[data-i]").forEach(function(e){e.addEventListener("click",function(){!function(e){0;var r=s[e];a.innerHTML="<b>"+r.n+"</b>, "+r.sec+". "+r.io+". Live "+r.live+".",t.querySelectorAll("[data-r]").forEach(function(t){t.setAttribute("stroke",t.getAttribute("data-r")==String(e)?"var(--v3)":l[s[+t.getAttribute("data-r")].out]),t.setAttribute("stroke-width",t.getAttribute("data-r")==String(e)?"3":"1.5")})}(+e.getAttribute("data-i"))})}),a.innerHTML="Colour is the output type: teal is text, dark is pixels, amber is speech, red is executable rules. Tap a tile."}(),function(){var t,a=e("f1"),n=e("f1out"),i=["raw","mach","rev","esc"],s=[];for(t=0;t<40;t++)s.push(t<26?"raw":t<34?"mach":t<38?"rev":"esc");var l="checked, model drafted and a person read it";function c(){var e={raw:0,mach:0,rev:0,esc:0};s.forEach(function(t){e[t]++}),n.innerHTML="<b>"+e.raw+"</b> raw &nbsp; <b>"+e.mach+"</b> machine &nbsp; <b>"+e.rev+"</b> checked &nbsp; <b>"+e.esc+"</b> escalated. &nbsp; A person touched "+(e.rev+e.esc)+" of 40. "+l}!function e(){for(var t,n,l="",d=0;d<40;d++)l+=r(t=40+d%20*34,n=44+34*Math.floor(d/20),s[d],' data-j="'+d+'" style="cursor:pointer"',26),l+='<rect x="'+(t-4)+'" y="'+(n-4)+'" width="34" height="34" fill="rgba(0,0,0,0)" data-j="'+d+'" style="cursor:pointer"/>';for(var h=40,u=["raw","mach","rev","esc"],p=0;p<4;p++)l+=r(h,168,u[p],"",20)+o(h+30,183,u[p],"val"),h+=Math.max(150,0)+40;l+=o(40,236,"one job = one tile. forty jobs shown.","lab"),l+=o(40,262,"click any tile to move it to the next state","lab"),a.innerHTML=l,a.querySelectorAll("[data-j]").forEach(function(t){t.addEventListener("click",function(){var a=+t.getAttribute("data-j");s[a]=i[(i.indexOf(s[a])+1)%4],e(),c()})})}(),c()}(),function(){var t=e("f2"),a=e("f2out"),i=0,s=["I can help with that. Most airlines allow small dogs in the cabin in an approved carrier, usually under 8kg including the carrier, for a fee of around $100 to $200 each way.","Max can travel in the cabin on this route if he and the carrier together are under 7kg, in a soft carrier no larger than 43 x 33 x 20cm, booked at least 48 hours ahead. Fee and route restrictions are in the pet policy, section 3."];function l(){var e="";e+=n(30,30,420,200)+o(48,58,"the context the model can see","val"),e+='<line x1="30" y1="72" x2="450" y2="72" stroke="var(--v3)" stroke-width="1.5" shape-rendering="crispEdges"/>',e+=n(52,92,376,44,!0)+o(70,120,"question: can I bring my Labrador, Max?","sub");var a=1===i;e+='<g data-gel="pol" class="'+(a?"show":"")+'" data-part="ctx">'+n(52,150,376,60,!0)+o(70,176,"retrieved: pet policy s.3, cabin pets","sub")+o(70,196,"7kg limit / 43x33x20cm / 48h notice","sub")+"</g>",e+='<path d="M460 130 L 520 130" stroke="var(--v3)" stroke-width="1.5" marker-end="url(#ar)"/>',e+='<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--v3)"/></marker></defs>',e+=n(530,100,120,60)+o(590,136,"model","val","middle"),e+='<path d="M660 130 L 720 130" stroke="var(--v3)" stroke-width="1.5" marker-end="url(#ar)"/>',e+=n(730,30,240,200)+o(748,58,a?"grounded answer":"plausible answer","val"),e+='<line x1="730" y1="72" x2="970" y2="72" stroke="var(--v3)" stroke-width="1.5" shape-rendering="crispEdges"/>';for(var s=0;s<5;s++)e+=r(752+38*s,110,a?"mach":"raw","",26);for(s=0;s<5;s++)e+=r(752+38*s,152,a?"mach":"raw","",26);e+=o(748,212,a?"every claim traceable to s.3":"no source exists for any of it","lab"),t.innerHTML=e}function c(){a.innerHTML=1===i?"<b>Grounded.</b> "+s[1]+" Numbers came from the pasted passage, so each one can be clicked back to its source.":"<b>Ungrounded.</b> "+s[0]+" Every number there is invented. It is not nonsense, it is an average airline, which is worse, because it reads as authoritative and cannot be traced."}e("f2chips").addEventListener("click",function(t){var a=t.target.closest("[data-g]");a&&(i=+a.getAttribute("data-g"),e("f2chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),l(),c())}),l(),c()}(),function(){var t=e("f3"),a="";a+='<g data-gel="a"><text x="30" y="34" class="val">1. the archive, cut into chunks</text>';for(var n=0;n<24;n++)a+=r(30+n%12*26,50,"raw","",20);a+="</g>",a+='<g data-gel="b"><text x="30" y="124" class="val">2. each chunk becomes coordinates</text>';var o=i(7);for(n=0;n<24;n++){var s=40+380*o(),l=150+110*o();a+='<circle cx="'+Math.round(s)+'" cy="'+Math.round(l)+'" r="5" fill="var(--v14)"/>'}for(a+="</g>",a+='<g data-gel="c"><circle cx="230" cy="210" r="9" fill="var(--v0)"/><text x="466" y="196" class="sub">the question,</text><text x="466" y="216" class="sub">same space</text></g>',a+='<g data-gel="d"><circle cx="230" cy="210" r="62" fill="none" stroke="var(--v0)" stroke-width="2.5" stroke-dasharray="5 4"/><text x="30" y="304" class="val">3. the nearest few get pasted in</text>',n=0;n<4;n++)a+=r(30+26*n,318,"mach","",20);for(a+="</g>",a+='<g data-gel="e"><text x="30" y="386" class="val">4. the answer, with its sources attached</text>',n=0;n<4;n++)a+=r(30+26*n,400,"rev","",20);a+='<text x="146" y="416" class="lab">each one clickable back to the note</text></g>',t.innerHTML=a,m("sc1",function(e){var a=["a","b","c","d","e"].filter(function(t,a){return a<=e});t.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",a.indexOf(e.getAttribute("data-gel"))>=0)})})}(),function(){var t=e("f4"),a=e("f4out"),i="s2t",s={s2t:["audio","speech recognition","a clinical note","Kaiser Permanente, Morgan Stanley Debrief, Pfizer VOX","Sound becomes words before any language model sees it. Two models in a line: one transcribes, one writes. Kaiser runs this in more than fourteen languages across fifty specialties, and the clinician reads the draft before it enters the record."],t2t:["a question","retrieval","a sourced answer","Air India, JPMorgan, Goldman Sachs, Moderna, A&amp;O Shearman","The plain case, and still the largest by volume. The interesting stage is not the model, it is what got fetched and pasted before the model ran."],t2i:["a trend and a product","image generation","campaign imagery","Zalando","Six to eight weeks becomes three or four days, costs down as much as 90%. Zalando says the point is speed rather than cost: a trend that lives a fortnight cannot wait for a shoot."],t2v:["a script and reference frames","video generation","final footage","Netflix, Coca-Cola","Netflix used this for a building collapse in El Eternauta, about ten times faster than conventional effects. Coca-Cola made whole commercials this way, with five specialists generating tens of thousands of clips and a calendar that fell from a year to a month."],t2s:["listening history","speech synthesis","spoken commentary","Spotify","The output is a cloned human voice, built from around 300 podcast episodes of a named employee. Text generation writes what to say, a separate voice model says it."],s2s:["spoken order or answer","recognition, model, synthesis","spoken reply","Yum! Brands drive-thru, Duolingo Video Call","Three models in a row and no review step available, because the reply has to arrive in under a second. This is the hardest path here, and it is where Taco Bell had to slow its rollout."]};function l(){for(var e=s[i],l="",c=[40,340,660],d=[260,260,300],h=[e[0],e[1],e[2]],u=0;u<3;u++)l+=n(c[u],40,d[u],110,1===u)+o(c[u]+d[u]/2,88,1===u?"language model in the middle":0===u?"in":"out","lab","middle"),l+='<line x1="'+c[u]+'" y1="104" x2="'+(c[u]+d[u])+'" y2="104" stroke="var(--v3)" stroke-width="1.5" shape-rendering="crispEdges"/>',l+=o(c[u]+d[u]/2,132,h[u],"val","middle"),u<2&&(l+='<path d="M'+(c[u]+d[u]+8)+" 95 L "+(c[u+1]-8)+' 95" stroke="var(--v3)" stroke-width="1.5" marker-end="url(#ar2)"/>');l+='<defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--v3)"/></marker></defs>';for(var p=0;p<10;p++)l+=r(40+26*p,180,"raw","",20);for(p=0;p<10;p++)l+=r(660+26*p,180,"mach","",20);l+=o(40,224,"jobs arriving","lab")+o(660,224,"jobs finished","lab"),t.innerHTML=l,a.innerHTML="<b>"+e[3]+"</b>. "+e[4]}e("f4chips").addEventListener("click",function(t){var a=t.target.closest("[data-m]");a&&(i=a.getAttribute("data-m"),e("f4chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),l())}),l()}(),function(){var t=e("f5"),a=e("f5out"),i="mm";function s(){var e="mm"===i,s="";s+=n(30,40,200,90)+o(130,84,"photograph","val","middle"),s+=n(30,160,200,90)+o(130,204,"the sentence","val","middle"),e?(s+=n(340,90,280,120)+o(480,140,"one model","val","middle")+o(480,166,"sees both at once","lab","middle"),s+='<path d="M238 85 C 290 85, 300 130, 336 138" stroke="var(--v0)" stroke-width="2.5" fill="none"/>',s+='<path d="M238 205 C 290 205, 300 165, 336 158" stroke="var(--v0)" stroke-width="2.5" fill="none"/>'):(s+=n(300,110,120,80)+o(360,148,"router","val","middle"),s+='<path d="M238 85 C 270 85, 275 130, 296 142" stroke="var(--v3)" stroke-width="1.5" fill="none"/>',s+='<path d="M238 205 C 270 205, 275 165, 296 158" stroke="var(--v3)" stroke-width="1.5" fill="none"/>',s+=n(490,30,150,70,!0)+o(565,72,"vision model","val","middle"),s+=n(490,120,150,70,!0)+o(565,162,"text model","val","middle"),s+=n(490,210,150,70,!0)+o(565,252,"cheap model","val","middle"),s+='<path d="M424 150 C 450 150, 460 65, 486 65" stroke="var(--v0)" stroke-width="2.5" fill="none"/>',s+='<path d="M424 150 L 486 155" stroke="var(--v14)" stroke-width="1.5" fill="none"/>',s+='<path d="M424 150 C 450 150, 460 245, 486 245" stroke="var(--v14)" stroke-width="1.5" fill="none"/>'),s+=n(700,90,270,120)+o(835,132,"one answer","val","middle");for(var l=0;l<5;l++)s+=r(760+30*l,152,"mach","",20);s+='<path d="M'+(e?628:648)+' 150 L 696 150" stroke="var(--v3)" stroke-width="1.5" marker-end="url(#ar3)"/>',s+='<defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--v3)"/></marker></defs>',s+=o(30,300,e?"thick lines: both inputs reach the same model":"thick line: the route the router chose for this question","lab"),t.innerHTML=s,a.innerHTML=e?"<b>Multimodal.</b> One model holds the picture and the sentence in the same context, so it can notice that the thing in the photograph contradicts the description. Amazon built toward this on the shopping side. It is the more capable arrangement and the more expensive one.":"<b>Multi-model.</b> A router picks a specialist and only that specialist sees the input. JPMorgan built its front door this way on the bet that models become a commodity and the connective layer does not. Cheaper, swappable, and blind to anything that falls between the specialists."}e("f5chips").addEventListener("click",function(t){var a=t.target.closest("[data-a]");a&&(i=a.getAttribute("data-a"),e("f5chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),s())}),s()}(),function(){var t=e("f6"),a="";a+='<g data-gel="a">'+n(40,30,540,80)+o(310,66,"an unusual cluster of payments","val","middle")+o(310,92,"no existing rule describes it","lab","middle")+"</g>",a+='<g data-gel="b">'+n(40,140,250,80,!0)+o(165,176,"tool call","val","middle")+o(165,200,"query the transaction data","lab","middle")+'<path d="M165 116 L 165 134" stroke="var(--v3)" stroke-width="1.5"/></g>',a+='<g data-gel="c">'+n(330,140,250,80,!0)+o(455,176,"result returns","val","middle")+o(455,200,"back into the context","lab","middle")+'<path d="M296 180 L 324 180" stroke="var(--v3)" stroke-width="1.5"/><path d="M455 226 C 455 268, 165 268, 165 226" stroke="var(--v0)" stroke-width="2.5" fill="none"/>'+o(310,290,"not finished, so round again","sub","middle")+"</g>",a+='<g data-gel="d">'+n(40,310,540,70)+o(310,344,"output: a proposed detection rule","val","middle")+o(310,368,"executable, not readable","lab","middle")+"</g>",a+='<g data-gel="e">'+n(40,398,540,56)+o(60,432,"a person approves it, then it runs unsupervised","val");for(var i=0;i<3;i++)a+=r(486+26*i,414,"rev","",20);a+="</g>",t.innerHTML=a,m("sc2",function(e){var a=["a","b","c","d","e"].filter(function(t,a){return a<=e});t.querySelectorAll("[data-gel]").forEach(function(e){e.classList.toggle("show",a.indexOf(e.getAttribute("data-gel"))>=0)})})}();var h,u,p,f=function(){for(var e=i(19),t=[],a=0;a<100;a++)t.push(Math.round(100*e()));return t}(),v=function(){for(var e=i(23),t=[],a=0;a<100;a++)t.push(e()<.5);return t}();function m(e,a){var r=[].slice.call(document.querySelectorAll("#"+e+" .stp")),n=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(r.forEach(function(t){t.classList.toggle("on",t===e.target)}),a(+e.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});r.forEach(function(e){n.observe(e),e.addEventListener("click",function(){r.forEach(function(t){t.classList.toggle("on",t===e)}),a(+e.getAttribute("data-step"))})}),a(0),t&&a(r.length-1)}!function(){var t=e("f7"),a=e("f7out"),n=e("f7s");function i(e){var n,i=function(e){for(var t=0,a=0,r=0,n=[],o=0;o<100;o++){var i=f[o];i<=100-e?(t++,i>=58&&v[o]?(r++,n.push("esc")):n.push("mach")):(a++,n.push("raw"))}return{keep:t,esc:a,wrong:r,st:n}}(e),s="",l=[];for(n=0;n<100;n++)l.push(n);for(l.sort(function(e,t){return f[e]-f[t]}),n=0;n<100;n++){var c=l[n];s+=r(40+n%25*36,40+36*Math.floor(n/25),"esc"===i.st[c]?"esc":"mach"===i.st[c]?"mach":"raw","",26)}Math.max(0,Math.min(100,i.keep));s+=o(40,196,"sorted left to right by how hard the job is","lab");var d=i.keep/100;s+='<rect x="40" y="218" width="920" height="26" fill="none" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',s+='<rect x="40" y="218" width="'+Math.round(920*d)+'" height="26" fill="var(--v0)" shape-rendering="crispEdges"/>',s+='<rect x="'+(40+Math.round(920*d))+'" y="218" width="'+Math.round(920*(1-d))+'" height="26" fill="var(--v12)" shape-rendering="crispEdges"/>',s+='<line x1="'+(40+Math.round(920*d))+'" y1="206" x2="'+(40+Math.round(920*d))+'" y2="256" stroke="var(--v3)" stroke-width="3"/>',s+=o(44,272,"kept by the machine","lab")+o(956,272,"escalated","lab","end"),s+='<rect x="40" y="292" width="920" height="18" fill="none" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',s+='<rect x="40" y="292" width="'+Math.round(i.wrong/100*920)+'" height="18" fill="var(--v13)" shape-rendering="crispEdges"/>',s+=o(44,330,"errors that reached a customer","lab"),t.innerHTML=s,a.innerHTML="<b>threshold "+e+".</b> The machine kept <b>"+i.keep+"</b> of 100 jobs and escalated <b>"+i.esc+"</b>. Of the ones it kept, <b>"+i.wrong+"</b> went out wrong. This is a simulation driven by your slider, not company data."}n.addEventListener("input",function(){i(+n.value)});var s={34:" Klarna sat here in February 2024 and reported two thirds of chats handled.",4:" Air India runs here. It survives there because its queue is narrow, authenticated and repetitive, and this simulated queue is not: the same threshold on mixed traffic is what produces the red bar.",69:" Conservative, and expensive. Almost nothing goes out wrong and almost nothing is saved."};e("f7p").addEventListener("click",function(t){var r=t.target.closest("[data-p]");r&&(n.value=r.getAttribute("data-p"),i(+n.value),a.innerHTML+=s[r.getAttribute("data-p")]||"",e("f7p").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===r)}))}),i(+n.value)}(),function(){for(var t=e("f8"),a=e("f8out"),n=0,i=[],s=0;s<100;s++)i.push(s<60?"ok":s<75?"gaveup":s<95?"human":"repeat");var l=[{n:"deflection",c:function(e){return"human"!==e},t:"Counts every conversation that did not reach a person. Someone who gave up counts as a success, and so does someone who came back the next day. This is the definition behind most published numbers, and it is 80 here."},{n:"resolution",c:function(e){return"ok"===e||"repeat"===e},t:"Counts only conversations the customer confirmed as fixed. Abandonment now counts against you. Same hundred conversations, and the number falls to 65."},{n:"durable resolution",c:function(e){return"ok"===e},t:"Fixed, and they did not come back with the same problem. This is the number a customer would recognise as success, and it is 60. Twenty points below the headline, from the same log file."}];function c(){for(var e="",s=0,c=0;c<100;c++){var d=l[n].c(i[c]);d&&s++,e+=r(40+c%25*36,40+36*Math.floor(c/25),d?"mach":"esc","",26)}e+='<rect x="40" y="200" width="920" height="30" fill="none" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',e+='<rect x="40" y="200" width="'+920*s/100+'" height="30" fill="var(--v0)" shape-rendering="crispEdges"/>',e+=o(40,262,l[n].n+" rate","lab")+o(960,262,s+" of 100","val","end"),e+=o(40,290,"nothing about the hundred conversations changed. only the counting rule did.","lab"),t.innerHTML=e,a.innerHTML="<b>"+l[n].n+".</b> "+l[n].t}e("f8chips").addEventListener("click",function(t){var a=t.target.closest("[data-d]");a&&(n=+a.getAttribute("data-d"),e("f8chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),c())}),c()}(),h=e("f9"),u=e("f9out"),p=[["Air India AI.g",2,4,43,"Pilot in March 2023, live in May. Still running, which makes it the longest continuously operating deployment here. Support was the least fashionable use case available in 2023."],["A&amp;O Shearman, Harvey",1,10,43,"Announced February 2023, the first big-law firmwide rollout. Around 60% weekly active use in year one. Harvey now publishes a deployment cadence of six to nine months per firm."],["Moderna mChat",0,2,15,"Built in about two weeks on an existing API. That speed was possible because the company had already standardised its data infrastructure for years. The two weeks is the tap, not the plumbing."],["Morgan Stanley",2,8,43,"Assistant fully rolled out September 2023. Debrief, the meeting tool, followed in July 2024 after months of prompt work and a purpose built evaluation set."],["Zalando imagery",6,22,43,"Roughly eighteen to twenty-four months from first experiments to 70% of editorial campaign images, most of it spent on tooling, catalogue integration and consent frameworks rather than on models."],["Kaiser and Abridge",7,19,43,"A full year of work with the vendor before general availability in August 2024, including quality assurance that later became a published study."],["Klarna assistant",10,13,28,"Fastest to headline and fastest to correction. Live February 2024, publicly rebalanced May 2025 with humans reintroduced for complex cases."],["JPMorgan LLM Suite",10,18,43,"Live summer 2024, zero to 200,000 users in eight months, driven largely by employees choosing to use it rather than by mandate."],["Netflix, El Eternauta",18,27,29,"One sequence, inside a normal production. The generated shot exists because the conventional version was unaffordable at that budget."],["Yum! voice ordering",13,26,31,"Over 100 US drive-thrus in 2024, around 500 restaurants by March 2025, rollout slowed by August 2025 after complaints and deliberate abuse."],["Goldman GS AI Assistant",24,29,43,"A 10,000 person pilot before all 46,500 employees got access in June 2025. Late, deliberately, and under three regulators."]],function e(t){for(var a="",r=250,n=700,i=0;i<4;i++){var s=r+Math.round(n*(12*i)/44);a+='<line x1="'+s+'" y1="30" x2="'+s+'" y2="390" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',a+=o(s,412,"20"+(23+i),"lab","middle")}for(var l=0;l<p.length;l++){var c=p[l],d=44+31*l,f=r+Math.round(n*c[1]/44),v=r+Math.round(n*c[2]/44),m=r+Math.round(n*c[3]/44);a+=o(238,d+13,c[0],t===l?"val":"lab","end"),a+='<rect x="'+f+'" y="'+(d+2)+'" width="'+Math.max(4,v-f)+'" height="18" rx="3" fill="none" stroke="var(--v3)" stroke-width="1.5" stroke-dasharray="4 3" shape-rendering="crispEdges"/>',a+='<rect x="'+v+'" y="'+(d+2)+'" width="'+Math.max(4,m-v)+'" height="18" rx="3" fill="var(--v0)" stroke="'+(t===l?"var(--v3)":"var(--v0)")+'" stroke-width="'+(t===l?"2.5":"1.5")+'" shape-rendering="crispEdges"/>',a+='<rect x="0" y="'+d+'" width="1000" height="24" fill="rgba(0,0,0,0)" data-b="'+l+'" style="cursor:pointer"/>'}a+=o(250,30,"dashed = pilot &nbsp; filled = scaled rollout","lab"),h.innerHTML=a,h.querySelectorAll("[data-b]").forEach(function(t){t.addEventListener("click",function(){var a=+t.getAttribute("data-b");e(a),u.innerHTML="<b>"+p[a][0]+".</b> "+p[a][4]})})}(-1),u.innerHTML="Click any bar. The dashed segment is how long the pilot ran before anything scaled, and it is usually the longer half.",function(){var t=e("f10"),a=e("f10out"),n=0,i=["input","retrieval","model","review gate","output","measurement"],s=[[3,"Quality regression","Klarna, May 2025","The review gate was removed to save money rather than because the queue had earned it. The chief executive said cost had become too dominant an evaluation factor and quality suffered. The fix was not a better model: humans came back for complex cases, and the assistant kept the other two thirds."],[0,"Adversarial input","Taco Bell, August 2025","A drive-thru microphone is an unauthenticated text field pointed at the public. People ordered 18,000 cups of water. Nothing in a retrieval pipeline anticipates someone whose goal is to break it. The fix is a guardrail outside the model: quantity caps, sanity checks, a human alert."],[4,"Audience rejection","Coca-Cola, 2024 and 2025","Technically competent output, widely disliked. For 2025 the company switched from generated humans to animals to dodge the uncanny valley and said the craftsmanship was ten times better. The complaint was never craftsmanship. It was that the audience knew."],[1,"Stale index","the failure nobody publishes","Retrieval fetches whatever is in the index. If a policy changed in March and the index was built in January, the system will cite the old policy with complete confidence and a working link. Every symptom points at the model. The model is fine."],[5,"Metric drift","visible across the whole set","A deflection number improves while the experience gets worse, because abandonment counts as deflection. This is the failure that hides all the others, and it is why the definition matters more than the value."],[2,"Agent overreach","the risk in every tool call","The moment a model can act, its worst output stops being a wrong sentence and becomes a wrong transaction. This is why CommBank puts the human on the rule rather than the payment: approve the pattern once, then let it run."]];function l(){for(var e="",l=s[n][0],c=0;c<6;c++){var d=30+160*c,h=c===l;e+='<rect x="'+d+'" y="70" width="140" height="80" rx="6" fill="none" stroke="'+(h?"var(--v13)":"var(--v3)")+'" stroke-width="'+(h?"3":"1.5")+'" shape-rendering="crispEdges"/>',e+=o(d+70,116,i[c],h?"val":"lab","middle"),c<5&&(e+='<path d="M'+(d+146)+" 110 L "+(d+154)+' 110" stroke="var(--v3)" stroke-width="1.5"/>')}for(e+=o(30+160*l+70,44,"enters here","val","middle"),e+='<path d="M'+(30+160*l+70)+" 54 L "+(30+160*l+70)+' 66" stroke="var(--v13)" stroke-width="2.5"/>',c=0;c<20;c++)e+=r(30+36*c,196,c<3?"esc":"mach","",26);e+=o(30,254,"three of twenty jobs carry the fault downstream, and every stage after this one looks broken","lab"),t.innerHTML=e,a.innerHTML="<b>"+s[n][1]+"</b>, "+s[n][2]+". "+s[n][3]}e("f10chips").addEventListener("click",function(t){var a=t.target.closest("[data-f]");a&&(n=+a.getAttribute("data-f"),e("f10chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),l())}),l()}(),function(){var t=e("f11"),a=e("f11out"),n=-1,i=[["the queue","A workflow with volume and a number you already report. Every deployment here started with one: exam room notes, drive-thru orders, research lookups, campaign images."],["retrieval and grounding","An index of your own documents, cut into chunks and searchable by meaning. Morgan Stanley over 350,000 research documents, Pfizer over 20,000 per drug programme, Air India over 1,300 topics."],["the model, or several","Almost nobody here trained one. JPMorgan routes to several outside models behind one door on the bet they become a commodity. Novo Nordisk mixes hosted models with a private instance."],["tools and actions","The permission list. CommBank can query payments and draft rules. Amazon Rufus can buy. Klarna can issue refunds. This layer is where the risk profile changes completely."],["the review gate","Who signs, and on what. Kaiser on every note. CommBank on the rule, not the payment. A&amp;O Shearman on every output, as firm policy from day one. Coca-Cola on nothing, and the public did it instead."],["evaluation and guardrails","Examples from the real queue with correct answers, rerun on every change. Morgan Stanley built datasets across meeting types and tested specifically for invented action items before Debrief shipped."]];!function e(){for(var s="",l=0;l<6;l++){var c=24+62*l,d=l===n;s+='<rect x="60" y="'+c+'" width="880" height="50" rx="6" fill="'+(d?"var(--v0)":"none")+'" stroke="'+(d?"var(--v0)":"var(--v3)")+'" stroke-width="'+(d?"2.5":"1.5")+'" shape-rendering="crispEdges"/>',s+=o(84,c+31,i[l][0],d?"inv":"val");for(var h=0;h<5;h++)s+=r(830+22*h,c+16,d?"rev":"raw","",18);s+='<rect x="60" y="'+c+'" width="880" height="50" fill="rgba(0,0,0,0)" data-l="'+l+'" style="cursor:pointer"/>'}s+=o(60,396,"built bottom up in most projects, and that is the mistake: the review gate is decided last","lab"),t.innerHTML=s,t.querySelectorAll("[data-l]").forEach(function(t){t.addEventListener("click",function(){n=+t.getAttribute("data-l"),e(),a.innerHTML="<b>"+i[n][0]+".</b> "+i[n][1]})})}(),a.innerHTML="Click any layer. The five small tiles on each row are the same atom you have been clicking since the first figure."}(),function(){var t=e("f12"),a=e("f12out"),r="all",n=0;function i(e){return"all"===r||e.tags.indexOf(r)>=0}function c(){for(var e="",a=0,r=0;r<s.length;r++){var h=s[r],u=i(h),p=16+a%5*196,f=18+92*Math.floor(a/5);if(u){var v=l[h.out],m=h.sec.length>20?h.sec.slice(0,19)+".":h.sec;e+='<g style="cursor:pointer"><rect x="'+p+'" y="'+f+'" width="176" height="70" rx="4" fill="'+(r===n?v:"none")+'" stroke="'+v+'" stroke-width="'+(r===n?"3":"1.5")+'" shape-rendering="crispEdges"/>'+o(p+88,f+32,h.n,r===n?"inv":"val","middle")+o(p+88,f+52,m,r===n?"inv":"sub","middle")+'<rect x="'+p+'" y="'+f+'" width="176" height="70" fill="rgba(0,0,0,0)" data-c="'+r+'"/></g>',a++}}e+=o(16,392,a+" of 20 shown","lab"),t.innerHTML=e,t.querySelectorAll("[data-c]").forEach(function(e){e.addEventListener("click",function(){n=+e.getAttribute("data-c"),c(),d()})})}function d(){var e=s[n];a.innerHTML="<b>"+e.n+"</b> &nbsp; "+e.sec+"<br><br><b>in and out</b> &nbsp; "+e.io+"<br><b>architecture</b> &nbsp; "+e.arch+"<br><b>live</b> &nbsp; "+e.live+"<br><b>published</b> &nbsp; "+e.num+"<br><b>caveat</b> &nbsp; "+e.cav}e("f12chips").addEventListener("click",function(t){var a=t.target.closest("[data-t]");a&&(r=a.getAttribute("data-t"),e("f12chips").querySelectorAll(".chip").forEach(function(e){e.classList.toggle("on",e===a)}),c())}),c(),d()}(),function(){for(var t=e("f13"),a=e("f13out"),n=200,s=i(41),l=i(53),c=[],d=[],h=0;h<n;h++)c.push(s()),d.push(l()<.5);var u={p1:35,p2:50,p3:50,p4:0};function p(){for(var e=u.p1,i=u.p2,s=u.p3,l=u.p4/100,h=0,p=0,f=0,v=0,m=[],g=0;g<n;g++){var b=Math.round(Math.min(100,60*c[g]+.7*i));if(b<=100-e){var y=b>=58&&d[g];g%100/100<l?(p++,y&&g%7==0?(v++,m.push("esc")):m.push("rev")):y?(v++,f++,m.push("esc")):(h++,m.push("mach"))}else f++,m.push("raw")}var w=Math.round(v*(s/10)),k="";for(g=0;g<n;g++){k+=r(30+g%40*24,30+24*Math.floor(g/40),m[g],"",18)}k+='<rect x="30" y="176" width="940" height="26" fill="none" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',k+='<rect x="30" y="176" width="'+Math.round(940*(h+p)/n)+'" height="26" fill="var(--v0)" shape-rendering="crispEdges"/>',k+='<rect x="30" y="176" width="'+Math.round(940*p/n)+'" height="26" fill="var(--v0)" stroke="var(--v3)" stroke-width="2.5" shape-rendering="crispEdges"/>',k+=o(34,224,"machine output, with the checked share outlined","lab"),k+='<rect x="30" y="244" width="940" height="18" fill="none" stroke="var(--v14)" stroke-width="1.5" shape-rendering="crispEdges"/>',k+='<rect x="30" y="244" width="'+Math.round(940*v/n)+'" height="18" fill="var(--v13)" shape-rendering="crispEdges"/>',k+=o(34,286,"errors that reached a customer","lab"),t.innerHTML=k,a.innerHTML="of 200 jobs &nbsp; <b>"+h+"</b> machine, unchecked &nbsp; <b>"+p+"</b> machine draft, person checked &nbsp; <b>"+f+"</b> reached a person<br><b>"+v+"</b> errors reached a customer &nbsp; weighted damage <b>"+w+"</b><br>threshold "+e+" &nbsp; difficulty "+i+" &nbsp; error cost "+s+" &nbsp; review coverage "+u.p4+"%<br>a review gate here catches most slips and misses about one in seven, because real review does. this is a simulation of your settings, not any company data."}["p1","p2","p3","p4"].forEach(function(t){var a=e(t);a.addEventListener("input",function(){u[t]=+a.value,e(t+"v").textContent=a.value,p()})});var f={klarna:[18,55,45,0],kaiser:[20,50,95,100],taco:[12,80,60,0],reset:[35,50,50,0]};e("p5").addEventListener("click",function(t){var a=t.target.closest("[data-q]");if(a){var r=f[a.getAttribute("data-q")];["p1","p2","p3","p4"].forEach(function(t,a){e(t).value=r[a],u[t]=r[a],e(t+"v").textContent=r[a]}),p()}}),p()}(),function(){var t=e("f14"),a=[3,6,12],n=0;function i(){for(var e="",i=a[n],s=Math.floor(36/i),l=20,c=0;c<s;c++){e+='<rect x="'+l+'" y="30" width="'+(24*i-6)+'" height="42" rx="4" fill="none" stroke="var(--v0)" stroke-width="1.5" shape-rendering="crispEdges"/>',l+=24*i}for(c=0;c<36;c++)e+=r(26+24*c,40,"raw","",12);e+=o(20,100,"chunk size "+i+" &nbsp; "+s+" chunks over the same passage. click to change.","lab"),t.innerHTML=e}t.addEventListener("click",function(){n=(n+1)%3,i()}),t.style.cursor="pointer",i()}(),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),a=e.closest("section")||document.body;function r(r){e.classList.toggle("hot",r),a.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",r)}),a.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",r)})}e.addEventListener("mouseenter",function(){r(!0)}),e.addEventListener("mouseleave",function(){r(!1)}),e.addEventListener("click",function(){r(!e.classList.contains("hot"))})}),function(){var t=e("weeds"),a=e("weedsHint");function r(){var e=t.hidden;t.hidden=!e,a.setAttribute("aria-expanded",String(e)),a.innerHTML=e?"press <b>s</b> to hide the deeper cuts":"press <b>s</b> for the deeper cuts",e&&(t.setAttribute("tabindex","-1"),t.focus({preventScroll:!0}),t.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,a=(t.tagName||"").toLowerCase();"input"===a||"textarea"===a||t.isContentEditable||(e.preventDefault(),r())}}),a.addEventListener("click",r),a.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),r())})}()}();
+</script>
+</body>
+</html>
