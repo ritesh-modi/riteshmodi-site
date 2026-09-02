@@ -1,0 +1,24 @@
+{
+  // A Worker serving static assets. "main" is deliberately absent: there is no
+  // Worker script, which is what makes this a static site rather than code with
+  // files attached.
+  "name": "riteshmodi",
+  "compatibility_date": "2026-09-02",
+
+  "assets": {
+    // The repo root IS the site root, and the deploy flow in use has no build
+    // step, so this points at "." rather than at a built directory. See
+    // .assetsignore and cf-build.sh below for the two ways to stop publishing
+    // the toolchain.
+    "directory": ".",
+
+    // Serve /404.html with a real 404 status. Without this the Worker returns an
+    // EMPTY body on any unknown path, which is what it was doing: readers hitting
+    // a dead link got a blank page instead of the site's own "Lost" page.
+    "not_found_handling": "404-page",
+
+    // /explorables/foo resolves to foo.html. All 41 internal links and every
+    // canonical tag on this site are extensionless, so this is load-bearing.
+    "html_handling": "auto-trailing-slash"
+  }
+}
