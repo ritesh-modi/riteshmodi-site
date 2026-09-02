@@ -1,10 +1,13 @@
 # Files that must not be published. gitignore syntax.
 #
-# UNVERIFIED: I could not confirm from Cloudflare's docs that Workers static
-# assets honours this file. If the paths below are still reachable after a
-# deploy, it is not supported here, and the fallback is cf-build.sh plus a build
-# command ("bash cf-build.sh", output "_site"). Nothing here is secret either
-# way: tools/ holds the SEO build scripts and no credentials.
+# VERIFIED against the live Worker: every path below returns 404 while the site
+# itself is unaffected. Two Cloudflare doc pages describe assets.directory,
+# html_handling and not_found_handling without mentioning this file, so it is
+# worth re-testing after any change to how the site is deployed.
+#
+# Nothing here is secret in any case: tools/ holds the SEO build scripts, and a
+# scan for key, token and private-key patterns found only the word "token" from
+# tokenization and token bucket.
 tools
 cf-build.sh
 staticwebapp.config.json
