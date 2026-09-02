@@ -5,6 +5,24 @@
   "name": "riteshmodi",
   "compatibility_date": "2026-09-02",
 
+  // The custom domain MUST be declared here, not added in the dashboard. Every push
+  // redeploys this Worker, and Wrangler reconciles routes against this file: "if you
+  // change your routes in the dashboard, Wrangler will override them in the next
+  // deploy with the routes you have set in your Wrangler configuration file". With no
+  // routes key, each deploy silently removed the domain that had just been added by
+  // hand, which is why it kept refusing to stick.
+  //
+  // custom_domain:true makes Cloudflare create and own the www DNS record, so there
+  // must be no other record for that hostname: a Custom Domain cannot be created on a
+  // hostname that already has a CNAME.
+  //
+  // The apex is deliberately absent. Every canonical tag on the site points at www, so
+  // loopingly.com should 301 there rather than serve the same pages under a second
+  // hostname and split its own search ranking.
+  "routes": [
+    { "pattern": "www.loopingly.com", "custom_domain": true }
+  ],
+
   "assets": {
     // The repo root IS the site root, and the deploy flow in use has no build
     // step, so this points at "." rather than at a built directory. See
