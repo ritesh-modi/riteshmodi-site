@@ -23,6 +23,11 @@
     { "pattern": "www.loopingly.com", "custom_domain": true }
   ],
 
+  // Keep the workers.dev URL alive. Declaring routes turned it off, which removed the
+  // one way to test the deployment independently of DNS and of the custom domain, and
+  // that is exactly the URL you need when the custom domain is the thing under suspicion.
+  "workers_dev": true,
+
   "assets": {
     // The repo root IS the site root, and the deploy flow in use has no build
     // step, so this points at "." rather than at a built directory. See
