@@ -1,0 +1,12 @@
+# Translated from staticwebapp.config.json when the site moved off Azure Static Web Apps.
+# Cloudflare Pages reads this file from the deploy root.
+
+/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+# The link-only tier: three unfinished explorables and one chapter PDF live under /preview
+# with unguessable filenames. A PDF cannot carry a <meta name="robots"> tag, so the header
+# is the only way to keep them out of an index. robots.txt is deliberately not used: a
+# Disallow rule would publish the paths it is trying to hide.
+/preview/*
+  X-Robots-Tag: noindex, nofollow
