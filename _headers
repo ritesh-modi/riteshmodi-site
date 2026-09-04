@@ -1,8 +1,35 @@
-# Translated from staticwebapp.config.json when the site moved off Azure Static Web Apps.
-# Cloudflare Pages reads this file from the deploy root.
+# Translated from staticwebapp.config.json when the site moved off Azure Static Web Apps,
+# then extended after an SEO audit found three headers had been silently dropped in the move.
 
 /*
   Cache-Control: public, max-age=600, must-revalidate
+  # Azure sent this and Cloudflare does not by default. The pages all carry
+  # <meta charset> so browsers cope, but the header is what actually decides,
+  # and a bare text/html invites a decoder guess on any page a scraper fetches.
+  Content-Type: text/html; charset=utf-8
+  # Azure sent HSTS. Losing it means a first visit over http is unprotected.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Content-Type above is set for every path, so the non-HTML assets need it back.
+/assets/*.css
+  Content-Type: text/css; charset=utf-8
+/assets/*.js
+  Content-Type: text/javascript; charset=utf-8
+/assets/*.json
+  Content-Type: application/json; charset=utf-8
+/og/*
+  Content-Type: image/png
+  Cache-Control: public, max-age=604800, immutable
+/*.svg
+  Content-Type: image/svg+xml
+/*.xml
+  Content-Type: application/xml; charset=utf-8
+/*.txt
+  Content-Type: text/plain; charset=utf-8
+/*.pdf
+  Content-Type: application/pdf
 
 # The link-only tier: three unfinished explorables and one chapter PDF live under /preview
 # with unguessable filenames. A PDF cannot carry a <meta name="robots"> tag, so the header

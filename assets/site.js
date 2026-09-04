@@ -145,6 +145,17 @@
       });
     });
     if(qbox)   qbox.addEventListener('input', function(){ loadFullIndex(); apply(); });
+
+    /* Accept ?q= so a search has a shareable URL. Without it the SearchAction in the
+       home page's WebSite schema would name a target that does nothing, and Google
+       treats a search box it cannot actually drive as a reason to drop the markup. */
+    (function(){
+      if(!qbox) return;
+      var m = /[?&]q=([^&#]*)/.exec(location.search);
+      if(!m) return;
+      try { qbox.value = decodeURIComponent(m[1].replace(/\+/g, ' ')); } catch(e){ return; }
+      loadFullIndex(); apply();
+    })();
     if(sortEl) sortEl.addEventListener('change', apply);
     apply();
   }

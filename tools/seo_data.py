@@ -53,7 +53,7 @@ PAGES = {
 EXPLORABLES = {
     "03-words-to-vectors": dict(
         desc="Spin a compass between two words and watch the angle turn into a similarity score, "
-             "then point it at ten real vectors and pull out each word's nearest neighbours.",
+             "then point it at ten real vectors and read off the neighbours.",
         short="Spin a compass between two words and watch the angle become a similarity score.",
         about="Word embeddings and cosine similarity"),
 
@@ -172,8 +172,8 @@ EXPLORABLES = {
         about="How large language models generate text"),
 
     "matchbox-language-model": dict(
-        desc="In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. "
-             "Point the same machine at words and train a language model by hand, bead by bead.",
+        desc="In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point "
+             "it at words and train a language model by hand, bead by bead.",
         short="Train a language model by hand, using matchboxes and coloured beads.",
         about="How language models learn from examples"),
 
@@ -191,7 +191,7 @@ EXPLORABLES = {
 
     "neural-network-by-hand": dict(
         desc="Fifteen weights, all of them on the page. Walk one row forward through two hidden "
-             "layers, watch the error walk back, then turn the learning rate up until it explodes.",
+             "layers, watch the error walk back, then turn the learning rate up.",
         short="Walk one row forward through two hidden layers, then watch the error walk back.",
         about="Neural network forward and backward passes"),
 
@@ -238,8 +238,8 @@ EXPLORABLES = {
         about="Prompt engineering techniques for large language models"),
 
     "rate-limiting-explainer": dict(
-        desc="Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, "
-             "feed and flood a live token bucket, and catch the moment it starts returning 429.",
+        desc="Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, feed "
+             "and flood a live token bucket, and catch it returning 429.",
         short="Starve, feed and flood a live token bucket. Catch the moment it returns 429.",
         about="API rate limiting and token bucket algorithms"),
 
@@ -286,8 +286,8 @@ EXPLORABLES = {
         about="Tokenization in large language models"),
 
     "what-ai-is-good-and-bad-at": dict(
-        desc="There is one clean line between what AI does well and badly, and it is not the "
-             "one most people guess. Learn to call the green and red lights before you hit send.",
+        desc="There is one clean line between what AI does well and what it does badly, and it is "
+             "not the one most people guess. Learn to call it before you send.",
         short="One clean line separates what AI does well from what it does badly.",
         about="Capabilities and limitations of artificial intelligence"),
 

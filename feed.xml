@@ -93,7 +93,7 @@
     <id>https://www.loopingly.com/explorables/neural-network-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
     <published>2026-08-08T00:00:00Z</published>
-    <summary>Fifteen weights, all of them on the page. Walk one row forward through two hidden layers, watch the error walk back, then turn the learning rate up until it explodes.</summary>
+    <summary>Fifteen weights, all of them on the page. Walk one row forward through two hidden layers, watch the error walk back, then turn the learning rate up.</summary>
   </entry>
   <entry>
     <title>One slider, three different models</title>
@@ -109,7 +109,7 @@
     <id>https://www.loopingly.com/explorables/03-words-to-vectors</id>
     <updated>2026-08-07T00:00:00Z</updated>
     <published>2026-08-07T00:00:00Z</published>
-    <summary>Spin a compass between two words and watch the angle turn into a similarity score, then point it at ten real vectors and pull out each word's nearest neighbours.</summary>
+    <summary>Spin a compass between two words and watch the angle turn into a similarity score, then point it at ten real vectors and read off the neighbours.</summary>
   </entry>
   <entry>
     <title>What is intelligence?</title>
@@ -125,7 +125,7 @@
     <id>https://www.loopingly.com/explorables/matchbox-language-model</id>
     <updated>2026-08-01T00:00:00Z</updated>
     <published>2026-08-01T00:00:00Z</published>
-    <summary>In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point the same machine at words and train a language model by hand, bead by bead.</summary>
+    <summary>In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point it at words and train a language model by hand, bead by bead.</summary>
   </entry>
   <entry>
     <title>How data becomes an equation</title>
@@ -181,7 +181,7 @@
     <id>https://www.loopingly.com/explorables/what-ai-is-good-and-bad-at</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>There is one clean line between what AI does well and badly, and it is not the one most people guess. Learn to call the green and red lights before you hit send.</summary>
+    <summary>There is one clean line between what AI does well and what it does badly, and it is not the one most people guess. Learn to call it before you send.</summary>
   </entry>
   <entry>
     <title>Tokenization</title>
@@ -213,7 +213,7 @@
     <id>https://www.loopingly.com/explorables/rate-limiting-explainer</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, feed and flood a live token bucket, and catch the moment it starts returning 429.</summary>
+    <summary>Rate limiting is refusing work cheaply so you can keep doing work at all. Starve, feed and flood a live token bucket, and catch it returning 429.</summary>
   </entry>
   <entry>
     <title>Prompt engineering</title>

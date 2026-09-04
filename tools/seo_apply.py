@@ -183,6 +183,26 @@ def apply_page(path, slug, url, meta, info, drift):
     if slug in ("index", "about"):
         ld.append(PERSON)
 
+    if slug == "index":
+        # The home page carried only a Person. A top-level WebSite entity is what lets
+        # Google attach the site name to results, and the SearchAction is what makes the
+        # sitelinks search box possible. The target is real: site.js reads ?q= on load,
+        # so the URL below actually returns results rather than an empty listing.
+        ld.append({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": AUTHOR,
+            "alternateName": "Loopingly",
+            "url": SITE + "/",
+            "publisher": {"@type": "Person", "name": AUTHOR, "url": SITE + "/about"},
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {"@type": "EntryPoint",
+                           "urlTemplate": SITE + "/explorables?q={search_term_string}"},
+                "query-input": "required name=search_term_string",
+            },
+        })
+
     if slug == "explorables":
         # the listing is the collection's front door; without an ItemList a crawler
         # sees 28 undifferentiated links and no statement that they belong together
