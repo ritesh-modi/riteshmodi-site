@@ -88,14 +88,29 @@ nav{position:fixed;top:16px;left:0;right:0;z-index:60;display:flex;justify-conte
 .rot{color:var(--ink);font-weight:800;white-space:nowrap;border-bottom:3px solid var(--sun);padding-bottom:1px}
 /* Credential strip. The hero said what the site is but never who is behind it, which
    is the thing a first-time reader actually weighs before spending ten minutes on an
-   explorable. Pills rather than a sentence: they survive being skimmed. */
-.creds{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px;max-width:800px}
-.cred{display:inline-flex;align-items:center;gap:8px;font-family:"Baloo 2";font-weight:700;
-  font-size:15px;line-height:1;padding:9px 15px;border-radius:999px;color:var(--ink);
-  background:color-mix(in srgb,var(--ac) 11%,var(--card));
-  border:1.5px solid color-mix(in srgb,var(--ac) 34%,transparent)}
-.cred i{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none}
-@media(max-width:640px){.creds{gap:7px;margin-top:18px}.cred{font-size:13px;padding:7px 12px}}
+   explorable. It sits above the h1 rather than under the lede: the headline is the
+   claim, and a reader arriving cold has more use for the standing behind the claim
+   than for a third line of it. Pills rather than a sentence, because this gets
+   skimmed, not read.
+
+   Text stays --ink rather than the accent. Accent-on-tint is what .tag does, but at
+   12px in a card corner, where it is decoration. Here it is the load-bearing line,
+   and coral on the light paper measures about 3:1, which is under AA for 16px. The
+   colour carries on the fill, the border and the dot instead, where contrast is not
+   what makes it legible. */
+.creds{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 30px;max-width:920px}
+.cred{display:inline-flex;align-items:center;gap:9px;font-family:"Baloo 2";font-weight:800;
+  font-size:16px;line-height:1;padding:12px 19px;border-radius:999px;color:var(--ink);
+  letter-spacing:.005em;
+  background:color-mix(in srgb,var(--ac) 17%,var(--card));
+  border:2px solid color-mix(in srgb,var(--ac) 52%,transparent);
+  box-shadow:0 6px 18px color-mix(in srgb,var(--ac) 20%,transparent)}
+.cred i{width:10px;height:10px;border-radius:50%;background:var(--ac);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 22%,transparent)}
+@media(max-width:980px){.cred{font-size:15px;padding:10px 16px}}
+@media(max-width:640px){.creds{gap:8px;margin:14px 0 22px}
+  .cred{font-size:13.5px;padding:9px 14px;gap:7px;border-width:1.5px}
+  .cred i{width:8px;height:8px;box-shadow:none}}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
 .scrolldown{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:var(--ink-faint);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
 .scrolldown .d{width:10px;height:10px;border-radius:50%;background:var(--primary);animation:bob 1.4s ease-in-out infinite}
