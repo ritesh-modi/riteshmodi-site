@@ -390,7 +390,14 @@ PERSON = {
     "@type": "Person",
     "name": AUTHOR,
     "url": SITE + "/",
-    "jobTitle": "Head of AI",
+    # jobTitle takes a list, and the extra two are what a reader is actually weighing
+    # when they decide whether to trust an explainer. They match the hero pills on the
+    # home page exactly: a structured claim that contradicts the visible page is worse
+    # than no claim at all.
+    "jobTitle": ["Head of AI", "AI/ML Researcher", "Forward Deployed Engineer"],
+    "description": "AI/ML researcher and Head of AI at MarketOnce. Ex-Microsoft "
+                   "forward deployed engineer, and the author of Loopingly, a "
+                   "collection of interactive explainers on how AI actually works.",
     "worksFor": {"@type": "Organization", "name": "MarketOnce"},
     "alumniOf": {"@type": "Organization", "name": "Microsoft"},
     "knowsAbout": ["Generative AI", "Machine Learning", "Cloud Architecture",

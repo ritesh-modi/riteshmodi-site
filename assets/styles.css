@@ -86,6 +86,16 @@ nav{position:fixed;top:16px;left:0;right:0;z-index:60;display:flex;justify-conte
 .hero h1 .grad{background:linear-gradient(102deg,var(--coral),var(--grape) 45%,var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
 .lede{font-size:clamp(19px,2.4vw,25px);color:var(--ink-soft);max-width:620px;margin:24px 0 8px;font-weight:600}
 .rot{color:var(--ink);font-weight:800;white-space:nowrap;border-bottom:3px solid var(--sun);padding-bottom:1px}
+/* Credential strip. The hero said what the site is but never who is behind it, which
+   is the thing a first-time reader actually weighs before spending ten minutes on an
+   explorable. Pills rather than a sentence: they survive being skimmed. */
+.creds{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px;max-width:800px}
+.cred{display:inline-flex;align-items:center;gap:8px;font-family:"Baloo 2";font-weight:700;
+  font-size:15px;line-height:1;padding:9px 15px;border-radius:999px;color:var(--ink);
+  background:color-mix(in srgb,var(--ac) 11%,var(--card));
+  border:1.5px solid color-mix(in srgb,var(--ac) 34%,transparent)}
+.cred i{width:8px;height:8px;border-radius:50%;background:var(--ac);flex:none}
+@media(max-width:640px){.creds{gap:7px;margin-top:18px}.cred{font-size:13px;padding:7px 12px}}
 .cta-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:34px}
 .scrolldown{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:var(--ink-faint);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
 .scrolldown .d{width:10px;height:10px;border-radius:50%;background:var(--primary);animation:bob 1.4s ease-in-out infinite}
