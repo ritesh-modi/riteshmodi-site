@@ -395,8 +395,14 @@ PERSON = {
     "alumniOf": {"@type": "Organization", "name": "Microsoft"},
     "knowsAbout": ["Generative AI", "Machine Learning", "Cloud Architecture",
                    "Azure", "PostgreSQL", "Distributed Systems"],
+    # sameAs is how Google is told these accounts are one entity. Every profile
+    # listed here should also link back to loopingly.com — a one-way claim is much
+    # weaker than a reciprocated one, and the whole point is the brand association.
     "sameAs": [
         "https://github.com/ritesh-modi",
         "https://www.linkedin.com/in/ritesh-modi",
+        "https://medium.com/@ritesh.modi",
+        "https://x.com/automationnext",
+        "https://riteshmodi.com/",
     ],
 }
