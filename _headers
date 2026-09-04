@@ -1,35 +1,35 @@
 # Translated from staticwebapp.config.json when the site moved off Azure Static Web Apps,
-# then extended after an SEO audit found three headers had been silently dropped in the move.
+# then extended after an SEO audit found three headers had been dropped in the move.
 
+# Applied everywhere. Content-Type is deliberately NOT set here: Cloudflare APPENDS a
+# header rather than replacing it, so a Content-Type under /* gave every stylesheet
+# "text/html; charset=utf-8, text/css" and two content types is worse than a missing
+# charset. It is scoped to the HTML paths below instead.
 /*
   Cache-Control: public, max-age=600, must-revalidate
-  # Azure sent this and Cloudflare does not by default. The pages all carry
-  # <meta charset> so browsers cope, but the header is what actually decides,
-  # and a bare text/html invites a decoder guess on any page a scraper fetches.
-  Content-Type: text/html; charset=utf-8
-  # Azure sent HSTS. Losing it means a first visit over http is unprotected.
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
-# Content-Type above is set for every path, so the non-HTML assets need it back.
-/assets/*.css
-  Content-Type: text/css; charset=utf-8
-/assets/*.js
-  Content-Type: text/javascript; charset=utf-8
-/assets/*.json
-  Content-Type: application/json; charset=utf-8
+# The HTML routes. Azure sent charset=utf-8 and Cloudflare does not by default; the
+# pages all carry <meta charset> but the header is what actually decides.
+/
+  Content-Type: text/html; charset=utf-8
+/about
+  Content-Type: text/html; charset=utf-8
+/books
+  Content-Type: text/html; charset=utf-8
+/talks
+  Content-Type: text/html; charset=utf-8
+/explorables
+  Content-Type: text/html; charset=utf-8
+/explorables/*
+  Content-Type: text/html; charset=utf-8
+/notes/*
+  Content-Type: text/html; charset=utf-8
+
 /og/*
-  Content-Type: image/png
   Cache-Control: public, max-age=604800, immutable
-/*.svg
-  Content-Type: image/svg+xml
-/*.xml
-  Content-Type: application/xml; charset=utf-8
-/*.txt
-  Content-Type: text/plain; charset=utf-8
-/*.pdf
-  Content-Type: application/pdf
 
 # The link-only tier: three unfinished explorables and one chapter PDF live under /preview
 # with unguessable filenames. A PDF cannot carry a <meta name="robots"> tag, so the header

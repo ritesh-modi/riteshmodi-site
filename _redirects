@@ -1,10 +1,12 @@
 # Canonicalisation. Workers' html_handling already folds these away, but it answers 307,
 # which is a TEMPORARY redirect: search engines do not consolidate ranking signals onto
 # the target the way they do for a 301. Azure sent 301s. These rules run first and restore
-# that. The targets carry no .html and no trailing slash, so none of them can loop.
-/index.html                 /                          301
-/:section/:slug.html        /:section/:slug            301
-/:slug.html                 /:slug                     301
+# that. Every target is extensionless and has no trailing slash, so none of them can loop.
+/index.html                    /                          301
+/:section/:slug.html           /:section/:slug            301
+/:slug.html                    /:slug                     301
+/:section/:slug/               /:section/:slug            301
+/explorables/                  /explorables               301
 
 # The one content redirect the site depends on.
 /explorables/tokenization-03A  /explorables/tokenization  301
