@@ -21,8 +21,8 @@ AUTHOR = "Ritesh Modi"
 # Top-level pages -------------------------------------------------------------
 PAGES = {
     "index": dict(
-        desc="Interactive explainers on how AI actually works — each one a single page "
-             "you learn by dragging, poking and breaking, not by watching a video.",
+        desc="Loopingly is where Ritesh Modi publishes interactive explainers on how AI actually "
+             "works: single pages you learn by dragging, poking and breaking.",
         about="Artificial intelligence",
     ),
     "explorables": dict(
