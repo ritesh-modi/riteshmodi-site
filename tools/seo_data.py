@@ -400,8 +400,11 @@ PERSON = {
                    "collection of interactive explainers on how AI actually works.",
     "worksFor": {"@type": "Organization", "name": "MarketOnce"},
     "alumniOf": {"@type": "Organization", "name": "Microsoft"},
-    "knowsAbout": ["Generative AI", "Machine Learning", "Cloud Architecture",
-                   "Azure", "PostgreSQL", "Distributed Systems"],
+    "knowsAbout": ["Generative AI", "Large Language Models", "Machine Learning",
+                   "Deep Learning", "Prompt Engineering", "Retrieval-Augmented Generation",
+                   "AI Agents", "AI Governance", "Data Engineering", "Medallion Architecture",
+                   "Delta Lake", "Cloud Architecture", "Azure", "PostgreSQL",
+                   "Distributed Systems"],
     # sameAs is how Google is told these accounts are one entity. Every profile
     # listed here should also link back to loopingly.com — a one-way claim is much
     # weaker than a reciprocated one, and the whole point is the brand association.
@@ -412,4 +415,62 @@ PERSON = {
         "https://x.com/automationnext",
         "https://riteshmodi.com/",
     ],
+}
+
+
+# Per-page keywords for the Article JSON-LD.
+#
+# This is schema.org "keywords", which Google does read as a topic signal. It is NOT
+# <meta name="keywords">, which Google has ignored since 2009 and which is not emitted
+# anywhere on this site — do not add it.
+#
+# Every entry must be true of the page it sits on. The value of this field comes
+# entirely from its accuracy: a keyword the page does not actually teach is stuffing,
+# it earns nothing, and it puts the honest entries in doubt. Where a page teaches a
+# concept the world searches for under a different name, both names belong here
+# ("language model" and "LLM"); where a word means something unrelated, it does not
+# (rate limiting's "token bucket" has nothing to do with an LLM token).
+KEYWORDS = {
+    "03-words-to-vectors": ["word embeddings", "cosine similarity", "vector search", "semantic similarity", "LLM"],
+    "ai-transformation-explainer": ["AI transformation", "AI adoption", "enterprise AI strategy", "generative AI"],
+    "ai-vs-ml-explained": ["AI vs machine learning", "automation", "artificial intelligence", "machine learning"],
+    "azure-service-principals-explainer": ["Azure service principal", "OAuth", "machine identity", "Microsoft Entra ID"],
+    "classification-metrics-by-hand": ["classification metrics", "precision and recall", "F1 score", "ROC curve", "confusion matrix"],
+    "delta-table-api-explained": ["Delta Lake", "Delta table API", "lakehouse", "ACID transactions", "data engineering"],
+    "discovering-models-trends-explainer": ["AI model releases", "model benchmarks", "LLM comparison", "foundation models"],
+    "evaluating-models-explainer": ["LLM evaluation", "model benchmarks", "large language model", "evals", "generative AI"],
+    "genai-vocabulary-explainer": ["GenAI vocabulary", "generative AI terms", "LLM", "token", "embedding",
+                                   "context window", "RAG", "retrieval-augmented generation", "AI agent", "fine-tuning"],
+    "generative-ai": ["generative AI", "GenAI", "LLM", "large language model", "sampling", "temperature"],
+    "grc-building-blocks": ["governance risk and compliance", "GRC", "AI governance", "controls"],
+    "grc-building-blocks-lesson": ["GRC training", "governance risk and compliance", "compliance fundamentals"],
+    "grc-explained": ["governance risk and compliance", "GRC", "risk management", "compliance"],
+    "grc-for-genai": ["AI governance", "generative AI risk", "GenAI compliance", "LLM guardrails", "responsible AI"],
+    "grc-operating-registers": ["risk register", "GRC operations", "compliance register", "AI governance"],
+    "history-of-generative-ai": ["history of generative AI", "GenAI timeline", "transformer", "LLM history"],
+    "how-data-becomes-an-equation": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
+    "how-models-learn": ["gradient descent", "backpropagation", "loss function", "learning rate", "model training", "fine-tuning"],
+    "how-twenty-companies-run-generative-ai": ["generative AI in production", "GenAI case studies", "LLM deployment", "enterprise AI"],
+    "is-it-actually-thinking": ["LLM", "large language model", "next token prediction", "does AI think", "generative AI"],
+    "matchbox-language-model": ["language model", "LLM", "how language models work", "MENACE", "machine learning by hand"],
+    "medallion-ten-rows-a-day": ["medallion architecture", "bronze silver gold", "Delta Lake", "lakehouse", "data engineering"],
+    "multimodal-explainer": ["multimodal AI", "vision language model", "image and text models", "generative AI"],
+    "neural-network-by-hand": ["neural network", "forward pass", "backpropagation", "deep learning"],
+    "never-use-ai-when-rules-will-do": ["rules vs machine learning", "when not to use AI", "rule-based systems"],
+    "partition-equal-subset-sum": ["partition equal subset sum", "LeetCode 416", "dynamic programming", "subset sum"],
+    "playground-controls": ["OpenAI Playground", "temperature", "top-p", "model parameters", "LLM settings"],
+    "postgres-partitioning-explainer": ["PostgreSQL partitioning", "table partitioning", "Postgres", "database performance"],
+    "predicting-the-next-character": ["next token prediction", "character-level language model", "neural network", "LLM", "embeddings"],
+    "prompt-engineering-explainer": ["prompt engineering", "prompting", "LLM prompts", "generative AI"],
+    "prompting-techniques": ["prompt engineering", "few-shot prompting", "chain-of-thought", "LLM", "large language model"],
+    "rate-limiting-explainer": ["API rate limiting", "token bucket algorithm", "leaky bucket", "throttling"],
+    "reasoning-models-explainer": ["reasoning models", "chain-of-thought", "test-time compute", "LLM", "o1", "inference"],
+    "regression-metrics-by-hand": ["regression metrics", "MAE", "RMSE", "R squared", "model evaluation"],
+    "regulatory-atlas": ["AI regulation", "EU AI Act", "GDPR", "data protection", "AI compliance"],
+    "the-layers-of-intelligence": ["AI vs ML vs deep learning", "generative AI", "artificial intelligence", "deep learning"],
+    "three-motions-of-a-model": ["classification", "regression", "deep learning", "machine learning"],
+    "three-types-of-machine-learning": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
+    "tokenization": ["tokenization", "tokens", "LLM tokens", "byte pair encoding", "BPE", "tokenizer", "large language model"],
+    "what-ai-is-good-and-bad-at": ["AI capabilities", "AI limitations", "what AI cannot do", "artificial intelligence"],
+    "what-is-intelligence": ["what is intelligence", "machine intelligence", "artificial intelligence", "AGI"],
 }

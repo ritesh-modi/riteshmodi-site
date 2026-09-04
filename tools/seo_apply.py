@@ -16,7 +16,7 @@ Run from the site root.
 import io, json, os, re, sys, glob
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from seo_data import (SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES,
+from seo_data import (SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES, KEYWORDS,
                       NOTES, NOTES_DIR)
 
 BEGIN, END = "<!-- seo:begin -->", "<!-- seo:end -->"
@@ -168,6 +168,12 @@ def apply_page(path, slug, url, meta, info, drift):
             "isAccessibleForFree": True,
             "about": {"@type": "Thing", "name": meta["about"]},
         })
+        # schema.org keywords (a topic signal Google reads), not <meta name="keywords">
+        # (ignored since 2009 and deliberately absent from this site). Notes pages
+        # get none: they are unlisted by design and carry no curated keyword set.
+        kw = KEYWORDS.get(slug)
+        if kw:
+            ld[-1]["keywords"] = ", ".join(kw)
         ld.append({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
