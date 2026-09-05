@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic RAG: the retrieval pipeline that is allowed to try again</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Schibsted+Grotesk:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>:root{--v9:#F2F4F6;--v10:#E4E9ED;--v12:#C7D0D8;--v3:#171C22;--v5:#48525C;--v4:#5C666F;--v0:#A8412A;--v19:#F0DED6;--v13:#2A6B57;--v18:#7C5A0E;--v11:#7B1E2B;--v2:"Young Serif",Georgia,serif;--v1:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;--v7:"Source Code Pro",ui-monospace,Menlo,monospace;--v6:680px;--v20:1080px;--v8:22px;--v15:clamp(44px,8vw,84px);--v14:clamp(30px,4.4vw,44px);--v16:clamp(21px,2.8vw,27px);--v17:clamp(23px,3.4vw,32px)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v9);color:var(--v3);font-family:var(--v1);font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v6);margin:0 auto;padding:0 var(--v8);position:relative}.wide{max-width:var(--v20);margin:0 auto;padding:0 var(--v8)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}.divider{max-width:var(--v6);margin:0 auto;height:1px;background:var(--v12)}h1,h2,h3{font-family:var(--v2);font-weight:400;line-height:1.06;margin:0}h2.big{font-size:var(--v14);margin:0 0 24px;letter-spacing:-.01em;max-width:16ch}p{margin:0 0 22px}strong{font-weight:700}.lede{font-size:var(--v16);line-height:1.42;color:var(--v5);font-family:var(--v1)}.hero h1{font-size:var(--v15);letter-spacing:-.018em;line-height:1.02;max-width:13ch}.kick{display:inline-block;font-family:var(--v7);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--v0);margin:0 0 26px;padding:7px 13px;border:1.5px dashed var(--v0);border-radius:4px}.cap{font-family:var(--v7);font-size:12px;color:var(--v4);line-height:1.6;margin:14px auto 0;max-width:62ch;text-align:center}.cap b{color:var(--v0);font-weight:600}.try{background:var(--v10);border-left:2px solid var(--v0);padding:18px 22px;margin:26px 0;border-radius:0 4px 4px 0;font-size:17px}.pull{font-family:var(--v2);font-size:var(--v17);line-height:1.28;color:var(--v0);border-left:2px solid var(--v0);padding-left:26px;margin:40px 0}.note{background:var(--v10);border-radius:4px;padding:20px 22px;margin-top:28px;font-size:17px;color:var(--v5)}.intu{border:1px solid var(--v12);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:22px 24px;margin:30px 0;background:var(--v10);font-size:17px;line-height:1.64}.intu i{font-family:var(--v7);font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:11px;font-style:normal}.intu b{color:var(--v3)}.fig{border:1px solid var(--v12);background:var(--v9);border-radius:6px;padding:26px 22px;margin-top:32px}.fig svg{width:100%;height:auto;display:block;overflow:visible}.panel{background:var(--v10);border-radius:6px;padding:20px 22px;margin-top:18px;font-family:var(--v7);font-size:13px;line-height:1.75;color:var(--v5)}.panel b{color:var(--v3);font-weight:600}.btn{font-family:var(--v7);font-size:13px;padding:9px 14px;border:1px solid var(--v12);border-radius:4px;background:var(--v9);cursor:pointer;color:var(--v5);transition:background .16s,border-color .16s,color .16s;min-height:40px}.btn:hover{border-color:var(--v0);color:var(--v3)}.btn[aria-pressed="true"],.btn.on{background:var(--v0);border-color:var(--v0);color:#fff}.chip{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:20px}input[type=range]{width:100%;accent-color:var(--v0);min-height:40px}.rail{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:9px}.rail i{width:7px;height:7px;border-radius:50%;background:var(--v12);display:block;transition:background .3s,transform .3s}.rail i.on{background:var(--v0);transform:scale(1.6)}@media (max-width:1000px){.rail{display:none}}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}@media (max-width:760px){.fig{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:22px 14px}.fig svg{min-width:700px}.fig::-webkit-scrollbar{height:6px}.fig::-webkit-scrollbar-thumb{background:var(--v12);border-radius:3px}}.stp{opacity:.34;transition:opacity .35s}.stp.on{opacity:1}.stp p{margin:0}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/agentic-rag">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta property="og:description" content="Watch a question loop through retrieval, get judged thin, and go round again.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/agentic-rag">
+  <meta property="og:image" content="https://www.loopingly.com/og/agentic-rag.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta name="twitter:description" content="Watch a question loop through retrieval, get judged thin, and go round again.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/agentic-rag.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Agentic RAG: the retrieval pipeline that is allowed to try again","description":"Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.","url":"https://www.loopingly.com/explorables/agentic-rag","image":"https://www.loopingly.com/og/agentic-rag.png","datePublished":"2026-09-05","dateModified":"2026-09-05","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Agentic RAG and retrieval-augmented generation"},"keywords":"agentic RAG, RAG, retrieval-augmented generation, AI agents, agentic AI, vector search, LLM, reranking, agent loop"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"The pipeline that is allowed to try again"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<nav class="rail" id="rail" aria-hidden="true"></nav>
+
+<header class="hero col"
+        style="padding-top:clamp(72px,14vh,150px);padding-bottom:clamp(40px,7vh,90px)">
+  <p class="kick">an empty slip</p>
+  <h1>The pipeline that is allowed to try again</h1>
+  <p class="lede" style="margin-top:26px;max-width:52ch">A question arrives as one slip of text.
+    Ordinary retrieval searches once and hands whatever it found to the model. Agentic retrieval
+    lets the model look at what came back, decide it is not enough, and go round again. Below,
+    that loop is running.</p>
+  <div class="fig" style="margin-top:36px">
+    <svg id="fHero" viewBox="0 0 620 190" role="img" aria-label="A question slip travelling round a loop of numbered stations"></svg>
+    <p class="cap">The slip moves on its own. <b>Click any station</b> to hold it there.</p>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section data-ch="01" class="reveal">
+  <div class="col">
+    <h2 class="big">A model answers from what is in front of it, and from nothing else</h2>
+    <p>Answer this, quickly: <em>what is the refund window on order 88214?</em></p>
+    <p>You cannot. Not because you are slow, but because nothing in front of you says. You would
+      need the order record, and the refund policy, and you have neither. Notice that you knew
+      instantly which two things you were missing. Hold onto that, because it is the whole job
+      of the machinery in this piece.</p>
+    <p>A language model is in the same position, with one difference: it cannot go and look.
+      Everything it is allowed to use has to be sitting in one block of text that gets handed to
+      it at the moment it runs. That block is called the <strong>context window</strong>, and it
+      is finite. Text goes in, an answer comes out, and the window is emptied again.</p>
+    <p>Think of the window as a tray with a fixed number of slots. Each slot holds one
+      <strong>slip</strong>: a short piece of text, of any origin. Your question is a slip. A
+      paragraph from a policy document is a slip. A result handed back by some other system is a
+      slip. They are all the same kind of object once they are on the tray, and the model cannot
+      tell which of them came from where unless the text itself says so.</p>
+    <div class="intu"><i>Picture it</i>
+      A locum doctor covering a shift they have never worked. They are competent, they trained for
+      years, and they have never met this patient. Everything they can act on is whatever is
+      clipped to the board at the end of the bed. Put the allergy note on the board and they will
+      avoid the drug. Leave it in a filing cabinet in another building and they will not, and they
+      will not know they are missing it. <b>The board is not the doctor's memory. It is the
+      doctor's entire world for the next ten minutes.</b>
+    </div>
+    <p>Load the tray yourself and watch what the model can and cannot say.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f1" viewBox="0 0 900 300" role="img" aria-label="A context window of six slots, filled from a tray of available slips"></svg>
+      <div class="chip" id="c1"></div>
+      <p class="cap">Figure 1. <b>Click a slip</b> to put it on the tray, and again to take it off.
+        The answer underneath is what the model could honestly say from exactly those slips.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>With the question alone, the model has to guess, and it will. With the order record and the
+      policy both loaded, the answer is arithmetic. Nothing about the model changed between those
+      two states. Only the tray changed.</p>
+    <p class="pull">Everything that follows is machinery for deciding what goes on the tray.</p>
+    <p>Which raises the obvious question: the policy document exists, it is sitting in a wiki
+      somewhere, so who put it on the tray? In the figure it was you, clicking. In production
+      nobody is clicking.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="02" class="reveal">
+  <div class="col">
+    <h2 class="big">What it memorised during training is not the same as what your company wrote down</h2>
+    <p>Ask a model when the French Revolution started and it will tell you 1789 with no help at
+      all. Ask it your own refund window and it will also answer, in the same confident register,
+      and the answer will be invented.</p>
+    <p>Both answers come out of the same place: the statistical residue of everything the model
+      read during training, baked into its weights. Call it <strong>parametric memory</strong>,
+      because it lives in the parameters. It is genuinely large and genuinely useful, and it has
+      two properties that matter here. It is frozen at the moment training stopped. And it never
+      contained your internal documents in the first place.</p>
+    <p>The failure this produces is not a blank. A blank would be easy to catch. The model
+      produces a fluent, plausible, specifically-worded policy that no one at your company ever
+      wrote, because producing plausible text is exactly what it was built to do.</p>
+    <div class="intu"><i>Picture it</i>
+      Somebody who has read ten thousand company handbooks and never yours. Ask them what your
+      notice period probably is and they will say three months, because three months is what
+      handbooks usually say. They are not lying and they are not guessing wildly. They are
+      answering from the average of everything they have seen. <b>The answer is well calibrated
+      to a population and wrong about you, and it arrives sounding exactly as certain as the
+      right one would.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f2" viewBox="0 0 900 260" role="img" aria-label="Two questions put to the same model, one answered from memory and one invented"></svg>
+      <div class="chip" id="c2"></div>
+      <p class="cap">Figure 2. <b>Switch the question.</b> The model is identical in both cases.
+        Only whether the answer was ever in the training data changes.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>So the fix is not a better model. A better model has the same hole, further away. The fix
+      is to get the right text onto the tray before the model runs.</p>
+    <p>Which means something has to find it.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="03" class="reveal">
+  <div class="col">
+    <h2 class="big">Retrieval is a paste job that happens before the model wakes up</h2>
+    <p>Here is the trick, and it is less clever than its reputation. Before the model runs, a
+      separate piece of software searches your documents, takes the few paragraphs that look most
+      relevant, and pastes them onto the tray next to the question. Then the model runs, once,
+      and answers from the tray. That is <strong>retrieval</strong>. The model is not involved in
+      the search and does not know it happened.</p>
+    <p>The documents are cut into paragraph-sized pieces first. Each piece is a
+      <strong>passage</strong>, and once it is on the tray it is just another slip. The whole
+      collection of passages, prepared and searchable, is the <strong>index</strong>.</p>
+    <p>Searching it by keyword would work badly, because the question and the passage rarely use
+      the same words. So each passage is converted into a list of a few hundred numbers, its
+      <strong>embedding</strong>, positioned so that passages about the same thing land near each
+      other regardless of wording. The question gets converted the same way. Nearness between the
+      question's numbers and a passage's numbers is the <strong>similarity</strong> score, and it
+      is a number between zero and one.</p>
+    <p>Why nearness rather than word overlap: it is the only measure here that survives a reader
+      asking about "money back" when the document says "refund". The two phrases share no words
+      and land in almost the same place.</p>
+    <p>The search returns the highest-scoring few. How many is a setting, written
+      <strong>top-k</strong>, where k is simply the count. Take k of them, paste, run the model.</p>
+    <div class="intu"><i>Picture it</i>
+      A clerk at a counter who cannot read the question and does not understand the filing system,
+      but is very fast and has a rule: fetch the three folders whose spines look most like the
+      request slip, put them on the desk, walk away. They never check whether the folders actually
+      answer anything. <b>The clerk optimises for looking relevant, which is nearly always the
+      same as being relevant, and the gap between nearly and always is where the rest of this
+      piece lives.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f3" viewBox="0 0 900 380" role="img" aria-label="An index of passages scored against a question, with the highest scoring pasted into the context window"></svg>
+      <div class="chip" id="c3"></div>
+      <p class="cap">Figure 3. <b>Pick a question</b>, then <b>raise or lower k</b>. Every passage
+        is scored; the top k are pasted onto the tray. Scores are cosine similarity, computed by
+        this page from the small vectors shown.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>For a question whose answer sits in one paragraph, this is the end of the story. It works,
+      it is cheap, it runs in a couple of hundred milliseconds, and most of what gets called RAG
+      in production is exactly this and nothing more.</p>
+    <p>Now ask it something whose answer is not in any single paragraph.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="04" class="reveal">
+  <div class="col">
+    <h2 class="big">One search cannot answer a question whose halves live in different documents</h2>
+    <p>Try this one: <em>is order 88214 still inside its refund window?</em></p>
+    <p>Say what you would have to do. First find the order and read its date. Then find the policy
+      and read the number of days. Then subtract. Three moves, and the second one is impossible
+      until the first is done, because until you have read the order you do not know it was a
+      gift purchase, and gift purchases have their own rule.</p>
+    <p>A question like this is <strong>multi-hop</strong>: the answer is assembled from facts that
+      sit in different places, and knowing which place to look second depends on what you found
+      first.</p>
+    <p>Now watch what single-shot retrieval does with it. The question goes in as one lump of
+      text, so its embedding is an average of everything it mentions: part order record, part
+      refund policy, squarely on neither. The three passages that score highest are a different
+      customer's order at 0.876, the right order at 0.830, and the standard refund rule at 0.816.
+      One of those three is genuinely needed. The gift rule, which is the one the right order
+      says applies, scores 0.711 and misses the cut. The model, which cannot tell that anything
+      is missing, answers from the three it got.</p>
+    <div class="intu"><i>Picture it</i>
+      Sending one runner to the archive with a note reading "the Henderson matter and whatever the
+      rule is about those". They come back with three folders that all mention Henderson. Nobody
+      brought the rule book, because the note never named it, because naming it required reading a
+      folder first. <b>The runner did their job perfectly and the desk is still missing half of
+      what it needs, and no one at the desk can tell.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f4" viewBox="0 0 900 360" role="img" aria-label="A two part question retrieved in one shot, showing which passages were needed and which were actually fetched"></svg>
+      <div class="chip" id="c4"></div>
+      <p class="cap">Figure 4. <b>Toggle between what was needed and what was fetched.</b> The two
+        sets overlap on one passage. The missing half is never requested, so nothing reports it
+        missing.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>The failure has a specific shape worth naming. Nothing errored. No component behaved
+      incorrectly. The retriever returned its best matches, and they were its best matches. The
+      model answered from its tray, and it did. The system has no place where "I do not have
+      enough to answer this" could be noticed, because no part of it ever compares what came back
+      against what was asked.</p>
+    <p class="pull">Add one step that reads the results before answering, and the pipeline stops
+      being a pipeline.</p>
+    <p>That step needs to be able to do something about what it finds. Which means it needs to be
+      able to send the runner back.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="05" class="reveal">
+  <div class="col">
+    <h2 class="big">Let the model read its own results, and the line becomes a loop</h2>
+    <p>The change is small to describe and large in consequence. Instead of pasting the passages
+      straight onto the tray and answering, put a decision in between: show the model what came
+      back and ask it one question before it is allowed to answer. <em>Is this enough?</em></p>
+    <p>If yes, answer. If no, it may write a new search and go round again. A model given that
+      authority, over a set of actions it may choose between, is what the word
+      <strong>agent</strong> means here. Nothing mystical: a model whose output is read as a
+      decision about what to do next rather than as prose for a human.</p>
+    <p>The code that reads that decision and dispatches it is the <strong>controller</strong>. It
+      is ordinary software, usually a loop with a counter, and it is the piece that actually holds
+      the system together. Each pass through it is one <strong>iteration</strong>.</p>
+    <p>Below is the whole architecture with one request actually moving through it. The graphic stays; the text moves. Watch the dashed leg from station 6 back to station 3, because that leg is the only thing separating this diagram from the pipeline that failed.</p>
+  </div>
+
+  <div class="bleed" id="scrolly1" style="margin-top:44px">
+    <div style="display:grid;grid-template-columns:1fr;gap:0;max-width:1240px;margin:0 auto;padding:0 var(--v8)">
+      <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;z-index:1;min-width:0;width:100%">
+        <div class="fig" style="width:100%;margin:0;background:var(--v9)">
+          <svg id="f5" viewBox="0 0 900 430" role="img" aria-label="One request traced through eight numbered stations, with a loop back from decide to query writing"></svg>
+          <div class="chip">
+            <button class="btn" type="button" id="f5play" aria-pressed="true">Pause</button>
+            <button class="btn" type="button" id="f5once">Run one request</button>
+          </div>
+          <p class="cap">Figure 5. One request, traced. <b>Rust</b> is the question travelling
+            out, <b>green</b> is graded context coming back, <b>dark</b> is the answer leaving.
+            A link only carries colour while something is on it. <b>Click any station</b> to hold
+            there, or scroll to walk them in order.</p>
+        </div>
+      </div>
+      <div style="max-width:var(--v6);margin:0 auto;padding:0 var(--v8)">
+        <div class="stp" data-step="0"><p><b>1 · Intake.</b> The question arrives and becomes a
+          slip, alongside anything the session already carries: who is asking, what they asked two
+          turns ago, which account they are in. This is the only station a human touches.</p></div>
+        <div class="stp" data-step="1"><p><b>2 · Router.</b> A cheap first decision: does this need
+          the documents at all? "What is your VAT number" does not. Sending everything to
+          retrieval is the most common and most expensive design mistake here, because retrieval
+          is the slow part and most traffic does not need it.</p></div>
+        <div class="stp" data-step="2"><p><b>3 · Query writing.</b> The question as typed is
+          usually a bad search query. This station rewrites it, and on later turns it writes a
+          <em>different</em> query, informed by what the last turn failed to find. That rewriting
+          is where multi-hop questions get taken apart.</p></div>
+        <div class="stp" data-step="3"><p><b>4 · Retrieval.</b> The search from before, unchanged:
+          embed the query, score the index, return the top k passages. Nothing here knows it is
+          inside a loop.</p></div>
+        <div class="stp" data-step="4"><p><b>5 · Grader.</b> The new part. Each returned passage is
+          judged against the question: does this actually help answer it? Passages that do not are
+          dropped rather than pasted. This is what stops the tray filling with plausible
+          irrelevance.</p></div>
+        <div class="stp" data-step="5"><p><b>6 · Decide.</b> The controller compares what survived
+          grading against what the question needs. Enough, and it moves on. Not enough, and it
+          sends control back to station 3 with a note about what is still missing. This arrow
+          backwards is the only structural difference between this diagram and the pipeline from
+          before.</p></div>
+        <div class="stp" data-step="6"><p><b>7 · Synthesise.</b> Everything that survived is on the
+          tray. The model writes the answer, and is instructed to cite which slip each claim came
+          from, which is only possible because the slips are still distinct objects at this
+          point.</p></div>
+        <div class="stp" data-step="7"><p><b>8 · Answer.</b> Out to the caller, with citations and
+          a record of the path taken. That record is not decoration: when this system is wrong,
+          the path is the only way anyone finds out where.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col" style="margin-top:56px">
+    <div class="intu"><i>Picture it</i>
+      A returns desk with a supervisor. The runner brings folders; the supervisor reads them
+      before the clerk is allowed to answer, and can say "this is the wrong Henderson, go back and
+      ask for the gift purchase rule". <b>The runner is not smarter than before. The desk simply
+      stopped treating the first delivery as final.</b>
+    </div>
+    <p>Two stations deserve their names. <strong>Grading</strong> is judging a returned passage
+      against the question and dropping it if it does not help. <strong>Routing</strong> is
+      deciding, before any of this runs, whether it needs to run at all.</p>
+    <p>The loop is now capable of going round forever, and something has to stop it.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="06" class="reveal">
+  <div class="col">
+    <h2 class="big">One number decides how many times it may go round</h2>
+    <p>The controller holds a counter. Before it sends control back to the query writer it checks
+      that counter against a ceiling, and if the ceiling is reached it stops looping and answers
+      with whatever it has. That ceiling is the <strong>iteration budget</strong>, and it is a
+      single integer in a config file.</p>
+    <p>It is also the entire difference between the two architectures in this piece. Set it to
+      zero and the loop never runs: retrieve once, answer, which is exactly the pipeline that
+      failed the two-part question. Raise it and the same code becomes agentic. There is no other
+      switch.</p>
+    <p>Drag it against the question that broke earlier and watch the path the request actually
+      takes.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f6" viewBox="0 0 900 330" role="img" aria-label="The trace of a request under a chosen iteration budget, showing each turn and whether the answer was reached"></svg>
+      <div style="max-width:620px;margin:22px auto 0">
+        <label for="k6" style="font-family:var(--v7);font-size:13px;color:var(--v4);display:flex;justify-content:space-between">
+          <span>iteration budget</span><span id="k6v" style="color:var(--v0)">0</span></label>
+        <input id="k6" type="range" min="0" max="5" step="1" value="0" aria-label="iteration budget">
+      </div>
+      <div class="chip" id="c6"></div>
+      <p class="cap">Figure 6. <b>Drag the budget</b> from 0 to 5, or take a preset. Each row is
+        one turn the controller allowed. The verdict underneath is whether all three facts the
+        answer needs were ever found.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>At zero it fails, and fails silently, with a fluent answer built from one correct passage
+      and one irrelevant one. At one it notices the gap but runs out of turns before it can use
+      what it noticed. At two it gets there. At three, four and five it also gets there, having
+      spent more to arrive at the same place.</p>
+    <div class="intu"><i>Picture it</i>
+      Telling the runner how many trips they are allowed before the desk has to answer regardless.
+      One trip is the old system. Two is usually the whole gain. <b>Ten trips does not buy a
+      better answer, it buys nine identical answers and one very long wait.</b>
+    </div>
+    <p class="pull">Almost everything agentic retrieval is credited with comes from the second
+      turn existing at all.</p>
+    <p>The turns after that are not free, and the bill arrives in two currencies at once.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="07" class="reveal">
+  <div class="col">
+    <h2 class="big">Every extra turn is paid for twice, in seconds and in tokens</h2>
+    <p>A turn is not one model call. It is a query rewrite, a search, and a grading judgement on
+      each returned passage, and the grading is itself a model call per passage. Set k to five and
+      one turn costs you six model calls, not one.</p>
+    <p>Those calls are sequential, because turn three's query depends on turn two's result. They
+      cannot be run in parallel, so their latencies add. On the figures below, a single-shot
+      pipeline answering in 400 milliseconds becomes a three-turn agent answering in 2.8 seconds,
+      and a six-turn one takes 6.4. Somewhere in there is the point where a person watching a
+      cursor blink decides the thing is broken.</p>
+    <p>The same slider, against what it costs.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f7" viewBox="0 0 900 300" role="img" aria-label="Latency, token spend and answer quality plotted against the iteration budget"></svg>
+      <div style="max-width:620px;margin:22px auto 0">
+        <label for="k7" style="font-family:var(--v7);font-size:13px;color:var(--v4);display:flex;justify-content:space-between">
+          <span>iteration budget</span><span id="k7v" style="color:var(--v0)">0</span></label>
+        <input id="k7" type="range" min="0" max="5" step="1" value="0" aria-label="iteration budget, cost view">
+      </div>
+      <p class="cap">Figure 7. The same budget as Figure 6, and the two stay in step. <b>Drag
+        it</b>: quality stops climbing once the budget reaches two, and the two costs do not.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>The shape of those three lines is the argument for setting the budget low and leaving it
+      there. Quality is a step, not a ramp: it moves once, between zero turns and two, and then
+      flattens. Latency and spend are close to linear and keep going. Anywhere past the flattening
+      point you are buying nothing at a steady price.</p>
+    <div class="intu"><i>Picture it</i>
+      A taxi meter that runs the whole journey while the useful part of the trip finished at the
+      second junction. <b>Nothing is going wrong. You are simply still paying.</b>
+    </div>
+    <p>All of which assumes the grader is right about what it drops. It is a model, and it is not
+      always right.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="08" class="reveal">
+  <div class="col">
+    <h2 class="big">The grader is a model too, and its mistakes are the expensive ones</h2>
+    <p>Every station added above is a model making a judgement, which means every station is a
+      place where a wrong judgement can be made confidently. Three of those go wrong often enough
+      to design around, and they fail in different directions.</p>
+    <p>Pick one and watch where it breaks the path.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f8" viewBox="0 0 900 430" role="img" aria-label="Three failure modes traced onto the station diagram"></svg>
+      <div class="chip" id="c8"></div>
+      <p class="cap">Figure 8. <b>Choose a failure.</b> The station where it originates turns red,
+        and the consequence is traced downstream from it.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>The first is a grader that passes a passage it should have dropped. The passage is on topic
+      and does not answer the question, which is the hardest case to judge and the most common
+      thing an index returns. Everything downstream now treats it as evidence, and the citation on
+      the final answer points at a real document that does not say what the answer claims. This is
+      worse than the original failure, because it now comes with a footnote.</p>
+    <p>The second is a loop that will not settle. The query writer rewrites, the retriever returns
+      much the same passages, the grader drops them again, and the controller sends it back. It
+      terminates only because the budget runs out, and then it answers anyway, from the same thin
+      material it had on turn one, having spent five turns to get there.</p>
+    <p>The third is not a wrong answer at all. One question arrives that the router should have
+      handled without retrieval, takes five turns and thirty model calls, and a load spike does
+      the same to every request behind it. Nothing in the traces looks wrong. The bill and the
+      latency graph both look wrong.</p>
+    <div class="intu"><i>Picture it</i>
+      The supervisor at the returns desk waving through a folder that mentions Henderson twice and
+      settles nothing. <b>The desk is now more confident than it was before the supervisor
+      existed, and it is confident about the wrong thing.</b>
+    </div>
+    <p>None of these are solved. They are bounded, and bounding them is what the production
+      version is mostly made of.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="09" class="reveal">
+  <div class="col">
+    <h2 class="big">In production the loop runs inside limits it is not allowed to exceed</h2>
+    <p>A deployed version of this is the diagram from before with a ring of constraints around it,
+      and the constraints are unglamorous. Every one of them exists because something in the
+      previous section happened to somebody.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f9" viewBox="0 0 900 320" role="img" aria-label="Four production layers wrapped around the loop, each capping something"></svg>
+      <div class="chip" id="c9"></div>
+      <p class="cap">Figure 9. <b>Click a layer</b> to see what it caps and which failure it is
+        there for.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>A hard ceiling on turns, on total model calls, and on wall-clock time, whichever is hit
+      first, because a budget expressed only in turns does not bound a turn that is itself slow.
+      A cache in front of the router, because a surprising share of production traffic is the same
+      question, and a cached answer costs nothing and takes no turns. A fallback path that returns
+      the single-shot answer with a note saying the search was inconclusive, because that is more
+      useful than a confident wrong one and far more useful than a timeout. And the trace, stored,
+      because when this system is wrong the only way anyone finds out where is by reading the path
+      the request actually took.</p>
+    <div class="intu"><i>Picture it</i>
+      A kitchen where the chef may re-fire a dish, twice, and the pass has a timer on it. <b>The
+      freedom to try again is real and it is fenced, and the fence is the part that ships.</b>
+    </div>
+    <p class="pull">The loop is the idea. The fence is the product.</p>
+    <p>Underneath the vocabulary, the whole of it is one arrow drawn backwards from the grader to
+      the query writer, and a counter to stop it running forever.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="reveal" id="close" style="padding:clamp(72px,9vw,128px) 0">
+  <div class="col" style="text-align:center">
+    <h2 class="big" style="max-width:22ch;margin:0 auto 26px">Retrieval that is allowed a second look, and stopped after the third</h2>
+    <p style="max-width:54ch;margin:0 auto 30px">Set the budget yourself, against whichever
+      question you like. The trace and the bill both update.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f10" viewBox="0 0 900 330" role="img" aria-label="A playground combining question type, retrieval breadth and iteration budget"></svg>
+      <div style="max-width:620px;margin:22px auto 0">
+        <label for="k10" style="font-family:var(--v7);font-size:13px;color:var(--v4);display:flex;justify-content:space-between">
+          <span>iteration budget</span><span id="k10v" style="color:var(--v0)">2</span></label>
+        <input id="k10" type="range" min="0" max="5" step="1" value="2" aria-label="iteration budget, playground">
+      </div>
+      <div class="chip" id="c10"></div>
+      <p class="cap">Figure 10. <b>Change the question, the breadth, and the budget.</b> Presets
+        set all three at once.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p style="margin-top:34px">A one-hop question never needs the loop, and a multi-hop question
+      never stops needing it. Most production traffic is the first kind, which is why the router
+      at station 2 earns more than the loop does.</p>
+  </div>
+</div>
+
+<div class="col" id="weedhint" style="padding-bottom:40px">
+  <p class="cap" style="text-align:left;margin:0">Press <b>s</b> for the parts that did not fit.</p>
+</div>
+
+<div id="weeds" hidden style="padding:clamp(72px,9vw,128px) 0;background:var(--v10)">
+  <div class="col">
+    <h2 class="big">Into the weeds</h2>
+    <p><b>Chunking is upstream of all of it.</b> Passages are cut before anything runs, and a cut
+      through the middle of a table or a procedure produces a passage that is unanswerable no
+      matter how many turns you allow. A large share of what looks like retrieval failure is a
+      cutting decision made weeks earlier.</p>
+    <p><b>Grading can be cheaper than a model call.</b> A reranker scores query and passage
+      together in a single small model pass, an order of magnitude below a language model call.
+      Most production graders are a reranker with a threshold, and only ambiguous cases go to the
+      expensive judge.</p>
+    <p><b>The budget does not have to be static.</b> Some controllers raise it when the router
+      flags a question as multi-hop and cap it at one otherwise, which gets most of the quality
+      for a fraction of the average cost. It also gives you a new way to be wrong, in the router.</p>
+    <p><b>Numbers on this page.</b> Similarity scores in Figure 3 are cosine similarity computed
+      in the browser from the eight-dimensional vectors drawn beside each passage, so they are
+      real arithmetic on toy data. The latency and token figures are illustrative, chosen to show
+      the shape of the trade rather than to report any particular deployment.</p>
+  </div>
+</div>
+
+<footer class="col" style="padding:70px 0 90px;border-top:1px solid var(--v12)">
+  <p class="cap" style="text-align:left;max-width:none">Written August 2026. The architecture
+    described is a composite of the common shape across published retrieval systems, not any one
+    vendor's product. Vectors, scores and traces are computed by this page from the toy corpus
+    shown in the figures.</p>
+</footer>
+
+<script>!function(){"use strict";var t="var(--v0)",e="var(--v19)",n="var(--v12)",r="var(--v3)",a="var(--v5)",i="var(--v4)",o="var(--v9)",d="var(--v10)",s="var(--v13)",c="var(--v18)",u="var(--v11)";function l(s,c,u,l,f,v,m){var y='<rect x="'+s+'" y="'+c+'" width="'+u+'" height="'+l+'" rx="4" fill="'+({empty:"none",held:e,active:t,dropped:d}[f]||"none")+'" stroke="'+({empty:n,held:t,active:t,dropped:n}[f]||n)+'" stroke-width="1.5"'+("empty"===f?' stroke-dasharray="5 4"':"")+"/>";return v&&(y+=h(s+11,c+(m?l/2-2:l/2+4),v,{empty:i,held:r,active:o,dropped:i}[f]||i,12,"start")),m&&(y+=h(s+11,c+l/2+15,m,"active"===f?o:a,11,"start")),"dropped"===f&&(y+='<line x1="'+(s+8)+'" y1="'+(c+l/2)+'" x2="'+(s+u-8)+'" y2="'+(c+l/2)+'" stroke="'+i+'" stroke-width="1.2"/>'),y}function h(t,e,n,r,i,o,d){return'<text x="'+Math.round(t)+'" y="'+Math.round(e)+'" fill="'+(r||a)+'" font-family="var(--v7)" font-size="'+(i||12)+'" text-anchor="'+(o||"start")+'"'+(d?' font-weight="'+d+'"':"")+' pointer-events="none">'+f(n)+"</text>"}function f(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function v(t,e,n,r,a){return'<rect x="'+Math.round(t)+'" y="'+Math.round(e)+'" width="'+Math.round(n)+'" height="'+Math.round(r)+'" fill="rgba(0,0,0,0)" '+(a||"")+"/>"}function m(t,e){var n=document.getElementById(t);n&&(n.innerHTML=e)}function y(t,e,n){return'<button class="btn" type="button" data-v="'+e+'" aria-pressed="'+!!n+'">'+f(t)+"</button>"}function p(t,e){var n=document.getElementById(t);n&&n.addEventListener("click",function(t){var n=t.target.closest("button[data-v]");n&&e(n.getAttribute("data-v"))})}var k=document.querySelectorAll(".reveal");if("IntersectionObserver"in window&&!matchMedia("(prefers-reduced-motion:reduce)").matches){var g=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),g.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});k.forEach(function(t){g.observe(t)})}else k.forEach(function(t){t.classList.add("in")});var w=document.querySelectorAll("section[data-ch]"),b=document.getElementById("rail");if(b){b.innerHTML=Array.prototype.map.call(w,function(){return"<i></i>"}).join("");var E=b.querySelectorAll("i");window.addEventListener("scroll",function(){var t=0,e=innerHeight/2;w.forEach(function(n,r){n.getBoundingClientRect().top<e&&(t=r)}),E.forEach(function(e,n){e.classList.toggle("on",n===t)})},{passive:!0})}!function(){var e=[[60,"intake"],[144,"route"],[228,"write"],[312,"search"],[396,"grade"],[480,"decide"],[564,"answer"]],d=0,s=null;function c(){var u="";u+='<line x1="34" y1="82" x2="590" y2="82" stroke="'+n+'" stroke-width="1.5" shape-rendering="crispEdges"/>',u+='<path d="M480 96 C480 138, 228 138, 228 96" fill="none" stroke="'+t+'" stroke-width="1.5" stroke-dasharray="4 4"/>',u+='<path d="M223 102 l5 -8 l5 8 z" fill="'+t+'"/>',u+=h(354,140,"try again",t,11,"middle"),e.forEach(function(e,a){var s=a===d;u+='<circle cx="'+e[0]+'" cy="'+'82" r="'+(s?13:9)+'" fill="'+(s?t:o)+'" stroke="'+(s?t:n)+'" stroke-width="1.5"/>',u+=h(e[0],87,String(a+1),s?o:i,11,"middle",600),u+=h(e[0],58,e[1],s?r:i,11,"middle"),u+='<circle cx="'+e[0]+'" cy="'+'82" r="20" fill="rgba(0,0,0,0)" class="hs" data-v="'+a+'" tabindex="0" role="button" aria-label="station '+(a+1)+", "+e[1]+'" style="cursor:pointer"/>'}),u+=l(e[d][0]-48,18,96,28,"active","question"),m("fHero",u+=h(310,176,null===s?"running":"held at station "+(s+1),a,11,"middle")),document.getElementById("fHero").querySelectorAll(".hs").forEach(function(t){function e(){s=+t.getAttribute("data-v"),d=s,c()}t.addEventListener("click",e),t.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),e())})})}c(),matchMedia("(prefers-reduced-motion:reduce)").matches||setInterval(function(){null===s&&(d=5===d?2:(d+1)%e.length,c())},1100)}(),function(){var t=[{k:"q",t:"the question",s:"what is the refund window on 88214?",need:!1},{k:"ord",t:"order 88214",s:"placed 12 Mar, gift purchase",need:!0},{k:"pol",t:"gift refund policy",s:"60 days from delivery",need:!0},{k:"faq",t:"shipping FAQ",s:"orders leave within 48 hours",need:!1},{k:"chat",t:"last week chat",s:"customer asked about sizing",need:!1}],e={q:!0};function r(){var r="",o=60,d=310;r+=h(o,32,"THE TRAY",i,12);for(var f=0;f<5;f++){var v=t[f];r+=l(o,46+50*f,d,44,e[v.k]?"held":"empty",e[v.k]?v.t:"empty slot",e[v.k]?v.s:"")}r+='<line x1="410" y1="46" x2="410" y2="290" stroke="'+n+'" stroke-width="1.5"/>',r+=h(440,32,"WHAT IT CAN SAY",i,12);var y,p,k=(y=e.ord,p=e.pol,e.q?y&&p?["12 May","date plus rule, arithmetic",s]:y?["sometime in April, probably","it has the date and invented the rule",u]:p?["60 days from delivery","it has the rule and no idea which order",c]:["30 days, as standard","invented, fluently, from nothing",u]:["nothing to answer","the question itself is not on the tray",a]);r+=l(440,120,400,64,"held",""),r+=h(456,150,k[0],k[2],13,"start",600),m("f1",r+=h(456,168,k[1],a,11,"start"))}function o(){document.getElementById("c1").innerHTML=t.map(function(t){return y(t.t,t.k,!!e[t.k])}).join("")}p("c1",function(t){e[t]=!e[t],o(),r()}),o(),r()}(),function(){var t=[{k:"pub",q:"when did the French Revolution start?",a:"1789",why:"in the training data ten thousand times",ok:!0},{k:"priv",q:"what is our refund window on gift purchases?",a:"30 days from purchase",why:"invented, and the real answer is 60 days from delivery",ok:!1}],e="pub";function r(){var r=t.filter(function(t){return t.k===e})[0],i="";i+=l(60,34,780,44,"held","you ask",r.q),i+='<path d="M450 84 L450 108" stroke="'+n+'" stroke-width="1.5"/>',i+='<path d="M445 102 l5 8 l5 -8 z" fill="'+n+'"/>',i+=l(60,116,780,44,"active","the model answers",r.a),i+=l(60,178,780,50,r.ok?"held":"dropped",""," "),i+=h(76,200,r.ok?"FROM MEMORY":"FROM NOTHING",r.ok?s:u,11,"start",600),m("f2",i+=h(76,220,r.why,a,12,"start"))}function i(){document.getElementById("c2").innerHTML=t.map(function(t){return y("pub"===t.k?"a public fact":"an internal fact",t.k,t.k===e)}).join("")}p("c2",function(t){e=t,i(),r()}),i(),r()}();var x=[{k:"P1",t:"Order 88214 · 12 Mar · gift",v:[.9,.6,.1,.7,.2,0,.2,.8]},{k:"P2",t:"Standard refunds: 30 days",v:[.1,.7,.95,.05,.3,.1,.1,.1]},{k:"P3",t:"Gift purchases: 60 days",v:[.1,.7,.9,.95,.25,.1,.1,.1]},{k:"P4",t:"Delivery timescales",v:[.15,.5,.1,.05,.95,.1,.1,.1]},{k:"P5",t:"Packaging an item for return",v:[.05,.1,.4,.05,.2,.95,.1,.05]},{k:"P6",t:"Order 88109 · 3 Jan · standard",v:[.9,.6,.1,.05,.2,0,.2,.8]}],q=[{k:"q2",label:"a one-hop question",q:"how long do I have to send something back",v:[.1,.75,.95,.2,.2,.25,.05,.05]},{k:"q1",label:"an order lookup",q:"when did order 88214 ship",v:[.85,.8,.05,.1,.5,0,.1,.75]},{k:"q3",label:"a two-part question",q:"is order 88214 still inside its refund window",v:[.6,.75,.6,.15,.25,.05,.1,.55]}];function M(t,e){for(var n=0,r=0,a=0,i=0;i<t.length;i++)n+=t[i]*e[i],r+=t[i]*t[i],a+=e[i]*e[i];return n/(Math.sqrt(r)*Math.sqrt(a))}function A(t){return x.map(function(e){return{k:e.k,t:e.t,v:e.v,s:M(t,e.v)}}).sort(function(t,e){return e.s-t.s})}function I(e,r,a,i){for(var o="",d=0;d<a.length;d++)o+='<rect x="'+(e+13*d)+'" y="'+r+'" width="11" height="18" fill="'+t+'" fill-opacity="'+(.1+.78*a[d]).toFixed(2)+'" stroke="'+n+'" stroke-width=".5" shape-rendering="crispEdges"/>';return o}!function(){var e="q2",o=3;function s(){var s=q.filter(function(t){return t.k===e})[0],c=A(s.v),u="";u+=l(60,22,780,40,"active","query",s.q),u+=I(308,74,s.v),u+=h(60,88,"its 8 numbers",a,11,"start"),u+=h(430,88,"similarity to the query",a,11,"start"),u+=h(60,124,"THE INDEX, SCORED",i,12),c.forEach(function(e,i){var s=136+36*i,c=i<o;u+=l(60,s,236,28,c?"held":"empty",e.t),u+=I(308,s+5,e.v);var f=Math.round(170*e.s);u+='<rect x="430" y="'+(s+8)+'" width="170" height="12" rx="2" fill="'+d+'"/>',u+='<rect x="430" y="'+(s+8)+'" width="'+f+'" height="12" rx="2" fill="'+(c?t:n)+'"/>',u+=h(612,s+19,e.s.toFixed(3),c?r:a,12,"start"),c&&(u+=h(676,s+19,"pasted",t,11,"start"))}),m("f3",u+=h(60,368,"k = "+o+", so the top "+o+" land on the tray. every score is the cosine of those two rows of numbers.",i,11))}function c(){document.getElementById("c3").innerHTML=q.map(function(t){return y(t.label,t.k,t.k===e)}).join("")+'<button class="btn" type="button" data-v="minus" aria-label="decrease k">k &minus;</button><button class="btn" type="button" data-v="plus" aria-label="increase k">k +</button>'}p("c3",function(t){"plus"===t?o=Math.min(5,o+1):"minus"===t?o=Math.max(1,o-1):e=t,c(),s()}),c(),s()}(),function(){var t="fetched",e=["P1","P3"];function r(){var r=q[2],o=A(r.v),d=o.slice(0,3).map(function(t){return t.k}),s="";s+=l(60,26,780,40,"active","the two-part question",r.q),s+=h(60,92,"fetched"===t?"WHAT ONE SEARCH FETCHED":"WHAT AN ANSWER NEEDED",i,12),x.forEach(function(n,r){var i,c=104+34*r;i="fetched"===t?d.indexOf(n.k)>=0?"held":"empty":e.indexOf(n.k)>=0?"held":"empty",s+=l(60,c,420,28,i,n.t),"fetched"===t&&d.indexOf(n.k)>=0&&(s+=h(500,c+19,"rank "+(d.indexOf(n.k)+1)+" · "+o.filter(function(t){return t.k===n.k})[0].s.toFixed(3),a,12)),"needed"===t&&e.indexOf(n.k)>=0&&(s+=h(500,c+19,"P1"===n.k?"says it was a gift":"the rule that gift implies",a,12))});var c=e.filter(function(t){return d.indexOf(t)<0});s+='<line x1="60" y1="322" x2="840" y2="322" stroke="'+n+'" stroke-width="1"/>',m("f4",s+=h(60,348,"fetched"===t?"top match is "+d[0]+", a different order entirely. "+c.join(" and ")+" never came back.":"both are required, and only one of them scores highly against the question as typed.",u,12))}function o(){document.getElementById("c4").innerHTML=y("what it fetched","fetched","fetched"===t)+y("what it needed","needed","needed"===t)}p("c4",function(e){t=e,o(),r()}),o(),r()}();var L=[{n:1,id:"intake",x:30,y:180,t:"intake",m:"question arrives"},{n:2,id:"router",x:200,y:180,t:"router",m:"need documents?"},{n:3,id:"write",x:370,y:70,t:"query write",m:"write the search"},{n:4,id:"search",x:560,y:70,t:"retrieval",m:"score the index"},{n:5,id:"grade",x:730,y:70,t:"grader",m:"drop what misses"},{n:6,id:"decide",x:560,y:180,t:"decide",m:"enough to answer?"},{n:7,id:"synth",x:370,y:300,t:"synthesise",m:"write it, cite it"},{n:8,id:"answer",x:200,y:300,t:"answer",m:"out, with the path"}],B=130,T={};L.forEach(function(t){T[t.id]=t,t.cx=t.x+65,t.cy=t.y+28});var H=[{id:"a",from:"intake",to:"router",d:"M160,208 H200",phase:"out"},{id:"b",from:"router",to:"write",d:"M330,208 C362,208 344,98 370,98",phase:"out"},{id:"c",from:"write",to:"search",d:"M500,98 H560",phase:"out"},{id:"d",from:"search",to:"grade",d:"M690,98 H730",phase:"out"},{id:"e",from:"grade",to:"decide",d:"M795,126 C795,172 716,208 690,208",phase:"back"},{id:"f",from:"decide",to:"write",d:"M560,208 C498,208 435,254 435,126",phase:"out"},{id:"g",from:"decide",to:"synth",d:"M625,236 C625,300 556,328 500,328",phase:"ans"},{id:"h",from:"synth",to:"answer",d:"M370,328 H330",phase:"ans"}],S={out:"var(--v0)",back:"var(--v13)",ans:"var(--v3)"},O=["a","b","c","d","e","f","c","d","e","g","h"],C={a:"the question leaves intake for the router",b:"the router says this one does need the documents, so it goes to query writing",c:"the search runs against the index",d:"what came back goes to the grader",e:"graded passages come back to the controller",f:"not enough, so a new query goes out. this leg is the whole idea",g:"enough now, so the surviving slips go to synthesis",h:"the answer leaves, with citations"};function P(e,i,s){var c="";if(H.forEach(function(t){var e=s&&s===t.id;c+='<path id="rt_'+t.id+'" d="'+t.d+'" fill="none" stroke="'+(e?S[t.phase]:n)+'" stroke-width="'+(e?2.5:1.5)+'"'+("f"===t.id?' stroke-dasharray="5 4"':"")+"/>"}),c+=h(455,268,"try again",t,10.5,"middle"),L.forEach(function(n){c+=function(e,n){var i=l(e.x,e.y,B,56,n,"","");return i+='<circle cx="'+(e.x+20)+'" cy="'+(e.y+20)+'" r="11" fill="'+("active"===n?o:d)+'"/>',i+=h(e.x+20,e.y+24,String(e.n),"active"===n?t:a,11,"middle",600),i+=h(e.x+38,e.y+25,e.t,"active"===n?o:r,12,"start"),i+h(e.x+10,e.y+46,e.m,"active"===n?o:a,10,"start")}(n,n.id===e?"active":"empty"),c+=v(n.x,n.y,B,56,'class="nd" data-v="'+n.id+'" tabindex="0" role="button" aria-label="station '+n.n+", "+n.t+'" style="cursor:pointer"')}),i){var f=T[i];c+='<circle cx="'+(f.x+B-14)+'" cy="'+(f.y+14)+'" r="10" fill="'+u+'"/>',c+=h(f.x+B-14,f.y+18,"!",o,12,"middle",600)}return c}var N="intake";!function(){var t=document.getElementById("f5"),e=matchMedia("(prefers-reduced-motion:reduce)").matches,r=0,i=!e,o=null,d=0,s=null;function c(e,r){t.innerHTML=P(N,null,e)+'<line x1="30" y1="378" x2="870" y2="378" stroke="'+n+'" stroke-width="1"/>'+h(30,400,r||T[N].t+": "+T[N].m,a,12,"start")+'<circle id="pk" r="7" fill="none"/>',t.querySelectorAll(".nd").forEach(function(t){function e(){N=t.getAttribute("data-v"),u(),c(null,null),p()}t.addEventListener("click",e),t.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),e())})}),s=t.querySelector("#pk")}function u(){i=!1,o&&cancelAnimationFrame(o),o=null,l()}function l(){var t=document.getElementById("f5play");t&&(t.textContent=i?"Pause":"Play",t.setAttribute("aria-pressed",String(i)))}function f(){var e=H.filter(function(t){return t.id===O[r]})[0];N=T[e.to].id,c(e.id,C[e.id]);var n=t.querySelector("#rt_"+e.id),a=n.getTotalLength();s.setAttribute("fill",S[e.phase]),d=performance.now();var u="f"===e.id?1100:820;o=requestAnimationFrame(function t(e){var c=Math.min(1,(e-d)/u),l=n.getPointAtLength(c*a);s.setAttribute("cx",Math.round(l.x)),s.setAttribute("cy",Math.round(l.y)),c<1?o=requestAnimationFrame(t):(r=(r+1)%O.length,o=i?requestAnimationFrame(function(){f()}):null)})}c(null,null);var v=document.getElementById("f5play"),m=document.getElementById("f5once");v&&v.addEventListener("click",function(){i?u():i||(i=!0,l(),f())}),m&&m.addEventListener("click",function(){u(),r=0,i=!0,l(),f()});var y=document.querySelectorAll("#scrolly1 .stp");function p(){var t=L.map(function(t){return t.id}).indexOf(N);y.forEach(function(e){e.classList.toggle("on",+e.getAttribute("data-step")===t)})}if("IntersectionObserver"in window){var k=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(u(),N=L[+t.target.getAttribute("data-step")].id,c(null,null),p())})},{rootMargin:"-45% 0px -45% 0px",threshold:0});y.forEach(function(t){k.observe(t)})}p(),l(),i&&f()}();var F,R,D=[{q:"refund window order 88214",got:"Order 88214, placed 12 Mar, gift purchase",gap:"which rule applies to a gift purchase"},{q:"gift purchase refund period",got:"Gift purchases: 60 days from delivery",gap:"the delivery date, not the purchase date"},{q:"order 88214 delivery date",got:"Order 88214 delivered 20 Mar",gap:null}],j=[{ok:!1,a:'"No, 30 days from 12 March has passed."',w:"answered from the order alone, using a rule it invented"},{ok:!1,a:'"Within 60 days of delivery, but I do not have the delivery date."',w:"it found the gap and ran out of turns"},{ok:!0,a:'"Yes. Delivered 20 March, 60 day window, closes 19 May."',w:"all three facts, each cited"}],W=0;function z(t){return{ms:400+1200*t,tok:900+2600*t,q:[30,55,92,92,92,92][t]}}function Y(e){var r;W=Math.max(0,Math.min(5,e)),["k6","k7"].forEach(function(t){var e=document.getElementById(t);e&&(e.value=W)}),["k6v","k7v"].forEach(function(t){var e=document.getElementById(t);e&&(e.textContent=W)}),function(){var t=Math.min(W,2)+1,e="";e+=h(60,28,"THE TRACE",i,12);for(var r=0;r<t;r++){var a=44+62*r,o=D[r];e+=l(60,a,780,52,r===t-1?"active":"held","turn "+(r+1)+" · "+o.q,"kept: "+o.got),o.gap&&r<t-1&&(e+=h(72,a+66,"still missing: "+o.gap,c,11,"start"))}W-2>0&&(e+=l(60,230,780,30,"dropped","turn 4 to "+(W+1)+": no new evidence",""));var d=j[Math.min(W,2)];e+='<line x1="60" y1="268" x2="840" y2="268" stroke="'+n+'" stroke-width="1"/>',e+=h(60,294,d.a,d.ok?s:u,13,"start",600),m("f6",e+=h(60,314,d.w,i,12,"start"))}(),r="",[{l:"answer quality",u:"%",f:function(t){return z(t).q},max:100,c:s},{l:"latency",u:" ms",f:function(t){return z(t).ms},max:6400,c:c},{l:"tokens spent",u:"",f:function(t){return z(t).tok},max:13900,c:u}].forEach(function(e,n){var o=44+78*n;r+=h(60,o,e.l,a,12,"start");for(var s=0;s<=5;s++){var c=60+128*s,u=Math.round(e.f(s)/e.max*44),l=s===W;r+='<rect x="'+c+'" y="'+(o+52-u)+'" width="96" height="'+u+'" rx="2" fill="'+(l?e.c:d)+'"/>',l&&(r+=h(c+48,o+48-u-6,e.f(s)+e.u,e.c,12,"middle",600)),2===n&&(r+=h(c+48,o+72,String(s),s===W?t:i,11,"middle"))}}),r+=h(60,294,"iteration budget",i,11,"start"),m("f7",r+=h(840,294,"quality steps once, then flattens. the other two do not.",i,11,"end"))}["k6","k7"].forEach(function(t){var e=document.getElementById(t);e&&e.addEventListener("input",function(){Y(+this.value)})}),document.getElementById("c6").innerHTML=y("single shot","0",!0)+y("one turn back","1",!1)+y("enough to finish","2",!1),p("c6",function(t){Y(+t),document.getElementById("c6").querySelectorAll("button").forEach(function(e){e.setAttribute("aria-pressed",String(e.getAttribute("data-v")===t))})}),Y(0),function(){var t=[{k:"pass",label:"grader lets one through",at:"grade",what:"a passage that is on topic and answers nothing survives grading",then:"the answer cites a real document that does not say what the answer claims"},{k:"spin",label:"the loop will not settle",at:"decide",what:"each rewrite returns much the same passages, and the grader drops them again",then:"it stops only when the budget runs out, then answers from turn one material"},{k:"cost",label:"a question that should never have looped",at:"router",what:"the router sends a question to retrieval that did not need it",then:"five turns and thirty model calls, and every request queued behind it waits"}],e="pass";function r(){var r=t.filter(function(t){return t.k===e})[0],i=P(r.at,r.at,"spin"===r.k?"f":null);i+='<line x1="30" y1="378" x2="870" y2="378" stroke="'+n+'" stroke-width="1"/>',i+=h(30,398,"fails at station "+T[r.at].n+" · "+r.what,u,12,"start",600),m("f8",i+=h(30,416,"then: "+r.then,a,12,"start")),document.getElementById("f8").querySelectorAll(".nd").forEach(function(t){t.setAttribute("tabindex","-1"),t.style.cursor="default"})}function i(){document.getElementById("c8").innerHTML=t.map(function(t){return y(t.label,t.k,t.k===e)}).join("")}p("c8",function(t){e=t,i(),r()}),i(),r()}(),function(){var e=[{k:"cap",t:"hard ceilings",d:"turns, total model calls, and wall clock, whichever is hit first",f:"a budget in turns alone does not bound a turn that is itself slow"},{k:"cache",t:"cache in front",d:"the same question, asked again, costs nothing and takes no turns",f:"the load spike, and most of the bill"},{k:"fall",t:"fallback path",d:"return the single shot answer, labelled inconclusive",f:"the timeout, and the confident wrong answer"},{k:"trace",t:"stored traces",d:"every station, every query, every dropped passage, kept",f:"not knowing which of eight stations was the one that failed"}],d="cap";function s(){var u="",f=190;u+='<rect x="60" y="120" width="780" height="100" rx="6" fill="none" stroke="'+n+'" stroke-width="1.5" stroke-dasharray="5 4"/>',u+=h(450,168,"the loop from before",i,12,"middle"),u+=h(450,190,"stations 1 to 8",i,11,"middle"),e.forEach(function(e,a){var s=60+196*a,c=e.k===d;u+=l(s,26,f,70,c?"active":"empty","",""),u+=h(s+14,52,e.t,c?o:r,12,"start",600),u+=h(s+14,72,"caps",c?o:i,11,"start"),u+=v(s,26,f,70,'class="s9" data-v="'+e.k+'" tabindex="0" role="button" aria-label="'+e.t+'" style="cursor:pointer"'),u+='<path d="M'+(s+95)+" 96 L"+(s+95)+' 120" stroke="'+(c?t:n)+'" stroke-width="1.5" shape-rendering="crispEdges"/>'});var y=e.filter(function(t){return t.k===d})[0];u+='<line x1="60" y1="250" x2="840" y2="250" stroke="'+n+'" stroke-width="1"/>',u+=h(60,278,y.d,r,12,"start",600),m("f9",u+=h(60,300,"there because of: "+y.f,a,12,"start")),document.getElementById("f9").querySelectorAll(".s9").forEach(function(t){function e(){d=t.getAttribute("data-v"),c(),s()}t.addEventListener("click",e),t.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),e())})})}function c(){document.getElementById("c9").innerHTML=e.map(function(t){return y(t.t,t.k,t.k===d)}).join("")}p("c9",function(t){d=t,c(),s()}),c(),s()}(),function(){var t=[{k:"one",label:"one hop",hops:0,q:"how long do I have to send something back"},{k:"two",label:"two hops",hops:1,q:"what is the refund rule for order 88214"},{k:"three",label:"three hops",hops:2,q:"is order 88214 still inside its refund window"}],e="three",r=2;function o(){var o=t.filter(function(t){return t.k===e})[0],d=o.hops,f=r>=d,v=z(r),y="";y+=l(60,26,780,40,"active","question",o.q),y+=h(60,92,"TURNS TAKEN",i,12);for(var p=0;p<=r;p++){var k=p<=d;y+=l(60+128*p,104,110,44,k?"held":"dropped","turn "+(p+1),k?"found something":"nothing new")}y+='<line x1="60" y1="176" x2="840" y2="176" stroke="'+n+'" stroke-width="1"/>',y+=h(60,204,f?"answered, with every fact cited":"answered anyway, and wrong",f?s:u,13,"start",600),y+=h(60,226,f?"needed "+(d+1)+" turn"+(0===d?"":"s")+", was allowed "+(r+1):"needed "+(d+1)+" turns, was allowed "+(r+1)+", so it stopped short and answered from what it had",a,12,"start");var g=Math.max(0,r-d);y+=h(60,262,"latency "+v.ms+" ms · "+v.tok+" tokens"+(g?" · "+g+" turn"+(1===g?"":"s")+" bought nothing":""),g?c:i,12,"start"),m("f10",y+=h(60,290,"a one hop question never needs the loop. a three hop question never stops needing it.",i,11,"start"))}function d(){document.getElementById("c10").innerHTML=t.map(function(t){return y(t.label,t.k,t.k===e)}).join("")+y("reset","reset",!1)}p("c10",function(t){"reset"===t?(e="three",r=2):e=t;var n=document.getElementById("k10");n&&(n.value=r),document.getElementById("k10v").textContent=r,d(),o()});var f=document.getElementById("k10");f&&f.addEventListener("input",function(){r=+this.value,document.getElementById("k10v").textContent=r,o()}),d(),o()}(),F=document.getElementById("weeds"),R=document.getElementById("weedhint"),document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){var e=!F.hasAttribute("hidden");e?F.setAttribute("hidden",""):(F.removeAttribute("hidden"),F.scrollIntoView({behavior:"smooth",block:"start"})),R&&(R.style.opacity=e?"1":".35")}})}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

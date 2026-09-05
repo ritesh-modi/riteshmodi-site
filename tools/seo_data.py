@@ -51,6 +51,11 @@ PAGES = {
 
 # Explorables -----------------------------------------------------------------
 EXPLORABLES = {
+    "agentic-rag": {
+        "desc": "Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.",
+        "short": "Watch a question loop through retrieval, get judged thin, and go round again.",
+        "about": "Agentic RAG and retrieval-augmented generation",
+    },
     "03-words-to-vectors": dict(
         desc="Spin a compass between two words and watch the angle turn into a similarity score, "
              "then point it at ten real vectors and read off the neighbours.",
@@ -431,6 +436,8 @@ PERSON = {
 # ("language model" and "LLM"); where a word means something unrelated, it does not
 # (rate limiting's "token bucket" has nothing to do with an LLM token).
 KEYWORDS = {
+    "agentic-rag": ["agentic RAG", "RAG", "retrieval-augmented generation", "AI agents",
+                    "agentic AI", "vector search", "LLM", "reranking", "agent loop"],
     "03-words-to-vectors": ["word embeddings", "cosine similarity", "vector search", "semantic similarity", "LLM"],
     "ai-transformation-explainer": ["AI transformation", "AI adoption", "enterprise AI strategy", "generative AI"],
     "ai-vs-ml-explained": ["AI vs machine learning", "automation", "artificial intelligence", "machine learning"],

@@ -5,8 +5,16 @@
   <link href="https://www.loopingly.com/feed.xml" rel="self"/>
   <link href="https://www.loopingly.com/explorables"/>
   <id>https://www.loopingly.com/</id>
-  <updated>2026-08-22T00:00:00Z</updated>
+  <updated>2026-09-05T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>The pipeline that is allowed to try again</title>
+    <link href="https://www.loopingly.com/explorables/agentic-rag"/>
+    <id>https://www.loopingly.com/explorables/agentic-rag</id>
+    <updated>2026-09-05T00:00:00Z</updated>
+    <published>2026-09-05T00:00:00Z</published>
+    <summary>Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.</summary>
+  </entry>
   <entry>
     <title>Prompting techniques, and when to use each</title>
     <link href="https://www.loopingly.com/explorables/prompting-techniques"/>
