@@ -81,8 +81,8 @@ EXPLORABLES = {
         about="Azure service principals and OAuth machine identity"),
 
     "classification-metrics-by-hand": dict(
-        desc="Drag one threshold across fifteen emails and watch precision, recall and the four "
-             "confusion counts swing while accuracy sits at 0.87 and tells you nothing.",
+        desc="Drag one threshold across fifteen emails and watch the confusion matrix, precision "
+             "and recall swing while accuracy sits at 0.87 and tells you nothing.",
         short="Drag one threshold and watch precision and recall swing while accuracy sits still.",
         about="Classification metrics: accuracy, precision, recall, F1 and ROC"),
 
@@ -141,9 +141,9 @@ EXPLORABLES = {
         about="Governance of generative AI systems"),
 
     "grc-operating-registers": dict(
-        desc="The registers an organisation keeps on itself — risk, control, asset, incident, "
-             "exception, vendor. What belongs in every row, and who has to sign it.",
-        short="Risk, control, asset, incident, exception, vendor: what goes in each row.",
+        desc="The risk register and the five kept beside it — policies, controls, mitigations, "
+             "findings, mappings. What belongs in every row, and who has to sign it.",
+        short="Policies, controls, risks, mitigations, findings, mappings: what goes in each row.",
         about="GRC operating registers"),
 
     "history-of-generative-ai": dict(
@@ -195,8 +195,8 @@ EXPLORABLES = {
         about="Multimodal artificial intelligence"),
 
     "neural-network-by-hand": dict(
-        desc="Fifteen weights, all of them on the page. Walk one row forward through two hidden "
-             "layers, watch the error walk back, then turn the learning rate up.",
+        desc="A neural network with fifteen weights, all on the page. Walk a row forward through two "
+             "hidden layers, then watch backpropagation carry the error back.",
         short="Walk one row forward through two hidden layers, then watch the error walk back.",
         about="Neural network forward and backward passes"),
 
@@ -207,8 +207,8 @@ EXPLORABLES = {
         about="Choosing between rule-based systems and machine learning"),
 
     "partition-equal-subset-sum": dict(
-        desc="Can a pile of numbers split into two stacks of equal weight? Tip the scale with "
-             "your finger, then watch the same question solved as a subset-sum table.",
+        desc="Can a pile of numbers split into two stacks of equal weight? Tip the scale with your "
+             "finger, then solve it again as a dynamic programming table, cell by cell.",
         short="Tip the scale with your finger, then watch it solved as a subset-sum table.",
         about="Partition equal subset sum, LeetCode 416"),
 
@@ -279,8 +279,8 @@ EXPLORABLES = {
         about="Classification, regression and deep learning"),
 
     "three-types-of-machine-learning": dict(
-        desc="Three ways to learn to cook, in the same order as the three kinds of machine "
-             "learning. What separates them is one question: when do you find out you were wrong?",
+        desc="Three ways to learn to cook, in the order of supervised, unsupervised and "
+             "reinforcement learning. What separates them: when do you find out you were wrong?",
         short="What separates the three types is one question: when do you find out you erred?",
         about="Supervised, unsupervised and reinforcement learning"),
 
@@ -440,58 +440,85 @@ KEYWORDS = {
                     "when does RAG search again", "RAG retry loop", "AI agent retrieval loop"],
     "03-words-to-vectors": ["what are word embeddings", "how does cosine similarity work",
                             "how do vector databases find similar text", "embeddings explained simply"],
-    "ai-transformation-explainer": ["AI transformation", "AI adoption", "enterprise AI strategy", "generative AI"],
-    "ai-vs-ml-explained": ["AI vs machine learning", "automation", "artificial intelligence", "machine learning"],
-    "azure-service-principals-explainer": ["Azure service principal", "OAuth", "machine identity", "Microsoft Entra ID"],
-    "classification-metrics-by-hand": ["classification metrics", "precision and recall", "F1 score", "ROC curve", "confusion matrix"],
-    "delta-table-api-explained": ["Delta Lake", "Delta table API", "lakehouse", "ACID transactions", "data engineering"],
-    "discovering-models-trends-explainer": ["AI model releases", "model benchmarks", "LLM comparison", "foundation models"],
+    "ai-transformation-explainer": ["AI transformation strategy", "how to lead AI transformation",
+                                    "AI efficiency vs reinvention", "AI business case", "where to invest in AI"],
+    "ai-vs-ml-explained": ["AI vs machine learning", "difference between AI and machine learning",
+                           "machine learning vs automation", "is automation the same as AI", "AI vs ML vs automation"],
+    "azure-service-principals-explainer": ["what is an Azure service principal", "service principal vs managed identity",
+                                           "how to decode a JWT", "Azure role assignment blast radius", "Entra ID app registration"],
+    "classification-metrics-by-hand": ["confusion matrix explained", "precision vs recall", "why accuracy is misleading",
+                                       "what is F1 score", "how to read an ROC curve"],
+    "delta-table-api-explained": ["what is Delta Lake", "Delta Lake time travel", "how does MERGE work in Delta",
+                                  "what does VACUUM do", "Delta transaction log explained"],
+    "discovering-models-trends-explainer": ["how to choose an AI model", "how to read a model card", "which AI model should I use",
+                                            "tracking new AI model releases"],
     "evaluating-models-explainer": ["how to evaluate an LLM", "what are LLM benchmarks", "how to compare AI models",
                                     "LLM evals explained"],
     "genai-vocabulary-explainer": ["generative AI terms explained", "what is a token embedding context window",
                                    "GenAI glossary", "AI jargon explained", "what is RAG and fine-tuning"],
     "generative-ai": ["how does generative AI work", "how do LLMs generate text", "what is temperature in AI",
                       "sampling explained", "GenAI explained simply"],
-    "grc-building-blocks": ["governance risk and compliance", "GRC", "AI governance", "controls"],
-    "grc-building-blocks-lesson": ["GRC training", "governance risk and compliance", "compliance fundamentals"],
-    "grc-explained": ["governance risk and compliance", "GRC", "risk management", "compliance"],
-    "grc-for-genai": ["AI governance", "generative AI risk", "GenAI compliance", "LLM guardrails", "responsible AI"],
-    "grc-operating-registers": ["risk register", "GRC operations", "compliance register", "AI governance"],
+    "grc-building-blocks": ["what is GRC", "GRC framework components", "governance risk and compliance explained",
+                            "policies controls and risks difference"],
+    "grc-building-blocks-lesson": ["GRC training", "how to teach GRC", "GRC fundamentals lesson",
+                                   "governance risk compliance for beginners"],
+    "grc-explained": ["what is governance risk and compliance", "GRC explained simply",
+                      "difference between policy and control", "what is a compliance control"],
+    "grc-for-genai": ["AI governance framework", "how to govern generative AI", "GenAI risk management",
+                      "LLM compliance", "responsible AI in practice"],
+    "grc-operating-registers": ["what is a risk register", "what goes in a risk register",
+                                "control register vs risk register", "GRC registers explained"],
     "history-of-generative-ai": ["history of generative AI", "who invented generative AI",
                                  "Shannon information theory language", "how LLMs evolved"],
-    "how-data-becomes-an-equation": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
+    "how-data-becomes-an-equation": ["supervised vs unsupervised learning", "what is reinforcement learning",
+                                     "how does machine learning work", "types of machine learning explained"],
     "how-models-learn": ["how are AI models trained", "gradient descent explained", "what is backpropagation",
                          "what is a learning rate", "how does model training work"],
-    "how-twenty-companies-run-generative-ai": ["generative AI in production", "GenAI case studies", "LLM deployment", "enterprise AI"],
+    "how-twenty-companies-run-generative-ai": ["generative AI in production", "real world LLM examples", "how companies use generative AI",
+                                               "LLM production architecture", "retrieval chunk size"],
     "is-it-actually-thinking": ["how does an LLM work", "do LLMs actually think", "is AI really thinking",
                                 "how do chatbots generate text", "next token prediction explained"],
     "matchbox-language-model": ["how do language models learn", "build a language model by hand",
                                 "language model explained simply", "MENACE matchboxes"],
     "medallion-ten-rows-a-day": ["what is medallion architecture", "bronze silver gold layers explained",
                                  "medallion architecture example", "Delta Lake medallion", "lakehouse layers"],
-    "multimodal-explainer": ["multimodal AI", "vision language model", "image and text models", "generative AI"],
-    "neural-network-by-hand": ["neural network", "forward pass", "backpropagation", "deep learning"],
-    "never-use-ai-when-rules-will-do": ["rules vs machine learning", "when not to use AI", "rule-based systems"],
-    "partition-equal-subset-sum": ["partition equal subset sum", "LeetCode 416", "dynamic programming", "subset sum"],
+    "multimodal-explainer": ["what is multimodal AI", "multimodal vs multi-model", "how do vision language models work",
+                             "AI that sees and reads"],
+    "neural-network-by-hand": ["how does a neural network work", "backpropagation explained", "neural network by hand",
+                               "what is a hidden layer", "forward pass and backward pass"],
+    "never-use-ai-when-rules-will-do": ["when not to use machine learning", "rules vs machine learning", "do I need AI for this",
+                                        "when is a rule better than a model"],
+    "partition-equal-subset-sum": ["partition equal subset sum", "LeetCode 416 solution", "subset sum dynamic programming",
+                                   "how does the dp table work"],
     "playground-controls": ["what does temperature do in AI", "what is top-p sampling",
                             "OpenAI playground settings explained", "LLM parameters explained"],
-    "postgres-partitioning-explainer": ["PostgreSQL partitioning", "table partitioning", "Postgres", "database performance"],
+    "postgres-partitioning-explainer": ["Postgres table partitioning", "how does partition pruning work",
+                                        "Postgres partition by range", "DROP partition vs DELETE",
+                                        "Postgres performance partitioning"],
     "predicting-the-next-character": ["how next token prediction works", "character level language model",
                                       "build a neural network by hand", "embeddings explained"],
     "prompt-engineering-explainer": ["what is prompt engineering", "how to prompt an LLM", "prompt engineering for beginners",
                                      "better AI prompts"],
     "prompting-techniques": ["prompt engineering techniques", "few-shot prompting explained",
                              "chain of thought prompting", "how to write better AI prompts"],
-    "rate-limiting-explainer": ["API rate limiting", "token bucket algorithm", "leaky bucket", "throttling"],
+    "rate-limiting-explainer": ["how does rate limiting work", "token bucket algorithm explained", "what is a 429 error",
+                                "API throttling explained", "leaky bucket vs token bucket"],
     "reasoning-models-explainer": ["how do reasoning models work", "what is chain of thought",
                                    "why do reasoning models think longer", "test time compute explained"],
-    "regression-metrics-by-hand": ["regression metrics", "MAE", "RMSE", "R squared", "model evaluation"],
-    "regulatory-atlas": ["AI regulation", "EU AI Act", "GDPR", "data protection", "AI compliance"],
-    "the-layers-of-intelligence": ["AI vs ML vs deep learning", "generative AI", "artificial intelligence", "deep learning"],
-    "three-motions-of-a-model": ["classification", "regression", "deep learning", "machine learning"],
-    "three-types-of-machine-learning": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
+    "regression-metrics-by-hand": ["MAE vs RMSE", "what is R squared", "which regression metric to use",
+                                   "why RMSE punishes outliers", "regression metrics explained"],
+    "regulatory-atlas": ["EU AI Act explained", "GDPR and AI", "AI compliance frameworks",
+                         "which regulations apply to AI", "mapping obligations to controls"],
+    "the-layers-of-intelligence": ["AI vs machine learning vs deep learning", "how do AI and ML relate",
+                                   "is deep learning part of AI", "where does generative AI fit"],
+    "three-motions-of-a-model": ["classification vs regression", "what is deep learning", "types of models explained",
+                                 "when to use regression vs classification"],
+    "three-types-of-machine-learning": ["types of machine learning", "supervised vs unsupervised vs reinforcement",
+                                        "what is supervised learning", "machine learning types explained"],
     "tokenization": ["how tokenization works", "what are tokens in an LLM", "why do LLMs use tokens",
                      "byte pair encoding explained", "tokenizer explained", "why LLMs miscount letters"],
-    "what-ai-is-good-and-bad-at": ["AI capabilities", "AI limitations", "what AI cannot do", "artificial intelligence"],
-    "what-is-intelligence": ["what is intelligence", "machine intelligence", "artificial intelligence", "AGI"],
+    "what-ai-is-good-and-bad-at": ["what is AI good at", "AI limitations", "what can AI not do", "when does AI fail",
+                                   "should I use AI for this task"],
+    "what-is-intelligence": ["what is intelligence", "is AI actually intelligent", "definition of intelligence",
+                             "can machines be intelligent", "is AI conscious"],
 }

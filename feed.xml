@@ -101,7 +101,7 @@
     <id>https://www.loopingly.com/explorables/neural-network-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
     <published>2026-08-08T00:00:00Z</published>
-    <summary>Fifteen weights, all of them on the page. Walk one row forward through two hidden layers, watch the error walk back, then turn the learning rate up.</summary>
+    <summary>A neural network with fifteen weights, all on the page. Walk a row forward through two hidden layers, then watch backpropagation carry the error back.</summary>
   </entry>
   <entry>
     <title>One slider, three different models</title>
@@ -109,7 +109,7 @@
     <id>https://www.loopingly.com/explorables/classification-metrics-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
     <published>2026-08-08T00:00:00Z</published>
-    <summary>Drag one threshold across fifteen emails and watch precision, recall and the four confusion counts swing while accuracy sits at 0.87 and tells you nothing.</summary>
+    <summary>Drag one threshold across fifteen emails and watch the confusion matrix, precision and recall swing while accuracy sits at 0.87 and tells you nothing.</summary>
   </entry>
   <entry>
     <title>From a word to a vector</title>
@@ -149,7 +149,7 @@
     <id>https://www.loopingly.com/explorables/three-types-of-machine-learning</id>
     <updated>2026-07-31T00:00:00Z</updated>
     <published>2026-07-31T00:00:00Z</published>
-    <summary>Three ways to learn to cook, in the same order as the three kinds of machine learning. What separates them is one question: when do you find out you were wrong?</summary>
+    <summary>Three ways to learn to cook, in the order of supervised, unsupervised and reinforcement learning. What separates them: when do you find out you were wrong?</summary>
   </entry>
   <entry>
     <title>How the AI words nest</title>
@@ -245,7 +245,7 @@
     <id>https://www.loopingly.com/explorables/partition-equal-subset-sum</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>Can a pile of numbers split into two stacks of equal weight? Tip the scale with your finger, then watch the same question solved as a subset-sum table.</summary>
+    <summary>Can a pile of numbers split into two stacks of equal weight? Tip the scale with your finger, then solve it again as a dynamic programming table, cell by cell.</summary>
   </entry>
   <entry>
     <title>Multimodal AI</title>
@@ -269,7 +269,7 @@
     <id>https://www.loopingly.com/explorables/grc-operating-registers</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>The registers an organisation keeps on itself — risk, control, asset, incident, exception, vendor. What belongs in every row, and who has to sign it.</summary>
+    <summary>The risk register and the five kept beside it — policies, controls, mitigations, findings, mappings. What belongs in every row, and who has to sign it.</summary>
   </entry>
   <entry>
     <title>Governing generative AI</title>
