@@ -159,10 +159,10 @@ EXPLORABLES = {
         about="Supervised, unsupervised and reinforcement learning"),
 
     "how-models-learn": dict(
-        desc="A model on a hillside in fog can only feel which way the ground tilts. Set the "
-             "learning rate yourself and watch gradient descent converge, crawl, or diverge.",
+        desc="Training a model is walking downhill in fog, feeling which way the ground tilts. "
+             "Set the learning rate yourself and watch gradient descent converge or diverge.",
         short="Set the learning rate and watch gradient descent converge, crawl, or diverge.",
-        about="Loss, gradient descent and backpropagation"),
+        about="Model training: loss, gradient descent and backpropagation"),
 
     "how-twenty-companies-run-generative-ai": dict(
         desc="Twenty production deployments across six layers. Resize the retrieval chunks until "
@@ -171,16 +171,16 @@ EXPLORABLES = {
         about="Generative AI systems in production"),
 
     "is-it-actually-thinking": dict(
-        desc="Short answer: no — it is autocomplete that read the internet. See the one trick "
-             "underneath, and two of the biggest beginner worries about AI fall away at once.",
+        desc="Short answer: no — an LLM is autocomplete that read the internet. See the one "
+             "trick underneath, and two of the biggest beginner worries fall away at once.",
         short="It is autocomplete that read the internet. See the trick underneath.",
-        about="How large language models generate text"),
+        about="How large language models (LLMs) generate text"),
 
     "matchbox-language-model": dict(
         desc="In 1960 a stack of matchboxes learned noughts and crosses using coloured beads. Point "
              "it at words and train a language model by hand, bead by bead.",
         short="Train a language model by hand, using matchboxes and coloured beads.",
-        about="How language models learn from examples"),
+        about="How language models (LLMs) learn from examples"),
 
     "medallion-ten-rows-a-day": dict(
         desc="Ten rows a night through bronze, silver and gold. Append the raw file, merge one "
@@ -285,10 +285,10 @@ EXPLORABLES = {
         about="Supervised, unsupervised and reinforcement learning"),
 
     "tokenization": dict(
-        desc="A tokenizer is a frozen record of what was frequent in one pile of text. Type a "
-             "sentence, watch it get cut and priced, then break it with an unusual word.",
+        desc="An LLM reads tokens, not words, and a tokenizer is a frozen record of one pile "
+             "of text. Type a sentence, watch it get cut and priced, then break it.",
         short="Type a sentence, watch it get cut and priced, then break it with a rare word.",
-        about="Tokenization in large language models"),
+        about="Tokenization in large language models (LLMs)"),
 
     "what-ai-is-good-and-bad-at": dict(
         desc="There is one clean line between what AI does well and what it does badly, and it is "
@@ -436,48 +436,62 @@ PERSON = {
 # ("language model" and "LLM"); where a word means something unrelated, it does not
 # (rate limiting's "token bucket" has nothing to do with an LLM token).
 KEYWORDS = {
-    "agentic-rag": ["agentic RAG", "RAG", "retrieval-augmented generation", "AI agents",
-                    "agentic AI", "vector search", "LLM", "reranking", "agent loop"],
-    "03-words-to-vectors": ["word embeddings", "cosine similarity", "vector search", "semantic similarity", "LLM"],
+    "agentic-rag": ["what is agentic RAG", "agentic RAG explained", "agentic RAG vs RAG", "how does RAG work",
+                    "when does RAG search again", "RAG retry loop", "AI agent retrieval loop"],
+    "03-words-to-vectors": ["what are word embeddings", "how does cosine similarity work",
+                            "how do vector databases find similar text", "embeddings explained simply"],
     "ai-transformation-explainer": ["AI transformation", "AI adoption", "enterprise AI strategy", "generative AI"],
     "ai-vs-ml-explained": ["AI vs machine learning", "automation", "artificial intelligence", "machine learning"],
     "azure-service-principals-explainer": ["Azure service principal", "OAuth", "machine identity", "Microsoft Entra ID"],
     "classification-metrics-by-hand": ["classification metrics", "precision and recall", "F1 score", "ROC curve", "confusion matrix"],
     "delta-table-api-explained": ["Delta Lake", "Delta table API", "lakehouse", "ACID transactions", "data engineering"],
     "discovering-models-trends-explainer": ["AI model releases", "model benchmarks", "LLM comparison", "foundation models"],
-    "evaluating-models-explainer": ["LLM evaluation", "model benchmarks", "large language model", "evals", "generative AI"],
-    "genai-vocabulary-explainer": ["GenAI vocabulary", "generative AI terms", "LLM", "token", "embedding",
-                                   "context window", "RAG", "retrieval-augmented generation", "AI agent", "fine-tuning"],
-    "generative-ai": ["generative AI", "GenAI", "LLM", "large language model", "sampling", "temperature"],
+    "evaluating-models-explainer": ["how to evaluate an LLM", "what are LLM benchmarks", "how to compare AI models",
+                                    "LLM evals explained"],
+    "genai-vocabulary-explainer": ["generative AI terms explained", "what is a token embedding context window",
+                                   "GenAI glossary", "AI jargon explained", "what is RAG and fine-tuning"],
+    "generative-ai": ["how does generative AI work", "how do LLMs generate text", "what is temperature in AI",
+                      "sampling explained", "GenAI explained simply"],
     "grc-building-blocks": ["governance risk and compliance", "GRC", "AI governance", "controls"],
     "grc-building-blocks-lesson": ["GRC training", "governance risk and compliance", "compliance fundamentals"],
     "grc-explained": ["governance risk and compliance", "GRC", "risk management", "compliance"],
     "grc-for-genai": ["AI governance", "generative AI risk", "GenAI compliance", "LLM guardrails", "responsible AI"],
     "grc-operating-registers": ["risk register", "GRC operations", "compliance register", "AI governance"],
-    "history-of-generative-ai": ["history of generative AI", "GenAI timeline", "transformer", "LLM history"],
+    "history-of-generative-ai": ["history of generative AI", "who invented generative AI",
+                                 "Shannon information theory language", "how LLMs evolved"],
     "how-data-becomes-an-equation": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
-    "how-models-learn": ["gradient descent", "backpropagation", "loss function", "learning rate", "model training", "fine-tuning"],
+    "how-models-learn": ["how are AI models trained", "gradient descent explained", "what is backpropagation",
+                         "what is a learning rate", "how does model training work"],
     "how-twenty-companies-run-generative-ai": ["generative AI in production", "GenAI case studies", "LLM deployment", "enterprise AI"],
-    "is-it-actually-thinking": ["LLM", "large language model", "next token prediction", "does AI think", "generative AI"],
-    "matchbox-language-model": ["language model", "LLM", "how language models work", "MENACE", "machine learning by hand"],
-    "medallion-ten-rows-a-day": ["medallion architecture", "bronze silver gold", "Delta Lake", "lakehouse", "data engineering"],
+    "is-it-actually-thinking": ["how does an LLM work", "do LLMs actually think", "is AI really thinking",
+                                "how do chatbots generate text", "next token prediction explained"],
+    "matchbox-language-model": ["how do language models learn", "build a language model by hand",
+                                "language model explained simply", "MENACE matchboxes"],
+    "medallion-ten-rows-a-day": ["what is medallion architecture", "bronze silver gold layers explained",
+                                 "medallion architecture example", "Delta Lake medallion", "lakehouse layers"],
     "multimodal-explainer": ["multimodal AI", "vision language model", "image and text models", "generative AI"],
     "neural-network-by-hand": ["neural network", "forward pass", "backpropagation", "deep learning"],
     "never-use-ai-when-rules-will-do": ["rules vs machine learning", "when not to use AI", "rule-based systems"],
     "partition-equal-subset-sum": ["partition equal subset sum", "LeetCode 416", "dynamic programming", "subset sum"],
-    "playground-controls": ["OpenAI Playground", "temperature", "top-p", "model parameters", "LLM settings"],
+    "playground-controls": ["what does temperature do in AI", "what is top-p sampling",
+                            "OpenAI playground settings explained", "LLM parameters explained"],
     "postgres-partitioning-explainer": ["PostgreSQL partitioning", "table partitioning", "Postgres", "database performance"],
-    "predicting-the-next-character": ["next token prediction", "character-level language model", "neural network", "LLM", "embeddings"],
-    "prompt-engineering-explainer": ["prompt engineering", "prompting", "LLM prompts", "generative AI"],
-    "prompting-techniques": ["prompt engineering", "few-shot prompting", "chain-of-thought", "LLM", "large language model"],
+    "predicting-the-next-character": ["how next token prediction works", "character level language model",
+                                      "build a neural network by hand", "embeddings explained"],
+    "prompt-engineering-explainer": ["what is prompt engineering", "how to prompt an LLM", "prompt engineering for beginners",
+                                     "better AI prompts"],
+    "prompting-techniques": ["prompt engineering techniques", "few-shot prompting explained",
+                             "chain of thought prompting", "how to write better AI prompts"],
     "rate-limiting-explainer": ["API rate limiting", "token bucket algorithm", "leaky bucket", "throttling"],
-    "reasoning-models-explainer": ["reasoning models", "chain-of-thought", "test-time compute", "LLM", "o1", "inference"],
+    "reasoning-models-explainer": ["how do reasoning models work", "what is chain of thought",
+                                   "why do reasoning models think longer", "test time compute explained"],
     "regression-metrics-by-hand": ["regression metrics", "MAE", "RMSE", "R squared", "model evaluation"],
     "regulatory-atlas": ["AI regulation", "EU AI Act", "GDPR", "data protection", "AI compliance"],
     "the-layers-of-intelligence": ["AI vs ML vs deep learning", "generative AI", "artificial intelligence", "deep learning"],
     "three-motions-of-a-model": ["classification", "regression", "deep learning", "machine learning"],
     "three-types-of-machine-learning": ["supervised learning", "unsupervised learning", "reinforcement learning", "machine learning"],
-    "tokenization": ["tokenization", "tokens", "LLM tokens", "byte pair encoding", "BPE", "tokenizer", "large language model"],
+    "tokenization": ["how tokenization works", "what are tokens in an LLM", "why do LLMs use tokens",
+                     "byte pair encoding explained", "tokenizer explained", "why LLMs miscount letters"],
     "what-ai-is-good-and-bad-at": ["AI capabilities", "AI limitations", "what AI cannot do", "artificial intelligence"],
     "what-is-intelligence": ["what is intelligence", "machine intelligence", "artificial intelligence", "AGI"],
 }

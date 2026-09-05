@@ -173,7 +173,7 @@
     <id>https://www.loopingly.com/explorables/how-models-learn</id>
     <updated>2026-07-31T00:00:00Z</updated>
     <published>2026-07-31T00:00:00Z</published>
-    <summary>A model on a hillside in fog can only feel which way the ground tilts. Set the learning rate yourself and watch gradient descent converge, crawl, or diverge.</summary>
+    <summary>Training a model is walking downhill in fog, feeling which way the ground tilts. Set the learning rate yourself and watch gradient descent converge or diverge.</summary>
   </entry>
   <entry>
     <title>AI vs machine learning vs automation</title>
@@ -197,7 +197,7 @@
     <id>https://www.loopingly.com/explorables/tokenization</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>A tokenizer is a frozen record of what was frequent in one pile of text. Type a sentence, watch it get cut and priced, then break it with an unusual word.</summary>
+    <summary>An LLM reads tokens, not words, and a tokenizer is a frozen record of one pile of text. Type a sentence, watch it get cut and priced, then break it.</summary>
   </entry>
   <entry>
     <title>The regulatory atlas</title>
@@ -261,7 +261,7 @@
     <id>https://www.loopingly.com/explorables/is-it-actually-thinking</id>
     <updated>2026-07-26T00:00:00Z</updated>
     <published>2026-07-26T00:00:00Z</published>
-    <summary>Short answer: no — it is autocomplete that read the internet. See the one trick underneath, and two of the biggest beginner worries about AI fall away at once.</summary>
+    <summary>Short answer: no — an LLM is autocomplete that read the internet. See the one trick underneath, and two of the biggest beginner worries fall away at once.</summary>
   </entry>
   <entry>
     <title>The GRC registers an organization keeps</title>
