@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM text watermarking: how a model signs what it writes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700;900&family=Figtree:wght@400;500;700&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>:root{--v9:#F4EFE2;--v10:#EAE3D2;--v13:#D6CCB6;--v3:#1E1B14;--v5:#4E483A;--v4:#5F5847;--v0:#2E3A87;--v21:#DCDDF0;--v14:#2C6B45;--v15:#D8E6DC;--v11:#9C3320;--v12:#F0DCD5;--v20:#7A5A10;--v2:"Red Hat Display",Georgia,serif;--v1:"Figtree",system-ui,-apple-system,sans-serif;--v7:"Red Hat Mono",ui-monospace,Menlo,monospace;--v6:680px;--v22:1080px;--v8:22px;--v17:clamp(42px,7.6vw,80px);--v16:clamp(29px,4.2vw,42px);--v18:clamp(20px,2.7vw,26px);--v19:clamp(22px,3.3vw,31px)}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v9);color:var(--v3);font-family:var(--v1);font-size:19px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}.col{max-width:var(--v6);margin:0 auto;padding:0 var(--v8);position:relative}.wide{max-width:var(--v22);margin:0 auto;padding:0 var(--v8)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,128px) 0}.divider{max-width:var(--v6);margin:0 auto;height:1px;background:var(--v13)}h1,h2{font-family:var(--v2);font-weight:900;line-height:1.05;margin:0;letter-spacing:-.02em}h2.big{font-size:var(--v16);margin:0 0 24px;max-width:17ch}.hero h1{font-size:var(--v17);line-height:1.0;max-width:14ch}p{margin:0 0 22px}strong{font-weight:700}.lede{font-size:var(--v18);line-height:1.44;color:var(--v5)}.kick{display:inline-block;font-family:var(--v7);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--v0);margin:0 0 24px;padding:6px 0;border-bottom:2px solid var(--v0)}.cap{font-family:var(--v7);font-size:12px;color:var(--v4);line-height:1.6;margin:14px auto 0;max-width:64ch;text-align:center}.cap b{color:var(--v0);font-weight:600}.pull{font-family:var(--v2);font-weight:700;font-size:var(--v19);line-height:1.26;color:var(--v0);border-left:3px solid var(--v0);padding-left:26px;margin:40px 0}.note{background:var(--v10);border-radius:4px;padding:20px 22px;margin-top:28px;font-size:17px;color:var(--v5)}.intu{border:1px solid var(--v13);border-left:3px solid var(--v0);border-radius:0 6px 6px 0;padding:22px 24px;margin:30px 0;background:var(--v10);font-size:17px;line-height:1.66}.intu i{font-family:var(--v7);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--v0);display:block;margin-bottom:11px;font-style:normal}.intu b{color:var(--v3)}.fig{border:1px solid var(--v13);background:#FBF8F0;border-radius:6px;padding:26px 22px;margin-top:32px}.fig svg{width:100%;height:auto;display:block;overflow:visible}.chip{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:20px}.btn{font-family:var(--v7);font-size:13px;padding:9px 15px;border:1px solid var(--v13);border-radius:4px;background:var(--v9);cursor:pointer;color:var(--v5);min-height:40px;transition:background .16s,border-color .16s,color .16s}.btn:hover{border-color:var(--v0);color:var(--v3)}.btn[aria-pressed="true"],.btn.on{background:var(--v0);border-color:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0);min-height:40px}.rail{position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:9px}.rail i{width:7px;height:7px;border-radius:50%;background:var(--v13);display:block;transition:background .3s,transform .3s}.rail i.on{background:var(--v0);transform:scale(1.7)}@media (max-width:1040px){.rail{display:none}}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}.stp{opacity:.34;transition:opacity .35s}.stp.on{opacity:1}.stp p{margin:0}@media (max-width:760px){.fig{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:22px 14px}.fig svg{min-width:700px}.fig::-webkit-scrollbar{height:6px}.fig::-webkit-scrollbar-thumb{background:var(--v13);border-radius:3px}}::selection{background:var(--v0);color:#fff}:focus-visible{outline:2px solid var(--v0);outline-offset:3px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="A watermark hides in which words the model picks. Shade the dictionary with a secret key, press the thumb on the scale, then score 300 words for proof.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/llm-watermarking">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="LLM text watermarking: how a model signs what it writes">
+  <meta property="og:description" content="Shade the dictionary, press the thumb on the scale, then score 300 words.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/llm-watermarking">
+  <meta property="og:image" content="https://www.loopingly.com/og/llm-watermarking.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LLM text watermarking: how a model signs what it writes">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LLM text watermarking: how a model signs what it writes">
+  <meta name="twitter:description" content="Shade the dictionary, press the thumb on the scale, then score 300 words.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/llm-watermarking.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"LLM text watermarking: how a model signs what it writes","description":"A watermark hides in which words the model picks. Shade the dictionary with a secret key, press the thumb on the scale, then score 300 words for proof.","url":"https://www.loopingly.com/explorables/llm-watermarking","image":"https://www.loopingly.com/og/llm-watermarking.png","datePublished":"2026-09-08","dateModified":"2026-09-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"LLM text watermarking and AI-generated text detection"},"keywords":"what is LLM watermarking, how does AI text detection work, can you detect AI written text, SynthID text, green list red list watermark, AI detector accuracy, how to watermark AI text"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How a model signs what it writes"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<nav class="rail" id="rail" aria-hidden="true"></nav>
+
+<header class="hero col"
+        style="padding-top:clamp(70px,13vh,140px);padding-bottom:clamp(36px,6vh,80px)">
+  <p class="kick">Text provenance</p>
+  <h1>How a model signs what it writes</h1>
+  <p class="lede" style="margin-top:26px;max-width:54ch">Nothing in a sentence records who wrote
+    it. A watermark puts that record inside the words themselves, by quietly biasing which words
+    get picked. Below is a sentence a model wrote. The shading was always there.</p>
+  <div class="fig" style="margin-top:36px">
+    <svg id="fHero" viewBox="0 0 620 190" role="img" aria-label="A written sentence whose words reveal which ones were secretly favoured"></svg>
+    <p class="cap"><b>Click the sentence</b> to hold the light on it, or let it come and go.</p>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<section data-ch="01" class="reveal">
+  <div class="col">
+    <h2 class="big">A watermark is a mark that lives inside the thing, not on top of it</h2>
+    <p>Find a banknote. Hold it up to a window.</p>
+    <p>A face appears in the blank part of the paper, and it was not printed there. During
+      manufacture the wet pulp was pressed thinner in that shape, so less material sits in those
+      places and more light comes through. The mark is not ink sitting on the surface. It is a
+      variation in the paper itself, made at the moment the paper was made.</p>
+    <p>That is a <strong>watermark</strong>: a signal hidden inside an object, put there while the
+      object was being made, invisible in ordinary use, and readable by anyone who knows how to
+      look. Papermakers have used them since the thirteenth century, first as a workshop's
+      signature and later as the thing that makes a forged note hard to pass.</p>
+    <p>Three properties are doing the work, and every one of them will come back later in this
+      piece, so they are worth naming now. The mark is <strong>imperceptible</strong> in normal
+      use: you handle money all day without seeing it. It is <strong>inseparable</strong> from the
+      object: you cannot peel it off, because it is not a layer, it is the paper. And it is
+      <strong>verifiable</strong>: hold it to the light and the answer is plain.</p>
+    <div class="intu"><i>Picture it</i>
+      A baker who presses a small initial into the base of every loaf before it goes in the oven.
+      You will never notice it while eating. You cannot scrape it off, because it is not icing, it
+      is the shape of the bread. But turn the loaf over and it is unmistakable, and no other bakery
+      makes that mark. <b>The signature survives because it was made at the same moment as the
+      thing it signs, out of the same material.</b>
+    </div>
+    <p>Text has none of this by default. A paragraph is just characters. There is no pulp to press
+      and no surface to emboss.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f1" viewBox="0 0 900 300" role="img" aria-label="A sheet of paper, and the same sheet held against light so a hidden mark shows"></svg>
+      <div class="chip" id="c1"></div>
+      <p class="cap">Figure 1. <b>Switch the light.</b> Nothing is added between the two states.
+        The same sheet is being read two different ways.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>So the question this piece answers is what you would press into a sentence, given that a
+      sentence has no thickness. And before that, a blunter question: why bother at all?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="02" class="reveal">
+  <div class="col">
+    <h2 class="big">Guessing from style fails in the one case that matters</h2>
+    <p>Read these two sentences and decide which was written by a machine.</p>
+    <p style="font-family:var(--v7);font-size:16px;line-height:1.9;color:var(--v5)">
+      1. The library closes at six, so we should probably head over now.<br>
+      2. Delve into the multifaceted landscape of contemporary librarianship.</p>
+    <p>Most people pick the second, and the reasoning is sound: it is bland, it is padded, it uses
+      words that turn up more often in generated text than in speech. That reasoning is exactly
+      what an <strong>AI text classifier</strong> does. A classifier is a program that reads a
+      passage and outputs a probability that a machine wrote it, trained by showing it many
+      examples of each kind and letting it learn what separates them.</p>
+    <p>It works, in the sense that it is better than a coin. It fails in the way that matters.</p>
+    <p>The failure has a name. A <strong>false positive</strong> is the case where the detector
+      says "machine" about text a person actually wrote. Non-native English writers use simpler
+      constructions and a narrower vocabulary, which is precisely the signature these tools were
+      trained to flag, and so their essays get flagged at a much higher rate than native writers'
+      essays do. In 2023 OpenAI withdrew its own AI Text Classifier for exactly this reason,
+      citing a low rate of accuracy. Meanwhile the fix in the other direction is trivial: ask the
+      model to write less blandly, or paste the output through a rewriter, and the style signature
+      that the classifier depends on is gone.</p>
+    <p>Notice what has gone wrong. The detector is reading the <em>surface</em> of the text and
+      guessing backwards to its origin. Surfaces can be imitated in both directions. A careful
+      human can look machine-like by accident; a machine can be told to look human on purpose.</p>
+    <div class="intu"><i>Picture it</i>
+      Trying to work out which of two paintings is the forgery by standing back and judging the
+      brushwork. Sometimes you are right. But a good forger studies brushwork, and a nervous
+      original artist can paint stiffly on the day. <b>What a gallery actually wants is not a
+      better eye, it is a record made by the artist at the moment of painting, which the forger was
+      never in a position to make.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f2" viewBox="0 0 900 320" role="img" aria-label="A style classifier scoring four passages, with two of its judgements wrong"></svg>
+      <div class="chip" id="c2"></div>
+      <p class="cap">Figure 2. <b>Score each passage.</b> The classifier only ever sees the words.
+        Two of these four judgements are wrong, and the two it gets wrong are the two that cost
+        somebody something.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p class="pull">A guess made after the fact is not evidence. A record made during the act is.</p>
+    <p>That reframes the problem. Instead of inspecting finished text, put the mark in while the
+      text is being produced, in the one place the producer controls and the imitator does not.</p>
+    <p>To do that you need to know what a model is actually doing while it writes, because that is
+      where the mark has to go.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="03" class="reveal">
+  <div class="col">
+    <h2 class="big">Every word a model writes is a draw from a bag, not a decision</h2>
+    <p>Finish this out loud: <em>"the cat sat ___"</em>.</p>
+    <p>You probably said "on", possibly "down", maybe "quietly". You did not consider "photosynthesis".
+      Several words were live options, some more likely than others, and one of them came out.</p>
+    <p>A language model does the same thing, and does it in a way you can watch. It has a fixed
+      list of pieces it is allowed to write, called its <strong>vocabulary</strong>. Each piece is
+      a <strong>token</strong>: usually a word or a fragment of one. Real vocabularies run to about
+      a hundred thousand tokens; this page uses four, so the arithmetic stays small enough to do
+      by hand.</p>
+    <p>At every position the model produces a number for each token in the vocabulary saying how
+      well that token would continue the text so far. Turned into percentages that add up to 100,
+      those are the <strong>odds</strong> for the next token. For "the cat sat", the four-word toy
+      vocabulary might come out as: on 40, down 30, quietly 20, up 10.</p>
+    <p>Then comes the step that matters most here, and it is the one people usually assume works
+      the other way. The model does not take the highest number. It <strong>samples</strong>: it
+      draws one token at random, with each token's chance of being drawn equal to its share of the
+      odds. Forty percent of the time you get "on". Ten percent of the time you get "up". If it
+      always took the top token, the same prompt would give the same answer every time, and the
+      writing would be noticeably flat and repetitive.</p>
+    <p>Why this matters for everything that follows: sampling means there is <em>slack</em>. At
+      most positions several tokens are defensible, and which one arrives is genuinely a matter of
+      chance. That slack is empty space nobody is using. It is exactly where a watermark can be
+      hidden.</p>
+    <div class="intu"><i>Picture it</i>
+      A cloth bag holding a hundred marbles. Forty are labelled "on", thirty "down", twenty
+      "quietly", ten "up". You do not choose a marble, you pull one out without looking, and the
+      counts decide how often each label comes up. Refill the bag with different counts for the
+      next word, and pull again. <b>Nothing about the sentence forces one specific marble, so the
+      hand that fills the bag has room to lean, and no reader can tell.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f3" viewBox="0 0 900 330" role="img" aria-label="Four tokens with their odds as a bag of marbles, drawn repeatedly to show the frequencies"></svg>
+      <div class="chip" id="c3"></div>
+      <p class="cap">Figure 3. <b>Draw from the bag</b>, once or a hundred times. The tally
+        underneath is what actually came out, so it wanders around the odds rather than matching
+        them exactly.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>So the model is already rolling dice several hundred times per page, and nobody is watching
+      the dice. The trick is to make the rolls slightly crooked in a pattern only one party can
+      reproduce.</p>
+    <p>Which requires a secret.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="04" class="reveal">
+  <div class="col">
+    <h2 class="big">A secret number, mixed with the words already written</h2>
+    <p>Here is the constraint the whole design has to satisfy. The bias has to be reproducible by
+      the model's owner, so they can check for it later. It has to be unpredictable to everyone
+      else, so they cannot strip it out. And it has to change at every position, or the same words
+      would be favoured all through the text and a reader would notice the tic.</p>
+    <p>Three ingredients meet all three conditions.</p>
+    <p>The first is the <strong>key</strong>: a large number chosen once and kept secret by
+      whoever runs the model, say 8,675,309. It never changes and it is never published. It is the
+      only thing a checker needs and the only thing an attacker lacks.</p>
+    <p>The second is the <strong>look-back</strong>: the words immediately before the position
+      being written. Turn them into a number by any fixed recipe, as long as it is the same recipe
+      every time. Adding up letter values works: a is 1, b is 2, and so on. "sat" becomes
+      19 + 1 + 20 = 40. The look-back is what makes the bias move, because the preceding words are
+      different at every position in the text.</p>
+    <p>The third is a <strong>hash</strong>: any fixed rule that takes numbers in and gives a
+      scrambled number out, where a small change to the input gives a completely different output,
+      and where you cannot run the rule backwards to recover the inputs. Multiplying by the key and
+      taking a remainder is a toy version of one. Real systems use a proper cryptographic hash, but
+      the useful property is the same: the output looks random, yet the same inputs always produce
+      the same output.</p>
+    <p>Feed the look-back and the key into the hash and out comes a number that is unpredictable
+      unless you hold the key, and identical every time for the same preceding words. That is the
+      whole trick. A private, repeatable coin toss, available at every position in the text.</p>
+    <div class="intu"><i>Picture it</i>
+      Two people agree a rule before parting: take today's newspaper headline, add up the letters,
+      multiply by a number only they know, and the answer says which cafe to meet at. Anyone
+      watching sees them meet somewhere different each day with no pattern. Anyone who knows the
+      number can work out the cafe in advance every single time. <b>The unpredictability comes from
+      the changing headline, and the reproducibility comes from the shared number, and you need
+      both or the scheme is either predictable or uncheckable.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f4" viewBox="0 0 900 330" role="img" aria-label="Preceding words converted to a number, mixed with a secret key, and hashed into a scrambled number"></svg>
+      <div class="chip" id="c4"></div>
+      <p class="cap">Figure 4. <b>Change the preceding word</b>, then <b>change the key</b>. Same
+        word and same key always give the same scrambled number. Change either and it jumps
+        somewhere unrelated. Every number here is computed by this page.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>The number that falls out is not yet a watermark. It is raw material. Something has to turn
+      one number into a bias over a hundred thousand tokens.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="05" class="reveal">
+  <div class="col">
+    <h2 class="big">The scrambled number cuts the dictionary in half</h2>
+    <p>Take the number that came out of the hash and use it to sort every token in the vocabulary
+      into one of two piles. Any rule works as long as it is fixed and it depends on that number.
+      In this page's toy, tokens are numbered 1 to 4, the scrambled number is added to each, and
+      the ones that come out even go in the first pile.</p>
+    <p>The first pile is the <strong>favoured list</strong>: the tokens that are about to get a
+      small advantage. The second is everything else. In the original research these are called
+      the <strong>green list</strong> and the <strong>red list</strong>, which is worth knowing
+      because you will meet those names anywhere else you read about this, and they mean exactly
+      the two piles here. The share of the vocabulary that goes green is written
+      <strong>gamma</strong>, and it is usually one half.</p>
+    <p>Two things about this split are easy to skim past and both are load-bearing.</p>
+    <p>It is <em>arbitrary</em>. There is nothing about "on" that makes it a greener word than
+      "down". Which pile a token lands in is decided by a scrambled number, and it carries no
+      meaning at all. That is the point: a meaningful split would be visible as a style.</p>
+    <p>And it is <em>redrawn at every position</em>. The look-back changes with each word written,
+      so the hash changes, so the split changes. A token that was favoured after "sat" is very
+      likely unfavoured after "down". Over a paragraph, every token spends roughly half its time in
+      each pile, which is why no reader can point to a word the text is fond of.</p>
+    <div class="intu"><i>Picture it</i>
+      A teacher who, before each round of a game, deals every child a red or blue card at random,
+      then says the blue cards get a small head start this round. Next round the cards are dealt
+      again. No child is favoured overall, no child can predict their colour, and yet in any single
+      round the advantage is real and the teacher knows exactly who had it. <b>The dealing is
+      reshuffled constantly so that nothing accumulates in the open, while the teacher's record of
+      each deal stays perfectly recoverable.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f5" viewBox="0 0 900 340" role="img" aria-label="A four word vocabulary split into a favoured and unfavoured list by the scrambled number, changing as the preceding word changes"></svg>
+      <div class="chip" id="c5"></div>
+      <p class="cap">Figure 5. <b>Step through the preceding words.</b> Green is the favoured list,
+        rust is not. Watch which side each word lands on as the look-back changes. Nothing about
+        the word decides it.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Two piles, redrawn constantly, known only to the key holder. Now the favoured pile has to be
+      turned into an actual advantage without wrecking the sentence.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="06" class="reveal">
+  <div class="col">
+    <h2 class="big">Add a little to the favoured, rescale, and draw as normal</h2>
+    <p>The bias itself is one line of arithmetic. Take the odds the model produced. Add a fixed
+      amount, called <strong>delta</strong>, to every token on the favoured list. The numbers no
+      longer add up to 100, so <strong>rescale</strong> them: divide each by the new total and
+      multiply by 100. Then sample exactly as before.</p>
+    <p>That is the entire mechanism. Everything else in this piece is either setting it up or
+      measuring it afterwards.</p>
+    <p>Follow it once, all the way through, with the toy vocabulary and a key of 7. The steps are
+      pinned on the left while the arithmetic scrolls past.</p>
+  </div>
+
+  <div class="bleed" id="scrolly1" style="margin-top:44px">
+    <div style="max-width:1240px;margin:0 auto;padding:0 var(--v8)">
+      <div style="position:sticky;top:0;height:100vh;display:flex;align-items:center;z-index:1;min-width:0;width:100%">
+        <div class="fig" style="width:100%;margin:0">
+          <svg id="f6" viewBox="0 0 900 430" role="img" aria-label="The five steps of writing one watermarked word, worked through with real numbers"></svg>
+          <p class="cap">Figure 6. One word, start to finish. <b>Click any step</b> to jump to it.</p>
+        </div>
+      </div>
+      <div style="max-width:var(--v6);margin:0 auto;padding:0 var(--v8)">
+        <div class="stp" data-step="0"><p><b>Look back.</b> The text so far ends "the cat sat". Take
+          the last word, "sat", and add up its letters: s is 19, a is 1, t is 20. That gives 40.
+          Any fixed recipe would do; this one is just easy to check by hand.</p></div>
+        <div class="stp" data-step="1"><p><b>Mix in the key.</b> The key is 7. Multiply: 40 times 7
+          is 280. Now scramble it by taking the remainder after dividing by 13. Thirteen goes into
+          280 twenty-one times, which is 273, leaving 7. The scrambled number is 7.</p></div>
+        <div class="stp" data-step="2"><p><b>Cut the vocabulary.</b> Number the tokens: on is 1,
+          down is 2, quietly is 3, up is 4. Add 7 to each and keep the even results. On gives 8 and
+          quietly gives 10, so both are favoured. Down gives 9 and up gives 11, so neither is.</p></div>
+        <div class="stp" data-step="3"><p><b>Load the odds.</b> The model's honest odds were on 40,
+          down 30, quietly 20, up 10. Add a delta of 10 to the two favoured tokens: on becomes 50
+          and quietly becomes 30. The four now total 120, so divide each by 1.2 to get back to a
+          hundred: on 42, down 25, quietly 25, up 8.</p></div>
+        <div class="stp" data-step="4"><p><b>Draw.</b> Lay the four out along a line from 0 to 100.
+          On holds 0 to 42, down holds 42 to 67, quietly holds 67 to 92, up holds the rest. Pick a
+          number at random: 63. That lands in down. The sentence becomes "the cat sat down".</p></div>
+        <div class="stp" data-step="5"><p><b>And notice what just happened.</b> Down was not on the
+          favoured list, and down is what got written. The bias is a nudge, not a rule. Any single
+          word proves nothing, which is exactly why the text still reads naturally, and exactly why
+          detection has to count across hundreds of words rather than inspect one.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col" style="margin-top:56px">
+    <p>Now write the next word and watch the ground move. The look-back is no longer "sat", it is
+      "down": 4 plus 15 plus 23 plus 14 is 56. Times 7 is 392. The remainder after dividing by 13
+      is 2. Adding 2 and keeping evens favours down and up this time, the exact opposite pair.</p>
+    <p>That reshuffle is what keeps the watermark invisible. If "on" and "quietly" were favoured
+      all the way down the page, the text would read like someone with a verbal tic. Instead the
+      favoured pair changes at every position, driven by words that are themselves changing.</p>
+    <div class="intu"><i>Picture it</i>
+      A croupier with a very slightly weighted wheel, who moves the weight to a different pocket
+      before every spin according to a schedule in their pocket. No player watching a hundred spins
+      can find the bias, because it never sits still. <b>The house can prove it was there, because
+      the house has the schedule and can check every spin against it afterwards.</b>
+    </div>
+    <p class="pull">One word tells you nothing. Three hundred words tell you almost everything.</p>
+    <p>Delta was set to 10 above with no justification. It is the only number in the scheme a
+      designer really chooses, and it decides how much of the text you have to read before the
+      mark shows up.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="07" class="reveal">
+  <div class="col">
+    <h2 class="big">One number decides how hard the thumb presses on the scale</h2>
+    <p>Delta is a dial with nothing clever behind it. It is the amount added to every favoured
+      token before rescaling, and the designer picks it. Larger means a stronger signal in the
+      text and a weaker sentence. Smaller means the opposite. There is no setting that avoids the
+      trade, which is why it is worth feeling rather than reading about.</p>
+    <p>Hold the same odds and the same favoured pair steady, and move only delta.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f7" viewBox="0 0 900 400" role="img" aria-label="The four token odds rescaling as the watermark strength is increased, with the favoured share and the text quality alongside"></svg>
+      <div style="max-width:620px;margin:22px auto 0">
+        <label for="k7" style="font-family:var(--v7);font-size:13px;color:var(--v4);display:flex;justify-content:space-between">
+          <span>watermark strength, delta</span><span id="k7v" style="color:var(--v0)">+10</span></label>
+        <input id="k7" type="range" min="0" max="3" step="1" value="1" aria-label="watermark strength delta">
+      </div>
+      <div class="chip" id="c7"></div>
+      <p class="cap">Figure 7. <b>Drag the strength.</b> Green bars are the favoured pair, rust the
+        rest. Every percentage is recomputed by this page from odds of 40, 30, 20, 10.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>At zero the odds are untouched: on 40, down 30, quietly 20, up 10. The favoured pair already
+      holds 60 percent of the probability, because "on" happened to be the likeliest word anyway.
+      There is no watermark here and nothing to find.</p>
+    <p>At 10 the numbers become on 42, down 25, quietly 25, up 8, and the favoured pair now holds
+      67 percent. That seven point gap is the entire signal. A reader would need to compare against
+      the unwatermarked odds to notice anything, and they do not have those.</p>
+    <p>At 50 the favoured pair holds 80 percent, and the damage starts to show: "quietly" has been
+      pushed from 20 percent to 35, so the model now writes "the cat sat quietly" far more often
+      than the language warrants. The text is getting stranger in a way that is hard to point at
+      but easy to feel.</p>
+    <p>At 1000 the favoured pair holds 98 percent. The model is effectively forbidden from using
+      half its vocabulary at every position, and the writing collapses into something forced.
+      Detection would be trivial and nobody would use the output.</p>
+    <div class="intu"><i>Picture it</i>
+      Salting a stew so that the cook can later prove it was theirs. A pinch is undetectable to the
+      diner and provable by a lab. A spoonful is provable by anyone and ruins the dish. <b>There is
+      no amount of salt that is both instantly obvious and completely tasteless, and pretending
+      otherwise is how you end up with an inedible stew.</b>
+    </div>
+    <p class="pull">Every watermark is a quality budget spent on provability.</p>
+    <p>Real systems sit near the bottom of that dial. In the published research the boost is
+      applied to the model's raw scores before they are turned into percentages, and a value of
+      about 2 there is common, which works out to a gentler nudge than the +10 on percentages used
+      here. Percentages were easier to do in your head, and the shape of the trade is identical.</p>
+    <p>A nudge that small raises an obvious objection. If the text barely changes, how would anyone
+      ever prove the mark is there?</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="08" class="reveal">
+  <div class="col">
+    <h2 class="big">The checker replays the same arithmetic and keeps score</h2>
+    <p>Detection needs no access to the model, no record of what it generated, and no copy of the
+      original prompt. It needs the key and the suspect text, and it works like this.</p>
+    <p>Start at the second word. Take the word before it, run the same look-back and hash with the
+      same key, and rebuild the favoured list for that position. Then ask one question: was the
+      word actually written in that list? Write down yes or no. Move to the next word and repeat to
+      the end.</p>
+    <p>What comes out is a <strong>hit rate</strong>: the fraction of positions where the written
+      word turned out to be favoured. This is the whole of detection. There is no model involved,
+      only bookkeeping.</p>
+    <p>Now the arithmetic that makes it work. If nobody watermarked the text, the favoured list at
+      each position is an arbitrary half of the vocabulary that has nothing to do with what the
+      writer chose, so the written word falls in it about half the time. Human writing, other
+      models' writing, text watermarked with a different key: all of them land near 50 percent. Not
+      because anything about them is random, but because the list they are being scored against is.</p>
+    <p>If the text was watermarked with this key at a delta of 10, the odds were tilted toward the
+      favoured list at every position, and the hit rate comes out nearer 65 or 70 percent.</p>
+    <p>Neither number is impressive on its own. The gap between them is the evidence, and it only
+      becomes evidence once you have counted enough positions.</p>
+    <div class="intu"><i>Picture it</i>
+      A card game where, before each hand, a sealed envelope names a suit. Players never see the
+      envelopes. Afterwards a referee opens all three hundred and counts how often the card played
+      matched the named suit. An honest table matches about a quarter of the time. A table being
+      fed cards matches far more. <b>No single hand looks wrong, and the referee never needs to
+      have watched the game, only to hold the envelopes.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f8" viewBox="0 0 900 360" role="img" aria-label="A passage scanned word by word, each word marked as inside or outside its favoured list, with a running hit count"></svg>
+      <div class="chip" id="c8"></div>
+      <p class="cap">Figure 8. <b>Scan a passage</b>, word by word or all at once, and <b>switch
+        which passage</b> you are testing. Green means the written word was on its favoured list.
+        The count underneath is the running score.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>Sixty-seven out of a hundred against an expected fifty. That looks convincing, but "looks
+      convincing" is not a standard anybody should accept when the output might get a student
+      expelled.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="09" class="reveal">
+  <div class="col">
+    <h2 class="big">Sixty-seven out of a hundred is suggestive; two hundred out of three hundred is proof</h2>
+    <p>Toss a fair coin ten times. Seven heads would not surprise you. Toss it three hundred times
+      and get two hundred heads, and something is wrong with the coin. Same bias, wildly different
+      strength of evidence, and the only thing that changed was how long you watched.</p>
+    <p>Statistics puts a number on that. Start from what the world looks like if there is no
+      watermark, which is called the <strong>null</strong>: every position is an independent
+      coin toss with a half chance of landing in the favoured list. Across 300 positions the null
+      expects 150 hits. It will not deliver exactly 150, and the typical wobble around that
+      expectation has a size you can compute: for 300 tosses at even odds it is about 8.7 hits.</p>
+    <p>Now measure how far the observed count sits from the expectation, counted in wobbles. That
+      distance is the <strong>z-score</strong>. A z-score of 1 means the result is one ordinary
+      wobble away, which happens constantly. A z of 4 means four wobbles away, which essentially
+      does not happen by chance.</p>
+    <p>Watermarked text at a hit rate of 67 percent gives 201 hits out of 300. That is 51 hits
+      above expectation, and 51 divided by 8.7 is a z of about 5.9. Unwatermarked text sits at a z
+      near 0. The gap is not a matter of opinion.</p>
+    <p>The practical consequence is that detection strength depends on <em>length</em>, not just on
+      delta. The same watermark that is unprovable in a tweet is overwhelming in an essay, because
+      the expectation grows with the number of positions while the wobble grows only with its
+      square root. This is why every honest description of these systems states a minimum text
+      length, and why a two-sentence quote cannot be tested at all.</p>
+    <div class="intu"><i>Picture it</i>
+      Judging whether a die is loaded. Three sixes in a row is a story you would tell at dinner.
+      Sixty sixes in three hundred rolls, against the fifty you would expect, is a die you would
+      take away from the table. <b>The bias never changed between those two cases. Only the number
+      of rolls did, and that is the entire reason short text cannot be tested.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f9" viewBox="0 0 900 360" role="img" aria-label="The count of favoured hits against the range expected by chance, as the length of the text grows"></svg>
+      <div class="chip" id="c9"></div>
+      <p class="cap">Figure 9. <b>Change the length.</b> The pale band is where chance alone lands
+        95 percent of the time. Watch the watermarked count leave the band, and note how many words
+        that takes.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>So a long enough passage settles it. That holds right up until somebody changes the words.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="10" class="reveal">
+  <div class="col">
+    <h2 class="big">Three ordinary situations, and the watermark survives one of them</h2>
+    <p>Take three cases that would actually arrive at a university office in the same week.</p>
+    <p><strong>Maya submits 900 words on the causes of the First World War.</strong> She generated
+      it, then spent twenty minutes fixing the bits she disagreed with and rewriting the opening
+      paragraph in her own voice. Roughly 15 percent of the words changed. The other 85 percent are
+      still sitting in their original positions with their original look-backs, so they still hit
+      their favoured lists. The count falls from about 603 to about 520 out of 900, and the z-score
+      falls from around 10 to around 4.5. Still far outside chance. The watermark holds.</p>
+    <p><strong>Daniel pastes the same essay through a free rewriting tool</strong> and submits what
+      comes out. Every sentence has been restated. Almost no word sits after the word it originally
+      followed, so almost every look-back is different, so almost every favoured list is a fresh
+      arbitrary half of the vocabulary that has nothing to do with what is written. The hit rate
+      collapses to roughly 50 percent and the z-score to under 1. Published measurements put
+      detection rates below 0.3 after a single pass of language-model paraphrasing. This is a
+      <strong>paraphrase attack</strong>, it costs nothing, and it works.</p>
+    <p><strong>Priya submits a 40-word short answer.</strong> It was generated and untouched. At 40
+      positions the null expects 20 hits with a wobble of about 3.2, and a watermarked hit rate of
+      67 percent gives 27. That is a z of about 2.2, which sounds like something and is not enough
+      to accuse anyone of anything. There is no watermark strength that fixes this, because the
+      problem is the sample size.</p>
+    <p>A fourth case is worth naming because it catches people out. Watermarking needs the model to
+      have had a genuine choice. Ask for the boiling point of water at sea level, or for a function
+      that reverses a string, and there is only one sensible continuation at nearly every position.
+      The amount of real choice available is called <strong>entropy</strong>, and where entropy is
+      low the model cannot be nudged without producing a wrong answer, so no mark gets embedded.
+      Short factual replies and most code are close to unmarkable.</p>
+    <div class="intu"><i>Picture it</i>
+      A watermark in paper survives being folded, posted and photocopied badly. It does not survive
+      being retyped. Paraphrasing is retyping. <b>The mark was never in the meaning, it was in the
+      specific sequence of words, so anything that keeps the meaning and replaces the sequence
+      takes the mark with it.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f10" viewBox="0 0 900 340" role="img" aria-label="Four cases compared: lightly edited, paraphrased, too short, and low entropy, each with its resulting evidence strength"></svg>
+      <div class="chip" id="c10"></div>
+      <p class="cap">Figure 10. <b>Pick a case.</b> The bar is the z-score against the threshold
+        below which nothing can be claimed. Every value is computed by this page from the hit rate
+        and length shown.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p>So this is not a solved problem and nobody serious claims it is. It is a tool that answers
+      one question well, and the question is narrower than most people assume: was this specific
+      run of words produced by this specific model, in a passage long enough to count, that nobody
+      has rewritten.</p>
+    <p>Which raises the question of who is running it anyway, given all that.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section data-ch="11" class="reveal">
+  <div class="col">
+    <h2 class="big">It is already running, on a scale that surprises people</h2>
+    <p>Google DeepMind published SynthID-Text in Nature in October 2024, and by the time the paper
+      appeared the system had already been operating inside Gemini for months, which made it the
+      first statistical text watermark deployed to consumers at scale.</p>
+    <p>Its mechanism differs from the green list in one interesting way. Instead of adding a bias
+      to the odds and sampling once, it runs what the authors call
+      <strong>tournament sampling</strong>: several candidate tokens are drawn, then paired off in
+      rounds like a knockout bracket, and at each round the winner is the candidate scoring higher
+      against a key-derived function. The survivor gets written. The effect is a similar tilt
+      toward key-favoured tokens, arrived at by a different route.</p>
+    <p>The quality question was answered with numbers rather than assurances. The team compared
+      feedback across close to 20 million Gemini responses and found no significant difference in
+      thumbs-up and thumbs-down rates between watermarked and unwatermarked output. That is the
+      strongest available evidence that a well-tuned delta really is invisible to readers, and it
+      is worth more than any argument from first principles.</p>
+    <p>The regulatory push is now ahead of the technology. Transparency duties under the EU AI Act
+      became applicable on 2 August 2026, and Article 50 requires providers to mark synthetic
+      content in a machine-readable way. Text is the hardest case in that rule, for the reason this
+      piece has already shown: a paragraph can be retyped or lightly rewritten and the mark goes
+      with it. The associated guidance settles on a layered approach, combining metadata attached
+      to the file, a statistical watermark inside the content, and server-side logging of what was
+      generated. None of the three is sufficient alone, and each covers a way the others fail.</p>
+    <div class="intu"><i>Picture it</i>
+      A parcel with a delivery label on the outside, a stamped serial inside the box, and an entry
+      in the courier's own database. Peel the label and two records remain. <b>Nobody builds it
+      that way because any one method is weak; they build it that way because the failure modes do
+      not overlap.</b>
+    </div>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f11" viewBox="0 0 900 350" role="img" aria-label="Three layers of provenance evidence and which attacks defeat each one"></svg>
+      <div class="chip" id="c11"></div>
+      <p class="cap">Figure 11. <b>Try an attack</b> against the three layers. Green survives, rust
+        does not. No single row survives everything.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p class="pull">The watermark is not proof of authorship. It is one line of evidence that
+      happens to be very hard to forge and very easy to destroy.</p>
+    <p>Which is the honest place to leave it: useful for tracing your own model's output at scale,
+      unreliable for accusing an individual, and worthless against anyone who spends thirty seconds
+      trying to remove it.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="reveal" id="close" style="padding:clamp(72px,9vw,128px) 0">
+  <div class="col" style="text-align:center">
+    <h2 class="big" style="max-width:24ch;margin:0 auto 26px">Set the strength, the length and the
+      attack, and see what a court would be told</h2>
+    <p style="max-width:56ch;margin:0 auto 30px">Everything on this page in one place. The verdict
+      underneath is computed from the same arithmetic you worked through by hand.</p>
+  </div>
+  <div class="wide">
+    <div class="fig">
+      <svg id="f12" viewBox="0 0 900 340" role="img" aria-label="A playground combining watermark strength, passage length and attack into a single verdict"></svg>
+      <div style="max-width:620px;margin:22px auto 0">
+        <label for="k12" style="font-family:var(--v7);font-size:13px;color:var(--v4);display:flex;justify-content:space-between">
+          <span>passage length, words</span><span id="k12v" style="color:var(--v0)">300</span></label>
+        <input id="k12" type="range" min="40" max="1200" step="20" value="300" aria-label="passage length in words">
+      </div>
+      <div class="chip" id="c12"></div>
+      <p class="cap">Figure 12. <b>Change the length, the strength and the attack.</b> Presets set
+        all three to one of the situations from earlier.</p>
+    </div>
+  </div>
+  <div class="col">
+    <p style="margin-top:34px">The thing worth carrying away is that none of this reads the text.
+      It counts how often a coin that only one party can toss came down the way that party
+      predicted, and then asks whether that could have happened by chance.</p>
+  </div>
+</div>
+
+<div class="col" id="weedhint" style="padding-bottom:40px">
+  <p class="cap" style="text-align:left;margin:0">Press <b>s</b> for the parts that did not fit.</p>
+</div>
+
+<div id="weeds" hidden style="padding:clamp(72px,9vw,128px) 0;background:var(--v10)">
+  <div class="col">
+    <h2 class="big">Into the weeds</h2>
+    <p><b>Gamma does not have to be one half.</b> The share of the vocabulary that goes green is a
+      second dial. A smaller green list makes each hit more surprising, so the z-score climbs
+      faster per word, but it also constrains the model harder at every position. One half is the
+      common default because it maximises the information per token without narrowing the choice
+      more than necessary.</p>
+    <p><b>The look-back can be longer than one word.</b> Hashing the previous four tokens instead
+      of one makes the favoured list harder to guess and the scheme
+      harder to break by changing a single word. It also makes it more fragile to editing, because changing one word now
+      disturbs the four positions that follow it rather than one. Real schemes trade these against
+      each other explicitly.</p>
+    <p><b>Detection has a false-positive rate you can actually set.</b> Because the null is a known
+      distribution rather than a trained model's hunch, you can pick a z threshold that corresponds
+      to a stated error rate, say one in a million, and report it. This is the concrete advantage
+      over style classifiers, which cannot tell you what their false-positive rate is on a
+      population they were not trained on. It does not make the answer certain, it makes the
+      uncertainty quotable.</p>
+    <p><b>A watermark is not encryption and hides no message.</b> It carries roughly one bit: this
+      text was, or was not, produced under this key. Multi-bit variants exist that can encode a
+      user identifier, and they need considerably more text to read out.</p>
+    <p><b>Numbers on this page.</b> The toy arithmetic in Figures 4 to 8 is exact and computed in
+      the browser. The hit rates, z-scores and case studies are computed from the stated formula
+      with illustrative inputs; they show the shape of the trade rather than reporting any
+      particular deployment. Published figures cited: SynthID-Text in Nature, October 2024, with
+      the comparison across close to 20 million Gemini responses; detection falling below 0.3 after
+      one pass of language-model paraphrasing; EU AI Act transparency duties applicable from
+      2 August 2026. Snapshot: September 2026.</p>
+  </div>
+</div>
+
+<footer class="col" style="padding:70px 0 90px;border-top:1px solid var(--v13)">
+  <p class="cap" style="text-align:left;max-width:none">Written September 2026. The green list
+    scheme follows Kirchenbauer and colleagues, A Watermark for Large Language Models, 2023.
+    Tournament sampling and the deployment figures follow the SynthID-Text paper in Nature,
+    October 2024. Figures for what survives editing follow published paraphrase-attack evaluations. All toy
+    arithmetic is computed in your browser from the four-token vocabulary shown.</p>
+</footer>
+
+<script>!function(){"use strict";var t="var(--v0)",e="var(--v21)",r="var(--v13)",n="var(--v3)",a="var(--v5)",o="var(--v4)",i="var(--v9)",s="var(--v10)",d="var(--v14)",l="var(--v15)",c="var(--v11)",h="var(--v12)",u="var(--v20)";function f(e,n,a,s,u,f,m){var y={neutral:"none",favoured:l,unfavoured:h,written:t}[u]||"none",g={neutral:r,favoured:d,unfavoured:c,written:t}[u]||r,p={neutral:o,favoured:d,unfavoured:c,written:i}[u]||o,k='<rect x="'+v(e)+'" y="'+v(n)+'" width="'+v(a)+'" height="'+v(s)+'" rx="5" fill="'+y+'" stroke="'+g+'" stroke-width="1.5"'+("neutral"===u?' stroke-dasharray="5 4"':"")+"/>";return f&&(k+=w(e+a/2,n+(m?s/2-1:s/2+4.5),f,p,13,"middle",600)),m&&(k+=w(e+a/2,n+s/2+15,m,"written"===u?i:o,11,"middle")),k}function w(t,e,r,n,o,i,s){return'<text x="'+v(t)+'" y="'+v(e)+'" fill="'+(n||a)+'" font-family="var(--v7)" font-size="'+(o||12)+'" text-anchor="'+(i||"start")+'"'+(s?' font-weight="'+s+'"':"")+' pointer-events="none">'+m(r)+"</text>"}function v(t){return Math.round(t)}function m(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function y(t,e,r,n,a){return'<rect x="'+v(t)+'" y="'+v(e)+'" width="'+v(r)+'" height="'+v(n)+'" fill="rgba(0,0,0,0)" '+(a||"")+"/>"}function g(t,e,r,n){var a=document.getElementById(t);a&&(a.setAttribute("viewBox",e),n&&a.setAttribute("aria-label",n),a.innerHTML=r)}function p(t,e,r){return'<button class="btn" type="button" data-v="'+e+'" aria-pressed="'+!!r+'">'+m(t)+"</button>"}function k(t,e){var r=document.getElementById(t);r&&r.addEventListener("click",function(t){var r=t.target.closest("button[data-v]");r&&e(r.getAttribute("data-v"))})}function x(t,e){t.addEventListener("click",e),t.addEventListener("keydown",function(t){"Enter"!==t.key&&" "!==t.key||(t.preventDefault(),e())})}var b=[{w:"on",i:1,p:40},{w:"down",i:2,p:30},{w:"quietly",i:3,p:20},{w:"up",i:4,p:10}];function E(t){for(var e=0,r=t.toLowerCase(),n=0;n<r.length;n++){var a=r.charCodeAt(n)-96;a>0&&a<27&&(e+=a)}return e}function A(t,e){return E(t)*(e||7)%13}function M(t,e){var r=A(t,e),n={};return b.forEach(function(t){n[t.w]=(t.i+r)%2==0}),n}function I(t,e){var r=b.map(function(r){return{w:r.w,v:r.p+(t[r.w]?e:0)}}),n=r.reduce(function(t,e){return t+e.v},0);return r.map(function(t){return{w:t.w,pct:t.v/n*100}})}function S(t,e,r){return(t-(r=r||.5)*e)/Math.sqrt(r*(1-r)*e)}var L=document.querySelectorAll(".reveal");if("IntersectionObserver"in window&&!matchMedia("(prefers-reduced-motion:reduce)").matches){var T=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(t.target.classList.add("in"),T.unobserve(t.target))})},{threshold:.08,rootMargin:"0px 0px -5% 0px"});L.forEach(function(t){T.observe(t)})}else L.forEach(function(t){t.classList.add("in")});var B=document.querySelectorAll("section[data-ch]"),F=document.getElementById("rail");if(F){F.innerHTML=Array.prototype.map.call(B,function(){return"<i></i>"}).join("");var O=F.querySelectorAll("i");window.addEventListener("scroll",function(){var t=0,e=innerHeight/2;B.forEach(function(r,n){r.getBoundingClientRect().top<e&&(t=n)}),O.forEach(function(e,r){e.classList.toggle("on",r===t)})},{passive:!0})}!function(){var t=["the","cat","sat","down","on","the","mat"],e=[null,!0,!1,!1,!0,!0,!0],r=!1,n=null;function a(){var i="",s=40;t.forEach(function(t,n){var a=Math.max(52,13*t.length+22),o=r&&0!==n?e[n]?"favoured":"unfavoured":"neutral";i+=f(s,60,a,44,o,t),i+=y(s,60,a,44,'class="hw" tabindex="0" role="button" aria-label="'+t+'" style="cursor:pointer"'),s+=a+10}),i+=w(40,140,r?"green = this word was on its favoured list":"the sentence, as anyone reads it",r?d:o,12,"start"),g("fHero","0 0 620 190",i+=w(40,162,r?"rust = it was not. the model wrote it anyway.":"hold the light on it",r?c:o,12,"start"),"A written sentence whose words reveal which were secretly favoured"),document.getElementById("fHero").querySelectorAll(".hw").forEach(function(t){x(t,function(){r=!r,clearInterval(n),n=null,a()})})}t.forEach(function(r,n){n>0&&(e[n]=M(t[n-1])[b[n%4].w])}),a(),matchMedia("(prefers-reduced-motion:reduce)").matches||(n=setInterval(function(){r=!r,a()},2600))}(),function(){var e=!1;function n(){var n="";n+='<rect x="60" y="40" width="340" height="220" rx="4" fill="'+(e?"#FFFDF6":s)+'" stroke="'+r+'" stroke-width="1.5"/>';for(var i=0;i<6;i++)n+='<rect x="90" y="'+(76+28*i)+'" width="'+[240,280,210,264,190,230][i]+'" height="6" rx="3" fill="'+r+'"/>';e&&(n+='<circle cx="230" cy="150" r="58" fill="none" stroke="'+t+'" stroke-width="2" stroke-dasharray="4 5"/>',n+=w(230,146,"50",t,30,"middle",700),n+=w(230,170,"watermark",t,11,"middle")),n+=w(60,290,e?"the same sheet, with light behind it":"the sheet, flat on a desk",o,12);n+='<line x1="470" y1="40" x2="470" y2="260" stroke="'+r+'" stroke-width="1.5"/>',n+=w(500,72,"imperceptible",e?d:o,13,"start",600),n+=w(500,94,"you handle it daily and never see it",a,11,"start"),n+=w(500,140,"inseparable",e?d:o,13,"start",600),n+=w(500,162,"not a layer on top, it is the paper itself",a,11,"start"),n+=w(500,208,"verifiable",e?d:o,13,"start",600),g("f1","0 0 900 300",n+=w(500,230,"anyone who knows the trick can read it",a,11,"start"),"A sheet of paper, and the same sheet held against light")}function i(){document.getElementById("c1").innerHTML=p("flat on a desk","off",!e)+p("held to the light","on",e)}k("c1",function(t){e="on"===t,i(),n()}),i(),n()}(),function(){var t=[{t:"A native speaker, writing fast",s:"The library closes at six, so we should head over now.",score:12,human:!0},{t:"A model, told to write plainly",s:"Rainfall in the region peaked in March and fell sharply after.",score:24,human:!1},{t:"A non-native speaker, careful and formal",s:"It is important to note that the results are very significant for our study.",score:88,human:!0},{t:"A model, asked to sound casual",s:"honestly no idea why that happened, it just sort of did",score:19,human:!1}],e=-1;function r(){var l="";l+=w(40,30,"PASSAGE",o,12),l+=w(560,30,"CLASSIFIER SAYS",o,12),t.forEach(function(t,r){var o=48+68*r,i=e>=r;if(l+=f(40,o,490,54,"neutral","",""),l+=w(56,o+20,t.t,a,11,"start"),l+=w(56,o+40,'"'+t.s.slice(0,58)+(t.s.length>58?"...":"")+'"',n,12,"start"),i){var h=t.human&&t.score>50||!t.human&&t.score<50,u=h?c:d;l+='<rect x="560" y="'+(o+16)+'" width="200" height="12" rx="2" fill="'+s+'"/>',l+='<rect x="560" y="'+(o+16)+'" width="'+v(2*t.score)+'" height="12" rx="2" fill="'+u+'"/>',l+=w(772,o+27,t.score+"% machine",u,12,"start",600),l+=w(560,o+46,h?t.human?"WRONG: a person wrote this":"WRONG: a model wrote this":t.human?"right: a person":"right: a model",u,11,"start")}l+=y(40,o,720,54,'class="cs" data-v="'+r+'" tabindex="0" role="button" aria-label="score '+t.t+'" style="cursor:pointer"')}),g("f2","0 0 900 340",l+=w(40,326,e>=3?"the two it got wrong are the careful non-native writer and the casual model":"click a passage, or score them all",e>=3?c:o,12),"A style classifier scoring four passages, two judgements wrong"),document.getElementById("f2").querySelectorAll(".cs").forEach(function(t){x(t,function(){e=Math.max(e,+t.getAttribute("data-v")),i(),r()})})}function i(){document.getElementById("c2").innerHTML=p("score them all","all",e>=3)+p("reset","reset",!1)}k("c2",function(t){e="all"===t?3:-1,i(),r()}),i(),r()}(),function(){var i={on:0,down:0,quietly:0,up:0},d=0,l=null;function c(){var t=100*Math.random(),e=0,r=null;b.forEach(function(n){null===r&&(e+=n.p,t<e&&(r=n.w))}),i[r=r||"up"]++,d++,l=r}function h(){var c="";c+=w(40,28,"THE BAG: 100 MARBLES",o,12);var h=40;b.forEach(function(r){var o=6.4*r.p;c+='<rect x="'+v(h)+'" y="42" width="'+v(o-4)+'" height="40" rx="4" fill="'+e+'" stroke="'+t+'" stroke-width="1.5"/>',c+=w(h+o/2-2,60,r.w,n,12,"middle",600),c+=w(h+o/2-2,76,o>76?r.p+" marbles":String(r.p),a,11,"middle"),h+=o}),c+=w(40,116,"WHAT ACTUALLY CAME OUT"+(d?" ("+d+" draws)":""),o,12),b.forEach(function(e,a){var h=132+44*a,u=i[e.w],m=d?u/d*100:0;c+=f(40,h,150,34,l===e.w?"written":"neutral",e.w),c+='<rect x="210" y="'+(h+10)+'" width="440" height="14" rx="2" fill="'+s+'"/>',c+='<rect x="210" y="'+(h+10)+'" width="'+v(4.4*e.p)+'" height="14" rx="2" fill="'+r+'"/>',c+='<rect x="210" y="'+(h+13)+'" width="'+v(4.4*m)+'" height="8" rx="2" fill="'+t+'"/>',c+=w(666,h+24,d?u+" ("+m.toFixed(0)+"%)":"0",n,12,"start"),c+=w(760,h+24,"odds "+e.p+"%",o,11,"start")}),g("f3","0 0 900 330",c+=w(40,320,d?"grey is the odds, blue is what you actually drew. they only converge slowly.":"draw once and watch which marble comes out",o,11),"A bag of marbles drawn repeatedly against the odds")}k("c3",function(t){if("reset"===t)i={on:0,down:0,quietly:0,up:0},d=0,l=null;else for(var e=+t,r=0;r<e;r++)c();h()}),document.getElementById("c3").innerHTML=p("draw one","1",!1)+p("draw 100","100",!1)+p("empty the tally","reset",!1),h()}(),function(){var e="sat",s=7,d=["sat","down","mat","ran"];function l(){var d=E(e),l=d*s,c=l%13,h="",u=[40,250,460,670],v=60,m=180;[{t:"look back",v:'"'+e+'"',s:"the word just written"},{t:"letters",v:String(d),s:e.split("").map(function(t){return t+"="+(t.charCodeAt(0)-96)}).join(" ")},{t:"times the key",v:String(l),s:d+" x "+s},{t:"remainder mod 13",v:String(c),s:l+" = 13x"+Math.floor(l/13)+" + "+c}].forEach(function(t,e){var s=3===e;h+=f(u[e],v,m,90,s?"written":"neutral","",""),h+=w(u[e]+90,84,t.t,s?i:o,11,"middle"),h+=w(u[e]+90,116,t.v,s?i:n,22,"middle",700),h+=w(u[e]+90,138,t.s,s?i:a,10.5,"middle"),e<3&&(h+='<path d="M'+(u[e]+m)+" 105 L"+(u[e+1]-6)+' 105" stroke="'+r+'" stroke-width="1.5" shape-rendering="crispEdges"/>',h+='<path d="M'+(u[e+1]-12)+' 100 l8 5 l-8 5 z" fill="'+r+'"/>')}),h+='<line x1="40" y1="200" x2="860" y2="200" stroke="'+r+'" stroke-width="1"/>',h+=w(40,228,"the key is the only secret. change it and every number after it changes.",a,12),h+=w(40,254,"the same word with the same key always gives "+c+". that is what makes checking possible.",a,12),h+=w(40,296,"key = "+s,t,13,"start",600),h+=w(140,296,'look-back = "'+e+'"',t,13,"start",600),g("f4","0 0 900 330",h+=w(320,296,"scrambled = "+c,t,13,"start",600),"Preceding word turned into a number, mixed with a key, and hashed")}function c(){document.getElementById("c4").innerHTML=d.map(function(t){return p('"'+t+'"',t,t===e)}).join("")+p("key 7","k7",7===s)+p("key 11","k11",11===s)+p("key 23","k23",23===s)}k("c4",function(t){"k"===t.charAt(0)?s=+t.slice(1):e=t,c(),l()}),c(),l()}(),function(){var e=["sat","down","mat","ran"],n=0;function i(){var i=e[n],s=A(i),l=M(i),h="";h+=w(40,28,"LOOK-BACK",o,12),h+=f(40,42,150,40,"written",i),h+=w(210,58,"letters "+E(i)+"  x7  mod 13",a,12,"start"),h+=w(210,76,"scrambled number = "+s,t,13,"start",600),h+=w(40,124,"FAVOURED",d,12),h+=w(480,124,"NOT FAVOURED",c,12);var u=140,v=140;b.forEach(function(t){var e=l[t.w];h+=f(e?40:480,e?u:v,300,44,e?"favoured":"unfavoured",t.w,"token "+t.i+" + "+s+" = "+(t.i+s)+((t.i+s)%2==0?", even":", odd")),e?u+=54:v+=54}),h+='<line x1="40" y1="300" x2="860" y2="300" stroke="'+r+'" stroke-width="1"/>',g("f5","0 0 900 340",h+=w(40,324,"nothing about the word decides its side. the scrambled number does, and it changes every position.",a,12),"A four word vocabulary split into favoured and unfavoured lists")}function s(){document.getElementById("c5").innerHTML=e.map(function(t,e){return p('after "'+t+'"',String(e),e===n)}).join("")}k("c5",function(t){n=+t,s(),i()}),s(),i()}();var H=0;!function(){var e="sat";function s(){for(var u=A(e),p=M(e),k=I(p,10),S="",L=H,T=["look back","mix in the key","cut the vocabulary","load the odds","draw","the nudge is not a rule"],B=0;B<6;B++){var F=B===L,O=40+140*B;S+='<circle cx="'+(O+18)+'" cy="34" r="'+(F?15:11)+'" fill="'+(F?t:i)+'" stroke="'+(F?t:r)+'" stroke-width="1.5"/>',S+=w(O+18,38,String(B+1),F?i:o,12,"middle",600),S+=w(O+18,64,T[B].split(" ")[0],F?n:o,10.5,"middle"),S+=y(O,16,120,58,'class="s6" data-v="'+B+'" tabindex="0" role="button" aria-label="step '+(B+1)+'" style="cursor:pointer"'),B<5&&(S+='<line x1="'+(O+34)+'" y1="34" x2="'+(O+122)+'" y2="34" stroke="'+r+'" stroke-width="1.5"/>')}if(S+='<line x1="40" y1="92" x2="860" y2="92" stroke="'+r+'" stroke-width="1"/>',0===L)S+=f(40,120,200,54,"written",'"sat"',"the last word written"),S+=w(280,140,"s = 19,  a = 1,  t = 20",n,15,"start"),S+=w(280,168,"19 + 1 + 20 = "+E(e),t,20,"start",700);else if(1===L)S+=w(40,140,E(e)+"  x  7  =  "+7*E(e),n,18,"start"),S+=w(40,180,7*E(e)+"  divided by 13  =  "+Math.floor(7*E(e)/13)+"  remainder  "+u,n,18,"start"),S+=w(40,224,"scrambled number = "+u,t,22,"start",700);else if(2===L)b.forEach(function(t,e){S+=f(40,120+54*e,300,44,p[t.w]?"favoured":"unfavoured",t.w,t.i+" + "+u+" = "+(t.i+u)+((t.i+u)%2==0?"  even, favoured":"  odd, not"))});else if(3===L)S+=w(40,116,"honest odds",o,12),S+=w(470,116,"after adding 10 to the favoured, rescaled",o,12),b.forEach(function(t,e){var n=134+50*e,o=k[e];S+=f(40,n,120,38,p[t.w]?"favoured":"unfavoured",t.w),S+='<rect x="176" y="'+(n+13)+'" width="'+v(2.4*t.p)+'" height="12" rx="2" fill="'+r+'"/>',S+=w(176+2.4*t.p+8,n+24,t.p+"%",a,12,"start"),S+='<rect x="470" y="'+(n+13)+'" width="'+v(2.4*o.pct)+'" height="12" rx="2" fill="'+(p[t.w]?d:c)+'"/>',S+=w(470+2.4*o.pct+8,n+24,o.pct.toFixed(0)+"%",p[t.w]?d:c,12,"start",600)});else if(4===L||5===L){var q=0,C=k.map(function(t){var e=q;return q+=t.pct,{w:t.w,lo:e,hi:q,pct:t.pct}});S+=w(40,120,"the line from 0 to 100, split by the boosted odds",o,12),C.forEach(function(t){var e=40+8.2*t.lo,r=8.2*t.pct,n=p[t.w];S+='<rect x="'+v(e)+'" y="140" width="'+v(r-2)+'" height="46" rx="4" fill="'+(n?l:h)+'" stroke="'+(n?d:c)+'" stroke-width="1.5"/>',S+=w(e+r/2,168,t.w,n?d:c,12,"middle",600),S+=w(e+r/2,204,t.lo.toFixed(0)+" to "+t.hi.toFixed(0),o,10.5,"middle")});var j=40+63*8.2;S+='<line x1="'+v(j)+'" y1="126" x2="'+v(j)+'" y2="196" stroke="'+t+'" stroke-width="2.5"/>',S+=w(j,120,"random draw: 63",t,12,"middle",600);var R=C.filter(function(t){return 63>=t.lo&&63<t.hi})[0];S+=w(40,250,'lands in "'+R.w+'"',n,20,"start",700),S+=w(40,282,"the sentence becomes: the cat sat "+R.w,a,14,"start"),5===L&&(S+=w(40,326,'"'+R.w+'" was NOT on the favoured list, and it still got written.',c,13,"start",600),S+=w(40,352,"the bias is a nudge. one word proves nothing. that is why the text reads normally,",a,12,"start"),S+=w(40,374,"and why detection has to count hundreds of positions instead of inspecting one.",a,12,"start"))}g("f6","0 0 900 430",S,"The five steps of writing one watermarked word"),document.getElementById("f6").querySelectorAll(".s6").forEach(function(t){x(t,function(){H=+t.getAttribute("data-v"),s(),m()})})}var u=document.querySelectorAll("#scrolly1 .stp");function m(){u.forEach(function(t){t.classList.toggle("on",+t.getAttribute("data-step")===H)})}if("IntersectionObserver"in window){var p=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(H=+t.target.getAttribute("data-step"),s(),m())})},{rootMargin:"-45% 0px -45% 0px",threshold:0});u.forEach(function(t){p.observe(t)})}s(),m()}();var q,C,j=[0,10,50,1e3];!function(){var t=1,e={on:!0,down:!1,quietly:!0,up:!1};function n(){var n=j[t],i=I(e,n),l=function(t,e){return I(t,e).reduce(function(e,r){return e+(t[r.w]?r.pct:0)},0)}(e,n),h="";h+=w(40,28,"ODDS AT DELTA = +"+n,o,12),b.forEach(function(t,n){var a=48+52*n,s=i[n],l=e[t.w];h+=f(40,a,130,40,l?"favoured":"unfavoured",t.w),h+='<rect x="190" y="'+(a+13)+'" width="'+v(3.2*t.p)+'" height="14" rx="2" fill="'+r+'"/>',h+='<rect x="190" y="'+(a+16)+'" width="'+v(3.2*s.pct)+'" height="8" rx="2" fill="'+(l?d:c)+'"/>',h+=w(190+3.2*Math.max(t.p,s.pct)+10,a+26,s.pct.toFixed(0)+"%",l?d:c,13,"start",600),h+=w(190+3.2*Math.max(t.p,s.pct)+64,a+26,"was "+t.p+"%",o,11,"start")}),h+='<line x1="40" y1="266" x2="860" y2="266" stroke="'+r+'" stroke-width="1"/>',h+=w(40,292,"favoured pair holds",o,12),h+=w(40,326,l.toFixed(0)+"%",l>90?c:l>75?u:d,26,"start",700),h+=w(40,372,["no watermark at all. nothing to detect.","invisible to a reader. needs a few hundred words to prove.",'detectable sooner, but "quietly" now wins far more than the language warrants.',"half the vocabulary is effectively banned. the writing falls apart."][t],a,13,"start");var m=[100,97,78,31][t];h+=w(560,292,"text quality",o,12),h+='<rect x="560" y="304" width="300" height="14" rx="2" fill="'+s+'"/>',h+='<rect x="560" y="304" width="'+v(3*m)+'" height="14" rx="2" fill="'+(m>90?d:m>60?u:c)+'"/>',g("f7","0 0 900 400",h+=w(560,338,"illustrative, not measured",o,10.5,"start"),"Token odds rescaling as watermark strength increases")}function i(){document.getElementById("k7").value=t,document.getElementById("k7v").textContent="+"+j[t],document.getElementById("c7").innerHTML=j.map(function(e,r){return p("+"+e,String(r),r===t)}).join(""),n()}document.getElementById("k7").addEventListener("input",function(){t=+this.value,i()}),k("c7",function(e){t=+e,i()}),i()}(),function(){var e=[{k:"wm",label:"written by the model, untouched",rate:.67,words:["the","cat","sat","down","on","the","warm","mat","and","slept","until","the","light","moved","away","again"]},{k:"hu",label:"written by a person",rate:.5,words:["my","sister","left","her","coat","on","the","chair","again","which","is","where","it","always","ends","up"]},{k:"ot",label:"a model, but a different key",rate:.5,words:["rain","arrived","before","noon","and","the","market","packed","up","two","hours","early","that","day","as","usual"]}],n="wm",i=0;function s(){var s=e.filter(function(t){return t.k===n})[0],l=function(t){var e=[];return t.words.forEach(function(r,n){if(0!==n){var a=A(t.words[n-1]),o=(E(r)+a)%100;e.push(o<100*t.rate)}else e.push(null)}),e}(s),h="";h+=w(40,28,s.label.toUpperCase(),o,12);var u=40,v=48;s.words.forEach(function(t,e){var r=Math.max(56,11*t.length+20);u+r>860&&(u=40,v+=52);var n=0===e?"neutral":e<=i?l[e]?"favoured":"unfavoured":"neutral";h+=f(u,v,r,40,n,t),u+=r+8});for(var m=Math.min(i,s.words.length-1),y=0,p=1;p<=m;p++)l[p]&&y++;var k=v+70;if(h+='<line x1="40" y1="'+k+'" x2="860" y2="'+k+'" stroke="'+r+'" stroke-width="1"/>',h+=w(40,k+28,"scored "+m+" positions",o,12),h+=w(40,k+58,y+" favoured",d,20,"start",700),h+=w(210,k+58,m-y+" not",c,20,"start",700),m>=4){var x=y/m*100;h+=w(360,k+58,"hit rate "+x.toFixed(0)+"%",x>58?t:a,20,"start",700),h+=w(360,k+84,m<40?"far too few positions to conclude anything":"",o,11,"start")}g("f8","0 0 900 360",h,"A passage scanned word by word against its favoured lists")}function l(){document.getElementById("c8").innerHTML=e.map(function(t){return p(t.label.split(",")[0],t.k,t.k===n)}).join("")+p("next word","step",!1)+p("scan it all","all",!1)}k("c8",function(t){var r=e.filter(function(t){return t.k===n})[0];"step"===t?i=Math.min(r.words.length-1,i+1):"all"===t?i=r.words.length-1:(n=t,i=0),l(),s()}),l(),s()}(),function(){var i=[40,100,300,900],l=2;function h(){var h=i[l],f="",m=.5*h,y=Math.sqrt(.25*h),p=Math.round(.67*h),k=S(p,h),x=760,b=70,E=h;f+=w(40,28,"OVER "+h+" POSITIONS",o,12);var A=m-1.96*y,M=m+1.96*y;f+='<rect x="'+v(b)+'" y="70" width="'+v(x)+'" height="70" rx="3" fill="'+s+'"/>',f+='<rect x="'+v(b+A/E*x)+'" y="70" width="'+v((M-A)/E*x)+'" height="70" fill="'+e+'"/>',f+='<line x1="'+v(b+m/E*x)+'" y1="62" x2="'+v(b+m/E*x)+'" y2="148" stroke="'+t+'" stroke-width="2"/>',f+=w(b+m/E*x,56,"chance expects "+m,t,11,"middle"),f+=w(b,166,"0 hits",o,11,"start"),f+=w(830,166,h+" hits",o,11,"end"),f+=w(b+(A+M)/2/E*x,186,"where chance alone lands, 95% of the time",a,11,"middle");var I=b+p/E*x;f+='<line x1="'+v(I)+'" y1="62" x2="'+v(I)+'" y2="148" stroke="'+d+'" stroke-width="3"/>',f+=w(I,216,"watermarked text lands here: "+p,d,12,"middle",600),f+='<line x1="40" y1="242" x2="860" y2="242" stroke="'+r+'" stroke-width="1"/>',f+=w(40,274,"z = ("+p+" minus "+m+") / "+y.toFixed(1)+" = "+k.toFixed(1),n,17,"start",700);var L=k>4?["overwhelming. chance does not produce this.",d]:k>2.5?["suggestive, and not enough to accuse anyone.",u]:["worthless. far too short to tell.",c];f+=w(40,308,L[0],L[1],14,"start",600),g("f9","0 0 900 360",f+=w(40,342,"the expectation grows with the number of words, the wobble only with its square root.",a,12,"start"),"Hits against the range chance produces, as passage length grows")}function f(){document.getElementById("c9").innerHTML=i.map(function(t,e){return p(t+" words",String(e),e===l)}).join("")}k("c9",function(t){l=+t,f(),h()}),f(),h()}(),function(){var t=[{k:"edit",who:"Maya",n:900,rate:.578,why:"generated, then 15% of the words rewritten by hand",out:"the untouched 85% still hit their lists. the mark holds."},{k:"para",who:"Daniel",n:900,rate:.505,why:"the same essay pushed through a rewriting tool",out:"almost every look-back changed, so almost every list changed. the mark is gone."},{k:"short",who:"Priya",n:40,rate:.675,why:"generated and untouched, but only 40 words",out:"the bias is there and the sample is too small to prove it. no delta fixes this."},{k:"code",who:"Sam",n:300,rate:.515,why:"asked for a function that reverses a string",out:"almost no real choice at each position, so there was nothing to nudge."}],e="edit";function i(){var i=t.filter(function(t){return t.k===e})[0],l=Math.round(i.n*i.rate),h=S(l,i.n),u="";u+=w(40,30,i.who.toUpperCase()+"'S SUBMISSION",o,12),u+=w(40,58,i.why,n,15,"start"),u+=w(40,100,i.n+" words",a,13,"start"),u+=w(160,100,l+" hits, expected "+i.n/2,a,13,"start"),u+=w(400,100,"hit rate "+(100*i.rate).toFixed(1)+"%",a,13,"start");u+='<rect x="70" y="140" width="700" height="34" rx="3" fill="'+s+'"/>',u+='<rect x="70" y="140" width="'+v(Math.max(0,Math.min(h,12))/12*700)+'" height="34" rx="3" fill="'+(h>4?d:c)+'"/>';var f=70+4/12*700;u+='<line x1="'+v(f)+'" y1="130" x2="'+v(f)+'" y2="184" stroke="'+n+'" stroke-width="2" stroke-dasharray="4 3"/>',u+=w(f,124,"the line below which nothing can be claimed",n,11,"middle"),u+=w(70,206,"z = "+h.toFixed(1),h>4?d:c,22,"start",700),u+=w(200,206,h>4?"the watermark is provably present":"no usable evidence either way",h>4?d:c,15,"start",600),u+='<line x1="40" y1="244" x2="860" y2="244" stroke="'+r+'" stroke-width="1"/>',u+=w(40,274,i.out,a,13,"start"),g("f10","0 0 900 340",u+=w(40,310,"z is computed here from the hit rate and length shown. the rates are illustrative.",o,11,"start"),"Four cases compared by the strength of evidence each produces")}function l(){document.getElementById("c10").innerHTML=t.map(function(t){return p(t.who,t.k,t.k===e)}).join("")}k("c10",function(t){e=t,l(),i()}),l(),i()}(),function(){var t=[{k:"meta",t:"metadata on the file",d:"a signed record attached alongside the text"},{k:"mark",t:"watermark in the words",d:"the green list bias, everything above"},{k:"log",t:"server-side log",d:"the provider keeps what it generated"}],e=[{k:"copy",t:"copy and paste into a document",kill:{meta:!0,mark:!1,log:!1}},{k:"para",t:"run it through a paraphraser",kill:{meta:!0,mark:!0,log:!1}},{k:"retype",t:"retype it by hand",kill:{meta:!0,mark:!0,log:!1}},{k:"ask",t:"ask the provider to check",kill:{meta:!1,mark:!1,log:!1}}],n="copy";function i(){var i=e.filter(function(t){return t.k===n})[0],s="";s+=w(40,30,"ATTACK: "+i.t.toUpperCase(),o,12),t.forEach(function(t,e){var r=58+76*e,n=i.kill[t.k];s+=f(40,r,360,60,n?"unfavoured":"favoured",t.t,t.d),s+=w(430,r+28,n?"destroyed":"survives",n?c:d,16,"start",700),s+=w(430,r+50,n?"this attack removes it entirely":"this attack does not touch it",a,11,"start")});var l=t.filter(function(t){return!i.kill[t.k]}).length;s+='<line x1="40" y1="292" x2="860" y2="292" stroke="'+r+'" stroke-width="1"/>',g("f11","0 0 900 350",s+=w(40,318,l+" of 3 layers survive. no single layer survives everything, which is why the guidance asks for all three.",l?a:c,12,"start"),"Three provenance layers and which attacks defeat each")}function s(){document.getElementById("c11").innerHTML=e.map(function(t){return p(t.t.split(" ").slice(0,3).join(" "),t.k,t.k===n)}).join("")}k("c11",function(t){n=t,s(),i()}),s(),i()}(),function(){var n=300,i=1,l="none",h={none:{m:1,t:"untouched"},edit:{m:.72,t:"15% edited by hand"},para:{m:.03,t:"paraphrased"}};function f(){var f=j[i],m=(function(t){return{0:.5,10:.67,50:.8,1e3:.98}[t]}(f)-.5)*h[l].m,y=.5+m,p=Math.round(n*y),k=S(p,n),x="";x+=w(40,30,"A "+n+" WORD PASSAGE, DELTA +"+f+", "+h[l].t.toUpperCase(),o,12);var b=760;x+='<rect x="70" y="70" width="760" height="40" rx="3" fill="'+s+'"/>';var E=.5*n,A=Math.sqrt(.25*n),M=E-1.96*A,I=E+1.96*A;x+='<rect x="'+v(70+M/n*b)+'" y="70" width="'+v((I-M)/n*b)+'" height="40" fill="'+e+'"/>',x+=w(70+(M+I)/2/n*b,95,"chance",t,11,"middle");var L=70+p/n*b;x+='<line x1="'+v(L)+'" y1="60" x2="'+v(L)+'" y2="120" stroke="'+(k>4?d:c)+'" stroke-width="3"/>',x+=w(L,140,p+" hits",k>4?d:c,12,"middle",600),x+='<line x1="40" y1="176" x2="860" y2="176" stroke="'+r+'" stroke-width="1"/>',x+=w(40,208,"z = "+k.toFixed(1),k>4?d:c,26,"start",700),x+=w(180,208,k>4?"provably watermarked. a court could be told this.":k>2.5?"suggestive only. not enough to accuse a person.":"indistinguishable from anything else. no claim available.",k>4?d:k>2.5?u:c,15,"start",600),x+=w(40,250,"hit rate "+(100*y).toFixed(1)+"%, against 50% expected by chance",a,13,"start"),x+=w(40,278,0===f?"delta is zero, so there is no watermark to find at any length.":"para"===l?"paraphrasing replaced the look-backs, so the lists no longer match the words.":n<80?"the bias is there. the passage is too short to prove it.":"longer passages move the count further from the band without changing the bias.",a,12,"start"),g("f12","0 0 900 340",x+=w(40,318,"every number computed here from the hit rate and length. rates illustrative.",o,11,"start"),"Watermark strength, passage length and attack combined into a verdict")}function m(){document.getElementById("c12").innerHTML=j.map(function(t,e){return p("+"+t,"d"+e,e===i)}).join("")+Object.keys(h).map(function(t){return p(h[t].t,"a"+t,l===t)}).join("")+p("Maya's essay","p1",!1)+p("Priya's answer","p2",!1)}k("c12",function(t){"d"===t.charAt(0)?i=+t.slice(1):"a"===t.charAt(0)?l=t.slice(1):"p1"===t?(n=900,i=1,l="edit"):"p2"===t&&(n=40,i=1,l="none"),document.getElementById("k12").value=n,document.getElementById("k12v").textContent=n,m(),f()}),document.getElementById("k12").addEventListener("input",function(){n=+this.value,document.getElementById("k12v").textContent=n,f()}),m(),f()}(),q=document.getElementById("weeds"),C=document.getElementById("weedhint"),document.addEventListener("keydown",function(t){if(("s"===t.key||"S"===t.key)&&!/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)){var e=!q.hasAttribute("hidden");e?q.setAttribute("hidden",""):(q.removeAttribute("hidden"),q.scrollIntoView({behavior:"smooth",block:"start"})),C&&(C.style.opacity=e?"1":".35")}})}();
+</script>
+
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+</body>
+</html>

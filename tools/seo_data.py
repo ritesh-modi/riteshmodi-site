@@ -51,6 +51,11 @@ PAGES = {
 
 # Explorables -----------------------------------------------------------------
 EXPLORABLES = {
+    "llm-watermarking": dict(
+        desc="A watermark hides in which words the model picks. Shade the dictionary with a secret "
+             "key, press the thumb on the scale, then score 300 words for proof.",
+        short="Shade the dictionary, press the thumb on the scale, then score 300 words.",
+        about="LLM text watermarking and AI-generated text detection"),
     "agentic-rag": {
         "desc": "Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.",
         "short": "Watch a question loop through retrieval, get judged thin, and go round again.",
@@ -436,6 +441,9 @@ PERSON = {
 # ("language model" and "LLM"); where a word means something unrelated, it does not
 # (rate limiting's "token bucket" has nothing to do with an LLM token).
 KEYWORDS = {
+    "llm-watermarking": ["what is LLM watermarking", "how does AI text detection work",
+                         "can you detect AI written text", "SynthID text", "green list red list watermark",
+                         "AI detector accuracy", "how to watermark AI text"],
     "agentic-rag": ["what is agentic RAG", "agentic RAG explained", "agentic RAG vs RAG", "how does RAG work",
                     "when does RAG search again", "RAG retry loop", "AI agent retrieval loop"],
     "03-words-to-vectors": ["what are word embeddings", "how does cosine similarity work",
