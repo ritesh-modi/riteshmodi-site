@@ -200,6 +200,13 @@ def apply_page(path, slug, url, meta, info, drift):
             "name": AUTHOR,
             "alternateName": "Loopingly",
             "url": SITE + "/",
+            # machine-readable form of the attribution notice in the home page footer
+            "copyrightHolder": {"@type": "Person", "name": AUTHOR, "url": SITE + "/about"},
+            "copyrightYear": 2026,
+            "copyrightNotice": ("Original work of %s. Any reuse, commercial or "
+                                "non-commercial, including as the basis or inspiration for "
+                                "other work, must credit %s and link to loopingly.com."
+                                % (AUTHOR, AUTHOR)),
             "publisher": {"@type": "Person", "name": AUTHOR, "url": SITE + "/about"},
             "potentialAction": {
                 "@type": "SearchAction",

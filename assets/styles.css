@@ -275,6 +275,9 @@ footer{padding:56px 0 90px;border-top:1px solid var(--rule);margin-top:40px}
 .foot .fl a{font-weight:700;color:var(--ink-soft)}
 .foot .fl a:hover{color:var(--primary)}
 .foot .fn{color:var(--ink-faint);font-weight:600;font-size:14px;width:100%;text-align:center;margin-top:24px}
+.foot .attrib{color:var(--ink-faint);font-size:13px;line-height:1.6;width:100%;max-width:640px;margin:18px auto 0;text-align:center;padding-top:18px;border-top:1px solid var(--rule)}
+.foot .attrib strong{color:var(--ink-soft);font-weight:700}
+.foot .attrib a{color:var(--ink-soft);font-weight:700}
 
 :focus-visible{outline:3px solid var(--grape);outline-offset:3px;border-radius:6px}
 ::selection{background:var(--primary);color:#fff}
