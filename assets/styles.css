@@ -154,11 +154,32 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 .sortwrap select:focus{outline:none;border-color:var(--primary)}
 
 /* section headers span the whole grid so cards keep their columns */
-.sec{grid-column:1/-1;margin:26px 0 -6px}
-.sec:first-child{margin-top:0}
-.sec h2{font-size:27px;margin:0 0 4px}
-.sec p{color:var(--ink-faint);font-weight:600;font-size:15px;margin:0}
-.sec.hide{display:none}
+/* Month rule. Replaces the curated section headings: the listing is a timeline now,
+   so the only grouping the page asserts is the one the dates already carry. The rule
+   runs to the right edge so a month with two cards still reads as a band. */
+.mhead{grid-column:1/-1;display:flex;align-items:center;gap:18px;margin:30px 0 -8px}
+.mhead:first-child{margin-top:0}
+.mhead h2{font-size:27px;margin:0;white-space:nowrap}
+.mhead::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* The newest piece leads at full width: the same card turned on its side, so it reads
+   as a headline rather than a tile that happens to be bigger. The thumb is capped in
+   px rather than given a fraction, because at 1120px a third of the row is a 370px
+   square of flat colour and the description is what earns the click. */
+.card.feat{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr)}
+.card.feat .thumb{height:100%;min-height:240px;border-bottom:0;border-right:1px solid var(--rule)}
+.card.feat .body{padding:34px 36px;align-self:center}
+.card.feat .body::before{content:"Latest";display:block;width:fit-content;font-family:"Baloo 2";
+  font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#fff;
+  background:var(--ac);padding:5px 13px;border-radius:999px;margin-bottom:14px}
+.card.feat h3{font-size:clamp(26px,3vw,34px);margin:8px 0 10px}
+.card.feat p{font-size:17px;max-width:60ch;margin-bottom:18px}
+.card.feat .go{bottom:30px;right:32px}
+@media(max-width:700px){
+  .card.feat{grid-template-columns:1fr}
+  .card.feat .thumb{min-height:172px;height:172px;border-right:0;border-bottom:1px solid var(--rule)}
+  .card.feat .body{padding:20px 22px 26px}
+  .card.feat .go{bottom:20px;right:22px}}
 
 /* published date, and the ordinal on the five-part course */
 .card .date{font-family:"Baloo 2";font-weight:700;font-size:12px;padding:4px 0;margin-left:auto;color:var(--ink-faint)}
@@ -167,7 +188,7 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
   box-shadow:0 4px 12px rgba(120,90,60,.25)}
 .empty{grid-column:1/-1;padding:48px 0;text-align:center;color:var(--ink-faint);font-weight:600}
 .empty.hide{display:none}
-@media(max-width:640px){.tools{gap:12px}.sec h2{font-size:23px}}
+@media(max-width:640px){.tools{gap:12px}.mhead h2{font-size:23px}.mhead{gap:14px;margin:24px 0 -8px}}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
 .card{position:relative;background:var(--card);border:1px solid var(--rule);border-radius:26px;overflow:hidden;
   box-shadow:var(--shadow-sm);cursor:pointer;transition:box-shadow .3s,opacity .3s;transform-style:preserve-3d;will-change:transform}

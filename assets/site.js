@@ -48,18 +48,16 @@
   if(filters){
     var grid   = document.getElementById('grid'),
         cards  = [].slice.call(grid.querySelectorAll('.card')),
-        secs   = [].slice.call(grid.querySelectorAll('.sec')),
         count  = document.getElementById('count'),
         qbox   = document.getElementById('q'),
         sortEl = document.getElementById('sort'),
-        order  = cards.slice();            // the curated order, as authored
+        order  = cards.slice();            // document order, used as the tiebreak within a day
     var topic = 'all', level = false;
 
     /* The placeholder quotes the collection size, so derive it rather than hard-coding a number
        that goes stale the next time a card is added. */
     if(qbox){
-      var live = cards.filter(function(c){ return !c.classList.contains('soon'); }).length;
-      qbox.placeholder = 'Search ' + live + ' explorables…';
+      qbox.placeholder = 'Search ' + cards.length + ' explorables…';
     }
 
     /* The inline data-q on each card covers titles, headings and bold terms, so the very first
@@ -75,11 +73,6 @@
         .then(function(j){ if(j){ FULL = j; apply(); } })
         .catch(function(){ /* stay on the inline index */ });
     }
-
-    /* remember the page exactly as authored, headings interleaved with cards */
-    var AUTHORED = [].slice.call(grid.children).filter(function(el){
-      return el.classList.contains('card') || el.classList.contains('sec');
-    });
 
     var empty = document.createElement('div');
     empty.className = 'empty hide';
@@ -102,31 +95,72 @@
       return true;
     }
 
+    var MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+    /* "2026-09-08" -> "September 2026". Returns '' for a card with no usable date so
+       the caller can leave it ungrouped rather than invent a heading for it. */
+    function monthOf(d){
+      var p = (d || '').split('-');
+      if(p.length < 2) return '';
+      var m = MONTHS[(+p[1]) - 1];
+      return m ? m + ' ' + p[0] : '';
+    }
+
+    function monthHeading(label){
+      var h = document.createElement('div'), t = document.createElement('h2');
+      h.className = 'mhead';
+      t.textContent = label;
+      h.appendChild(t);
+      return h;
+    }
+
     function apply(){
-      var sort = sortEl ? sortEl.value : 'curated',
+      var sort = sortEl ? sortEl.value : 'new',
           searching = !!(qbox && qbox.value.trim()),
-          flat = searching || topic !== 'all' || level || sort !== 'curated',
           n = 0;
+
+      /* A–Z has no timeline to draw, and a month heading over a filtered or searched
+         subset claims a completeness the page no longer has. Both fall back to a plain
+         run of cards. */
+      var flat = searching || topic !== 'all' || level || sort === 'az';
 
       cards.forEach(function(c){
         var ok = matches(c);
         c.classList.toggle('hide', !ok);
-        if(ok && !c.classList.contains('soon')) n++;
+        c.classList.remove('feat');
+        if(ok) n++;
       });
 
-      /* Sections only make sense in the curated view. Any filter, search or re-sort
-         flattens the page, because a heading over an arbitrary subset is a lie. */
-      secs.forEach(function(sec){ sec.classList.toggle('hide', flat); });
+      /* Headings are rebuilt every pass rather than hidden, because which months exist
+         depends on what survived the filter. */
+      [].slice.call(grid.querySelectorAll('.mhead')).forEach(function(h){ grid.removeChild(h); });
 
-      if(sort === 'curated' && !flat){
-        AUTHORED.forEach(function(node){ grid.appendChild(node); });   // headings back in place
-      } else {
-        var seq = order.slice();
-        if(sort === 'new')      seq.sort(function(a,b){ return (b.getAttribute('data-date')||'').localeCompare(a.getAttribute('data-date')||''); });
-        else if(sort === 'old') seq.sort(function(a,b){ return (a.getAttribute('data-date')||'zzz').localeCompare(b.getAttribute('data-date')||'zzz'); });
-        else if(sort === 'az')  seq.sort(function(a,b){ return (a.getAttribute('data-title')||'').localeCompare(b.getAttribute('data-title')||''); });
-        seq.forEach(function(c){ grid.appendChild(c); });
+      var seq = order.slice();
+      if(sort === 'old')     seq.sort(function(a,b){ return (a.getAttribute('data-date')||'zzz').localeCompare(b.getAttribute('data-date')||'zzz'); });
+      else if(sort === 'az') seq.sort(function(a,b){ return (a.getAttribute('data-title')||'').localeCompare(b.getAttribute('data-title')||''); });
+      else                   seq.sort(function(a,b){ return (b.getAttribute('data-date')||'').localeCompare(a.getAttribute('data-date')||''); });
+
+      /* The newest piece leads at full width, but only in the unfiltered newest-first
+         view. Featuring the top of a filtered subset would promote whatever the filter
+         happened to leave first, which is a different and much weaker claim. */
+      var lead = null;
+      if(!flat && sort === 'new'){
+        for(var i = 0; i < seq.length; i++){
+          if(!seq[i].classList.contains('hide')){ lead = seq[i]; break; }
+        }
       }
+      if(lead) lead.classList.add('feat');
+
+      var month = '';
+      seq.forEach(function(c){
+        if(c === lead || c.classList.contains('hide')){ grid.appendChild(c); return; }
+        if(!flat){
+          var m = monthOf(c.getAttribute('data-date'));
+          if(m && m !== month){ month = m; grid.appendChild(monthHeading(m)); }
+        }
+        grid.appendChild(c);
+      });
       grid.appendChild(empty);
 
       empty.classList.toggle('hide', n > 0);
