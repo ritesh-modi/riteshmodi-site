@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LLM text watermarking: how a model signs what it writes</title>
+<title>How watermarks are used with LLMs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700;900&family=Figtree:wght@400;500;700&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -15,19 +15,19 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Ritesh Modi">
   <meta property="og:locale" content="en_GB">
-  <meta property="og:title" content="LLM text watermarking: how a model signs what it writes">
+  <meta property="og:title" content="How watermarks are used with LLMs">
   <meta property="og:description" content="Shade the dictionary, press the thumb on the scale, then score 300 words.">
   <meta property="og:url" content="https://www.loopingly.com/explorables/llm-watermarking">
   <meta property="og:image" content="https://www.loopingly.com/og/llm-watermarking.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="LLM text watermarking: how a model signs what it writes">
+  <meta property="og:image:alt" content="How watermarks are used with LLMs">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LLM text watermarking: how a model signs what it writes">
+  <meta name="twitter:title" content="How watermarks are used with LLMs">
   <meta name="twitter:description" content="Shade the dictionary, press the thumb on the scale, then score 300 words.">
   <meta name="twitter:image" content="https://www.loopingly.com/og/llm-watermarking.png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"LLM text watermarking: how a model signs what it writes","description":"A watermark hides in which words the model picks. Shade the dictionary with a secret key, press the thumb on the scale, then score 300 words for proof.","url":"https://www.loopingly.com/explorables/llm-watermarking","image":"https://www.loopingly.com/og/llm-watermarking.png","datePublished":"2026-09-08","dateModified":"2026-09-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"LLM text watermarking and AI-generated text detection"},"keywords":"what is LLM watermarking, how does AI text detection work, can you detect AI written text, SynthID text, green list red list watermark, AI detector accuracy, how to watermark AI text"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How a model signs what it writes"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"How watermarks are used with LLMs","description":"A watermark hides in which words the model picks. Shade the dictionary with a secret key, press the thumb on the scale, then score 300 words for proof.","url":"https://www.loopingly.com/explorables/llm-watermarking","image":"https://www.loopingly.com/og/llm-watermarking.png","datePublished":"2026-09-08","dateModified":"2026-09-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"LLM text watermarking and AI-generated text detection"},"keywords":"what is LLM watermarking, how does AI text detection work, can you detect AI written text, SynthID text, green list red list watermark, AI detector accuracy, how to watermark AI text"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How watermarks are used with LLMs"}]}</script>
   <!-- seo:end -->
 </head>
 <body>
@@ -37,7 +37,7 @@
 <header class="hero col"
         style="padding-top:clamp(70px,13vh,140px);padding-bottom:clamp(36px,6vh,80px)">
   <p class="kick">Text provenance</p>
-  <h1>How a model signs what it writes</h1>
+  <h1>How watermarks are used with LLMs</h1>
   <p class="lede" style="margin-top:26px;max-width:54ch">Nothing in a sentence records who wrote
     it. A watermark puts that record inside the words themselves, by quietly biasing which words
     get picked. Below is a sentence a model wrote. The shading was always there.</p>
