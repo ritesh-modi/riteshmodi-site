@@ -50,12 +50,19 @@ def cards():
         attrs, body = m.group(1), m.group(2)
         g = lambda k: (re.search(k + r'="([^"]*)"', attrs) or [None, ""])[1]
         href = g("href")
+        # data-slug says which explorable the card is ABOUT, which is not always
+        # where it points: a card may be aimed at the home page or an outside link
+        # while the page it describes still needs its date, title and metadata.
+        # Keying off href alone silently dropped such a card from the ItemList,
+        # from the feed, and from its own SEO block.
+        slug = g("data-slug")
         # Placeholder cards are class="card soon", which the pattern above already
         # excludes. Do NOT substring-test attrs for "soon": data-q holds the whole
         # search haystack, so any page whose prose contains the word disappears.
-        if not href.startswith("/explorables/"):
-            continue
-        slug = href.rsplit("/", 1)[-1].replace(".html", "")
+        if not slug:
+            if not href.startswith("/explorables/"):
+                continue
+            slug = href.rsplit("/", 1)[-1].replace(".html", "")
         slug = RENAMES.get(slug, slug)
         h3 = re.search(r"<h3[^>]*>(.*?)</h3>", body, re.S)
         out[slug] = dict(

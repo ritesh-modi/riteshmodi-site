@@ -37,10 +37,15 @@ def main():
         attrs, body = m.group(1), m.group(2)
         g = lambda k: (re.search(k + r'="([^"]*)"', attrs) or [None, ""])[1]
         href = g("href")
+        # data-slug wins over href: see the note in seo_apply.cards(). A card
+        # pointing at the home page still describes a real explorable, and the
+        # feed is a list of the writing, not of the cards' click targets.
+        slug = g("data-slug")
         # see the note in seo_apply.cards(): "soon" occurs inside data-q
-        if not href.startswith("/explorables/"):
-            continue
-        slug = href.rsplit("/", 1)[-1]
+        if not slug:
+            if not href.startswith("/explorables/"):
+                continue
+            slug = href.rsplit("/", 1)[-1]
         h3 = re.search(r"<h3[^>]*>(.*?)</h3>", body, re.S)
         title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", h3.group(1))).strip() if h3 else slug
         meta = EXPLORABLES.get(slug, {})

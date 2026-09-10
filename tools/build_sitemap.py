@@ -50,9 +50,15 @@ def card_dates():
     for m in re.finditer(r'<a class="card"([^>]*)>', s):
         a = m.group(1)
         g = lambda k: (re.search(k + r'="([^"]*)"', a) or [None, ""])[1]
-        href = g("href")
-        if href:
-            out[href.rsplit("/", 1)[-1].replace(".html", "")] = g("data-date")
+        # data-slug wins over href: see the note in seo_apply.cards(). Without it
+        # a card aimed at "/" keyed this map on "", so the explorable it describes
+        # silently lost its <lastmod>.
+        slug = g("data-slug")
+        if not slug:
+            href = g("href")
+            slug = href.rsplit("/", 1)[-1].replace(".html", "") if href else ""
+        if slug:
+            out[slug] = g("data-date")
     return out
 
 
