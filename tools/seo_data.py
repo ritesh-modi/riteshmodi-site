@@ -49,7 +49,7 @@ PAGES = {
     ),
     "ai-watermarking": dict(
         desc="How a model signs what it writes: the secret key, the split dictionary and the "
-             "arithmetic that turns 300 words into proof. The book, plus a free interactive version.",
+             "arithmetic that turns 300 words into proof. The book, by Ritesh Modi.",
         short="The secret key, the split dictionary, and what turns 300 words into proof.",
         about="AI text watermarking",
     ),
@@ -64,9 +64,9 @@ BOOKS = {
         name="AI Watermarking: How a Model Signs What It Writes",
         buy="https://leanpub.com/aillmwatermarks",
         image="/assets/ai-watermarking-cover.jpg",
-        # The free explorable covers the same mechanism, which is a workExample
-        # rather than a separate book.
-        free="/explorables/llm-watermarking",
+        # No workExample. The page used to offer the free explorable alongside the
+        # book and no longer does, and structured data should not keep advertising
+        # a free alternative that the page itself has stopped offering.
     ),
 }
 

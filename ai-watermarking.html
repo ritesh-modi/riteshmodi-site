@@ -52,7 +52,7 @@
   .lede{font-size:19px;max-width:62ch;color:rgba(51,48,43,.88)}
   .byline{margin-top:18px;font-size:14px;color:var(--ink-soft)}
 
-  /* the offer: cover on the left, the two destinations on the right */
+  /* the offer: cover on the left, where to buy it on the right */
   .offer{margin:34px 0 12px;padding:26px;background:var(--panel);display:flex;gap:30px;align-items:flex-start}
   .offer > svg.frame path{stroke-width:2}
   .cover{flex:none;width:216px}
@@ -64,11 +64,10 @@
   .btn:active{transform:scale(.98)}
   :focus-visible{outline:2px solid var(--biro);outline-offset:4px}
   .where{margin-top:26px;border-top:1px solid var(--rule);padding-top:20px;display:grid;gap:18px}
-  .where h3{font-size:14px;letter-spacing:.02em}
   .where p{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
-  /* Both destinations are written out in full, not hidden behind "click here":
-     one of them costs money and the other does not, and a reader is entitled to
-     see which is which before clicking. */
+  /* The destination is written out in full rather than hidden behind "click here",
+     because it leaves the site and costs money: a reader is entitled to see where
+     they are going before they go. */
   .url{display:inline-block;margin-top:7px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     font-size:12.5px;color:var(--biro);word-break:break-all;text-decoration:underline;text-underline-offset:3px}
   .price{font-size:12.5px;color:var(--ink-faint);margin-top:5px}
@@ -104,7 +103,7 @@
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
   <!-- seo:begin -->
-  <meta name="description" content="How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, plus a free interactive version.">
+  <meta name="description" content="How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, by Ritesh Modi.">
   <link rel="canonical" href="https://www.loopingly.com/ai-watermarking">
   <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
   <meta property="og:type" content="website">
@@ -121,7 +120,7 @@
   <meta name="twitter:title" content="AI Watermarking: how a model signs what it writes">
   <meta name="twitter:description" content="The secret key, the split dictionary, and what turns 300 words into proof.">
   <meta name="twitter:image" content="https://www.loopingly.com/og/ai-watermarking.png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"AI Watermarking: How a Model Signs What It Writes","description":"How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, plus a free interactive version.","url":"https://www.loopingly.com/ai-watermarking","image":"https://www.loopingly.com/assets/ai-watermarking-cover.jpg","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"inLanguage":"en","about":{"@type":"Thing","name":"AI text watermarking"},"offers":{"@type":"Offer","url":"https://leanpub.com/aillmwatermarks","availability":"https://schema.org/InStock"},"workExample":{"@type":"WebPage","name":"Interactive version","url":"https://www.loopingly.com/explorables/llm-watermarking","isAccessibleForFree":true}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"AI Watermarking: How a Model Signs What It Writes","description":"How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, by Ritesh Modi.","url":"https://www.loopingly.com/ai-watermarking","image":"https://www.loopingly.com/assets/ai-watermarking-cover.jpg","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"inLanguage":"en","about":{"@type":"Thing","name":"AI text watermarking"},"offers":{"@type":"Offer","url":"https://leanpub.com/aillmwatermarks","availability":"https://schema.org/InStock"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"AI Watermarking: How a Model Signs What It Writes"}]}</script>
   <!-- seo:end -->
 </head>
@@ -158,20 +157,12 @@
            alt="Cover of AI Watermarking by Ritesh Modi: the title above a tall clock tower, on white">
     </div>
     <div class="body">
-      <h2>Two ways in</h2>
+      <h2>Get the book</h2>
       <div class="where">
         <div>
-          <h3>Buy the book</h3>
           <p>The full treatment, on Leanpub. Every step worked with real numbers.</p>
           <a class="url" href="https://leanpub.com/aillmwatermarks" target="_blank" rel="noopener">leanpub.com/aillmwatermarks</a>
           <p class="price">Leanpub sets its own price and terms; the link opens in a new tab.</p>
-        </div>
-        <div>
-          <h3>Or poke the interactive version, free</h3>
-          <p>The same mechanism as a single page you learn by dragging: shade the dictionary,
-            press the thumb on the scale, then score 300 words and see what counts as proof.</p>
-          <a class="url" href="/explorables/llm-watermarking">www.loopingly.com/explorables/llm-watermarking</a>
-          <p class="price">No sign-up, nothing to install, runs in the browser.</p>
         </div>
       </div>
       <p style="margin-top:22px">
@@ -272,7 +263,7 @@
 </div>
 
 <footer><div class="wrap">
-  <span>© Ritesh Modi. The figures on this page are from the free interactive version.</span>
+  <span>© Ritesh Modi</span>
   <a class="link" href="/explorables">More explorables</a>
 </div></footer>
 

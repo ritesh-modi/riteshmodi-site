@@ -209,9 +209,10 @@ def apply_page(path, slug, url, meta, info, drift):
             # this one, and pointing `url` at Leanpub would hand the entity away.
             "offers": {"@type": "Offer", "url": b["buy"], "availability":
                        "https://schema.org/InStock"},
-            "workExample": {"@type": "WebPage", "name": "Interactive version",
-                            "url": SITE + b["free"], "isAccessibleForFree": True},
         })
+        if b.get("free"):
+            ld[-1]["workExample"] = {"@type": "WebPage", "name": "Interactive version",
+                                     "url": SITE + b["free"], "isAccessibleForFree": True}
         ld.append({
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
