@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agentic RAG: the retrieval pipeline that is allowed to try again</title>
+<title>How agentic RAG works</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Schibsted+Grotesk:wght@400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
@@ -15,19 +15,19 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Ritesh Modi">
   <meta property="og:locale" content="en_GB">
-  <meta property="og:title" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta property="og:title" content="How agentic RAG works">
   <meta property="og:description" content="Watch a question loop through retrieval, get judged thin, and go round again.">
   <meta property="og:url" content="https://www.loopingly.com/explorables/agentic-rag">
   <meta property="og:image" content="https://www.loopingly.com/og/agentic-rag.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta property="og:image:alt" content="How agentic RAG works">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Agentic RAG: the retrieval pipeline that is allowed to try again">
+  <meta name="twitter:title" content="How agentic RAG works">
   <meta name="twitter:description" content="Watch a question loop through retrieval, get judged thin, and go round again.">
   <meta name="twitter:image" content="https://www.loopingly.com/og/agentic-rag.png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Agentic RAG: the retrieval pipeline that is allowed to try again","description":"Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.","url":"https://www.loopingly.com/explorables/agentic-rag","image":"https://www.loopingly.com/og/agentic-rag.png","datePublished":"2026-09-05","dateModified":"2026-09-05","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Agentic RAG and retrieval-augmented generation"},"keywords":"what is agentic RAG, agentic RAG explained, agentic RAG vs RAG, how does RAG work, when does RAG search again, RAG retry loop, AI agent retrieval loop"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"The pipeline that is allowed to try again"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"How agentic RAG works","description":"Ordinary retrieval searches once. Watch a question loop through numbered stations, get judged too thin, and go round again — then set the cap that stops it.","url":"https://www.loopingly.com/explorables/agentic-rag","image":"https://www.loopingly.com/og/agentic-rag.png","datePublished":"2026-09-05","dateModified":"2026-09-05","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Agentic RAG and retrieval-augmented generation"},"keywords":"what is agentic RAG, agentic RAG explained, agentic RAG vs RAG, how does RAG work, when does RAG search again, RAG retry loop, AI agent retrieval loop"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How agentic RAG works"}]}</script>
   <!-- seo:end -->
 </head>
 <body>
@@ -37,7 +37,7 @@
 <header class="hero col"
         style="padding-top:clamp(72px,14vh,150px);padding-bottom:clamp(40px,7vh,90px)">
   <p class="kick">an empty slip</p>
-  <h1>The pipeline that is allowed to try again</h1>
+  <h1>How agentic RAG works</h1>
   <p class="lede" style="margin-top:26px;max-width:52ch">A question arrives as one slip of text.
     Ordinary retrieval searches once and hands whatever it found to the model. Agentic retrieval
     lets the model look at what came back, decide it is not enough, and go round again. Below,

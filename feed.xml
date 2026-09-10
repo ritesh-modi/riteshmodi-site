@@ -16,7 +16,7 @@
     <summary>A watermark hides in which words the model picks. Shade the dictionary with a secret key, press the thumb on the scale, then score 300 words for proof.</summary>
   </entry>
   <entry>
-    <title>The pipeline that is allowed to try again</title>
+    <title>How agentic RAG works</title>
     <link href="https://www.loopingly.com/explorables/agentic-rag"/>
     <id>https://www.loopingly.com/explorables/agentic-rag</id>
     <updated>2026-09-05T00:00:00Z</updated>
@@ -64,7 +64,7 @@
     <summary>Play Shannon's 1948 letter-guessing game, drag n across a bigram table until counting collapses, then watch backpropagation pick up where it failed.</summary>
   </entry>
   <entry>
-    <title>A machine that produces instead of choosing</title>
+    <title>What generative AI is</title>
     <link href="https://www.loopingly.com/explorables/generative-ai"/>
     <id>https://www.loopingly.com/explorables/generative-ai</id>
     <updated>2026-08-22T00:00:00Z</updated>
@@ -96,7 +96,7 @@
     <summary>Twenty-two logged commutes, three models, one loop. Nudge a rule downhill, hold rows back, drag a threshold, then bend a straight line with two hidden layers.</summary>
   </entry>
   <entry>
-    <title>Four numbers disagree about one model</title>
+    <title>Regression metrics, by hand</title>
     <link href="https://www.loopingly.com/explorables/regression-metrics-by-hand"/>
     <id>https://www.loopingly.com/explorables/regression-metrics-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
@@ -104,7 +104,7 @@
     <summary>Add ten gaps one at a time, then drop a cracked-screen laptop into the test set and watch MAE, MSE, RMSE and R squared disagree about the very same model.</summary>
   </entry>
   <entry>
-    <title>Fifteen numbers, learned</title>
+    <title>A neural network, by hand</title>
     <link href="https://www.loopingly.com/explorables/neural-network-by-hand"/>
     <id>https://www.loopingly.com/explorables/neural-network-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
@@ -112,7 +112,7 @@
     <summary>A neural network with fifteen weights, all on the page. Walk a row forward through two hidden layers, then watch backpropagation carry the error back.</summary>
   </entry>
   <entry>
-    <title>One slider, three different models</title>
+    <title>Classification metrics, by hand</title>
     <link href="https://www.loopingly.com/explorables/classification-metrics-by-hand"/>
     <id>https://www.loopingly.com/explorables/classification-metrics-by-hand</id>
     <updated>2026-08-08T00:00:00Z</updated>
@@ -160,7 +160,7 @@
     <summary>Three ways to learn to cook, in the order of supervised, unsupervised and reinforcement learning. What separates them: when do you find out you were wrong?</summary>
   </entry>
   <entry>
-    <title>How the AI words nest</title>
+    <title>AI, machine learning, deep learning: how they nest</title>
     <link href="https://www.loopingly.com/explorables/the-layers-of-intelligence"/>
     <id>https://www.loopingly.com/explorables/the-layers-of-intelligence</id>
     <updated>2026-07-31T00:00:00Z</updated>

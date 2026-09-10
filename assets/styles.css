@@ -1,39 +1,70 @@
 /* =========================================================================
    ritesh 👋  —  shared design system
    playful / interactive · rounded · multi-accent · light + dark
+
+   Palette: "marmalade" — warm paper, ink-brown text, preserve-jar accents.
+   Replaces the old violet scheme, whose dark mode (#171125) plus the 13%
+   page tint produced a saturated purple ground on every listing page.
+
+   The six accent SLOTS keep their old names (--coral --grape --teal --sun
+   --sky --pink) because the page HTML sets per-card accents inline as
+   style="--ac:var(--teal)". Renaming them would silently break 43 cards.
+   Only the values moved.
+
+   Every accent below clears WCAG AA (>=4.5:1) against its own paper AND
+   against --on-ac, because the stylesheet uses each one both as small text
+   (.card .k, .tag, .eyebrow) and as a solid fill with a light foreground
+   (.card .go, .chip.on). --gold is the exception: it is marmalade's
+   decorative gold at 1.7:1, for rules, dots and fills only — NEVER text.
    ========================================================================= */
 
 :root{
-  --paper:#FFF8F2; --paper-2:#FFEEE3; --card:#FFFFFF;
-  --ink:#2A2036; --ink-soft:#6E6079; --ink-faint:#A093AC; --rule:#F1E3D7;
-  --coral:#FF6B5E; --grape:#7A5AF8; --teal:#12B39A; --sun:#FF9F1C; --sky:#2E9CFF; --pink:#FF7EB6;
-  --primary:#FF6B5E; --page:#FF6B5E;
+  --paper:#FAF5EA; --paper-2:#F2EADA; --card:#FFFCF5;
+  --ink:#33302B; --ink-soft:#6F6860; --ink-faint:#767065; --rule:#E4DAC6;
+  --coral:#B1533C; --grape:#7C4B63; --teal:#5C7748; --sun:#94660A; --sky:#3F5FA8; --pink:#B64B61;
+  --gold:#F2B63C; --on-ac:#FFFCF5;
+  --dot:rgba(51,48,43,.05); --dot-2:rgba(51,48,43,.032);
+  --primary:#B1533C; --page:#B1533C;
   --shadow:24px 24px 60px rgba(120,90,60,.14); --shadow-sm:0 10px 30px rgba(120,90,60,.12);
   --t:.45s cubic-bezier(.2,.8,.2,1); --maxw:1120px;
 }
+/* Warm dark: the same family after dark, not a different one. Accents are
+   lightened until they clear AA on the dark paper, which flips the foreground
+   that sits on top of them — hence --on-ac going dark here. */
 @media (prefers-color-scheme:dark){
   :root{
-    --paper:#171125; --paper-2:#20182F; --card:#241A38;
-    --ink:#F6EEFA; --ink-soft:#C6B9D4; --ink-faint:#8A7B9E; --rule:#33264A;
-    --coral:#FF7D71; --grape:#9B82FF; --teal:#2FD3B9; --sun:#FFB43C; --sky:#5AB0FF; --pink:#FF93C4;
-    --primary:#FF7D71; --page:#FF7D71;
+    --paper:#22201C; --paper-2:#2B2823; --card:#302C26;
+    --ink:#F2EDE1; --ink-soft:#ABA39A; --ink-faint:#938B80; --rule:#3E3A33;
+    --coral:#D08A72; --grape:#C293AC; --teal:#8FB075; --sun:#E2A83F; --sky:#8CA5DE; --pink:#D68E9C;
+    --gold:#EBB443; --on-ac:#22201C;
+    --dot:rgba(242,237,225,.045); --dot-2:rgba(242,237,225,.028);
+    --primary:#D08A72; --page:#D08A72;
     --shadow:24px 24px 70px rgba(0,0,0,.5); --shadow-sm:0 10px 30px rgba(0,0,0,.4);
   }
 }
 :root[data-theme="light"]{
-  --paper:#FFF8F2; --paper-2:#FFEEE3; --card:#FFFFFF; --ink:#2A2036; --ink-soft:#6E6079; --ink-faint:#A093AC; --rule:#F1E3D7;
-  --coral:#FF6B5E; --grape:#7A5AF8; --teal:#12B39A; --sun:#FF9F1C; --sky:#2E9CFF; --pink:#FF7EB6;
+  --paper:#FAF5EA; --paper-2:#F2EADA; --card:#FFFCF5; --ink:#33302B; --ink-soft:#6F6860; --ink-faint:#767065; --rule:#E4DAC6;
+  --coral:#B1533C; --grape:#7C4B63; --teal:#5C7748; --sun:#94660A; --sky:#3F5FA8; --pink:#B64B61;
+  --gold:#F2B63C; --on-ac:#FFFCF5;
+  --dot:rgba(51,48,43,.05); --dot-2:rgba(51,48,43,.032);
+  --primary:#B1533C; --page:#B1533C;
   --shadow:24px 24px 60px rgba(120,90,60,.14); --shadow-sm:0 10px 30px rgba(120,90,60,.12);
 }
 :root[data-theme="dark"]{
-  --paper:#171125; --paper-2:#20182F; --card:#241A38; --ink:#F6EEFA; --ink-soft:#C6B9D4; --ink-faint:#8A7B9E; --rule:#33264A;
-  --coral:#FF7D71; --grape:#9B82FF; --teal:#2FD3B9; --sun:#FFB43C; --sky:#5AB0FF; --pink:#FF93C4;
+  --paper:#22201C; --paper-2:#2B2823; --card:#302C26; --ink:#F2EDE1; --ink-soft:#ABA39A; --ink-faint:#938B80; --rule:#3E3A33;
+  --coral:#D08A72; --grape:#C293AC; --teal:#8FB075; --sun:#E2A83F; --sky:#8CA5DE; --pink:#D68E9C;
+  --gold:#EBB443; --on-ac:#22201C;
+  --dot:rgba(242,237,225,.045); --dot-2:rgba(242,237,225,.028);
+  --primary:#D08A72; --page:#D08A72;
   --shadow:24px 24px 70px rgba(0,0,0,.5); --shadow-sm:0 10px 30px rgba(0,0,0,.4);
 }
 
-/* per-page identity: each page (except home) gets its own soft accent ground */
-body.tint{background:color-mix(in srgb, var(--page) 13%, var(--paper))}
-body.p-explorables{--page:var(--grape); --primary:var(--grape)}
+/* per-page identity: each page (except home) gets its own soft accent ground.
+   Explorables moved off --grape: mixing the one purple accent into the paper
+   is exactly what made that page read violet. It takes the ochre now, which
+   lands on a warm sand (#EDE2CD) in light and a warm brown in dark. */
+body.tint{background-color:color-mix(in srgb, var(--page) 13%, var(--paper))}
+body.p-explorables{--page:var(--sun); --primary:var(--sun)}
 body.p-about{--page:var(--teal); --primary:var(--teal)}
 body.p-books{--page:var(--sky); --primary:var(--sky)}
 body.p-talks{--page:var(--pink); --primary:var(--pink)}
@@ -41,9 +72,16 @@ body.p-talks{--page:var(--pink); --primary:var(--pink)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;scroll-snap-type:none!important}}
-body{margin:0;background:var(--paper);color:var(--ink);
+/* The ground is paper, not a flat fill: two offset dot grids at 5% and 3.2%
+   give it enough tooth to read as stock rather than as screen. background-COLOR
+   here, not the shorthand — body.tint recolours the ground and the shorthand
+   would wipe the dots out from under it. */
+body{margin:0;background-color:var(--paper);color:var(--ink);
+  background-image:radial-gradient(var(--dot) .7px,transparent .7px),
+                   radial-gradient(var(--dot-2) .7px,transparent .7px);
+  background-size:13px 13px,17px 17px;background-position:0 0,7px 9px;
   font-family:"Nunito",system-ui,-apple-system,sans-serif;font-size:18px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background var(--t),color var(--t)}
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color var(--t),color var(--t)}
 h1,h2,h3,.display{font-family:"Baloo 2",system-ui,sans-serif;font-weight:800;line-height:1.04;letter-spacing:-.01em;text-wrap:balance;margin:0}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
@@ -70,7 +108,7 @@ nav{position:fixed;top:16px;left:0;right:0;z-index:60;display:flex;justify-conte
 /* ---- buttons ---- */
 .btn{font-family:"Baloo 2";font-weight:700;font-size:17px;padding:15px 26px;border-radius:999px;cursor:pointer;
   border:2px solid transparent;transition:transform .18s,box-shadow .18s,background .2s,border-color .2s,color .2s;display:inline-flex;align-items:center;gap:9px}
-.btn.solid{background:var(--primary);color:#fff;box-shadow:0 12px 26px color-mix(in srgb,var(--primary) 40%,transparent)}
+.btn.solid{background:var(--primary);color:var(--on-ac);box-shadow:0 12px 26px color-mix(in srgb,var(--primary) 40%,transparent)}
 .btn.solid:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:0 18px 34px color-mix(in srgb,var(--primary) 46%,transparent)}
 .btn.ghost{background:var(--card);color:var(--ink);border-color:var(--rule)}
 .btn.ghost:hover{transform:translateY(-3px);border-color:var(--primary);color:var(--primary)}
@@ -85,7 +123,9 @@ nav{position:fixed;top:16px;left:0;right:0;z-index:60;display:flex;justify-conte
 .hero h1{font-size:clamp(46px,9vw,104px);letter-spacing:-.03em}
 .hero h1 .grad{background:linear-gradient(102deg,var(--coral),var(--grape) 45%,var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
 .lede{font-size:clamp(19px,2.4vw,25px);color:var(--ink-soft);max-width:620px;margin:24px 0 8px;font-weight:600}
-.rot{color:var(--ink);font-weight:800;white-space:nowrap;border-bottom:3px solid var(--sun);padding-bottom:1px}
+/* Decorative rule, so it takes the bright --gold rather than the text-safe
+   ochre in --sun. This is the only place the undimmed marmalade gold appears. */
+.rot{color:var(--ink);font-weight:800;white-space:nowrap;border-bottom:3px solid var(--gold);padding-bottom:1px}
 /* Credential strip. The hero said what the site is but never who is behind it, which
    is the thing a first-time reader actually weighs before spending ten minutes on an
    explorable. It sits above the h1 rather than under the lede: the headline is the
@@ -157,10 +197,18 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 /* Month rule. Replaces the curated section headings: the listing is a timeline now,
    so the only grouping the page asserts is the one the dates already carry. The rule
    runs to the right edge so a month with two cards still reads as a band. */
-.mhead{grid-column:1/-1;display:flex;align-items:center;gap:18px;margin:30px 0 -8px}
+.mhead{grid-column:1/-1;display:flex;align-items:center;gap:16px;margin:38px 0 -4px}
 .mhead:first-child{margin-top:0}
-.mhead h2{font-size:27px;margin:0;white-space:nowrap}
-.mhead::after{content:"";flex:1;height:1px;background:var(--rule)}
+.mhead h2{font-size:26px;margin:0;white-space:nowrap;display:flex;align-items:center;gap:13px}
+/* A marker, so the month reads as a point on a timeline rather than a card title that
+   lost its card. */
+.mhead h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--primary);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 24%,transparent)}
+/* --rule is tuned for a border sitting on a card, where it only has to separate two
+   near-identical surfaces. Out on the page background in dark mode it measures 1.1:1
+   against the paper, which is not a faint line, it is no line. Mixing from --ink instead
+   gives a hairline that holds in both themes. */
+.mhead::after{content:"";flex:1;height:1px;background:color-mix(in srgb,var(--ink) 45%,transparent)}
 
 /* The newest piece leads at full width: the same card turned on its side, so it reads
    as a headline rather than a tile that happens to be bigger. The thumb is capped in
@@ -170,7 +218,7 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 .card.feat .thumb{height:100%;min-height:240px;border-bottom:0;border-right:1px solid var(--rule)}
 .card.feat .body{padding:34px 36px;align-self:center}
 .card.feat .body::before{content:"Latest";display:block;width:fit-content;font-family:"Baloo 2";
-  font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#fff;
+  font-weight:800;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-ac);
   background:var(--ac);padding:5px 13px;border-radius:999px;margin-bottom:14px}
 .card.feat h3{font-size:clamp(26px,3vw,34px);margin:8px 0 10px}
 .card.feat p{font-size:17px;max-width:60ch;margin-bottom:18px}
@@ -184,7 +232,7 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 /* published date, and the ordinal on the five-part course */
 .card .date{font-family:"Baloo 2";font-weight:700;font-size:12px;padding:4px 0;margin-left:auto;color:var(--ink-faint)}
 .card .seq{position:absolute;top:12px;left:14px;z-index:2;width:28px;height:28px;border-radius:999px;
-  background:var(--ac);color:#fff;display:grid;place-items:center;font-family:"Baloo 2";font-weight:800;font-size:14px;
+  background:var(--ac);color:var(--on-ac);display:grid;place-items:center;font-family:"Baloo 2";font-weight:800;font-size:14px;
   box-shadow:0 4px 12px rgba(120,90,60,.25)}
 .empty{grid-column:1/-1;padding:48px 0;text-align:center;color:var(--ink-faint);font-weight:600}
 .empty.hide{display:none}
@@ -201,14 +249,14 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 .card p{color:var(--ink-soft);font-weight:600;font-size:15.5px;margin:0 0 16px;line-height:1.5}
 .tags{display:flex;flex-wrap:wrap;gap:7px}
 .tag{font-family:"Baloo 2";font-weight:700;font-size:12px;padding:4px 11px;border-radius:999px;background:color-mix(in srgb,var(--ac) 15%,transparent);color:var(--ac)}
-.card .go{position:absolute;bottom:20px;right:22px;width:40px;height:40px;border-radius:999px;background:var(--ac);color:#fff;display:grid;place-items:center;font-size:20px;transform:translateX(6px);opacity:0;transition:all .25s}
+.card .go{position:absolute;bottom:20px;right:22px;width:40px;height:40px;border-radius:999px;background:var(--ac);color:var(--on-ac);display:grid;place-items:center;font-size:20px;transform:translateX(6px);opacity:0;transition:all .25s}
 .card:hover .go{transform:none;opacity:1}
 .soon{opacity:.82}.soon .thumb{background:var(--paper-2)}
 .ribbon{position:absolute;top:14px;right:-34px;transform:rotate(45deg);background:var(--ink);color:var(--paper);font-family:"Baloo 2";font-weight:700;font-size:11px;letter-spacing:.08em;padding:5px 40px;z-index:3}
 .mini{transform:scale(1.04);transition:transform .4s}
 .card:hover .mini{transform:scale(1.1) rotate(-1deg)}
 .fib{background:var(--card);border:2px solid var(--ac);border-radius:14px;padding:12px 16px;font-family:"Baloo 2";font-weight:700;font-size:15px;box-shadow:var(--shadow-sm)}
-.fib .cc{background:var(--ac);color:#fff;border-radius:8px;padding:1px 10px;margin-left:4px;display:inline-block}
+.fib .cc{background:var(--ac);color:var(--on-ac);border-radius:8px;padding:1px 10px;margin-left:4px;display:inline-block}
 .lights{display:flex;flex-direction:column;gap:9px;background:#241A38;padding:14px;border-radius:16px;box-shadow:var(--shadow-sm)}
 .lights i{width:26px;height:26px;border-radius:50%;background:#3a2f4d;display:block}
 .lights i.on-g{background:#2ecc8f;box-shadow:0 0 16px #2ecc8f}
@@ -226,7 +274,7 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 @keyframes blink{50%{opacity:0}}
 .grc{display:flex;gap:9px}
 .grc i{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:"Baloo 2";font-weight:800;font-size:20px;color:var(--ac);background:color-mix(in srgb,var(--ac) 16%,var(--card));border:2px solid color-mix(in srgb,var(--ac) 32%,transparent)}
-.grc i.mid{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 8px 18px color-mix(in srgb,var(--ac) 45%,transparent)}
+.grc i.mid{background:var(--ac);color:var(--on-ac);border-color:var(--ac);box-shadow:0 8px 18px color-mix(in srgb,var(--ac) 45%,transparent)}
 .tokens{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:170px}
 .tokens i{font-style:normal;font-family:"Baloo 2";font-weight:700;font-size:15px;padding:6px 10px;border-radius:9px;color:var(--ac);background:color-mix(in srgb,var(--ac) 15%,var(--card));border:1.5px solid color-mix(in srgb,var(--ac) 34%,transparent)}
 @media(prefers-reduced-motion:reduce){.think i,.prompt .cur{animation:none}.think i{opacity:.72}}
@@ -235,7 +283,7 @@ main.snap section.wrap{min-height:100vh;display:flex;flex-direction:column;justi
 .filters{display:flex;gap:10px;flex-wrap:wrap;padding:26px 0 40px}
 .chip{font-family:"Baloo 2";font-weight:700;font-size:15px;padding:10px 20px;border-radius:999px;border:2px solid var(--rule);background:var(--card);color:var(--ink-soft);cursor:pointer;transition:all .2s}
 .chip:hover{border-color:var(--primary);color:var(--ink);transform:translateY(-2px)}
-.chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.chip.on{background:var(--primary);border-color:var(--primary);color:var(--on-ac)}
 .count{margin-left:auto;align-self:center;color:var(--ink-faint);font-weight:700}
 
 /* ---- about ---- */
@@ -301,4 +349,4 @@ footer{padding:56px 0 90px;border-top:1px solid var(--rule);margin-top:40px}
 .foot .attrib a{color:var(--ink-soft);font-weight:700}
 
 :focus-visible{outline:3px solid var(--grape);outline-offset:3px;border-radius:6px}
-::selection{background:var(--primary);color:#fff}
+::selection{background:var(--primary);color:var(--on-ac)}

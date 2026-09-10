@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>One slider, three different models, one accuracy</title>
+<title>Classification metrics, by hand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,19 +15,19 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Ritesh Modi">
   <meta property="og:locale" content="en_GB">
-  <meta property="og:title" content="One slider, three different models, one accuracy">
+  <meta property="og:title" content="Classification metrics, by hand">
   <meta property="og:description" content="Drag one threshold and watch precision and recall swing while accuracy sits still.">
   <meta property="og:url" content="https://www.loopingly.com/explorables/classification-metrics-by-hand">
   <meta property="og:image" content="https://www.loopingly.com/og/classification-metrics-by-hand.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="One slider, three different models, one accuracy">
+  <meta property="og:image:alt" content="Classification metrics, by hand">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="One slider, three different models, one accuracy">
+  <meta name="twitter:title" content="Classification metrics, by hand">
   <meta name="twitter:description" content="Drag one threshold and watch precision and recall swing while accuracy sits still.">
   <meta name="twitter:image" content="https://www.loopingly.com/og/classification-metrics-by-hand.png">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"One slider, three different models, one accuracy","description":"Drag one threshold across fifteen emails and watch the confusion matrix, precision and recall swing while accuracy sits at 0.87 and tells you nothing.","url":"https://www.loopingly.com/explorables/classification-metrics-by-hand","image":"https://www.loopingly.com/og/classification-metrics-by-hand.png","datePublished":"2026-08-08","dateModified":"2026-08-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Classification metrics: accuracy, precision, recall, F1 and ROC"},"keywords":"confusion matrix explained, precision vs recall, why accuracy is misleading, what is F1 score, how to read an ROC curve"}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"One slider, three different models"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Classification metrics, by hand","description":"Drag one threshold across fifteen emails and watch the confusion matrix, precision and recall swing while accuracy sits at 0.87 and tells you nothing.","url":"https://www.loopingly.com/explorables/classification-metrics-by-hand","image":"https://www.loopingly.com/og/classification-metrics-by-hand.png","datePublished":"2026-08-08","dateModified":"2026-08-08","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Classification metrics: accuracy, precision, recall, F1 and ROC"},"keywords":"confusion matrix explained, precision vs recall, why accuracy is misleading, what is F1 score, how to read an ROC curve"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Classification metrics, by hand"}]}</script>
   <!-- seo:end -->
 </head>
 <body>
@@ -35,7 +35,7 @@
   <circle class="tk" cx="26" cy="26" r="22"/><circle class="fl" id="pf" cx="26" cy="26" r="22"/>
 </svg><span id="pt">·</span></div>
 <header class="wide-hero">
-  <h1>One slider, three different models, one accuracy</h1>
+  <h1>Classification metrics, by hand</h1>
   <p class="lede">A classifier does not hand you a verdict. It hands you a probability, and somebody has to decide where to cut. Move that cut and the same model catches every spam, or catches one third of it, while accuracy sits at 0.87 the whole time and tells you nothing.</p>
   <p class="lede-meta">15 emails &middot; 3 of them spam &middot; one threshold you choose</p>
   <div class="fig" id="figH">
