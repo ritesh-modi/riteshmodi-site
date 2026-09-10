@@ -47,6 +47,27 @@ PAGES = {
              "applied machine learning, with slides and recordings where available.",
         about="Technical talks",
     ),
+    "ai-watermarking": dict(
+        desc="How a model signs what it writes: the secret key, the split dictionary and the "
+             "arithmetic that turns 300 words into proof. The book, plus a free interactive version.",
+        short="The secret key, the split dictionary, and what turns 300 words into proof.",
+        about="AI text watermarking",
+    ),
+}
+
+# Book landing pages ----------------------------------------------------------
+# A top-level page otherwise gets no entity of its own, and "a page that mentions
+# a book" is not the same claim to a crawler as "this is the book". Keyed by slug,
+# consumed by seo_apply.
+BOOKS = {
+    "ai-watermarking": dict(
+        name="AI Watermarking: How a Model Signs What It Writes",
+        buy="https://leanpub.com/aillmwatermarks",
+        image="/assets/ai-watermarking-cover.jpg",
+        # The free explorable covers the same mechanism, which is a workExample
+        # rather than a separate book.
+        free="/explorables/llm-watermarking",
+    ),
 }
 
 # Explorables -----------------------------------------------------------------

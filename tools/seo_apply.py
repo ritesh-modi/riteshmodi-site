@@ -17,7 +17,7 @@ import io, json, os, re, sys, glob
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from seo_data import (SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES, KEYWORDS,
-                      NOTES, NOTES_DIR)
+                      NOTES, NOTES_DIR, BOOKS)
 
 BEGIN, END = "<!-- seo:begin -->", "<!-- seo:end -->"
 CHECK = "--check" in sys.argv
@@ -191,6 +191,33 @@ def apply_page(path, slug, url, meta, info, drift):
                  "item": SITE + ("/" + NOTES_DIR if is_note else "/explorables")},
                 {"@type": "ListItem", "position": 3,
                  "name": info.get("card_title") or title},
+            ],
+        })
+    if slug in BOOKS:
+        b = BOOKS[slug]
+        ld.append({
+            "@context": "https://schema.org",
+            "@type": "Book",
+            "name": b["name"],
+            "description": desc,
+            "url": url,
+            "image": SITE + b["image"],
+            "author": {"@type": "Person", "name": AUTHOR, "url": SITE + "/about"},
+            "inLanguage": "en",
+            "about": {"@type": "Thing", "name": meta["about"]},
+            # The buy link is the offer's URL, not the book's: the book's own page is
+            # this one, and pointing `url` at Leanpub would hand the entity away.
+            "offers": {"@type": "Offer", "url": b["buy"], "availability":
+                       "https://schema.org/InStock"},
+            "workExample": {"@type": "WebPage", "name": "Interactive version",
+                            "url": SITE + b["free"], "isAccessibleForFree": True},
+        })
+        ld.append({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+                {"@type": "ListItem", "position": 2, "name": b["name"]},
             ],
         })
     if slug in ("index", "about"):

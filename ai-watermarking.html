@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Watermarking: how a model signs what it writes</title>
+<link rel="icon" href="/favicon.svg">
+<style>
+  /* Marmalade: warm paper, ink-brown text, hand-drawn frames. Palette matches the
+     site's shared tokens in /assets/styles.css so this page reads as a sibling,
+     but the page is deliberately self-contained — it is a book page, not a
+     listing, and it borrows marmalade's drawn-by-hand frames rather than the
+     site's rounded-rect cards. */
+  :root{
+    --paper:#FAF5EA; --panel:#FFFCF5; --ink:#33302B; --ink-soft:#6F6860; --ink-faint:#767065;
+    --gold:#F2B63C; --gold-deep:#94660A; --rust:#B1533C; --biro:#3F5FA8; --leaf:#5C7748;
+    --rule:#E4DAC6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    font-family:ui-rounded,-apple-system,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+    background-color:var(--paper);
+    background-image:radial-gradient(rgba(51,48,43,.05) .7px,transparent .7px),
+                     radial-gradient(rgba(51,48,43,.032) .7px,transparent .7px);
+    background-size:13px 13px,17px 17px;background-position:0 0,7px 9px;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 26px}
+  h1,h2,h3{font-weight:700;letter-spacing:-.01em;margin:0}
+  h1{font-size:clamp(36px,5.4vw,54px);line-height:1.1;margin-bottom:20px}
+  h2{font-size:clamp(23px,3vw,28px);line-height:1.2}
+  h3{font-size:17px}
+  p{margin:0}
+  a{color:inherit}
+
+  /* hand-drawn frame host — the frame is an SVG child, so it never clips content */
+  .drawn{position:relative}
+  .drawn > svg.frame{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+  .frame path{fill:none;stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+
+  .u{position:relative;display:inline-block}
+  .u svg{position:absolute;left:0;bottom:-.14em;width:100%;height:8px;transform:rotate(-.5deg)}
+
+  header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:26px 0 0;flex-wrap:wrap}
+  .mark{font-weight:700;font-size:17px;text-decoration:none}
+  .link{font-size:13.5px;color:rgba(51,48,43,.8);text-decoration:underline;text-underline-offset:4px}
+  .link:hover{color:var(--ink);text-decoration-color:var(--gold);text-decoration-thickness:2px}
+
+  .hero{padding:48px 0 8px}
+  .kick{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);
+    font-weight:700;margin-bottom:18px}
+  .lede{font-size:19px;max-width:62ch;color:rgba(51,48,43,.88)}
+  .byline{margin-top:18px;font-size:14px;color:var(--ink-soft)}
+
+  /* the offer: cover on the left, the two destinations on the right */
+  .offer{margin:34px 0 12px;padding:26px;background:var(--panel);display:flex;gap:30px;align-items:flex-start}
+  .offer > svg.frame path{stroke-width:2}
+  .cover{flex:none;width:216px}
+  .cover img{width:100%;height:auto;display:block;box-shadow:0 14px 34px rgba(120,90,60,.22)}
+  .offer .body{flex:1;min-width:0}
+  .btn{display:inline-flex;align-items:center;justify-content:center;background:transparent;
+    border:none;padding:13px 26px;font:inherit;font-size:15.5px;font-weight:700;color:var(--ink);
+    text-decoration:none;cursor:pointer;transition:transform .1s ease-out}
+  .btn:active{transform:scale(.98)}
+  :focus-visible{outline:2px solid var(--biro);outline-offset:4px}
+  .where{margin-top:26px;border-top:1px solid var(--rule);padding-top:20px;display:grid;gap:18px}
+  .where h3{font-size:14px;letter-spacing:.02em}
+  .where p{font-size:13.5px;color:var(--ink-soft);margin-top:3px}
+  /* Both destinations are written out in full, not hidden behind "click here":
+     one of them costs money and the other does not, and a reader is entitled to
+     see which is which before clicking. */
+  .url{display:inline-block;margin-top:7px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:12.5px;color:var(--biro);word-break:break-all;text-decoration:underline;text-underline-offset:3px}
+  .price{font-size:12.5px;color:var(--ink-faint);margin-top:5px}
+
+  section{padding:44px 0 0}
+  .prose{max-width:62ch;display:grid;gap:16px;margin-top:18px;color:rgba(51,48,43,.9)}
+  .prose b{font-weight:700}
+
+  figure{margin:26px 0 0;padding:20px 20px 16px;background:var(--panel)}
+  figure > svg.frame path{stroke-width:1.6}
+  figure img{width:100%;height:auto;display:block}
+  /* These figures carry ~11px mono labels inside a 900-unit viewBox. Scaled to fit a
+     phone column they would render that text at about 4px, which is not a small
+     figure, it is an unreadable one. Below the min-width the figure scrolls sideways
+     inside its own frame instead of shrinking; the page itself never scrolls. */
+  .figscroll{overflow-x:auto;overscroll-behavior-x:contain}
+  .figscroll img{min-width:520px}
+  figcaption{margin-top:14px;font-size:13.5px;line-height:1.62;color:var(--ink-soft)}
+  figcaption b{color:var(--ink);font-weight:700}
+
+  ul.inside{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:13px;max-width:62ch}
+  ul.inside li{display:flex;gap:13px;font-size:15.5px;color:rgba(51,48,43,.9)}
+  .tick{flex:none;margin-top:6px}
+
+  .note{margin-top:26px;font-size:13.5px;color:var(--ink-soft);max-width:58ch}
+  footer{padding:44px 0 60px;margin-top:44px;font-size:13px;color:var(--ink-soft)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  @media (max-width:640px){
+    .offer{flex-direction:column;gap:24px}
+    .cover{width:172px;align-self:center}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+  <!-- seo:begin -->
+  <meta name="description" content="How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, plus a free interactive version.">
+  <link rel="canonical" href="https://www.loopingly.com/ai-watermarking">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="AI Watermarking: how a model signs what it writes">
+  <meta property="og:description" content="The secret key, the split dictionary, and what turns 300 words into proof.">
+  <meta property="og:url" content="https://www.loopingly.com/ai-watermarking">
+  <meta property="og:image" content="https://www.loopingly.com/og/ai-watermarking.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AI Watermarking: how a model signs what it writes">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Watermarking: how a model signs what it writes">
+  <meta name="twitter:description" content="The secret key, the split dictionary, and what turns 300 words into proof.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/ai-watermarking.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"AI Watermarking: How a Model Signs What It Writes","description":"How a model signs what it writes: the secret key, the split dictionary and the arithmetic that turns 300 words into proof. The book, plus a free interactive version.","url":"https://www.loopingly.com/ai-watermarking","image":"https://www.loopingly.com/assets/ai-watermarking-cover.jpg","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"inLanguage":"en","about":{"@type":"Thing","name":"AI text watermarking"},"offers":{"@type":"Offer","url":"https://leanpub.com/aillmwatermarks","availability":"https://schema.org/InStock"},"workExample":{"@type":"WebPage","name":"Interactive version","url":"https://www.loopingly.com/explorables/llm-watermarking","isAccessibleForFree":true}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"AI Watermarking: How a Model Signs What It Writes"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="/">ritesh 👋</a>
+    <nav><a class="link" href="/explorables">All explorables</a></nav>
+  </header>
+
+  <section class="hero">
+    <p class="kick">The book</p>
+    <h1>AI Watermarking:<br>
+      <span class="u">how a model signs what it writes
+        <svg viewBox="0 0 300 8" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M1 5.2Q22 3.1 44 4.4Q68 5.8 92 3.6Q118 1.6 142 4.2Q168 6.4 194 3.4Q220 1.4 246 4.6Q272 6.6 299 3.9"
+                stroke="#F2B63C" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        </svg>
+      </span>
+    </h1>
+    <p class="lede">Nothing in a sentence records who wrote it. A watermark puts that record
+      inside the words themselves, by quietly biasing which words a model picks. This book works
+      the whole mechanism by hand — the secret key, the split dictionary, the thumb on the scale,
+      and the arithmetic that turns a word count into evidence.</p>
+    <p class="byline">By Ritesh Modi</p>
+  </section>
+
+  <div class="offer drawn" data-frame="16">
+    <div class="cover">
+      <img src="/assets/ai-watermarking-cover.jpg"
+           srcset="/assets/ai-watermarking-cover.jpg 760w, /assets/ai-watermarking-cover@2x.jpg 1520w"
+           sizes="(max-width:640px) 172px, 216px"
+           width="760" height="1075" loading="eager"
+           alt="Cover of AI Watermarking by Ritesh Modi: the title above a tall clock tower, on white">
+    </div>
+    <div class="body">
+      <h2>Two ways in</h2>
+      <div class="where">
+        <div>
+          <h3>Buy the book</h3>
+          <p>The full treatment, on Leanpub. Every step worked with real numbers.</p>
+          <a class="url" href="https://leanpub.com/aillmwatermarks" target="_blank" rel="noopener">leanpub.com/aillmwatermarks</a>
+          <p class="price">Leanpub sets its own price and terms; the link opens in a new tab.</p>
+        </div>
+        <div>
+          <h3>Or poke the interactive version, free</h3>
+          <p>The same mechanism as a single page you learn by dragging: shade the dictionary,
+            press the thumb on the scale, then score 300 words and see what counts as proof.</p>
+          <a class="url" href="/explorables/llm-watermarking">www.loopingly.com/explorables/llm-watermarking</a>
+          <p class="price">No sign-up, nothing to install, runs in the browser.</p>
+        </div>
+      </div>
+      <p style="margin-top:22px">
+        <a class="btn drawn" data-frame="11" href="https://leanpub.com/aillmwatermarks" target="_blank" rel="noopener">Get it on Leanpub →</a>
+      </p>
+    </div>
+  </div>
+
+  <section>
+    <h2>What a watermark actually is</h2>
+    <div class="prose">
+      <p>A watermark in paper is not printed on the sheet. It is a change in the thickness of the
+        sheet itself, made while the paper is still wet. You handle the note every day and never
+        see it; hold it to a window and it is unmistakable. You cannot peel it off, because there
+        is no layer to peel.</p>
+      <p>Text watermarking borrows that idea exactly. The mark does not live in a header, a
+        metadata field, or an invisible character that a copy-paste would strip. It lives in
+        <b>which words got chosen</b> — a bias applied at the moment the model picks each one,
+        keyed to a secret only the model's owner holds.</p>
+    </div>
+
+    <figure class="drawn" data-frame="12">
+      <div class="figscroll"><img src="/assets/figures/wm-f1.svg" width="900" height="300" loading="lazy"
+           alt="A sheet of paper shown flat, where nothing is visible, and the same sheet held against the light so a hidden mark appears"></div>
+      <figcaption><b>Imperceptible, inseparable, verifiable.</b> The three properties that make a
+        watermark worth having, and the reason it is built into the paper rather than stamped on
+        top of it.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>The mechanism, in two pictures</h2>
+    <div class="prose">
+      <p>Every word a model writes is a draw from a bag of weighted options, not a decision. That
+        is the opening the watermark uses. Before each draw, the words already written are hashed
+        together with a secret key to produce a number, and that number cuts the vocabulary into
+        two lists: a favoured half and an unfavoured half. Nothing about a word's meaning decides
+        which side it lands on, and the split changes at every position.</p>
+    </div>
+
+    <figure class="drawn" data-frame="12">
+      <div class="figscroll"><img src="/assets/figures/wm-f5.svg" width="900" height="340" loading="lazy"
+           alt="A four-word vocabulary split into a favoured list and an unfavoured list by a scrambled number derived from the preceding word"></div>
+      <figcaption><b>The dictionary, cut in half by a secret.</b> The preceding words become a
+        number, the number decides the split, and the split moves every time a new word is
+        written. Without the key, the pattern is unrecoverable.</figcaption>
+    </figure>
+
+    <div class="prose">
+      <p>The model then adds a little weight to everything on the favoured list, rescales, and
+        draws as normal. Any single word proves nothing — a favoured word could always have been
+        chosen by chance. Over three hundred words, chance stops being a plausible explanation,
+        and that is the whole game: the expected count grows with the length of the passage while
+        the wobble around it grows only with the square root.</p>
+    </div>
+
+    <figure class="drawn" data-frame="12">
+      <div class="figscroll"><img src="/assets/figures/wm-f9.svg" width="900" height="360" loading="lazy"
+           alt="A chart comparing the count of favoured words in a passage against the range that chance alone would produce, with a z-score of 5.9"></div>
+      <figcaption><b>Where the evidence comes from.</b> Chance expects 150 favoured words out of
+        300. The watermarked passage lands on 201, which is nearly six standard deviations out.
+        This is what a detector is actually reporting when it says a text is machine-written.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>What the book covers</h2>
+    <ul class="inside">
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Why detecting AI text by its style does not work.</b> Style classifiers fail in
+          exactly the case that matters, and the failure is structural rather than a matter of
+          more training data.</span></li>
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>The green-list / red-list scheme, worked by hand.</b> Hashing the context with a
+          key, splitting the vocabulary, biasing the logits, and drawing — with the actual
+          arithmetic at every step, not a block diagram.</span></li>
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>The strength dial, and what it costs.</b> One number decides how hard the thumb
+          presses on the scale. Press harder and detection gets easier while the writing gets
+          worse; the trade is the design decision.</span></li>
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>Detection as a statistical claim.</b> How a hit count becomes a z-score, why
+          three hundred words are worth far more than sixty, and what a detector is entitled to
+          say.</span></li>
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>The attacks, honestly.</b> Light editing, paraphrase, short passages and
+          low-entropy text — which of them the watermark survives, and which of them end the
+          argument.</span></li>
+      <li><svg class="tick" width="13" height="13" viewBox="0 0 13 13" aria-hidden="true"><path d="M1 7.2 4.6 10.6 12 2.2" fill="none" stroke="#F2B63C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span><b>What is already deployed.</b> Where text watermarking is running in production
+          today, and the scale of it, which surprises most people.</span></li>
+    </ul>
+    <p class="note">Written for engineers, product people and anyone who has been asked whether a
+      piece of text was machine-written and wants to answer with something better than a hunch.
+      No prior background in cryptography or statistics is assumed — the book builds both as it
+      goes.</p>
+  </section>
+</div>
+
+<footer><div class="wrap">
+  <span>© Ritesh Modi. The figures on this page are from the free interactive version.</span>
+  <a class="link" href="/explorables">More explorables</a>
+</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  var SVGNS='http://www.w3.org/2000/svg';
+
+  /* Small deterministic PRNG, so a given element always draws the same wobble:
+     a frame that reshuffled on every resize would read as a glitch. */
+  function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0;
+    var t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296; }; }
+
+  /* Points around a rounded rect, pushed in and out along the radius. The offset is
+     two low-frequency sines plus a little noise: a purely random jitter looks like a
+     bad connection, a drifting line looks drawn. */
+  function wobblyRect(w,h,r,amp,rand){
+    var pts=[], step=7;
+    function arc(cx,cy,a0,a1){
+      var n=Math.max(3,Math.round(Math.abs(a1-a0)*r/6));
+      for(var i=0;i<=n;i++){var a=a0+(a1-a0)*i/n;pts.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]);}
+    }
+    function line(x0,y0,x1,y1){
+      var d=Math.hypot(x1-x0,y1-y0), n=Math.max(1,Math.round(d/step));
+      for(var i=0;i<n;i++){var t=i/n;pts.push([x0+(x1-x0)*t,y0+(y1-y0)*t]);}
+    }
+    line(r,0,w-r,0);   arc(w-r,r,-Math.PI/2,0);
+    line(w,r,w,h-r);   arc(w-r,h-r,0,Math.PI/2);
+    line(w-r,h,r,h);   arc(r,h-r,Math.PI/2,Math.PI);
+    line(0,h-r,0,r);   arc(r,r,Math.PI,Math.PI*1.5);
+
+    var cx=w/2, cy=h/2;
+    var p1=rand()*6.28, p2=rand()*6.28, f1=1+Math.floor(rand()*2), f2=3+Math.floor(rand()*3);
+    pts=pts.map(function(p,i){
+      var a=i/pts.length*6.283;
+      var off=Math.sin(a*f1+p1)*amp + Math.sin(a*f2+p2)*amp*0.45 + (rand()-0.5)*amp*0.35;
+      var dx=p[0]-cx, dy=p[1]-cy, len=Math.hypot(dx,dy)||1;
+      return [p[0]+dx/len*off, p[1]+dy/len*off];
+    });
+
+    var d='M'+mid(pts[0],pts[1]);
+    for(var i=1;i<pts.length;i++){
+      var cur=pts[i], nxt=pts[(i+1)%pts.length];
+      d+='Q'+cur[0].toFixed(1)+' '+cur[1].toFixed(1)+' '+mid(cur,nxt);
+    }
+    return d+'Z';
+    function mid(a,b){return ((a[0]+b[0])/2).toFixed(1)+' '+((a[1]+b[1])/2).toFixed(1);}
+  }
+
+  function frame(el){
+    var seed=0, key=(el.textContent||'')+el.className+el.dataset.frame;
+    for(var i=0;i<key.length;i++) seed=(seed*31+key.charCodeAt(i))|0;
+    var rand=rng(seed);
+    var r=parseFloat(el.dataset.frame)||10;
+    var svg=el.querySelector(':scope > svg.frame');
+    if(!svg){ svg=document.createElementNS(SVGNS,'svg'); svg.setAttribute('class','frame');
+      svg.setAttribute('aria-hidden','true'); el.insertBefore(svg,el.firstChild); }
+    var w=el.offsetWidth, h=el.offsetHeight;
+    if(!w||!h) return;
+    svg.setAttribute('viewBox','0 0 '+w+' '+h);
+    var amp = h<40 ? 0.9 : 1.4;
+    svg.innerHTML='<path d="'+wobblyRect(w-2,h-2,Math.min(r,h/2-2),amp,rand)+'" transform="translate(1,1)"/>';
+  }
+
+  function drawAll(){ document.querySelectorAll('.drawn').forEach(frame); }
+  drawAll();
+  window.addEventListener('resize',(function(){ var t; return function(){ clearTimeout(t); t=setTimeout(drawAll,120); }; })());
+  /* Fonts and lazy figures both change an element's height after first paint, and a
+     frame drawn at the old height sits visibly short of the content. */
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+  document.querySelectorAll('figure img').forEach(function(img){
+    if(!img.complete) img.addEventListener('load', function(){ frame(img.closest('.drawn')); });
+  });
+})();
+</script>
+</body>
+</html>
