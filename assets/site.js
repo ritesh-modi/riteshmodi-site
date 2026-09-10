@@ -4,13 +4,10 @@
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root = document.documentElement;
 
-  /* ---------- theme toggle ---------- */
-  var tgl = document.getElementById('tgl');
-  function sysDark(){ return matchMedia('(prefers-color-scheme: dark)').matches; }
-  function isDark(){ var t=root.getAttribute('data-theme'); return t ? t==='dark' : sysDark(); }
-  function paint(){ if(tgl) tgl.textContent = isDark() ? '☀️' : '🌙'; }
-  paint();
-  if(tgl) tgl.addEventListener('click', function(){ root.setAttribute('data-theme', isDark()?'light':'dark'); paint(); if(window.__remakeBlobs) window.__remakeBlobs(); });
+  /* ---------- theme toggle: gone ----------
+     The site is light only, so there is nothing to toggle between. The button,
+     its CSS and the dark palette all came out together. __remakeBlobs (below)
+     used to be re-run on a theme flip; it now only runs on load. */
 
   /* ---------- waving hand ---------- */
   function wave(el){ if(reduce||!el) return; el.animate([
@@ -214,7 +211,9 @@
           if(b.x<-b.r) b.x=W+b.r; if(b.x>W+b.r) b.x=-b.r; if(b.y<-b.r) b.y=H+b.r; if(b.y>H+b.r) b.y=-b.r; }
         var ox=(mx-.5)*b.px, oy=(my-.5)*b.py;
         var rgb=hex2rgb(b.c), g=ctx.createRadialGradient(b.x+ox,b.y+oy,0,b.x+ox,b.y+oy,b.r);
-        g.addColorStop(0,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+(isDark()?0.5:0.42)+')');
+        /* Was (isDark()?0.5:0.42). One ground now, so one alpha — and isDark()
+           went out with the toggle, which would have thrown here every frame. */
+        g.addColorStop(0,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0.42)');
         g.addColorStop(1,'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+',0)');
         ctx.fillStyle=g; ctx.beginPath(); ctx.arc(b.x+ox,b.y+oy,b.r,0,7); ctx.fill();
       });
