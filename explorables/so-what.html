@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writing the So What</title>
+<style>:root{--v15:#F0EDEA;--v16:#E6E1DB;--v17:#D8D0C8;--v9:#1D1719;--v11:#4C4245;--v10:#746870;--v19:#D0C8C4;--v0:#7E2E3E;--v3:rgba(126,46,62,.08);--v2:rgba(126,46,62,.22);--v1:#4A7055;--v6:#746870;--v4:#7E5528;--v5:#7E2E3E;--v7:#2E5E7E;--v8:#2E7055;--v13:#1E1619;--v14:#E6DFDB;--v18:#A83228;--v23:#A87228;--v20:#2A7A50;--v12:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--v22:Georgia,'Times New Roman',serif;--v21:system-ui,-apple-system,'Segoe UI',sans-serif}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--v15);color:var(--v9);font-family:var(--v21);font-size:18px;line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}#prog{position:fixed;top:18px;right:20px;z-index:200;pointer-events:none;font-family:var(--v12);font-size:12px;color:var(--v10);letter-spacing:.08em}.col{max-width:680px;margin:0 auto;padding:0 24px}.wide{max-width:1000px;margin:0 auto;padding:0 24px}.bleed{width:100%;padding:0}.eyebrow{font-family:var(--v12);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--v10);margin-bottom:14px}.lede{font-size:1.17rem;color:var(--v11);line-height:1.58;margin-top:14px}.pull{border-left:3px solid var(--v0);padding:14px 22px;margin:32px 0;color:var(--v11);font-style:italic;font-size:1.04rem;line-height:1.56}h2{font-family:var(--v22);font-size:clamp(1.44rem,3.4vw,2.1rem);font-weight:700;letter-spacing:-.01em;line-height:1.2;margin-bottom:18px}h3{font-size:1.01rem;font-weight:700;margin:26px 0 9px}p{margin-bottom:14px}p:last-child{margin-bottom:0}.intu{background:var(--v3);border-radius:8px;padding:18px 22px;margin:26px 0;border:1px solid var(--v2)}.intu strong{color:var(--v0);display:block;margin-bottom:5px;font-size:.81rem;letter-spacing:.07em;text-transform:uppercase}.note{background:var(--v16);border-radius:6px;padding:14px 18px;margin:20px 0;border-left:3px solid var(--v19);font-size:.93rem;color:var(--v11)}.note strong{color:var(--v9)}.try{background:var(--v13);color:var(--v14);border-radius:8px;padding:16px 22px;margin:26px 0;font-size:.93rem}.try strong{color:#C89080;display:block;margin-bottom:5px;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase}section{padding:clamp(56px,8vw,106px) 0}section+section{border-top:1px solid var(--v19)}.fig{background:var(--v16);border-radius:12px;padding:26px 30px;margin:28px 0;border:1px solid var(--v19)}.fig-cap{font-family:var(--v12);font-size:11px;color:var(--v10);margin-top:13px;letter-spacing:.04em;line-height:1.5}.fig-cap strong{color:var(--v11)}.stcard{display:flex;flex-direction:column;gap:4px;border:2px solid var(--v19);border-radius:10px;padding:12px 16px;background:var(--v15);font-size:.84rem;transition:all .24s;cursor:pointer;min-width:180px}.stcard .sc-tag{font-family:var(--v12);font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--v10);margin-bottom:2px}.stcard .sc-body{color:var(--v11);line-height:1.42;font-size:.85rem}.stcard .sc-so{font-size:.78rem;display:none;margin-top:5px;padding-top:5px;border-top:1px solid var(--v19);color:var(--v10)}.stcard.obs{border-color:var(--v6);background:var(--v15)}.stcard.obs .sc-tag{color:var(--v6)}.stcard.find{border-color:var(--v4);background:rgba(126,85,40,.07)}.stcard.find .sc-tag{color:var(--v4)}.stcard.find .sc-body{color:var(--v9)}.stcard.insight-s{border-color:var(--v5);background:rgba(126,46,62,.07)}.stcard.insight-s .sc-tag{color:var(--v5)}.stcard.insight-s .sc-body{color:var(--v9);font-weight:600}.stcard.insight-s .sc-so{display:block;color:var(--v5)}.stcard.rec-s{border-color:var(--v7);background:rgba(46,94,126,.07)}.stcard.rec-s .sc-tag{color:var(--v7)}.stcard.rec-s .sc-body{color:var(--v9);font-weight:600}.stcard.rec-s .sc-so{display:block;color:var(--v7)}.stcard.hot{transform:scale(1.03);box-shadow:0 4px 16px rgba(0,0,0,.1)}#hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center;padding:80px 24px 60px;max-width:760px;margin:0 auto}#hero h1{font-family:var(--v22);font-size:clamp(2.3rem,6.8vw,4.7rem);font-weight:700;line-height:1.01;letter-spacing:-.024em}#hero h1 em{font-style:normal;color:var(--v0)}.bleed.scrolly{position:relative;display:grid;gap:4vw;grid-template-columns:minmax(0,1fr) minmax(0,440px);max-width:1240px;margin:0 auto;padding:0 24px}.bleed.scrolly.right{grid-template-columns:minmax(0,440px) minmax(0,1fr)}.bleed.scrolly.right .sg{order:2}.bleed.scrolly > *{min-width:0}.wide.sg{position:sticky;top:0;height:100vh;width:100%;max-width:none;margin:0;padding:24px;display:flex;align-items:center;justify-content:center}.wide.sg>.fig{width:100%;max-width:420px}.wide.sg svg,.fig svg{display:block;width:100%;height:auto}.col.ss{padding:36vh 0 40vh;max-width:none}.col.stp{min-height:72vh;display:flex;flex-direction:column;justify-content:center;max-width:none;padding:0 0 0 8px;opacity:.25;transition:opacity .32s;border-left:3px solid var(--v19)}.col.stp.on{opacity:1;border-left-color:var(--v0)}.col.stp h3{margin:0 0 7px}.col.stp p{font-size:.92rem;color:var(--v11);margin:0}[data-gel]{opacity:.1;transition:opacity .45s ease}[data-gel].show{opacity:1}@media(max-width:900px){.bleed.scrolly,.bleed.scrolly.right{grid-template-columns:1fr;gap:0;padding:0 16px}.wide.sg,.bleed.scrolly.right .sg{order:-1;position:sticky;height:44vh;width:100%;background:var(--v15);border-bottom:1px solid var(--v19);z-index:5;padding:12px}.col.ss{padding:4vh 0 12vh}.col.stp{min-height:auto;padding:24px 0}}@media(prefers-reduced-motion:reduce){[data-gel]{transition:none}.col.stp{opacity:1}}.ref{border-bottom:1px dashed var(--v0);cursor:help}.dimmed [data-part]:not(.hot){opacity:.15;transition:opacity .2s}[data-part]{transition:opacity .2s}.rw-stack{display:flex;flex-direction:column;gap:0;border:1px solid var(--v19);border-radius:10px;overflow:hidden}.rw-row{padding:16px 20px;border-bottom:1px solid var(--v19);cursor:pointer;transition:background .18s}.rw-row:last-child{border-bottom:none}.rw-row:hover{background:var(--v3)}.rw-row .rw-type{font-family:var(--v12);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}.rw-row .rw-text{font-size:.9rem;line-height:1.5;color:var(--v11)}.rw-row .rw-why{font-size:.8rem;color:var(--v10);margin-top:8px;display:none;padding-top:8px;border-top:1px solid var(--v19)}.chain-step{display:flex;align-items:flex-start;gap:14px;padding:16px 20px;border-radius:8px;border:1px solid var(--v19);margin-bottom:10px;transition:all .22s;cursor:pointer}.chain-step:hover,.chain-step.active{border-color:var(--v0);background:var(--v3)}.chain-num{width:28px;height:28px;border-radius:50%;border:2px solid var(--v19);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;color:var(--v10);transition:all .22s}.chain-step.active .chain-num{background:var(--v0);border-color:var(--v0);color:#fff}.chain-label{font-weight:700;font-size:.9rem;margin-bottom:3px}.chain-q{font-size:.82rem;color:var(--v10);font-style:italic}.chain-output{background:var(--v15);border:1px solid var(--v19);border-radius:8px;padding:14px 18px;margin-top:14px;font-size:.88rem;color:var(--v11);min-height:60px;line-height:1.55;display:none}.chain-output.show{display:block}.report-section{border:1px solid var(--v19);border-radius:8px;overflow:hidden;margin-bottom:12px}.rs-header{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--v16);cursor:pointer;user-select:none;transition:background .18s}.rs-header:hover{background:var(--v3)}.rs-tag{font-family:var(--v12);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:10px;font-weight:700}.rs-body{padding:16px 20px;display:none;border-top:1px solid var(--v19);font-size:.88rem;color:var(--v11);line-height:1.6}.rs-body.open{display:block}.rs-verdict{font-size:.75rem;font-family:var(--v12);margin-left:auto;letter-spacing:.04em}.rs-edit{width:100%;background:var(--v15);border:1px solid var(--v19);border-radius:6px;padding:10px 14px;font-family:inherit;font-size:.88rem;color:var(--v9);resize:vertical;line-height:1.55;margin-top:10px;transition:border-color .2s;min-height:80px}.rs-edit:focus{outline:none;border-color:var(--v0)}.score-bar{height:8px;background:var(--v19);border-radius:4px;overflow:hidden;margin:4px 0}.score-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}.aud-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.aud-tab{padding:7px 15px;border-radius:18px;border:2px solid var(--v19);background:none;font-family:inherit;font-size:.82rem;cursor:pointer;color:var(--v11);transition:all .2s}.aud-tab.on{border-color:var(--v0);background:var(--v0);color:#fff}.ba-toggle{display:flex;gap:8px;margin-bottom:12px}.ba-btn{flex:1;padding:9px 16px;border-radius:8px;border:2px solid var(--v19);background:none;font-family:inherit;font-size:.85rem;cursor:pointer;color:var(--v11);transition:all .2s;text-align:center}.ba-btn.on{border-color:var(--v0);background:var(--v0);color:#fff}.ba-display{background:var(--v15);border:1px solid var(--v19);border-radius:8px;padding:18px 22px;min-height:120px;font-size:.9rem;line-height:1.6;color:var(--v11);transition:all .2s}.ba-display.is-after{background:rgba(46,94,126,.06);border-color:rgba(46,94,126,.3);color:var(--v9)}.pg-out{background:var(--v13);color:var(--v14);border-radius:10px;padding:22px 26px;font-family:var(--v12);font-size:.8rem;line-height:1.95;min-height:360px}.pg-out .hi{color:#D4A0A8;font-weight:700}.pg-out .ok{color:#90D4B0;font-weight:700}.pg-out .risk{color:#E8907A;font-weight:700}.pg-out .dim{opacity:.45}.pg-out .sec{opacity:.5;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase}.pg-grid{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:start}@media(max-width:640px){.pg-grid{grid-template-columns:1fr}}.pg-label{font-size:.82rem;font-weight:600;color:var(--v11);margin-bottom:5px}.pg-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.pg-presets button{padding:6px 14px;border-radius:14px;border:2px solid var(--v19);background:none;font-family:inherit;font-size:.8rem;cursor:pointer;color:var(--v11);transition:all .2s}.pg-presets button:hover,.pg-presets button.on{border-color:var(--v0);background:var(--v0);color:#fff}select{width:100%;padding:8px 12px;border:2px solid var(--v19);border-radius:6px;background:var(--v15);font-family:inherit;font-size:.85rem;color:var(--v9);cursor:pointer}select:focus{outline:none;border-color:var(--v0)}input[type=range]{width:100%;accent-color:var(--v0)}.ctrl-val{font-family:var(--v12);font-size:.76rem;color:var(--v0);margin-top:3px}.ctrl-row{margin-bottom:14px}.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}@media(prefers-reduced-motion:reduce){.reveal{transition:none;opacity:1;transform:none}}.ent-legend{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;font-size:.78rem;color:var(--v11)}.ent-item{display:flex;align-items:center;gap:6px}.ent-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}footer{background:var(--v13);color:var(--v14);padding:52px 24px;font-size:.875rem}.hint{font-family:var(--v12);font-size:11px;letter-spacing:.08em;color:var(--v10);text-align:center;cursor:pointer;padding:32px 0;user-select:none}.hint kbd{border:1px solid var(--v19);border-radius:3px;padding:1px 5px;color:var(--v11)}.hint:hover,.hint:focus-visible{color:var(--v0);outline:none}.weeds[hidden]{display:none}.weeds{background:var(--v16);padding:60px 24px;border-top:1px solid var(--v19);animation:wIn .4s ease}@keyframes wIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}details{margin-bottom:16px;border:1px solid var(--v19);border-radius:8px;overflow:hidden}details summary{cursor:pointer;font-weight:600;padding:13px 18px;background:var(--v16);color:var(--v11);list-style:none;display:flex;align-items:center;gap:10px}details summary::before{content:'▶';font-size:.62rem;color:var(--v0);transition:transform .2s;flex-shrink:0}details[open] summary::before{transform:rotate(90deg)}.weed-body{padding:14px 20px;font-size:.9rem;color:var(--v11);line-height:1.66}.weed-body p{margin-bottom:12px}.weed-body p:last-child{margin-bottom:0}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Most reports stop at what happened. Push an observation through five questions until it turns into a recommendation, then rewrite it for three different rooms.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/so-what">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Writing the So What">
+  <meta property="og:description" content="Push an observation through five questions until it becomes a recommendation.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/so-what">
+  <meta property="og:image" content="https://www.loopingly.com/og/so-what.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Writing the So What">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Writing the So What">
+  <meta name="twitter:description" content="Push an observation through five questions until it becomes a recommendation.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/so-what.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Writing the So What","description":"Most reports stop at what happened. Push an observation through five questions until it turns into a recommendation, then rewrite it for three different rooms.","url":"https://www.loopingly.com/explorables/so-what","image":"https://www.loopingly.com/og/so-what.png","datePublished":"2026-09-17","dateModified":"2026-09-17","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Turning qualitative findings into strategic recommendations"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Writing the &quot;so what&quot;"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div id="prog" aria-hidden="true"><span id="prog-txt">01 / 09</span></div>
+
+
+<div id="hero">
+  <p class="eyebrow">Qualitative Research · Reporting craft</p>
+  <h1>Writing the<br><em>"So what."</em></h1>
+  <p class="lede">Every qual study produces observations. Most reports stop there. The step from observation to strategic recommendation — the "so what" — is where research earns its seat at the decision-making table. It is also the step most frequently skipped.</p>
+
+  <div style="margin-top:44px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start">
+    <div class="stcard obs" style="max-width:220px">
+      <span class="sc-tag">Observation</span>
+      <span class="sc-body">"Six of twelve participants mentioned they'd never recommended the product to a colleague."</span>
+    </div>
+    <div style="align-self:center;font-size:1.3rem;color:var(--v10);padding:0 4px">→</div>
+    <div class="stcard find" style="max-width:220px">
+      <span class="sc-tag">Finding</span>
+      <span class="sc-body">"Active users do not become advocates. Usage and loyalty are decoupled."</span>
+    </div>
+    <div style="align-self:center;font-size:1.3rem;color:var(--v10);padding:0 4px">→</div>
+    <div class="stcard insight-s" style="max-width:240px">
+      <span class="sc-tag">Insight + So What</span>
+      <span class="sc-body">"The product has become invisible infrastructure — valuable, but not remarkable enough to share."</span>
+      <span class="sc-so">→ Word-of-mouth growth is structurally blocked until the product creates a 'remarkable moment'.</span>
+    </div>
+  </div>
+  <p style="font-size:.79rem;color:var(--v10);margin-top:10px">
+    The atom of this explainer: one statement card in four states. The same shape carries different weight at each stage.
+  </p>
+</div>
+
+
+<section data-ch="01">
+<div class="col">
+  <p class="eyebrow">The fundamental failure</p>
+  <h2>Observations describe what happened. Insights explain why it matters. Most reports only do the first.</h2>
+  <p>Open almost any qual research report and you will find the same structure: a list of themes, each described in 2–3 sentences, each followed by 2–3 supporting quotes. This structure is comfortable to write and easy to review. It is also not research — it is an annotated summary of conversations.</p>
+  <p>The client who reads this report has learned what participants said. They have not learned what it means for their product, their strategy, or their next decision. That gap — between "what was said" and "what to do" — is where most research value is lost, and it is entirely the researcher's job to close it.</p>
+
+  <div class="intu">
+    <strong>Picture it</strong>
+    A doctor who reports "the patient has a temperature of 39.2°C and complains of fatigue" has observed. A doctor who says "this presentation is consistent with viral rather than bacterial infection, which means antibiotics won't help and rest is the intervention" has given an insight. Same data. Different value. The transition between the two is clinical judgment — and in qual research, it is analytical judgment. It cannot be automated or delegated.
+  </div>
+</div>
+
+<div class="wide reveal" id="fig1">
+  <div class="fig">
+    <p class="eyebrow">Figure 1</p>
+    <p style="font-weight:700;margin-bottom:6px">The four levels — click each card to expand it</p>
+    <div class="ent-legend">
+      <div class="ent-item"><div class="ent-dot" style="background:var(--v6)"></div>Observation</div>
+      <div class="ent-item"><div class="ent-dot" style="background:var(--v4)"></div>Finding</div>
+      <div class="ent-item"><div class="ent-dot" style="background:var(--v5)"></div>Insight + So What</div>
+      <div class="ent-item"><div class="ent-dot" style="background:var(--v7)"></div>Recommendation</div>
+    </div>
+    <div id="four-levels"></div>
+    <p class="fig-cap"><strong>Figure 1</strong> · The same raw material at four different analytical depths. Click any card to expand its definition and the question that unlocks the next level.</p>
+  </div>
+</div>
+
+<div class="col">
+  <p>Each level requires a deliberate question. The "so what" is not automatic — it is the product of asking the right question at the right moment in the analysis. Those questions are learnable, and this explainer teaches them.</p>
+</div>
+</section>
+
+
+<section data-ch="02">
+<div class="col">
+  <p class="eyebrow">The core technique</p>
+  <h2>The "so what" chain: five questions that convert any observation into a recommendation.</h2>
+  <p>The chain is a sequence of prompts you apply to your own findings — in writing, before you open the presentation template. Each question lifts the finding one level higher. Most researchers naturally stop at question two. The strategic value lives at questions four and five.</p>
+</div>
+
+<div class="wide reveal" id="fig2">
+  <div class="fig">
+    <p class="eyebrow">Figure 2 · The so-what chain — worked live</p>
+    <p style="font-weight:700;margin-bottom:6px">Click each step to see how the same finding is lifted through five questions</p>
+    <p style="font-size:.86rem;color:var(--v10);margin-bottom:18px">Starting observation: "Participants described checking the app daily but never feeling 'attached' to it."</p>
+    <div id="chain-builder"></div>
+    <p class="fig-cap"><strong>Figure 2</strong> · Each question moves the finding up one level of analytical abstraction. Click a step to expand it and see the output.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="try">
+    <strong>Apply it right now</strong>
+    Take a finding from your most recent project. Write it down. Now ask: "So what does this mean for the audience's behaviour?" Then: "So what does that behaviour cost the client?" Then: "So what would have to change?" Each "so what" question should make the answer more specific and more actionable than the one before.
+  </div>
+  <p>The chain works because it forces the researcher to move from the participants' world (what they said) into the client's world (what they need to do). That transition is the so-what.</p>
+</div>
+</section>
+
+
+<section data-ch="03">
+
+<div class="bleed scrolly right" id="sc-anatomy">
+  <div class="wide sg">
+    <div class="fig" id="anatomy-graphic">
+      <p class="eyebrow" style="margin-bottom:10px">Recommendation anatomy</p>
+      <div id="anatomy-vis"></div>
+    </div>
+  </div>
+  <div class="col ss">
+    <p class="eyebrow" style="margin-bottom:20px">Stage three · Structure</p>
+    <div class="col stp on" data-step="0">
+      <h3>A recommendation has five components — not one.</h3>
+      <p>Most researchers write recommendations as single sentences: "Redesign the onboarding flow." That is an instruction, not a recommendation. A full recommendation names what to do, why to do it, what it solves, what it risks, and how you'd know it worked. Missing any one of these reduces the recommendation's credibility and actionability.</p>
+    </div>
+    <div class="col stp" data-step="1">
+      <h3>1 · The action: what specifically to do</h3>
+      <p>The action must be specific enough that two people reading it would do the same thing. "Improve the experience" fails this test. "Redesign the plan comparison page to show value equivalence in plain language before any pricing is shown" passes it. Specificity is not prescription — it is clarity. The client can reject the specific action but accept the principle; a vague action cannot be usefully rejected or accepted.</p>
+    </div>
+    <div class="col stp" data-step="2">
+      <h3>2 · The evidence: which finding drives it</h3>
+      <p>Every recommendation must be traceable to a specific finding. Not "the research showed" — but "finding 3: users treat pricing opacity as a signal of distrust, supported by 8 of 12 participants." This traceability is what distinguishes a research-based recommendation from an opinion. Without it, the client cannot evaluate whether the evidence is strong enough to justify the action.</p>
+    </div>
+    <div class="col stp" data-step="3">
+      <h3>3 · The mechanism: why this action addresses this finding</h3>
+      <p>The connection between the finding and the action is not always obvious — and when it isn't, clients often reject recommendations they would have accepted if the logic were made explicit. "If users treat opacity as distrust, then transparency is the mechanism that rebuilds it. The comparison page redesign delivers transparency at the highest-stakes moment: the renewal decision."</p>
+    </div>
+    <div class="col stp" data-step="4">
+      <h3>4 · The risk: what happens if you don't act</h3>
+      <p>Research recommendations without a cost-of-inaction statement are easy to defer. Adding the risk makes the recommendation's urgency concrete: "Without this change, the trust deficit accumulates silently. Users who feel uncertain about value are 3–4x more likely to attrite at renewal — and they leave without complaining, which means you won't see it coming." Urgency is part of the "so what."</p>
+    </div>
+    <div class="col stp" data-step="5">
+      <h3>5 · The signal: how you'd know it worked</h3>
+      <p>A recommendation without a success signal is an act of faith. Even in qual research — where you're not the measurement team — naming the signal demonstrates that the recommendation is falsifiable: "If this works, you would expect to see renewal intent scores improve and a reduction in plan-comparison drop-off rate." This makes the recommendation a hypothesis, not an assertion, and that's a more credible posture.</p>
+    </div>
+  </div>
+</div>
+
+<div class="col" style="margin-top:28px">
+  <div class="fig reveal" id="fig3">
+    <p class="eyebrow">Figure 3 · Build a complete recommendation — interactive</p>
+    <p style="font-weight:700;margin-bottom:16px">Click each component to fill it in and see the full recommendation assemble</p>
+    <div id="rec-builder"></div>
+    <div id="rec-full" style="display:none;margin-top:16px;padding:18px 22px;background:rgba(46,94,126,.07);
+          border:2px solid rgba(46,94,126,.3);border-radius:10px;font-size:.875rem;line-height:1.65"></div>
+    <p class="fig-cap"><strong>Figure 3</strong> · Click each component tab to fill in that part of the recommendation. The full statement assembles at the bottom when all five are present.</p>
+  </div>
+</div>
+</section>
+
+
+<section data-ch="04">
+<div class="col">
+  <p class="eyebrow">The rewrite clinic</p>
+  <h2>The same finding written three ways — only one of them strategic.</h2>
+  <p>The easiest way to understand the so-what is to see it applied to the same raw material in multiple ways. Below are five common qual findings, each shown as: an observation summary (what most reports say), a finding statement (better but still not strategic), and a full insight + so-what (what the report should say).</p>
+</div>
+
+<div class="wide reveal" id="fig4">
+  <div class="fig">
+    <p class="eyebrow">Figure 4 · Rewrite clinic — before and after</p>
+    <div class="aud-tabs" id="rewrite-tabs"></div>
+    <div class="ba-toggle">
+      <button class="ba-btn on" id="ba-before" onclick="setBA('before')">Observation summary</button>
+      <button class="ba-btn" id="ba-mid" onclick="setBA('mid')">Finding statement</button>
+      <button class="ba-btn" id="ba-after" onclick="setBA('after')">Insight + so what ✓</button>
+    </div>
+    <div class="ba-display" id="ba-display"></div>
+    <div id="ba-why" style="margin-top:12px;font-size:.82rem;color:var(--v10);
+                             min-height:48px;padding:10px 14px;background:var(--v15);
+                             border-radius:6px;border:1px solid var(--v19)"></div>
+    <p class="fig-cap"><strong>Figure 4</strong> · Select a finding, then toggle between the three versions to see how the same evidence is transformed at each level. The explanation below tells you what changed and why.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="pull">"The observation tells the client what you heard. The so what tells the client what to do about it. Both belong in the report — but only one of them is why they hired you."</div>
+</div>
+</section>
+
+
+<section data-ch="05">
+<div class="col">
+  <p class="eyebrow">Writing for the audience</p>
+  <h2>The same insight written for three different rooms sounds completely different.</h2>
+  <p>A qual debrief reaches multiple audiences simultaneously: the day-to-day research buyer who wants evidence, the marketing director who wants direction, and the C-suite who wants a decision. Writing one version of your findings and expecting it to land for all three is how research gets dismissed as "interesting but not actionable" by someone and "too operational" by someone else.</p>
+  <p>The insight is the same. The framing, the language, the level of evidence shown, and the type of action implied all shift depending on who's in the room.</p>
+</div>
+
+<div class="wide reveal" id="fig5">
+  <div class="fig">
+    <p class="eyebrow">Figure 5 · Audience-calibrated framing — interactive</p>
+    <p style="font-weight:700;margin-bottom:6px">Select the audience. See how the same insight is rewritten for the room.</p>
+    <div class="aud-tabs" id="audience-tabs"></div>
+    <div id="audience-display"></div>
+    <p class="fig-cap"><strong>Figure 5</strong> · The underlying finding does not change. The frame, the language, the evidence depth, and the type of action shown all shift. Click each audience to see why.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="note">
+    <strong>The pre-read problem:</strong> Most research reports are read before the debrief, not during it. This means the written document needs to carry the "so what" on its own — you won't be in the room to add it verbally. Write every insight as if the reader is alone, sceptical, and has four minutes. If the so-what isn't on the page, it doesn't exist.
+  </div>
+</div>
+</section>
+
+
+<section data-ch="06">
+<div class="col">
+  <p class="eyebrow">The craft in practice</p>
+  <h2>Six common report sections — and the structural problem hiding in each one.</h2>
+  <p>Qual reports are structured documents, and the structure itself can work against the so-what. Some common structures bury the insight, front-load the methodology, or let the findings section double as the recommendations section — collapsing the crucial distinction between "what we learned" and "what you should do."</p>
+  <p>Each section below shows the most common version of that section in the wild — and what it should say instead. Click any section to expand it and edit the live text.</p>
+</div>
+
+<div class="wide reveal" id="fig6">
+  <div class="fig">
+    <p class="eyebrow">Figure 6 · Report section audit — click to expand, read, and edit</p>
+    <div id="report-sections"></div>
+    <p class="fig-cap"><strong>Figure 6</strong> · Each section shows the common weak version and the stronger version. Click to expand, see the diagnosis, and edit the text live.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="try">
+    <strong>The one-page test</strong>
+    After you finish any research report, extract every explicit recommendation — the sentences that say what the client should do, not just what participants said. Put them on a single page. If that page doesn't make sense on its own — without the context of the full report — your so-whats are buried or missing. A strong research report should produce a standalone, coherent action list.
+  </div>
+</div>
+</section>
+
+
+<section data-ch="07">
+
+<div class="bleed scrolly" id="sc-ladder">
+  <div class="wide sg">
+    <div class="fig">
+      <p class="eyebrow" style="margin-bottom:8px">The escalation ladder</p>
+      <svg id="ladder-svg" viewBox="0 0 360 420" xmlns="http://www.w3.org/2000/svg" aria-label="Escalation ladder diagram">
+        
+      </svg>
+    </div>
+  </div>
+  <div class="col ss">
+    <p class="eyebrow" style="margin-bottom:20px">Stage seven · Calibration</p>
+    <div class="col stp on" data-step="0">
+      <h3>Not every finding needs the same depth of so-what.</h3>
+      <p>One of the quieter skills in qual reporting is calibrating how far to push the "so what" for each finding. A peripheral observation might only need a sentence of implication. A central, surprising, high-stakes finding might warrant a full recommendation with mechanism, risk, and signal. Learning to match analytical depth to finding importance is what separates efficient reports from exhausting ones.</p>
+    </div>
+    <div class="col stp" data-step="1">
+      <h3>Level 1: the contextual note</h3>
+      <p>For minor, confirming, or peripheral findings — things that add texture but don't change the story — a single sentence of implication is enough. "This confirms existing assumptions about the segment and doesn't require strategic action." You've honoured the finding without over-investing in it. The client knows you saw it and made a conscious decision about its weight.</p>
+    </div>
+    <div class="col stp" data-step="2">
+      <h3>Level 2: the finding with implication</h3>
+      <p>For moderate findings — things that shift understanding without requiring immediate action — write the finding plus one implication sentence. "Participants frame the choice as a values match, not a feature comparison. This has implications for how the brand is positioned — not what the product does, but what it stands for." Two sentences. Clear implications. No prescription yet.</p>
+    </div>
+    <div class="col stp" data-step="3">
+      <h3>Level 3: the full insight</h3>
+      <p>For significant findings — things that reframe the problem or reveal something genuinely unexpected — write the full insight: finding + mechanism + business implication. "Active users don't recommend this product because it has become invisible — which means word-of-mouth growth is structurally blocked until the product creates a 'remarkable moment'. This is a product design problem, not a marketing problem." Now the client knows where to direct resources.</p>
+    </div>
+    <div class="col stp" data-step="4">
+      <h3>Level 4: the strategic recommendation</h3>
+      <p>Reserve this level for 2–3 findings per study at most. A report with twelve Level 4 recommendations is a report that has lost its analytical judgment. The full five-component recommendation — action, evidence, mechanism, risk, signal — exists for the findings where getting it wrong has the highest cost. Overusing it trains clients to skip to the last slide, which is the opposite of what you want.</p>
+    </div>
+  </div>
+</div>
+
+<div class="col" style="margin-top:24px">
+  <div class="note">
+    <strong>The golden ratio:</strong> In a well-constructed qual report, roughly 60% of the content should be findings and evidence, and 40% should be implications, insights, and recommendations. If your implications section is three bullet points after forty pages of findings, the ratio is wrong — and the client's attention will follow the ratio, not your intentions.
+  </div>
+</div>
+</section>
+
+
+<section data-ch="08" style="background:var(--v16)">
+<div class="col">
+  <p class="eyebrow">Capstone playground</p>
+  <h2>Generate a complete so-what framework for any finding type.</h2>
+  <p>Choose your finding type, the audience, and the stakes — and get a fully structured so-what statement plus a complete recommendation skeleton ready to populate with your own content.</p>
+</div>
+<div class="wide">
+  <div class="pg-presets" id="pg-presets-el"></div>
+  <div class="pg-grid">
+    <div>
+      <div class="ctrl-row">
+        <div class="pg-label">Finding type</div>
+        <select id="pg-ftype" onchange="renderPG()">
+          <option value="behav">Behavioural (what people do)</option>
+          <option value="attit">Attitudinal (what people believe)</option>
+          <option value="motiv">Motivational (what drives them)</option>
+          <option value="barrier">Barrier (what stops them)</option>
+          <option value="unmet">Unmet need (what's missing)</option>
+        </select>
+      </div>
+      <div class="ctrl-row">
+        <div class="pg-label">Primary audience</div>
+        <select id="pg-aud" onchange="renderPG()">
+          <option value="cmo">CMO / Brand director</option>
+          <option value="product">Product / UX team</option>
+          <option value="ceo">CEO / Executive sponsor</option>
+          <option value="strategy">Strategy / Planning</option>
+          <option value="insights">Insights / Research team</option>
+        </select>
+      </div>
+      <div class="ctrl-row">
+        <div class="pg-label">Stakes level</div>
+        <input type="range" id="pg-stakes" min="1" max="3" value="2" step="1" oninput="renderPG()">
+        <div class="ctrl-val" id="pg-sv">Moderate</div>
+      </div>
+      <div class="ctrl-row">
+        <div class="pg-label">Evidence strength</div>
+        <input type="range" id="pg-ev" min="1" max="3" value="2" step="1" oninput="renderPG()">
+        <div class="ctrl-val" id="pg-ev-v">Solid (6–9 participants)</div>
+      </div>
+    </div>
+    <div class="pg-out" id="pg-out-el"></div>
+  </div>
+</div>
+</section>
+
+
+<section data-ch="09">
+<div class="col" style="text-align:center;padding:80px 24px">
+  <p class="eyebrow">The bottom line</p>
+  <h2 style="font-size:clamp(1.55rem,3.8vw,2.4rem)">The "so what" is not a section of the report. It is the report.</h2>
+  <p class="lede" style="max-width:540px;margin:16px auto 0">
+    Every observation you don't push to an insight is evidence left on the table. Every insight you don't push to a recommendation is value the client will have to supply themselves — and most won't. The craft of writing the "so what" is the craft of doing the hard work so they don't have to.
+  </p>
+</div>
+</section>
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</p>
+
+<section class="weeds" id="weeds" hidden aria-labelledby="weedsHint">
+<div class="col">
+  <h2 style="margin-bottom:26px">Into the weeds</h2>
+  <details>
+    <summary>The ethics of the so-what: when do recommendations go too far?</summary>
+    <div class="weed-body">
+      <p>There is a version of "so what" that crosses from analytical judgment into advocacy — where the researcher's own views about what the client should do start to shape which findings get elevated and which get buried. This is a genuine risk, and it's worth naming explicitly.</p>
+      <p>The discipline is: recommendations should be derivable from the findings by any competent analyst, not just by you. A good test is to show your recommendation to a colleague who hasn't read the full data. If they say "I don't see how you got there from those findings," you've overstepped. If they say "yes, that follows" — you're on safe ground.</p>
+      <p>There is also the question of what to do when the findings contradict what the client wants to hear. This is the highest-stakes moment in any research project, and the so-what must be written clearly even then — perhaps especially then. Burying an inconvenient finding under diplomatic language or weak framing is the most common form of research integrity failure, and it's almost never noticed until after the client has made the wrong decision.</p>
+    </div>
+  </details>
+  <details>
+    <summary>How to handle contradictory findings in the same study</summary>
+    <div class="weed-body">
+      <p>Contradictory findings are a gift, not a problem. When participants tell you inconsistent things — half say price is the main driver, half say it's irrelevant — the contradiction is the data. It tells you that this population is not homogeneous, and that a single-version recommendation will be wrong for part of your audience.</p>
+      <p>The so-what for a contradictory finding sounds like: "This finding divides the audience into two groups with different needs. Any single strategy will leave one group underserved. The recommendation is to segment the response rather than average it." This is a more valuable insight than a clean, consensus finding — because it points toward a different kind of action.</p>
+    </div>
+  </details>
+  <details>
+    <summary>When the client already knows — and why you should say it anyway</summary>
+    <div class="weed-body">
+      <p>Experienced researchers often worry: "They already know this. Why am I telling them something they already knew?" But knowing something and having it confirmed by evidence are different things. A finding the client suspected is now a finding the client can act on without internal challenge. The so-what for a confirming finding is: "This validates the existing hypothesis and removes the internal debate about whether to act. The decision is now easier to make and easier to defend."</p>
+      <p>Confirmation is not a failure of research — it is a legitimate output. What would be a failure is presenting the confirmation as if it were discovery, or padding it with caveats that undermine the confidence the finding deserves.</p>
+    </div>
+  </details>
+  <details>
+    <summary>The debrief as a so-what delivery mechanism</summary>
+    <div class="weed-body">
+      <p>The live debrief is often where the so-what lands hardest — not because you say something different to the report, but because you can watch the room and adjust. When you see confusion, you can unpack the mechanism. When you see resistance, you can name the evidence more specifically. When you see recognition — the moment someone in the room says "yes, that's exactly it" — you slow down and let the insight settle.</p>
+      <p>The most underused tool in the debrief is the pause. After reading out a strong insight, say nothing for three seconds. Let the room absorb it. Researchers who talk through their own insights, rushing to the next slide, train clients to treat findings as background noise. The pause signals: this matters. Take a moment with it.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Writing the executive summary: the one page that has to do everything</summary>
+    <div class="weed-body">
+      <p>The executive summary of a qual report should not summarise the methodology, the sample, or the process. It should contain: the central question the study addressed, three to five insights (not findings), and the two or three most important recommendations. Nothing else. If someone reads only the executive summary, they should walk away knowing what to do — not knowing what you did.</p>
+      <p>The most common executive summary failure is writing it last and using it to compress the full report. Instead, write the executive summary first — before you write the full report — as a discipline for identifying which insights are truly central. Then write the full report as the evidence base that supports what the executive summary already says. This reverses the usual sequence and consistently produces sharper, more action-oriented reports.</p>
+    </div>
+  </details>
+  <details>
+    <summary>The 48-hour rule for so-what writing</summary>
+    <div class="weed-body">
+      <p>The best so-what statements are rarely written immediately after fieldwork. They need distance — typically 24–48 hours away from the transcripts. During that time, the brain continues processing: patterns that weren't visible during analysis become obvious in the shower, connections that seemed forced become natural by morning.</p>
+      <p>The practical implication: build 48 hours of "dark time" between your final analysis session and your first draft of the report. Use that time to write the executive summary from memory — without looking at your notes. What you remember is what was most significant. What you have to look up is what was merely documented. The so-what lives in what you remember.</p>
+    </div>
+  </details>
+</div>
+</section>
+
+<footer>
+  <div class="col">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex-wrap:wrap">
+      <div>
+        <p class="eyebrow" style="margin-bottom:10px">About this explainer</p>
+        <p>Covers the full so-what journey: the four analytical levels, the five-question chain, the anatomy of a strong recommendation, audience-calibrated framing, report structure, and the escalation ladder. Press <kbd style="border:1px solid rgba(255,255,255,.2);padding:1px 5px;border-radius:3px">s</kbd> for deeper craft notes on ethics, contradiction, and debrief technique.</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:10px">The four levels</p>
+        <div class="ent-legend" style="flex-direction:column;gap:10px">
+          <div class="ent-item"><div class="ent-dot" style="background:var(--v6)"></div><span style="color:var(--v14)">Observation — what was said</span></div>
+          <div class="ent-item"><div class="ent-dot" style="background:var(--v4)"></div><span style="color:var(--v14)">Finding — the pattern across observations</span></div>
+          <div class="ent-item"><div class="ent-dot" style="background:var(--v5)"></div><span style="color:var(--v14)">Insight — the mechanism and its implication</span></div>
+          <div class="ent-item"><div class="ent-dot" style="background:var(--v7)"></div><span style="color:var(--v14)">Recommendation — the specific action to take</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>var FOUR_LEVELS=[{state:"obs",color:"var(--v6)",label:"Observation",text:'"Six of twelve participants said they\'d never recommended the product to a colleague."',desc:"A count of what was said. Accurate. Inert. The client learns that non-recommendation is common. They do not learn why, what it costs, or what to do.",unlock:"Ask: What pattern does this observation represent? → becomes a Finding"},{state:"find",color:"var(--v4)",label:"Finding",text:'"Active users do not convert into advocates. Usage and loyalty appear to be decoupled — the product is used but not socially endorsed."',desc:"A pattern with a name. Better — now the client understands the structural phenomenon. But they still don't know what's causing the decoupling or what to do about it.",unlock:"Ask: What mechanism explains this pattern? What does this mean for the business? → becomes an Insight"},{state:"insight-s",color:"var(--v5)",label:"Insight + So What",text:'"The product has become invisible infrastructure — essential, habitual, but unremarkable. Users don\'t recommend invisible things. Word-of-mouth growth is structurally blocked until the product creates a moment worth sharing."',desc:"Now the client understands the mechanism (invisibility) and its strategic consequence (WoM is blocked). They can trace the business problem back to a root cause. This is what the research was for.",unlock:"Ask: Given this mechanism and its consequence, what specifically should the client change? → becomes a Recommendation"},{state:"rec-s",color:"var(--v7)",label:"Recommendation",text:"\"Redesign the product's most-used daily touchpoint to include one 'remarkable moment' — a surprise feature, a milestone celebration, or a personalised insight the user didn't expect. Measure impact through NPS and organic referral rates at 90 days.\"",desc:"Specific, traceable to the finding, with a mechanism (remarkable moment), and a success signal. This is what earns strategic trust. The client can agree, disagree, or modify — but they cannot ignore it.",unlock:"(Full cycle complete — observation has become strategic action)"}],CHAIN_STEPS=[{label:"The observation",q:"What did participants actually say?",output:"\"Participants described checking the app daily but never feeling 'attached' to it.\"",note:"This is the raw material. Accurate, but not yet analytical."},{label:"So what does this mean for their behaviour?",q:"What behaviour does this pattern describe or predict?",output:"\"Users are in a stable low-engagement state: they won't leave voluntarily, but they won't invest further either — no upgrades, no advocacy, no positive word-of-mouth.\"",note:"First lift: we've named the behavioural consequence of the observation."},{label:"So what does that behaviour cost the client?",q:"What is the business cost of this behavioural pattern?",output:"\"A user who won't advocate and won't upgrade represents capped lifetime value. The client's growth model depends on organic referral and tier upgrades — both are structurally blocked for this segment.\"",note:"Second lift: we've connected the behaviour to a business consequence."},{label:"So what would have to change?",q:"What would need to be different for this pattern to break?",output:'"The attachment deficit is a product design problem, not a marketing problem. The product needs to create moments that feel worth sharing — currently, nothing in the experience generates that emotional response."',note:"Third lift: we've named the root cause and the type of intervention required."},{label:"So what should the client do?",q:"What is the specific, actionable recommendation?",output:"\"Introduce a 'delight layer': one unexpected, personalised moment per user per week — a milestone, an insight, a feature reveal — designed to make the product feel alive rather than invisible. This is a product roadmap priority, not a comms priority.\"",note:"Final lift: the so-what chain has produced a strategic recommendation traceable to the original observation."}],REWRITES=[{tab:"Non-recommendation",before:'"Many participants said they\'d never recommended the product to others. Word of mouth appears to be low."',mid:'"Active users do not convert to advocates. The product is used but not socially endorsed — usage and loyalty are decoupled."',after:'"Daily use has made the product invisible — and invisible things don\'t get recommended. Word-of-mouth growth is structurally blocked until the product creates a moment worth sharing. This is a product problem, not a marketing spend problem."',before_why:"Describes the absence of a behaviour without explaining why or what it costs. The client reads it and nods.",mid_why:'Names the pattern ("decoupled") — better. But still doesn\'t name the mechanism or the implication.',after_why:"Names the mechanism (invisibility), its consequence (WoM blocked), and the type of action (product problem, not comms). Specific enough to disagree with usefully."},{tab:"Price concerns",before:'"Price was mentioned by eight participants. Several said the product felt expensive relative to alternatives."',mid:'"Price sensitivity is higher than expected. Users are actively comparing to cheaper alternatives and finding the value proposition unclear."',after:"\"Users aren't leaving because the product is expensive — they're leaving because they can't verify it's worth the price. The problem is opacity, not cost. A redesigned value communication strategy would cost far less than a price cut and would address the actual decision mechanism.\"",before_why:'A frequency count dressed as a finding. "Eight participants" is data, not insight.',mid_why:"Frames it as sensitivity — implies the answer is a price cut. This is potentially the wrong conclusion.",after_why:"Separates the surface complaint (price) from the root cause (opacity). The recommendation implicit in the insight is completely different from what the mid version implies."},{tab:"Trust deficit",before:'"Some participants expressed concerns about data privacy. Trust was mentioned in four sessions."',mid:'"Data privacy is a genuine barrier to deeper engagement for a minority of users. Trust concerns appear to be suppressing feature adoption."',after:"\"Privacy concerns function as a veto, not a preference — users who raise them don't trade off; they opt out entirely. A single ambiguous privacy signal reverses months of positive experience. The product's trust architecture needs to be rebuilt to be explicitly communicative, not assumed.\"",before_why:'"Some" and "four sessions" are defensive hedges, not evidence. The client can\'t act on "some participants had concerns."',mid_why:'Better. But "a minority of users" buries the severity. If a minority holding a veto are your most-likely-to-churn users, "minority" is misleading.',after_why:"Names the mechanism (veto, not preference), the severity (reverses months of positive experience), and the implication (architectural rebuild, not a comms patch)."},{tab:"Upgrade inertia",before:'"Most free-tier users said they hadn\'t upgraded. They cited lack of immediate need as the main reason."',mid:'"Free-tier satisfaction is high enough to eliminate the upgrade trigger. Users are content with what they have, and nothing in the product experience is creating urgency to pay."',after:"\"The free tier is too good — it has neutralised the upgrade motivation. 'Good enough' is the enemy of revenue growth here. Every improvement to the free tier widens the satisfaction gap that justified the original freemium decision. The pricing structure needs a deliberate 'ceiling' designed to create meaningful friction — not frustration — at the moment users hit their most valued workflows.\"",before_why:"\"Cited lack of immediate need\" is the participants' rationalisation. It's not the finding — it's the surface explanation.",mid_why:'Good diagnosis. But "nothing in the product experience is creating urgency" is still describing a state, not pointing at a lever.',after_why:"Names the structural problem (the free tier is too good), connects it to the business model, and points at the specific lever (pricing ceiling design). Actionable at executive level."},{tab:"Onboarding drop",before:'"Several participants struggled with the initial setup. Onboarding was described as confusing by three users."',mid:'"Onboarding is a significant barrier to first-value. Users who don\'t reach a clear success moment in session one are unlikely to return."',after:"\"Users don't drop out because the onboarding is hard — they drop out because they can't see the promise of the product from where onboarding leaves them. The first session ends before the product has demonstrated its core value. Redesigning the onboarding endpoint to be a 'proof of value' moment — not a setup completion — would close the majority of early drop-off without changing the underlying complexity.\"",before_why:'"Several" and "three users" are again defensive hedges. The client doesn\'t know if this is a minority problem or a structural one.',mid_why:'Good framing ("first-value", "success moment"). But doesn\'t say what the onboarding should do differently.',after_why:"Reframes the problem entirely (not complexity, but absence of value demonstration) and points at a specific design endpoint change. This is immediately actionable for a product team."}],AUDIENCES=[{tab:"CMO / Brand",key:"cmo",framing:"Brand and positioning language. Leads with perception and market-level implication. Action is about brand architecture.",display:"\"Your brand has become a utility — trusted, relied upon, and completely forgettable. Utilities don't generate advocates; they generate tolerance. Until this product creates a brand moment, word-of-mouth will remain near zero regardless of spend. The recommendation is a brand experience audit focused on 'shareability' — finding the two or three moments in the product that could become the thing customers tell people about.\"\n\nTone: Strategic framing, brand language, no operational detail.\nAction type: Brand architecture, experience design.\nEvidence shown: The pattern and its market-level consequence. No individual quotes."},{tab:"Product / UX",key:"product",framing:"Feature-level language. Leads with specific moments in the product journey. Action is concrete and buildable.",display:"\"Seven of twelve participants described the app as something they 'just use' — no emotional language, no memorable moments, no standout interactions. The daily active session lasts 4–6 minutes on average and ends without any moment of delight or surprise. The recommendation is to audit the three highest-frequency user flows and identify where a personalised, unexpected output could be injected — a usage insight, a milestone notification, a shortcut that feels like the product knows them. This is a UI/UX change, not a backend change.\"\n\nTone: Specific, feature-level, buildable.\nAction type: UI / feature design.\nEvidence shown: Behavioural frequency data, specific flows named."},{tab:"CEO / Sponsor",key:"ceo",framing:"P&L language. Leads with the business risk or opportunity. Action is a strategic priority, not an operational task.",display:'"The research identified a structural growth problem: your highest-engagement users are not becoming advocates. Word-of-mouth acquisition — which drives 30–40% of growth in comparable subscription categories — is effectively at zero for this product. The root cause is not dissatisfaction; it is invisibility. The product does its job so quietly that users never think to mention it. This is fixable — but it requires investment in product experience, not in marketing. The recommendation is to make product advocacy a top-3 product KPI for the next two quarters."\n\nTone: Business risk, growth language, executive-level.\nAction type: Strategic priority-setting.\nEvidence shown: Business consequence only. Research is the source, not the feature.'},{tab:"Strategy",key:"strategy",framing:"Competitive and market-level language. Leads with the strategic position. Action is about differentiation and positioning.",display:"\"In a category where switching costs are low and alternatives are multiplying, the product's current 'utility' positioning is a strategic liability. Users who experience a product as unremarkable will switch to the next unremarkable alternative at the moment of any friction — price, UX change, or a more visible competitor offer. The strategic implication is that the product needs to develop a 'sticky differentiation' — an experience or output that is genuinely hard to replace — before the competitive window narrows further. The research points to personalised insight delivery as the most defensible territory.\"\n\nTone: Competitive, long-view, market-framing.\nAction type: Strategic positioning, differentiation.\nEvidence shown: Pattern + competitive framing. No operational detail."},{tab:"Insights team",key:"insights",framing:"Methodological language. Full evidence chain shown. Action is about research follow-up and knowledge-building.",display:"\"The decoupling of usage and advocacy — observed across 8 of 12 participants, with consistent language across segments — appears to be a structural product dynamic rather than a segment-specific pattern. The mechanism (invisibility-through-habituation) is well-supported by the data and consistent with relevant literature on habitual product use. Recommended next steps: (1) quantify the WoM gap via NPS and referral tracking to establish a baseline before any intervention, (2) run a co-creation session with the most engaged users to surface their definition of 'a moment worth sharing', (3) A/B test one 'delight layer' feature against the control flow over 90 days to establish causal evidence.\"\n\nTone: Evidence-led, methodologically rigorous.\nAction type: Research follow-up, measurement design.\nEvidence shown: Full evidence chain, quantification recommended."}],REC_COMPONENTS=[{id:"action",label:"The action",color:"var(--v7)",q:"What specifically should the client do?",placeholder:"e.g. Redesign the plan comparison page to show value equivalence before any pricing information appears.",example:"Redesign the plan comparison page to surface concrete value equivalence — what you can do, not what you're charged — before any pricing tier is shown.",stored:""},{id:"evidence",label:"The evidence",color:"var(--v4)",q:"Which finding drives this recommendation?",placeholder:"e.g. Finding 3: 8 of 12 participants described treating price opacity as a signal that the company doesn't trust them.",example:"Finding 2 (high confidence, n=9): Users cannot articulate what they receive at their current tier. Pricing opacity is interpreted as distrust, not complexity.",stored:""},{id:"mechanism",label:"The mechanism",color:"var(--v6)",q:"Why does this action address this finding?",placeholder:"e.g. Transparency at the moment of renewal rebuilds the trust that opacity eroded.",example:"If users interpret opacity as distrust, then explicit value communication at the renewal decision moment is the mechanism that rebuilds confidence. The comparison page is that moment.",stored:""},{id:"risk",label:"The risk",color:"var(--v18)",q:"What happens if the client doesn't act?",placeholder:"e.g. The trust deficit accumulates silently, and users attrite at renewal without providing feedback.",example:"Without this change, users who feel uncertain about value will continue to attrite silently at renewal. Silent churn is the most expensive kind — no negative signal means no intervention trigger.",stored:""},{id:"signal",label:"The signal",color:"var(--v20)",q:"How would you know if it worked?",placeholder:"e.g. An increase in renewal intent score and a reduction in plan-comparison page exit rate.",example:"Success signal: renewal intent score improves in subsequent tracking; plan-comparison page drop-off rate decreases by >15% within 60 days of change.",stored:""}],activeRecComp=0,REPORT_SECTIONS=[{title:"Executive summary",tag:"often wrong",tagColor:"var(--v18)",bad:"This study examined perceptions of the subscription product among 12 active users aged 28–45. Research was conducted via individual depth interviews in March 2025. Key themes included pricing, user experience, and advocacy.",good:"The research identified a structural growth problem: users who rely on the product daily are not becoming advocates. This is not a satisfaction issue — it is a product visibility issue. Three recommendations follow: (1) redesign the daily touchpoint for 'shareability', (2) rebuild the plan comparison page around value, not pricing tiers, (3) treat NPS as a product KPI, not a marketing metric.",diagnosis:"The bad version is a methodology summary — it belongs in the appendix. The exec summary should contain only insights and recommendations. If a senior stakeholder reads only this page, they should know what to do."},{title:"Key findings",tag:"commonly buried",tagColor:"var(--v23)",bad:"Finding 1: Participants described the product as useful and reliable. Many said they used it daily.\nFinding 2: Price was mentioned as a consideration. Several participants found the plan structure confusing.\nFinding 3: Few participants had recommended the product to others.",good:"Finding 1: Daily use has made the product invisible — it is used but not valued consciously, which predicts zero advocacy and fragile retention.\nFinding 2: Pricing opacity is not a confusion problem — it is a trust problem. Users interpret unclear pricing as a signal that the company is not confident in its own value.\nFinding 3: Non-recommendation is structural, not attitudinal. Users don't decline to recommend — they simply never think to. This is a product design failure, not a comms failure.",diagnosis:'The bad version is a summary of observations. The good version names findings — patterns with interpretive labels. "Participants described X" is an observation. "X is evidence of Y" is a finding.'},{title:"Recommendations",tag:"most commonly weak",tagColor:"var(--v18)",bad:"• Improve onboarding to reduce confusion\n• Consider revising the pricing page\n• Explore ways to encourage word of mouth\n• Continue monitoring user feedback",good:"Priority 1 (High stakes, high evidence): Redesign the plan comparison page to show value equivalence before pricing. Evidence: Finding 2 (n=9). Mechanism: transparency at the renewal moment rebuilds the trust that opacity eroded. Risk: silent churn continues unchecked. Signal: renewal intent +X%, comparison page exit rate -Y%.\n\nPriority 2 (High stakes, moderate evidence): Introduce one 'remarkable moment' per week in the core user journey. Evidence: Finding 3 (n=8). Mechanism: memorable experiences generate advocacy; invisible ones don't.",diagnosis:"The bad version is a list of vague suggestions — any of which could have been written without doing the research. The good version is structured (action, evidence, mechanism, risk, signal), prioritised, and traceable. It can be accepted, rejected, or modified based on its specific logic."},{title:"Methodology section",tag:"too prominent",tagColor:"var(--v23)",bad:"This research was conducted using a qualitative methodology consisting of 12 individual depth interviews (IDIs) of 60 minutes each. Participants were recruited via specialist recruitment agency and screened for active subscription usage in the 28–45 age group. Sessions were conducted via video call and recorded with participant consent. Analysis involved thematic coding using an iterative approach...",good:"12 individual depth interviews, 60 minutes each, active subscribers aged 28–45. Full methodology available in the appendix.",diagnosis:"Methodology should be one paragraph in the body and a full description in the appendix. Clients who want to scrutinise methodology will read the appendix. Clients who want to act on the findings don't need three pages about recruitment before they reach the insights."},{title:"Verbatim quotes",tag:"often overused",tagColor:"var(--v23)",bad:'"It\'s just a thing I use." — P3\n"I\'ve been meaning to upgrade but I never get around to it." — P7\n"The pricing page is confusing." — P2\n"I don\'t really recommend apps to people." — P4\n[14 more quotes follow]',good:"\"It's become invisible. Like the electricity. I don't appreciate it until it's gone.\" — P1\n[Single most illustrative quote, selected because it names the mechanism the insight is built on — not because it is representative of what was said most often]",diagnosis:"Quotes should be selected for their analytical power, not their frequency or representativeness. One quote that illuminates the mechanism beats six quotes that repeat the surface observation. Every quote should earn its place by adding something the surrounding prose cannot."}],currentRewrite=0,currentBA="before",currentAud=0,LADDER_DATA=[{level:"L1",label:"Contextual note",color:"#908888",desc:"One implication sentence"},{level:"L2",label:"Finding + implication",color:"var(--v4)",desc:"Finding + one implication"},{level:"L3",label:"Full insight",color:"var(--v5)",desc:"Finding + mechanism + business implication"},{level:"L4",label:"Strategic recommendation",color:"var(--v7)",desc:"All five components"}],PG_PRESETS_DATA=[{label:"Brand churn",ftype:"behav",aud:"cmo",stakes:3,ev:3},{label:"Price barrier",ftype:"barrier",aud:"strategy",stakes:2,ev:2},{label:"Unmet need",ftype:"unmet",aud:"product",stakes:2,ev:2},{label:"C-suite brief",ftype:"motiv",aud:"ceo",stakes:3,ev:1}];function buildFourLevels(){var e=document.getElementById("four-levels"),t='<div style="display:flex;flex-direction:column;gap:10px">';FOUR_LEVELS.forEach(function(e,i){t+='<div class="stcard '+e.state+'" style="max-width:none;display:block;cursor:pointer" onclick="toggleLevel4('+i+')" id="fl'+i+'"><div style="display:flex;align-items:center;gap:10px"><div style="width:10px;height:10px;border-radius:50%;background:'+e.color+';flex-shrink:0"></div><span class="sc-tag">'+e.label+'</span><span style="margin-left:auto;font-size:.68rem;font-family:var(--v12);color:var(--v10)">click to expand</span></div><div class="sc-body" style="margin-top:6px">'+e.text+'</div><div id="fl-body'+i+'" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--v19)40"><div style="font-size:.84rem;color:var(--v11);margin-bottom:8px">'+e.desc+'</div><div style="font-size:.78rem;font-family:var(--v12);color:'+e.color+";background:"+e.color+'15;border-radius:6px;padding:6px 10px">'+e.unlock+"</div></div></div>"}),t+="</div>",e.innerHTML=t}function toggleLevel4(e){var t=document.getElementById("fl-body"+e);t.style.display="block"===t.style.display?"none":"block"}buildFourLevels();var chainActive=-1;function buildChain(){var e=document.getElementById("chain-builder"),t="";CHAIN_STEPS.forEach(function(e,i){t+='<div class="chain-step'+(chainActive===i?" active":"")+'" id="cs'+i+'" onclick="activateChain('+i+')"><div class="chain-num" id="cn'+i+'">'+(i+1)+'</div><div style="flex:1"><div class="chain-label">'+e.label+'</div><div class="chain-q">'+e.q+'</div><div class="chain-output'+(chainActive>=i?" show":"")+'" id="co'+i+'"><div style="font-style:italic;margin-bottom:6px;color:var(--v9)">'+e.output+'</div><div style="font-size:.78rem;color:var(--v10)">'+e.note+"</div></div></div></div>"}),e.innerHTML=t}function activateChain(e){chainActive=e,CHAIN_STEPS.forEach(function(t,i){var n=document.getElementById("cs"+i),a=document.getElementById("cn"+i),o=document.getElementById("co"+i);n&&n.classList.toggle("active",i===e),a&&(a.style.background=i<=e?"var(--v0)":"",a.style.borderColor=i<=e?"var(--v0)":"var(--v19)",a.style.color=i<=e?"#fff":"var(--v10)"),o&&o.classList.toggle("show",i<=e)})}buildChain();var ANATOMY_STATES=[{parts:[]},{parts:["action"]},{parts:["action","evidence"]},{parts:["action","evidence","mechanism"]},{parts:["action","evidence","mechanism","risk"]},{parts:["action","evidence","mechanism","risk","signal"]}],ANATOMY_LABELS=[{id:"action",label:"1 · The action",color:"var(--v7)",y:20},{id:"evidence",label:"2 · The evidence",color:"var(--v4)",y:95},{id:"mechanism",label:"3 · The mechanism",color:"var(--v6)",y:170},{id:"risk",label:"4 · The risk",color:"var(--v18)",y:245},{id:"signal",label:"5 · The signal",color:"var(--v20)",y:320}];function renderAnatomyVis(e){var t=ANATOMY_STATES[Math.min(e,ANATOMY_STATES.length-1)].parts;if(document.getElementById("ladder-svg")){var i=document.getElementById("anatomy-vis");if(i){var n='<svg viewBox="0 0 320 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:320px;display:block;margin:0 auto">';ANATOMY_LABELS.forEach(function(e){var i=t.indexOf(e.id)>=0;n+='<rect x="10" y="'+e.y+'" width="300" height="60" rx="8" fill="'+(i?e.color+"18":"var(--v15)")+'" stroke="'+(i?e.color:"var(--v19)")+'" stroke-width="'+(i?2:1)+'"/><text x="26" y="'+(e.y+22)+'" font-size="11" font-family="var(--v12)" fill="'+(i?e.color:"var(--v10)")+'" letter-spacing=".04em">'+e.label+'</text><text x="26" y="'+(e.y+40)+'" font-size="10" fill="'+(i?"var(--v11)":"var(--v10)")+'" font-style="'+(i?"normal":"italic")+'">'+(i?["What specifically to do","Which finding drives it","Why action ↔ finding","Cost of not acting","How you'd know it worked"][ANATOMY_LABELS.indexOf(e)]:"(not yet added)")+"</text>",ANATOMY_LABELS.indexOf(e)<ANATOMY_LABELS.length-1&&(n+='<line x1="160" y1="'+(e.y+60)+'" x2="160" y2="'+(e.y+75)+'" stroke="var(--v19)" stroke-width="1.5" stroke-dasharray="4,3"/>')}),n+="</svg>",i.innerHTML=n}}}function buildRecBuilder(){var e=document.getElementById("rec-builder"),t='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">';REC_COMPONENTS.forEach(function(e,i){t+='<button style="padding:7px 14px;border-radius:16px;border:2px solid '+(activeRecComp===i?e.color:"var(--v19)")+";background:"+(activeRecComp===i?e.color+"18":"none")+";font-family:inherit;font-size:.8rem;cursor:pointer;color:"+(activeRecComp===i?e.color:"var(--v11)")+';transition:all .2s" onclick="setRecComp('+i+')">'+e.label+"</button>"}),t+="</div>";var i=REC_COMPONENTS[activeRecComp];t+='<div style="font-size:.82rem;color:var(--v10);margin-bottom:8px;font-style:italic">'+i.q+'</div><textarea style="width:100%;min-height:80px;background:var(--v15);border:2px solid var(--v19);border-radius:6px;padding:10px 14px;font-family:inherit;font-size:.88rem;color:var(--v9);resize:vertical;line-height:1.55;transition:border-color .2s" placeholder="'+i.placeholder+'" id="rec-ta" oninput="updateRecStored()" onFocus="this.style.borderColor=\''+i.color+"'\">"+i.stored+'</textarea><div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center"><button style="font-size:.78rem;color:var(--v10);background:none;border:none;cursor:pointer;text-decoration:underline" onclick="useExample()">Use example</button><button style="padding:7px 16px;background:var(--v0);color:#fff;border:none;border-radius:6px;font-family:inherit;font-size:.82rem;cursor:pointer" onclick="nextRecComp()">Next component →</button></div>',e.innerHTML=t,updateRecFull()}function setRecComp(e){activeRecComp=e,buildRecBuilder()}function nextRecComp(){var e=document.getElementById("rec-ta");e&&(REC_COMPONENTS[activeRecComp].stored=e.value),activeRecComp<REC_COMPONENTS.length-1&&(activeRecComp++,buildRecBuilder())}function updateRecStored(){var e=document.getElementById("rec-ta");e&&(REC_COMPONENTS[activeRecComp].stored=e.value),updateRecFull()}function useExample(){var e=document.getElementById("rec-ta");e&&(e.value=REC_COMPONENTS[activeRecComp].example,REC_COMPONENTS[activeRecComp].stored=e.value,updateRecFull())}function updateRecFull(){var e=REC_COMPONENTS.filter(function(e){return e.stored&&e.stored.trim()}),t=document.getElementById("rec-full");if(0!==e.length){t.style.display="block";var i='<div style="font-family:var(--v12);font-size:.7rem;color:var(--v7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Recommendation ('+e.length+"/5 components)</div>";REC_COMPONENTS.forEach(function(e){e.stored&&e.stored.trim()&&(i+='<div style="margin-bottom:10px"><span style="font-size:.72rem;font-family:var(--v12);color:'+e.color+';text-transform:uppercase;letter-spacing:.07em">'+e.label+': </span><span style="font-size:.88rem;color:var(--v9)">'+e.stored+"</span></div>")}),t.innerHTML=i}else t.style.display="none"}function buildRewrites(){var e=document.getElementById("rewrite-tabs");REWRITES.forEach(function(t,i){var n=document.createElement("button");n.className="aud-tab"+(i===currentRewrite?" on":""),n.textContent=t.tab,n.onclick=function(){currentRewrite=i,renderRewrites(),document.querySelectorAll("#rewrite-tabs .aud-tab").forEach(function(e,t){e.classList.toggle("on",t===i)})},e.appendChild(n)}),renderRewrites()}function renderRewrites(){var e,t,i,n=REWRITES[currentRewrite],a=document.getElementById("ba-display"),o=document.getElementById("ba-why");"before"===currentBA?(e=n.before,t=n.before_why,i=!1):"mid"===currentBA?(e=n.mid,t=n.mid_why,i=!1):(e=n.after,t=n.after_why,i=!0),a.textContent=e,a.className="ba-display"+(i?" is-after":""),o.innerHTML="<strong>"+(i?"Why this works: ":"Why this doesn't work: ")+"</strong>"+t}function setBA(e){currentBA=e,["before","mid","after"].forEach(function(t){document.getElementById("ba-"+t).classList.toggle("on",t===e)}),renderRewrites()}function buildAudiences(){var e=document.getElementById("audience-tabs");AUDIENCES.forEach(function(t,i){var n=document.createElement("button");n.className="aud-tab"+(i===currentAud?" on":""),n.textContent=t.tab,n.onclick=function(){currentAud=i,renderAudience(),document.querySelectorAll("#audience-tabs .aud-tab").forEach(function(e,t){e.classList.toggle("on",t===i)})},e.appendChild(n)}),renderAudience()}function renderAudience(){var e=AUDIENCES[currentAud];document.getElementById("audience-display").innerHTML='<div style="background:var(--v3);border:1px solid var(--v2);border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:.82rem;color:var(--v11)"><strong>Framing principle: </strong>'+e.framing+'</div><div class="ba-display is-after" style="white-space:pre-line;font-size:.875rem">'+e.display+"</div>"}function buildReportSections(){var e=document.getElementById("report-sections"),t="";REPORT_SECTIONS.forEach(function(e,i){t+='<div class="report-section"><div class="rs-header" onclick="toggleRS('+i+')"><span style="font-weight:700;font-size:.92rem">'+e.title+'</span><span class="rs-tag" style="background:'+e.tagColor+"18;color:"+e.tagColor+'">'+e.tag+'</span><span class="rs-verdict" id="rsv'+i+'" style="color:var(--v10)">click to expand</span></div><div class="rs-body" id="rsb'+i+'"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px"><div><div style="font-size:.7rem;font-family:var(--v12);color:var(--v18);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">❌ Common version</div><div style="font-size:.84rem;color:var(--v10);white-space:pre-line;padding:10px 14px;background:rgba(168,50,40,.05);border-radius:6px;border:1px solid rgba(168,50,40,.15)">'+e.bad+'</div></div><div><div style="font-size:.7rem;font-family:var(--v12);color:var(--v20);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">✓ Stronger version</div><div style="font-size:.84rem;color:var(--v9);white-space:pre-line;padding:10px 14px;background:rgba(46,122,80,.05);border-radius:6px;border:1px solid rgba(46,122,80,.2)">'+e.good+'</div></div></div><div class="note" style="margin:0"><strong>Why: </strong>'+e.diagnosis+"</div></div></div>"}),e.innerHTML=t}function toggleRS(e){var t=document.getElementById("rsb"+e),i=document.getElementById("rsv"+e),n=t.classList.toggle("open");i&&(i.textContent=n?"collapse":"click to expand")}function renderLadderSVG(e){var t=document.getElementById("ladder-svg");if(t){var i="";LADDER_DATA.forEach(function(t,n){var a=28+72*n,o=n<=e,r=o?t.color:"var(--v19)",s=o?t.color+"18":"transparent",c=o?Math.round(80+50*n):30;i+='<rect x="14" y="'+a+'" width="332" height="64" rx="8" fill="'+s+'" stroke="'+r+'" stroke-width="'+(o?2:1)+'"/><text x="28" y="'+(a+20)+'" font-size="10" font-family="var(--v12)" fill="'+r+'" letter-spacing=".06em">'+t.level+'</text><text x="60" y="'+(a+20)+'" font-size="12" font-weight="700" fill="'+(o?"var(--v9)":"var(--v10)")+'">'+t.label+'</text><text x="60" y="'+(a+37)+'" font-size="10" fill="'+(o?"var(--v11)":"var(--v10)")+'">'+t.desc+'</text><rect x="28" y="'+(a+46)+'" width="'+c+'" height="6" rx="3" fill="'+r+'" opacity="'+(o?.85:.25)+'"/>'}),t.innerHTML=i}}renderAnatomyVis(0),function(){var e=document.querySelectorAll("#sc-anatomy .stp"),t=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(e.forEach(function(e){e.classList.toggle("on",e===t.target)}),renderAnatomyVis(+t.target.getAttribute("data-step")))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});e.forEach(function(e){t.observe(e)}),e.length&&renderAnatomyVis(0)}(),buildRecBuilder(),buildRewrites(),buildAudiences(),buildReportSections(),renderLadderSVG(-1),function(){var e=document.querySelectorAll("#sc-ladder .stp"),t=new IntersectionObserver(function(t){t.forEach(function(t){t.isIntersecting&&(e.forEach(function(e){e.classList.toggle("on",e===t.target)}),renderLadderSVG(+t.target.getAttribute("data-step")-1))})},{rootMargin:"-45% 0px -45% 0px",threshold:0});e.forEach(function(e){t.observe(e)}),e.length&&renderLadderSVG(-1)}();var FTYPE_DATA={behav:{label:"Behavioural",sw:"What this behaviour costs the client — not just what it looks like.",chain:"What pattern does this behaviour represent? → What sustains the pattern? → What would break it? → What specific change addresses the root cause?"},attit:{label:"Attitudinal",sw:"How this belief shapes behaviour — and which behaviours the client needs to change.",chain:"What does this attitude predict behaviourally? → What conditions reinforce this attitude? → What experience would shift it? → What product/brand change creates that experience?"},motiv:{label:"Motivational",sw:"Which motivations the product currently serves, and which it misses — and what the gap costs.",chain:"What need does this motivation represent? → Is the product meeting this need? → If not, what fills the gap? → What would the product have to do to meet this need?"},barrier:{label:"Barrier",sw:"Not just that the barrier exists, but what type of barrier it is — structural, psychological, informational, or relational. Different types require different solutions.",chain:"Is this barrier practical or psychological? → What sustains it? → What's the minimum viable change to lower it? → What's the cost of not lowering it?"},unmet:{label:"Unmet need",sw:"What the gap reveals about the product's current promise — and whether the product is positioned to close it.",chain:"Who experiences this need? → How are they currently compensating for its absence? → What would it cost the product to meet it? → What does the client gain if they do?"}},AUD_DATA={cmo:{label:"CMO / Brand",frame:"Brand-level framing. Focus on perception, positioning, and audience relationship. Action should be brand architecture or experience strategy."},product:{label:"Product / UX",frame:"Feature-level framing. Specific user flows, interaction moments, or design patterns. Action should be buildable."},ceo:{label:"CEO / Exec",frame:"P&L and growth framing. Business risk or opportunity at the strategic level. Action is a priority, not a task."},strategy:{label:"Strategy",frame:"Competitive and market-level framing. Long-view positioning, differentiation, and category dynamics. Action is a strategic reframe."},insights:{label:"Insights team",frame:"Evidence-led framing. Full method shown, next research steps recommended. Action is measurement and follow-up."}},STAKES_LABELS=["","Low — contextual note sufficient","Moderate — full insight required","High — strategic recommendation required"],EV_LABELS=["","Provisional (3–5 participants)","Solid (6–9 participants)","Strong (10+ participants, cross-segment)"];function buildPGPresets(){var e=document.getElementById("pg-presets-el");PG_PRESETS_DATA.forEach(function(t){var i=document.createElement("button");i.textContent=t.label,i.onclick=function(){document.getElementById("pg-ftype").value=t.ftype,document.getElementById("pg-aud").value=t.aud,document.getElementById("pg-stakes").value=t.stakes,document.getElementById("pg-ev").value=t.ev,document.querySelectorAll(".pg-presets button").forEach(function(e){e.classList.remove("on")}),i.classList.add("on"),renderPG()},e.appendChild(i)})}function renderPG(){var e=document.getElementById("pg-ftype").value,t=document.getElementById("pg-aud").value,i=+document.getElementById("pg-stakes").value,n=+document.getElementById("pg-ev").value;document.getElementById("pg-sv").textContent=STAKES_LABELS[i],document.getElementById("pg-ev-v").textContent=EV_LABELS[n];var a=FTYPE_DATA[e],o=AUD_DATA[t],r=1===i?"Contextual note (1 sentence)":2===i?"Full insight statement":"Strategic recommendation (all 5 components)",s=1===n?'Use hedged language ("suggests", "indicates"). Note limited sample.':2===n?"State pattern directly with participant count.":"State confidently. Cross-segment evidence can be cited.",c='<span class="hi">SO-WHAT FRAMEWORK</span>\n<span class="dim">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>\n\n<span class="sec">FINDING TYPE</span>  '+a.label+'\n<span class="sec">AUDIENCE</span>      '+o.label+'\n<span class="sec">STAKES LEVEL</span>  '+STAKES_LABELS[i]+'\n<span class="sec">EVIDENCE</span>      '+EV_LABELS[n]+'\n\n<span class="sec">OUTPUT LEVEL</span>\n<span class="ok">'+r+'</span>\n\n<span class="sec">THE SO-WHAT TO ANSWER</span>\n'+a.sw+'\n\n<span class="sec">THE CHAIN TO WALK</span>\n'+a.chain+'\n\n<span class="sec">AUDIENCE FRAMING</span>\n'+o.frame+'\n\n<span class="sec">EVIDENCE LANGUAGE</span>\n'+s+'\n\n<span class="sec">ESCALATION LEVEL</span>\n'+(1===i?'<span class="dim">→ One implication sentence. No recommendation needed.</span>':2===i?"→ Finding + mechanism + implication. No prescriptive action needed.":'<span class="risk">→ Full recommendation. Name the action, evidence, mechanism, risk, and signal.');document.getElementById("pg-out-el").innerHTML=c}buildPGPresets(),renderPG();var SECTIONS=document.querySelectorAll("section[data-ch]"),progTxt=document.getElementById("prog-txt"),secIO=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=e.target.getAttribute("data-ch");progTxt&&(progTxt.textContent=t+" / 09")}})},{rootMargin:"-40% 0px -55% 0px",threshold:0});SECTIONS.forEach(function(e){secIO.observe(e)});var obs=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&e.target.classList.add("in")})},{threshold:.1});document.querySelectorAll(".reveal").forEach(function(e){obs.observe(e)}),function(){var e=document.getElementById("weeds"),t=document.getElementById("weedsHint");function i(){var i=e.hidden;e.hidden=!i,t.setAttribute("aria-expanded",String(i)),t.innerHTML=i?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",i&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,n=(t.tagName||"").toLowerCase();"input"===n||"textarea"===n||t.isContentEditable||(e.preventDefault(),i())}}),t.addEventListener("click",i),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),i())})}();
+</script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sample Design & Recruitment Logic</title>
+<style>:root{--v9:#EFEDF2;--v10:#E4E1EA;--v3:#191622;--v5:#48426A;--v4:#6E6890;--v12:#C8C4D6;--v0:#6B4FC7;--v2:rgba(107,79,199,.10);--v1:rgba(107,79,199,.30);--v7:#17132A;--v8:#DDD9EC;--v11:#B0362A;--v16:#B07828;--v13:#2E8060;--v6:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--v15:Georgia,'Times New Roman',serif;--v14:system-ui,-apple-system,'Segoe UI',sans-serif}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--v9);color:var(--v3);font-family:var(--v14);font-size:18px;line-height:1.65;-webkit-font-smoothing:antialiased}#prog{position:fixed;top:20px;right:20px;z-index:100;pointer-events:none}#prog svg{width:36px;height:36px;transform:rotate(-90deg)}#prog circle.bg{fill:none;stroke:var(--v12);stroke-width:3}#prog circle.fg{fill:none;stroke:var(--v0);stroke-width:3;stroke-dasharray:88;stroke-dashoffset:88;transition:stroke-dashoffset .2s}.col{max-width:680px;margin:0 auto;padding:0 24px}.wide{max-width:960px;margin:0 auto;padding:0 24px}.bleed{width:100%;padding:0}.eyebrow{font-family:var(--v6);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--v4)}.lede{font-size:1.2rem;color:var(--v5);line-height:1.55;margin-top:16px}.pull{border-left:3px solid var(--v0);padding:16px 20px;margin:32px 0;color:var(--v5);font-style:italic;font-size:1.05rem}.intu{background:var(--v2);border-radius:8px;padding:20px 24px;margin:28px 0;border:1px solid var(--v1)}.intu strong{color:var(--v0);display:block;margin-bottom:6px;font-size:.9rem;letter-spacing:.05em;text-transform:uppercase}.note{background:var(--v10);border-radius:6px;padding:16px 20px;margin:24px 0;border-left:3px solid var(--v12);font-size:.95rem;color:var(--v5)}.note strong{color:var(--v3)}.try{background:var(--v7);color:var(--v8);border-radius:8px;padding:18px 22px;margin:28px 0;font-size:.95rem}.try strong{color:var(--v0);display:block;margin-bottom:6px;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase}section{padding:clamp(64px,9vw,110px) 0}section+section{border-top:1px solid var(--v12)}h2{font-family:var(--v15);font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.01em;line-height:1.2;margin-bottom:20px;color:var(--v3)}h3{font-size:1.1rem;font-weight:700;margin:28px 0 10px}p{margin-bottom:16px}p:last-child{margin-bottom:0}.fig{background:var(--v10);border-radius:12px;padding:32px;margin:32px 0;border:1px solid var(--v12)}.fig .eyebrow{margin-bottom:10px}.fig-title{font-weight:700;margin-bottom:16px;font-size:1rem}#hero{min-height:90vh;display:flex;flex-direction:column;justify-content:center;padding:80px 24px 60px;max-width:780px;margin:0 auto}#hero .eyebrow{margin-bottom:20px}#hero h1{font-family:var(--v15);font-size:clamp(2.6rem,7vw,5rem);font-weight:700;line-height:1.0;letter-spacing:-.025em;color:var(--v3)}#hero h1 em{font-style:normal;color:var(--v0)}.hero-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:48px}.hero-cell{background:var(--v10);border:1px solid var(--v12);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}.hero-cell:hover{border-color:var(--v0);background:var(--v2)}.hero-cell .num{font-size:2rem;font-weight:700;color:var(--v0);font-family:var(--v6)}.hero-cell .lbl{font-size:.78rem;color:var(--v5);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}.cell{display:inline-flex;flex-direction:column;align-items:flex-start;border:2px solid var(--v12);border-radius:10px;padding:10px 14px;background:var(--v9);min-width:90px;transition:all .25s;font-size:.85rem;cursor:default;position:relative}.cell .c-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--v4);margin-bottom:4px}.cell .c-val{font-weight:700;font-size:1.05rem;color:var(--v5)}.cell .c-n{font-size:.78rem;color:var(--v4)}.cell.active{border-color:var(--v0);background:var(--v2)}.cell.active .c-val{color:var(--v0)}.cell.locked{border-color:var(--v16);background:rgba(176,120,40,.1)}.cell.locked .c-val{color:var(--v16)}.cell.filled{border-color:var(--v13);background:rgba(46,128,96,.1)}.cell.filled .c-val{color:var(--v13)}.cell.over{border-color:var(--v11);background:rgba(176,54,42,.1)}.cell.over .c-val{color:var(--v11)}.cell-grid{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.scrolly{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:500px}.scrolly-graphic{position:sticky;top:80px;height:calc(100vh - 160px);display:flex;align-items:center;justify-content:center;padding:24px}.scrolly-steps{padding:60px 40px}.stp{opacity:.35;transition:opacity .3s;margin-bottom:60px;padding:20px 24px;border-radius:8px;border-left:3px solid var(--v12)}.stp.on{opacity:1;border-left-color:var(--v0);background:var(--v2)}.stp h3{margin:0 0 8px;font-size:1rem}.stp p{margin:0;font-size:.95rem;color:var(--v5)}@media(max-width:700px){.scrolly{grid-template-columns:1fr}.scrolly-graphic{position:relative;height:auto;min-height:300px}.hero-grid{grid-template-columns:1fr 1fr}}.sim-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}@media(max-width:580px){.sim-controls{grid-template-columns:1fr}}.sim-label{font-size:.85rem;font-weight:600;margin-bottom:6px;color:var(--v5)}input[type=range]{width:100%;accent-color:var(--v0)}.sim-val{font-family:var(--v6);font-size:.8rem;color:var(--v0);margin-top:2px}.funnel-bar{height:32px;border-radius:6px;background:var(--v0);margin:4px 0;display:flex;align-items:center;padding:0 10px;color:#fff;font-size:.8rem;font-weight:600;transition:width .4s cubic-bezier(.4,0,.2,1);min-width:60px}.funnel-label{font-size:.78rem;color:var(--v4);margin-bottom:2px}.funnel-wrap{margin:8px 0}.funnel-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}.funnel-name{width:140px;font-size:.8rem;color:var(--v5);flex-shrink:0}.cost-box{background:var(--v7);color:var(--v8);border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap;gap:10px}.cost-box .metric{text-align:center}.cost-box .metric .val{font-size:1.5rem;font-weight:700;color:var(--v0);font-family:var(--v6)}.cost-box .metric .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--v8);opacity:.7}.qb-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}.qb-tab{padding:8px 16px;border-radius:20px;border:2px solid var(--v12);background:none;font-family:inherit;font-size:.85rem;cursor:pointer;color:var(--v5);transition:all .2s}.qb-tab.on{border-color:var(--v0);background:var(--v0);color:#fff}.quota-matrix{overflow-x:auto}table.qmatrix{width:100%;border-collapse:collapse;font-size:.875rem}table.qmatrix th{background:var(--v7);color:var(--v8);padding:10px 14px;text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.04em}table.qmatrix td{padding:10px 14px;border-bottom:1px solid var(--v12);vertical-align:middle}table.qmatrix tr:hover td{background:var(--v2)}.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}.badge.hard{background:rgba(176,54,42,.15);color:var(--v11)}.badge.soft{background:rgba(176,120,40,.15);color:var(--v16)}.badge.info{background:var(--v2);color:var(--v0)}.screener-q{border:1px solid var(--v12);border-radius:8px;margin-bottom:12px;overflow:hidden}.screener-q-header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--v10);cursor:pointer;user-select:none}.screener-q-header:hover{background:var(--v2)}.screener-q-type{font-family:var(--v6);font-size:.72rem;background:var(--v7);color:var(--v8);padding:2px 8px;border-radius:4px;flex-shrink:0}.screener-q-text{font-size:.9rem;font-weight:600}.screener-q-body{padding:14px 18px;font-size:.875rem;display:none;border-top:1px solid var(--v12)}.screener-q-body.open{display:block}.opt{display:flex;align-items:center;gap:10px;padding:5px 0;color:var(--v5)}.opt .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}.opt.term .dot{background:var(--v11)}.opt.qual .dot{background:var(--v13)}.opt.maybe .dot{background:var(--v16)}.ref{border-bottom:1px dashed var(--v0);cursor:help;color:inherit}.dimmed [data-part]:not(.hot){opacity:.2;transition:opacity .2s}[data-part]{transition:opacity .2s}.hot{opacity:1!important}.cell.hot{border-color:var(--v0)!important;background:var(--v2)!important}.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}footer{background:var(--v7);color:var(--v8);padding:48px 24px;margin-top:0;font-size:.875rem}footer a{color:var(--v0)}.hint{font-family:var(--v6);font-size:12px;letter-spacing:.08em;color:var(--v4);text-align:center;cursor:pointer;padding:32px 0}.hint kbd{border:1px solid var(--v12);border-radius:3px;padding:1px 5px;color:var(--v5)}.hint:hover,.hint:focus-visible{color:var(--v0);outline:none}.weeds[hidden]{display:none}.weeds{background:var(--v10);padding:60px 24px;border-top:1px solid var(--v12);animation:wIn .4s ease}@keyframes wIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.weeds,.reveal,.cell{animation:none;transition:none}}details{margin-bottom:16px}details summary{cursor:pointer;font-weight:600;padding:8px 0;color:var(--v5);list-style:none;display:flex;align-items:center;gap:8px}details summary::before{content:'▶';font-size:.65rem;color:var(--v0);transition:transform .2s}details[open] summary::before{transform:rotate(90deg)}details .inner{padding:12px 0 8px 20px;font-size:.9rem;color:var(--v5)}.pg-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:640px){.pg-grid{grid-template-columns:1fr}}.pg-preset{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.pg-preset button{padding:6px 14px;border-radius:16px;border:2px solid var(--v12);background:none;font-family:inherit;font-size:.82rem;cursor:pointer;color:var(--v5);transition:all .2s}.pg-preset button:hover{border-color:var(--v0);color:var(--v0)}.pg-preset button.on{border-color:var(--v0);background:var(--v0);color:#fff}.pg-output{background:var(--v9);border:1px solid var(--v12);border-radius:8px;padding:20px;font-family:var(--v6);font-size:.82rem;line-height:1.8;color:var(--v5)}.pg-output .hi{color:var(--v0);font-weight:700}.pg-output .warn{color:var(--v16);font-weight:700}.pg-output .risk{color:var(--v11);font-weight:700}.pg-output .safe{color:var(--v13);font-weight:700}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Quota cells, screener rules and incidence rate do not add up, they multiply. Set all three and watch a workable sample spec fall out — or blow the budget.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/sample-design-recruitment">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Sample Design &amp; Recruitment Logic">
+  <meta property="og:description" content="Set quota cells, screener rules and incidence rate, and watch them multiply.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/sample-design-recruitment">
+  <meta property="og:image" content="https://www.loopingly.com/og/sample-design-recruitment.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Sample Design &amp; Recruitment Logic">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sample Design &amp; Recruitment Logic">
+  <meta name="twitter:description" content="Set quota cells, screener rules and incidence rate, and watch them multiply.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/sample-design-recruitment.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Sample Design & Recruitment Logic","description":"Quota cells, screener rules and incidence rate do not add up, they multiply. Set all three and watch a workable sample spec fall out — or blow the budget.","url":"https://www.loopingly.com/explorables/sample-design-recruitment","image":"https://www.loopingly.com/og/sample-design-recruitment.png","datePublished":"2026-09-17","dateModified":"2026-09-17","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Survey sample design and respondent recruitment"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"How sample design works"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+
+<div id="prog" aria-hidden="true">
+  <svg viewBox="0 0 32 32">
+    <circle class="bg" cx="16" cy="16" r="14"/>
+    <circle class="fg" cx="16" cy="16" r="14" id="progArc"/>
+  </svg>
+</div>
+
+
+<div id="hero">
+  <p class="eyebrow">Qualitative Research Methods</p>
+  <h1>How <em>Sample Design</em> actually works</h1>
+  <p class="lede">Quota cells, screener criteria, and incidence rates — three forces that interact in every research project. Understand one without the others and your study collapses before you field it.</p>
+  <div class="hero-grid">
+    <div class="hero-cell">
+      <div class="num">N</div>
+      <div class="lbl">Quota Cells</div>
+    </div>
+    <div class="hero-cell">
+      <div class="num">IR%</div>
+      <div class="lbl">Incidence Rate</div>
+    </div>
+    <div class="hero-cell">
+      <div class="num">S→Q</div>
+      <div class="lbl">Screener Logic</div>
+    </div>
+  </div>
+</div>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Where it begins</p>
+  <h2>Your client has a business question. You have to turn it into a list of people.</h2>
+  <p>When a client says <em>"we want to talk to our customers,"</em> that sentence contains almost no research information. Customers of what? Loyal ones or recent lapsed? Which age range? Which category usage level? In which region?</p>
+  <p>Sample design is the discipline of translating vague business intentions into a precise, fieldable specification — a set of rules that tells a recruiter exactly which human beings to go find, and how many of each type.</p>
+
+  <div class="intu">
+    <strong>Picture it</strong>
+    Think of your study as a movie with a small cast. Sample design is casting. You decide which roles exist, how many actors fill each role, and what audition criteria someone must pass to get the part. The screener is the audition script. Incidence rate tells you how many people you'll need to audition before you fill the cast.
+  </div>
+
+  <p>Three building blocks do all the work:</p>
+
+  <div class="fig reveal" id="fig-atoms">
+    <p class="eyebrow">Figure 1 · The three building blocks</p>
+    <p class="fig-title">Hover each block to see how it fits.</p>
+    <div class="cell-grid">
+      <div class="cell active" data-part="qcell" title="A quota cell is one slot in your sample — e.g. '6 heavy users, female, 35–49'">
+        <span class="c-label">Quota Cell</span>
+        <span class="c-val">6 slots</span>
+        <span class="c-n">e.g. Heavy users · F · 35–49</span>
+      </div>
+      <div class="cell locked" data-part="screener" title="The screener is the questionnaire that sorts who qualifies">
+        <span class="c-label">Screener</span>
+        <span class="c-val">8 questions</span>
+        <span class="c-n">qualifies or terminates</span>
+      </div>
+      <div class="cell filled" data-part="ir" title="Incidence Rate — the % of the general population who qualify">
+        <span class="c-label">Incidence Rate</span>
+        <span class="c-val">IR = 18%</span>
+        <span class="c-n">~6 of every 33 contacts</span>
+      </div>
+    </div>
+    <div class="note" style="margin:16px 0 0">
+      <strong>Key relationship:</strong> The harder your quota cells and screener criteria, the lower your incidence rate — and the more expensive and time-consuming your recruit.
+    </div>
+  </div>
+
+  <p>Each of these blocks shapes the others. Tighten one and you feel it everywhere. That's the interaction this explainer unpacks — step by step, with numbers you can move.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Building block one</p>
+  <h2>A quota cell is a single slot in your sample — with a name, a number, and a set of rules.</h2>
+  <p>Think of each cell as a seat at the focus group table with a nameplate on it. That nameplate says who is allowed to sit there. <span class="ref" data-ref="hard">Hard quotas</span> mean that seat must be filled — no flexibility. <span class="ref" data-ref="soft">Soft quotas</span> mean you're aiming for a target but you can adjust in the field.</p>
+</div>
+
+<div class="wide reveal" id="fig-quotatypes">
+  <div class="fig">
+    <p class="eyebrow">Figure 2 · Quota types and their field implications</p>
+    <div class="qb-tabs">
+      <button class="qb-tab on" onclick="showQuota('demo')">Demographic</button>
+      <button class="qb-tab" onclick="showQuota('behav')">Behavioural</button>
+      <button class="qb-tab" onclick="showQuota('attit')">Attitudinal</button>
+    </div>
+    <div class="quota-matrix">
+      <table class="qmatrix" id="qtable">
+        
+      </table>
+    </div>
+    <div class="note" style="margin-top:16px">
+      <strong>Rule of thumb:</strong> Attitudinal cells (e.g. "brand loyalists") are hardest to fill because you can't buy a list of attitudes. You must screen everyone to find them — which drives incidence rate down fast.
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="intu">
+    <strong>Picture it</strong>
+    A quota cell grid is like a spreadsheet with "must have" cells highlighted in red and "nice to have" cells in yellow. If all your red cells are highly specific — brand-loyal, 45+, female, only uses the product weekly — you've made a very small Venn diagram. The intersection of all those circles is where your recruit lives. The smaller that intersection, the harder the recruit.
+  </div>
+
+  <div class="pull">"The moment you add a third demographic cut to an attitudinal screener, your incidence rate usually halves."</div>
+
+  <p>This is why senior researchers always push back on "while we have them" additions. Every extra criterion chips away at the population that qualifies. Let's see this in practice with the interactive builder below.</p>
+
+  <div class="fig reveal" id="fig-cellbuilder">
+    <p class="eyebrow">Figure 3 · Quota cell builder — interactive</p>
+    <p class="fig-title">Toggle criteria on and off. Watch what happens to the viable pool.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px" id="criteria-toggles">
+      
+    </div>
+    <div style="margin-top:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:.85rem;color:var(--v5)">Estimated population that qualifies</span>
+        <span style="font-family:var(--v6);font-size:.85rem" id="pool-pct">100%</span>
+      </div>
+      <div style="background:var(--v12);border-radius:6px;height:18px;overflow:hidden">
+        <div id="pool-bar" style="height:100%;border-radius:6px;background:var(--v0);width:100%;transition:width .4s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <span style="font-size:.78rem;color:var(--v4)">General population → 100%</span>
+        <span style="font-size:.78rem;color:var(--v4)" id="pool-desc">No filters applied</span>
+      </div>
+      <div id="pool-warning" style="display:none;margin-top:12px" class="note">
+        <strong style="color:var(--v11)">⚠ Very low incidence:</strong> With this many criteria, you may need to contact <strong id="contacts-needed">—</strong> people to complete your study. Consider relaxing one or two criteria.
+      </div>
+    </div>
+  </div>
+
+  <p>Notice how quickly the pool shrinks. This is the most common error in qual research design — researchers add criteria to feel precise, but each addition multiplies cost and time in the field.</p>
+</div>
+</section>
+
+
+<section>
+
+<div class="bleed">
+  <div class="scrolly" id="scrolly-screen">
+    <div class="scrolly-graphic" id="sg1">
+      <div class="fig" style="width:100%;max-width:420px" id="screener-graphic">
+        <p class="eyebrow">Live screener flow</p>
+        <div id="screener-vis"></div>
+      </div>
+    </div>
+    <div class="scrolly-steps">
+      <div class="col">
+        <p class="eyebrow">Building block two</p>
+        <h2>The screener is a funnel, not a form.</h2>
+      </div>
+      <div class="stp on" data-step="0">
+        <h3>Everyone starts as a contact.</h3>
+        <p>You begin with a universe — a list, a panel, a social media ad audience. At this point, you know almost nothing about these people. They're just potential participants.</p>
+      </div>
+      <div class="stp" data-step="1">
+        <h3>The first question eliminates the obviously wrong.</h3>
+        <p>The opening screener questions are usually cheap and fast to answer — age, gender, location, category usage. These are your big filters. They drop out the largest chunks of non-qualifiers quickly.</p>
+      </div>
+      <div class="stp" data-step="2">
+        <h3>The middle questions get specific.</h3>
+        <p>Product usage frequency, brand familiarity, life stage. These questions are more discriminating. They separate "close but no" from "yes." Each one removes more people from the pool.</p>
+      </div>
+      <div class="stp" data-step="3">
+        <h3>The final questions confirm fit — and protect the study.</h3>
+        <p>Industry exclusions (no market researchers!), security questions (nothing too specific about the topic that might bias them), and soft sign-offs. These questions protect research quality, not just compliance.</p>
+      </div>
+      <div class="stp" data-step="4">
+        <h3>What remains is your qualified pool.</h3>
+        <p>Everyone who reaches the end without hitting a "terminate" answer is eligible to schedule. The ratio of qualified-to-contacted is your incidence rate — the number that drives everything else.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col" style="margin-top:40px">
+  <h3>Anatomy of a well-built screener question</h3>
+  <p>Good screener questions do three things at once: they filter, they avoid tipping off the topic, and they don't waste the respondent's time. Click any question below to see the logic behind it.</p>
+
+  <div class="fig reveal" id="fig-screener-anatomy">
+    <p class="eyebrow">Figure 4 · Screener question types — click to expand</p>
+    <div id="screener-qs"></div>
+  </div>
+
+  <div class="try">
+    <strong>Say this out loud</strong>
+    When you write a screener question, ask yourself: "If I were trying to cheat my way into this study, would this question tell me what the 'right' answer is?" If yes, rewrite it. Screeners should feel like a neutral survey — not like a puzzle with obvious right answers.
+  </div>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Building block three</p>
+  <h2>Incidence rate is the percentage of the population that qualifies — and it controls your budget.</h2>
+  <p>If your incidence rate is 20%, it means 1 in 5 people you contact will qualify. To recruit 40 participants, you need to contact 200. If your IR drops to 5%, you need to contact 800 people to get those same 40 participants. The recruiter charges for every contact, not just the completes.</p>
+
+  <div class="intu">
+    <strong>Picture it</strong>
+    Imagine you're fishing. Your incidence rate is how common your target fish is in the lake. A 50% IR means half the fish in that lake are what you want — easy, cheap fishing. A 3% IR means 97% of the fish you pull up are the wrong kind — you're throwing most of them back. The net, the bait, and the boat time all cost the same regardless.
+  </div>
+</div>
+
+<div class="wide reveal" id="fig-irsim">
+  <div class="fig">
+    <p class="eyebrow">Figure 5 · Incidence rate simulator</p>
+    <p class="fig-title">Adjust the sliders to see how IR affects your recruit cost and effort.</p>
+    <div class="sim-controls">
+      <div>
+        <div class="sim-label">Target completes (n)</div>
+        <input type="range" id="sl-n" min="8" max="60" value="24" step="4">
+        <div class="sim-val" id="sv-n">24 participants</div>
+      </div>
+      <div>
+        <div class="sim-label">Incidence rate (%)</div>
+        <input type="range" id="sl-ir" min="3" max="60" value="20" step="1">
+        <div class="sim-val" id="sv-ir">20%</div>
+      </div>
+      <div>
+        <div class="sim-label">No-show / drop rate (%)</div>
+        <input type="range" id="sl-ns" min="0" max="40" value="15" step="5">
+        <div class="sim-val" id="sv-ns">15%</div>
+      </div>
+      <div>
+        <div class="sim-label">Cost per contact ($)</div>
+        <input type="range" id="sl-cpc" min="5" max="50" value="15" step="5">
+        <div class="sim-val" id="sv-cpc">$15</div>
+      </div>
+    </div>
+
+    <div id="funnel-out"></div>
+    <div class="cost-box" id="cost-out"></div>
+
+    <div class="note" style="margin-top:16px" id="ir-advice"></div>
+  </div>
+</div>
+
+<div class="col">
+  <h3>What makes incidence rate go up or down?</h3>
+  <p>IR is not something you set — it's something you discover when you combine your quota criteria with your screener. Certain decisions reliably crush incidence rate:</p>
+
+  <div class="fig reveal" id="fig-ir-factors">
+    <p class="eyebrow">Figure 6 · Factors that move incidence rate</p>
+    <div id="ir-factors-list"></div>
+  </div>
+
+  <p>The most common mistake is designing the ideal sample on paper and only calculating the incidence rate later — by which point the budget has already been set. Estimate IR early, and design backwards from what's fieldable.</p>
+
+  <div class="pull">"Design the sample you can field, not the sample you'd dream of."</div>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">The interaction</p>
+  <h2>Quota cells, screener criteria, and incidence rate don't just add up — they multiply.</h2>
+  <p>Here's the danger: each decision feels small on its own. Adding an age band to a quota cell seems harmless. Adding one more screener question seems fine. But these restrictions combine multiplicatively, not additively.</p>
+  <p>If your target must be: <em>female</em> (≈50%) AND <em>35–54</em> (≈30% of all women) AND <em>category user in the last 3 months</em> (≈40% of that group) AND <em>not a market researcher</em> (removes ~3%) AND <em>brand aware</em> (≈60% of remaining) — you're now at roughly 3–4% incidence before you've even asked a single brand-related question.</p>
+</div>
+
+<div class="wide reveal" id="fig-cascade">
+  <div class="fig">
+    <p class="eyebrow">Figure 7 · The cascade — how restrictions compound</p>
+    <p class="fig-title">Click each filter to add it to the cascade and watch the viable pool shrink.</p>
+    <div id="cascade-filters" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px"></div>
+    <div id="cascade-bars"></div>
+    <div id="cascade-summary" style="margin-top:16px;font-size:.875rem;color:var(--v5)"></div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="intu">
+    <strong>Picture it</strong>
+    Each filter is like passing your target population through a narrower and narrower pipe. The flow rate (incidence) drops every time you add a narrower section. Two wide pipes barely slow the flow. Twelve narrow pipes, stacked, reduce a river to a trickle.
+  </div>
+
+  <h3>The tradeoff triangle</h3>
+  <p>When incidence rate falls, you face an unavoidable triangle. You can only hold two of these three things:</p>
+
+  <div class="fig reveal" id="fig-triangle">
+    <p class="eyebrow">Figure 8 · The constraint triangle</p>
+    <div id="triangle-vis"></div>
+  </div>
+
+  <p>Recognising this triangle early — before the proposal goes out — is what separates a research designer from a research order-taker. Your job is to have the conversation with the client about what they're willing to trade.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Practical craft</p>
+  <h2>Six decisions that every good sample design has to make deliberately.</h2>
+</div>
+
+<div class="wide reveal" id="fig-decisions">
+  <div class="fig">
+    <p class="eyebrow">Figure 9 · The six craft decisions — click to explore each one</p>
+    <div id="decisions-grid"></div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="try">
+    <strong>Say this out loud — to your client</strong>
+    "I can give you a perfectly homogeneous sample that talks to exactly the person you have in mind — but I'd recommend against it. Homogeneity feels safe, but it means every insight comes from the same type of person. A little diversity in the sample produces richer, more credible findings."
+  </div>
+
+  <p>The best qualitative sample is not the purest — it's the most strategically constructed. That means making deliberate decisions about variety, about which criteria are load-bearing and which are just habitual, and about where you can afford to be flexible.</p>
+</div>
+</section>
+
+
+<section style="background:var(--v10)">
+<div class="col">
+  <p class="eyebrow">Capstone playground</p>
+  <h2>Build a full sample spec from scratch.</h2>
+  <p>Put it all together. Choose a project scenario below, then adjust the controls to see a complete sample design brief — quota cells, estimated IR, screener priorities, and fieldability assessment.</p>
+
+  <div class="pg-preset" id="pg-presets">
+    <button onclick="setPGPreset('cpg')" class="on">CPG — New product concept</button>
+    <button onclick="setPGPreset('health')">Healthcare — Patient journey</button>
+    <button onclick="setPGPreset('b2b')">B2B — Tech purchase decision</button>
+    <button onclick="setPGPreset('fin')">Financial services — Gen Z attitudes</button>
+  </div>
+
+  <div class="pg-grid">
+    <div>
+      <div class="sim-label" style="margin-bottom:8px">Target n (total completes)</div>
+      <input type="range" id="pg-n" min="8" max="48" value="24" step="4" oninput="renderPG()">
+      <div class="sim-val" id="pg-nv">24</div>
+      <br>
+      <div class="sim-label" style="margin-bottom:8px">Number of quota cells</div>
+      <input type="range" id="pg-cells" min="1" max="8" value="4" step="1" oninput="renderPG()">
+      <div class="sim-val" id="pg-cv">4 cells</div>
+      <br>
+      <div class="sim-label" style="margin-bottom:8px">Screener strictness</div>
+      <input type="range" id="pg-strict" min="1" max="5" value="3" step="1" oninput="renderPG()">
+      <div class="sim-val" id="pg-sv">Medium</div>
+    </div>
+    <div>
+      <div class="pg-output" id="pg-out"></div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section>
+<div class="col" style="text-align:center;padding:80px 24px">
+  <p class="eyebrow">The bottom line</p>
+  <h2 style="font-size:clamp(1.6rem,4vw,2.6rem)">Sample design is where the research either earns its credibility — or quietly loses it.</h2>
+  <p class="lede" style="max-width:560px;margin:20px auto 0">The choices you make before a single participant walks through the door — which cells to fill, how tight the screener, what incidence rate to accept — shape every insight that follows. Make them deliberately.</p>
+</div>
+</section>
+
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</p>
+
+
+<section class="weeds" id="weeds" hidden aria-labelledby="weedsHint">
+<div class="col">
+  <h2>Into the weeds</h2>
+
+  <details>
+    <summary>How to estimate IR before you field</summary>
+    <div class="inner">
+      <p>The fastest method: find a comparable past study, or use the client's own customer data as a reference. If the client knows their NPS, their category penetration, or their brand awareness scores, you can triangulate. In a pinch, run a soft pre-screen with a panel company — a 100-person flash survey costs almost nothing and gives you a real IR estimate before you commit to a recruit budget.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Panel vs. recruiter: which to use and when</summary>
+    <div class="inner">
+      <p>Online panels (e.g. Qualtrics, Dynata, Schlesinger) are fast and cheap for high-incidence general consumer studies. But panel fatigue is real — heavy panel members have learned the game and may perform rather than genuinely respond. For niche audiences (C-suite, clinical patients, very specific product users), a specialist recruiter is almost always worth the premium. They build real-world lists rather than sampling from repeat survey-takers.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>The "friends and family" problem</summary>
+    <div class="inner">
+      <p>When a recruiter is struggling to fill cells, they sometimes lean on referrals — friends of existing participants. This is called snowball sampling and it's fine in some research contexts (ethnographic, community-based), but it introduces social clustering: your sample starts to look like a social network rather than a representative cross-section. Always ask your recruiter if they're using referrals and decide consciously whether it's appropriate for your study.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Sentinel cells: the research design trick</summary>
+    <div class="inner">
+      <p>A sentinel cell is a deliberately over-specified quota you use as a "smoke alarm" for recruit difficulty. If you include one very tight cell — say, "heavy users, male, 55+, premium brand only" — and the recruiter can't fill it in week one, you know your overall IR is lower than estimated. The sentinel cell buys you time to renegotiate before the whole recruit falls behind schedule.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>How moderators and sample designers should talk to each other</summary>
+    <div class="inner">
+      <p>The moderator's discussion guide and the sample design should be created in parallel, not sequentially. If the moderator wants to explore a tension between light and heavy users, the sample better include both. If the guide includes a journaling exercise, the sample should exclude participants who struggle with written expression. This two-way handshake is often skipped — and it's where studies quietly go wrong long before fieldwork begins.</p>
+    </div>
+  </details>
+</div>
+</section>
+
+<footer>
+  <div class="col">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex-wrap:wrap">
+      <div>
+        <p class="eyebrow" style="margin-bottom:12px">About this explainer</p>
+        <p>Built to illustrate the interaction between quota cells, screener criteria, and incidence rates in qualitative research design. All figures are interactive. Press <kbd style="border:1px solid var(--v12);padding:1px 5px;border-radius:3px">s</kbd> for deeper technical notes.</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:12px">Key concepts</p>
+        <p style="margin-bottom:4px"><strong>Quota cell</strong> — one slot in the sample with defined criteria</p>
+        <p style="margin-bottom:4px"><strong>Incidence rate</strong> — % of the population that qualifies</p>
+        <p style="margin-bottom:4px"><strong>Screener</strong> — the qualifying questionnaire</p>
+        <p><strong>Hard quota</strong> — non-negotiable cell; <strong>Soft quota</strong> — flexible target</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>var QUOTA_DATA={demo:[{dim:"Gender",cell:"Female 25–54",type:"hard",ir:"~48%",note:"Standard for most CPG studies; large pool, easy to fill"},{dim:"Gender",cell:"Male 25–54",type:"soft",ir:"~48%",note:"Mirror cell for gender balance; often adjusted in field"},{dim:"Age",cell:"Gen Z (18–27)",type:"hard",ir:"~15%",note:"Smaller natural pool; tends to require broader outreach"},{dim:"Geography",cell:"Top 5 metros only",type:"hard",ir:"~35%",note:"Geographic restriction cuts the addressable universe significantly"}],behav:[{dim:"Usage",cell:"Heavy users (weekly+)",type:"hard",ir:"~22%",note:"Usage frequency is a natural discriminator — pool is smaller but responsive"},{dim:"Recency",cell:"Purchased in last 30 days",type:"hard",ir:"~18%",note:"Recency cuts are very effective but can clash with geographic restrictions"},{dim:"Channel",cell:"Online-only shoppers",type:"soft",ir:"~31%",note:"Growing segment; easier to reach via digital panels"},{dim:"Loyalty",cell:"Lapsed customers (6–18mo)",type:"hard",ir:"~12%",note:"Hard to find on general panels; recruiter lists or CRM data needed"}],attit:[{dim:"Attitude",cell:"Brand loyalists",type:"hard",ir:"~8%",note:"Must be screened for — cannot be purchased as a list; drives IR down fast"},{dim:"Attitude",cell:"Category skeptics",type:"hard",ir:"~14%",note:"Hard to confirm attitude without revealing study purpose"},{dim:"Life stage",cell:"New parents <12mo",type:"hard",ir:"~6%",note:"Very specific life stage; recruiter referrals sometimes used"},{dim:"Decision role",cell:"Primary decision-maker",type:"soft",ir:"~35%",note:"Self-reported; verify with screener question about last purchase decision"}]},SCREENER_QS=[{type:"Category filter",q:"How often do you purchase products in the [category] category?",opts:[{text:"Never",cls:"term",note:"Terminates — not a category user"},{text:"Less than once a year",cls:"term",note:"Terminates — infrequent enough to exclude"},{text:"A few times a year",cls:"maybe",note:"May qualify, depending on usage criteria"},{text:"Monthly or more often",cls:"qual",note:"Qualifies — active category user"}],logic:"This question does the heaviest lifting. It removes non-users without revealing the specific brand or product being studied. Placed first because it eliminates the largest non-qualifying group fastest — saving time and cost."},{type:"Industry exclusion",q:"Are you or is anyone in your household employed in any of the following industries?",opts:[{text:"Market research / advertising / PR",cls:"term",note:"Terminates — professional bias risk"},{text:"The product category itself",cls:"term",note:"Terminates — expert bias risk"},{text:"None of the above",cls:"qual",note:"Qualifies — no professional conflict"}],logic:'The "security question" of screener design. Placed early enough to terminate quickly but after the category filter — there\'s no point asking this of non-category-users. Industry exclusions protect the authenticity of the research.'},{type:"Brand familiarity",q:"Which of the following brands are you aware of? (Select all that apply)",opts:[{text:"Brand A (target)",cls:"qual",note:"Must select — study is about Brand A"},{text:"Brand B (competitor)",cls:"maybe",note:"Useful for competitive context cells"},{text:"Brand C (competitor)",cls:"maybe",note:"Useful for competitive context cells"},{text:"None of the above",cls:"term",note:"Terminates — not brand-aware"}],logic:"Awareness questions reveal whether a respondent can meaningfully participate in brand-specific discussion. Placed after usage because a non-user who knows the brand may still qualify for awareness/perception studies."},{type:"Decision role",q:"When purchasing [category] products for your household, which best describes your role?",opts:[{text:"I am the primary decision-maker",cls:"qual",note:"Qualifies for most studies"},{text:"I share decisions equally",cls:"maybe",note:"May qualify — check study needs"},{text:"Someone else mainly decides",cls:"term",note:"Terminates if decision-maker required"}],logic:"Decision-role questions are often placed near the end because they're self-reported and hard to fake once category and awareness criteria are confirmed. They refine which qualified category users are most relevant to the client's business question."}],IR_FACTORS=[{factor:"Very specific age range (e.g. 42–48)",impact:-45,dir:"down",note:"Narrow age bands dramatically cut the eligible pool"},{factor:"Recent purchase (within 30 days)",impact:-35,dir:"down",note:"Recency filters work well but shrink the available sample quickly"},{factor:"Attitudinal criteria (e.g. brand loyal)",impact:-60,dir:"down",note:"Biggest single IR killer — attitudes can't be purchased on a list"},{factor:"Geographic restriction (specific city)",impact:-40,dir:"down",note:"Hard geo cuts can clash with panel availability in that market"},{factor:"Niche product category (low penetration)",impact:-55,dir:"down",note:"If only 5% of people use the category, you start at 5% before any other filter"},{factor:"Broadening age range (18–65)",impact:30,dir:"up",note:"Wider demo criteria increase the addressable pool substantially"},{factor:"Using a specialist list / CRM data",impact:40,dir:"up",note:"Starting from a pre-qualified list (e.g. client customer file) boosts IR significantly"},{factor:"Removing a behavioural qualifier",impact:25,dir:"up",note:"Each behavioural filter removed gives IR a meaningful lift"}],CASCADE_FILTERS=[{label:"Female",pct:50,color:"var(--v0)"},{label:"Age 35–54",pct:62,color:"var(--v0)"},{label:"Category user",pct:45,color:"var(--v16)"},{label:"Monthly+ purchase",pct:55,color:"var(--v16)"},{label:"Brand aware",pct:65,color:"var(--v13)"},{label:"Decision maker",pct:70,color:"var(--v13)"},{label:"Not MR/Ad industry",pct:94,color:"var(--v4)"},{label:"Premium brand user",pct:35,color:"var(--v11)"}],CRAFT_DECISIONS=[{title:"Hard vs. soft quotas",icon:"⚖",body:"Hard quotas must be filled exactly as specified — 6 of this type, 6 of that. Soft quotas are targets you'll aim for but can adjust. Use hard quotas for cells where type difference matters analytically. Use soft quotas where balance is desirable but not essential to the research objectives."},{title:"Cell size: how many per group",icon:"#",body:"In qualitative research, cells are usually 6–8 people per group or segment. Too few and you can't see a pattern — one outlier dominates. Too many and you're over-recruiting, wasting budget, and possibly hitting diminishing returns on insight. The magic range for focus groups is 6–8 per session; for IDIs, think in minimum n=6 per subgroup."},{title:"Homogeneity vs. heterogeneity",icon:"≋",body:"Homogeneous groups (all the same type) make people feel comfortable speaking openly — good for sensitive topics. Heterogeneous groups (deliberately mixed) create productive tension and reveal how people compare themselves to others. The research objective should drive this choice, not habit."},{title:"Known vs. unknown variables",icon:"?",body:'Some variables you can control (gender, age, usage). Others you discover only in the room (personality type, articulateness, social influence). Good sample design controls what it can and leaves room for the unknowns to emerge organically. Over-controlling for personality type (e.g. "no dominant personalities") usually creates flat, uneventful groups.'},{title:"Strangers vs. acquaintances",icon:"↔",body:"Standard qual research uses strangers — people who don't know each other. This prevents social hierarchies from pre-existing the research. Occasionally, ethnographic or community-based research intentionally recruits existing social groups. Know which you're designing for, because it changes the group dynamics you'll observe."},{title:"Over-recruiting",icon:"+",body:"Always recruit 20–25% over your target to account for no-shows, late terminations, and last-minute drops. This buffer should be priced into the proposal and planned from the start. A study that under-recruits is not just a quality problem — it's a client relationship problem."}],PG_PRESETS={cpg:{n:24,cells:4,strict:2,label:"CPG — New product concept",ir:22,notes:"Broad consumer target; medium screener strictness. Typical cells: heavy/light users × male/female."},health:{n:20,cells:6,strict:5,label:"Healthcare — Patient journey",ir:5,notes:"Very tight screener (diagnosis, treatment stage, recency). Expect high cost-per-complete. Specialist recruiter required."},b2b:{n:16,cells:3,strict:4,label:"B2B — Tech purchase decision",ir:8,notes:"Niche audience (IT decision-makers at mid-market firms). Small pool, long recruit timeline. IDIs recommended over groups."},fin:{n:24,cells:3,strict:3,label:"Financial services — Gen Z attitudes",ir:18,notes:"Demographic-driven with attitudinal layer. Gen Z hard to reach via traditional panels; social media recruit advised."}},currentPGPreset="cpg";function showQuota(e){document.querySelectorAll(".qb-tab").forEach(function(t){t.classList.toggle("on",t.textContent.toLowerCase().indexOf(e.substring(0,4))>=0||"demo"===e&&"Demographic"===t.textContent||"behav"===e&&"Behavioural"===t.textContent||"attit"===e&&"Attitudinal"===t.textContent)});var t=QUOTA_DATA[e],n="<thead><tr><th>Dimension</th><th>Cell description</th><th>Type</th><th>Est. IR alone</th><th>Field note</th></tr></thead><tbody>";t.forEach(function(e){n+="<tr><td><strong>"+e.dim+"</strong></td><td>"+e.cell+'</td><td><span class="badge '+("hard"===e.type?"hard":"soft")+'">'+e.type+'</span></td><td style="font-family:var(--v6)">'+e.ir+'</td><td style="color:var(--v4);font-size:.82rem">'+e.note+"</td></tr>"}),n+="</tbody>",document.getElementById("qtable").innerHTML=n}showQuota("demo");var CRITERIA=[{label:"Female only",impact:.5},{label:"Age 35–54",impact:.62},{label:"Category user",impact:.4},{label:"Monthly+ purchase",impact:.55},{label:"Brand aware",impact:.6},{label:"Not industry insider",impact:.95},{label:"Primary decision maker",impact:.6},{label:"Attitudinal fit",impact:.25}],criteriaOn=[];function buildCriteriaToggles(){var e=document.getElementById("criteria-toggles");CRITERIA.forEach(function(t,n){var r=document.createElement("button");r.textContent=t.label,r.style.cssText="padding:7px 14px;border-radius:20px;border:2px solid var(--v12);background:none;font-family:inherit;font-size:.82rem;cursor:pointer;color:var(--v5);transition:all .2s;margin:0",r.onclick=function(){var e=criteriaOn.indexOf(n);e>=0?(criteriaOn.splice(e,1),r.style.borderColor="var(--v12)",r.style.background="none",r.style.color="var(--v5)"):(criteriaOn.push(n),r.style.borderColor="var(--v0)",r.style.background="var(--v0)",r.style.color="#fff"),updatePool()},e.appendChild(r)})}function updatePool(){var e=1;criteriaOn.forEach(function(t){e*=CRITERIA[t].impact});var t=Math.round(100*e);document.getElementById("pool-pct").textContent=t+"%",document.getElementById("pool-bar").style.width=t+"%",document.getElementById("pool-bar").style.background=t>30?"var(--v13)":t>10?"var(--v16)":"var(--v11)";var n=criteriaOn.map(function(e){return CRITERIA[e].label});document.getElementById("pool-desc").textContent=n.length?n.join(" + "):"No filters applied";var r=document.getElementById("pool-warning");if(t<10){var a=Math.ceil(48/e);document.getElementById("contacts-needed").textContent=a.toLocaleString(),r.style.display="block"}else r.style.display="none"}buildCriteriaToggles();var SCROLLY_STATES=[{contacted:200,qualified:200,label:"200 contacts",sublabel:"Everyone in the outreach universe"},{contacted:200,qualified:140,label:"140 remain",sublabel:"Age / gender filter removes ~30%"},{contacted:200,qualified:72,label:"72 remain",sublabel:"Category usage + recency drops pool by half"},{contacted:200,qualified:56,label:"56 remain",sublabel:"Industry exclusion + brand awareness check"},{contacted:200,qualified:44,label:"44 qualified",sublabel:"Final pool — IR = 22% (44 of 200)"}];function renderScreenerVis(e){var t=SCROLLY_STATES[e],n=t.qualified/t.contacted,r=[{n:t.contacted,label:"Contacted",color:"var(--v4)"},{n:Math.round(.7*t.contacted),label:"Opened screener",color:"var(--v5)"},{n:t.qualified,label:"Qualified",color:"var(--v0)"}],a='<div style="margin-bottom:12px">';r.forEach(function(e){var n=Math.round(e.n/t.contacted*100);a+='<div style="margin-bottom:8px"><div style="font-size:.75rem;color:var(--v4);margin-bottom:3px">'+e.label+'</div><div style="display:flex;align-items:center;gap:8px"><div style="background:'+e.color+";height:26px;border-radius:5px;width:"+n+'%;min-width:30px;display:flex;align-items:center;padding:0 8px;color:#fff;font-size:.78rem;font-weight:600;transition:width .5s cubic-bezier(.4,0,.2,1)">'+e.n+"</div></div></div>"}),a+="</div>",a+='<div style="font-size:.82rem;font-weight:700;color:var(--v0);margin-top:4px">IR = '+Math.round(100*n)+"%</div>",a+='<div style="font-size:.78rem;color:var(--v4)">'+t.sublabel+"</div>",document.getElementById("screener-vis").innerHTML=a}function buildScreenerQs(){var e=document.getElementById("screener-qs"),t="";SCREENER_QS.forEach(function(e,n){t+='<div class="screener-q"><div class="screener-q-header" onclick="toggleSQ('+n+')"><span class="screener-q-type">'+e.type+'</span><span class="screener-q-text">'+e.q+'</span></div><div class="screener-q-body" id="sqb'+n+'"><div style="margin-bottom:12px">'+e.opts.map(function(e){return'<div class="opt '+e.cls+'"><div class="dot"></div><div><strong>'+e.text+'</strong> — <span style="color:var(--v4);font-size:.82rem">'+e.note+"</span></div></div>"}).join("")+'</div><div class="note"><strong>Design logic:</strong> '+e.logic+"</div></div></div>"}),e.innerHTML=t}function toggleSQ(e){document.getElementById("sqb"+e).classList.toggle("open")}function calcAndRender(){var e=+document.getElementById("sl-n").value,t=+document.getElementById("sl-ir").value/100,n=+document.getElementById("sl-ns").value/100,r=+document.getElementById("sl-cpc").value;document.getElementById("sv-n").textContent=e+" participants",document.getElementById("sv-ir").textContent=Math.round(100*t)+"%",document.getElementById("sv-ns").textContent=Math.round(100*n)+"% no-show/drop rate",document.getElementById("sv-cpc").textContent="$"+r+" per contact";var a=Math.ceil(e*(1+n)),o=Math.ceil(a/t),i=o*r,s=Math.round(i/e),l=[{label:"Contacts needed",n:o,base:o},{label:"Open screener (est. 70%)",n:Math.round(.7*o),base:o},{label:"Pass screener (IR = "+Math.round(100*t)+"%)",n:Math.round(o*t),base:o},{label:"Account for no-shows",n:a,base:o},{label:"Completes",n:e,base:o}],c="";l.forEach(function(e){var t=Math.max(8,Math.round(e.n/e.base*100)),n="Completes"===e.label?"var(--v13)":e.label.indexOf("no-show")>=0?"var(--v16)":"var(--v0)";c+='<div class="funnel-row"><div class="funnel-name">'+e.label+'</div><div class="funnel-bar" style="width:'+t+"%;background:"+n+'">'+e.n+"</div></div>"}),document.getElementById("funnel-out").innerHTML=c,document.getElementById("cost-out").innerHTML='<div class="metric"><div class="val">'+o.toLocaleString()+'</div><div class="lbl">Total contacts</div></div><div class="metric"><div class="val">$'+i.toLocaleString()+'</div><div class="lbl">Estimated recruit cost</div></div><div class="metric"><div class="val">$'+s+'</div><div class="lbl">Cost per complete</div></div>';var d="";d=t<=.08?'<strong style="color:var(--v11)">⚠ Very low IR:</strong> Studies below 8% incidence are expensive and slow. Consider widening one quota cell or softening one screener criterion.':t<=.18?'<strong style="color:var(--v16)">Moderate IR:</strong> Manageable, but expect the recruit to take longer. Specialist recruiter recommended. Consider a sentinel cell to monitor progress.':'<strong style="color:var(--v13)">Good IR:</strong> This incidence rate is fieldable with a general panel. Monitor recruiter progress in week one to catch any under-performance early.',document.getElementById("ir-advice").innerHTML=d}function buildIRFactors(){var e=document.getElementById("ir-factors-list"),t="";IR_FACTORS.forEach(function(e){var n="up"===e.dir?"var(--v13)":"var(--v11)",r="up"===e.dir?"↑":"↓";t+='<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--v12)"><div style="font-size:1.1rem;font-weight:700;color:'+n+';min-width:24px;text-align:center">'+r+'</div><div><div style="font-weight:600;font-size:.9rem">'+e.factor+'</div><div style="font-size:.82rem;color:var(--v4);margin-top:2px">'+e.note+' <span style="font-family:var(--v6);color:'+n+'">'+(e.impact>0?"+":"")+e.impact+"% typical impact</span></div></div></div>"}),e.innerHTML=t}renderScreenerVis(0),function(){var e=document.querySelectorAll("#scrolly-screen .stp"),t=-1;function n(){var n=-1;(e.forEach(function(e,t){var r=e.getBoundingClientRect();r.top<.6*window.innerHeight&&r.bottom>.3*window.innerHeight&&(n=t)}),n<0&&e.length)&&(e[0].getBoundingClientRect().top>0&&(n=0));n!==t&&(t=n,e.forEach(function(e,n){e.classList.toggle("on",n===t)}),t>=0&&renderScreenerVis(t))}window.addEventListener("scroll",n,{passive:!0}),n()}(),buildScreenerQs(),["sl-n","sl-ir","sl-ns","sl-cpc"].forEach(function(e){document.getElementById(e).addEventListener("input",calcAndRender)}),calcAndRender(),buildIRFactors();var cascadeActive=[];function buildCascade(){var e=document.getElementById("cascade-filters");CASCADE_FILTERS.forEach(function(t,n){var r=document.createElement("button");r.textContent=t.label,r.style.cssText="padding:7px 14px;border-radius:20px;border:2px solid var(--v12);background:none;font-family:inherit;font-size:.82rem;cursor:pointer;color:var(--v5);transition:all .2s",r.onclick=function(){var e=cascadeActive.indexOf(n);e>=0?cascadeActive.splice(e,1):cascadeActive.push(n),cascadeActive.sort(function(e,t){return e-t}),updateCascade(),r.style.borderColor=cascadeActive.indexOf(n)>=0?t.color:"var(--v12)",r.style.background=cascadeActive.indexOf(n)>=0?t.color:"none",r.style.color=cascadeActive.indexOf(n)>=0?"#fff":"var(--v5)"},e.appendChild(r)})}function updateCascade(){var e=document.getElementById("cascade-bars"),t=document.getElementById("cascade-summary");if(0===cascadeActive.length)return e.innerHTML='<div style="color:var(--v4);font-size:.9rem;padding:20px 0">Click filters above to add them to the cascade.</div>',void(t.textContent="");var n=1,r='<div style="margin-bottom:8px;font-size:.8rem;color:var(--v4)">Starting population: 100%</div>';cascadeActive.forEach(function(e){n*=CASCADE_FILTERS[e].pct/100;var t=Math.max(4,Math.round(100*n)),a=n>.3?"var(--v13)":n>.1?"var(--v16)":"var(--v11)";r+='<div style="margin-bottom:10px"><div style="font-size:.78rem;color:var(--v4);margin-bottom:3px">After: <strong style="color:var(--v3)">'+CASCADE_FILTERS[e].label+'</strong></div><div style="display:flex;align-items:center;gap:10px"><div style="background:'+a+";height:28px;border-radius:5px;width:"+t+'%;min-width:36px;display:flex;align-items:center;padding:0 8px;color:#fff;font-size:.78rem;font-weight:700;transition:width .4s">'+Math.round(100*n)+"%</div></div></div>"}),e.innerHTML=r;var a=Math.round(100*n),o=Math.ceil(40/n);t.innerHTML="<strong>Estimated IR: "+a+"%</strong> — To recruit 40 participants, expect to contact approximately <strong>"+o.toLocaleString()+" people</strong>."+(a<8?' <span style="color:var(--v11)">This is extremely difficult to field.</span>':a<18?' <span style="color:var(--v16)">Challenging but manageable with specialist recruiter.</span>':' <span style="color:var(--v13)">Good incidence — fieldable with standard panel.</span>')}function buildTriangle(){var e=document.getElementById("triangle-vis"),t='<svg viewBox="0 0 500 300" style="width:100%;max-width:500px;display:block;margin:0 auto" aria-label="Constraint triangle">';t+='<polygon points="250,30 60,270 440,270" fill="var(--v2)" stroke="var(--v0)" stroke-width="2"/>',[{label:"Speed",sub:"Fast fieldwork",x:50,y:8,desc:"Get to field quickly, minimal screening time"},{label:"Cost",sub:"Low recruit budget",x:4,y:86,desc:"Fewer contacts needed, lower cost per complete"},{label:"Precision",sub:"Tight, specific sample",x:90,y:86,desc:"Exactly the right person in every seat"}].forEach(function(e){var n=e.x/100*460+20,r=e.y/100*260+20;t+='<circle cx="'+n+'" cy="'+r+'" r="28" fill="var(--v0)" opacity=".15" stroke="var(--v0)" stroke-width="2"/><text x="'+n+'" y="'+(r-6)+'" text-anchor="middle" font-size="13" font-weight="700" fill="var(--v0)">'+e.label+'</text><text x="'+n+'" y="'+(r+9)+'" text-anchor="middle" font-size="10" fill="var(--v5)">'+e.sub+"</text>"}),t+='<text x="250" y="158" text-anchor="middle" font-size="11" fill="var(--v4)">Pick any two.</text>',t+='<text x="250" y="172" text-anchor="middle" font-size="11" fill="var(--v4)">The third suffers.</text>',t+="</svg>",t+='<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">',[{a:"Speed",b:"Cost",lose:"Precision",note:"Fast and cheap = loose criteria, less screened"},{a:"Speed",b:"Precision",lose:"Cost",note:"Fast and precise = must contact many people, expensive"},{a:"Cost",b:"Precision",lose:"Speed",note:"Cheap and precise = needs long recruit window"}].forEach(function(e){t+='<div style="background:var(--v9);border:1px solid var(--v12);border-radius:8px;padding:12px;font-size:.8rem"><div style="font-weight:700;color:var(--v13);margin-bottom:4px">✓ '+e.a+" + "+e.b+'</div><div style="color:var(--v11);margin-bottom:6px">✗ Sacrifice '+e.lose+'</div><div style="color:var(--v4)">'+e.note+"</div></div>"}),t+="</div>",e.innerHTML=t}function buildDecisions(){var e=document.getElementById("decisions-grid"),t='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';CRAFT_DECISIONS.forEach(function(e,n){t+='<div class="screener-q"><div class="screener-q-header" onclick="toggleDec('+n+')"><span style="font-size:1.3rem">'+e.icon+'</span><span class="screener-q-text">'+e.title+'</span></div><div class="screener-q-body" id="decb'+n+'"><p style="font-size:.9rem;color:var(--v5);margin:0">'+e.body+"</p></div></div>"}),t+="</div>",e.innerHTML=t}function toggleDec(e){document.getElementById("decb"+e).classList.toggle("open")}function setPGPreset(e){currentPGPreset=e;var t=PG_PRESETS[e];document.getElementById("pg-n").value=t.n,document.getElementById("pg-cells").value=t.cells,document.getElementById("pg-strict").value=t.strict,document.querySelectorAll(".pg-preset button").forEach(function(e){e.classList.toggle("on",e.textContent.trim()===t.label)}),renderPG()}function renderPG(){var e=PG_PRESETS[currentPGPreset],t=+document.getElementById("pg-n").value,n=+document.getElementById("pg-cells").value,r=+document.getElementById("pg-strict").value,a=["","Very loose","Loose","Medium","Strict","Very strict"];document.getElementById("pg-nv").textContent=t,document.getElementById("pg-cv").textContent=n+" cells",document.getElementById("pg-sv").textContent=a[r];var o=e.ir,i=Math.max(0,5*(n-2)),s=8*(r-1),l=Math.max(2,o-i-s),c=Math.ceil(t/n),d=Math.ceil(1.2*t/l*100),u=Math.ceil(d/80),p=18*d,v=l>=18?'<span class="safe">✓ Good</span>':l>=8?'<span class="warn">⚠ Moderate</span>':'<span class="risk">✗ Difficult</span>',m='<div class="hi">'+e.label+'</div>\n\nTarget n:          <span class="hi">'+t+' completes</span>\nQuota cells:       <span class="hi">'+n+"</span> ("+c+"/cell avg)\nScreener:          "+a[r]+'\nEst. incidence:    <span class="'+(l>=18?"safe":l>=8?"warn":"risk")+'">~'+l+"%</span>\n\nContacts needed:   "+d.toLocaleString()+"\nRecruit timeline:  ~"+u+" business days\nEst. cost:         ~$"+p.toLocaleString()+"\nFieldability:      "+v+'\n\n<span style="color:var(--v4)">Note: '+e.notes+"</span>";document.getElementById("pg-out").innerHTML=m}buildCascade(),updateCascade(),buildTriangle(),buildDecisions(),setPGPreset("cpg"),document.querySelectorAll(".ref").forEach(function(e){var t=e.getAttribute("data-ref"),n=e.closest("section");function r(r){e.classList.toggle("hot",r),n&&n.querySelectorAll(".fig").forEach(function(e){e.classList.toggle("dimmed",r)}),document.querySelectorAll('[data-part="'+t+'"]').forEach(function(e){e.classList.toggle("hot",r)})}e.addEventListener("mouseenter",function(){r(!0)}),e.addEventListener("mouseleave",function(){r(!1)}),e.addEventListener("click",function(){r(!e.classList.contains("hot"))})});var observer=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&e.target.classList.add("in")})},{threshold:.12});document.querySelectorAll(".reveal").forEach(function(e){observer.observe(e)}),window.addEventListener("scroll",function(){var e=window.scrollY/(document.body.scrollHeight-window.innerHeight);document.getElementById("progArc").style.strokeDashoffset=88-88*e},{passive:!0}),function(){var e=document.getElementById("weeds"),t=document.getElementById("weedsHint");function n(){var n=e.hidden;e.hidden=!n,t.setAttribute("aria-expanded",String(n)),t.innerHTML=n?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",n&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,r=(t.tagName||"").toLowerCase();"input"===r||"textarea"===r||t.isContentEditable||(e.preventDefault(),n())}}),t.addEventListener("click",n),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),n())})}();
+</script>
+</body>
+</html>

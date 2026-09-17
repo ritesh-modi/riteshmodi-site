@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>From Transcript to Theme</title>
+<style>:root{--v14:#EFECE6;--v15:#E4E0D8;--v16:#D8D3C8;--v8:#1C1815;--v10:#4A3F35;--v9:#7A6E62;--v18:#C8C0B4;--v0:#856527;--v3:rgba(133,101,39,.09);--v2:rgba(133,101,39,.25);--v1:#2E7A6E;--v12:#1B1713;--v13:#E2DDD5;--v17:#A83228;--v22:#A87228;--v19:#2E7A56;--v6:#856527;--v4:#2E7A6E;--v7:#6B4EA8;--v5:#A83228;--v11:ui-monospace,'SF Mono',Menlo,Consolas,monospace;--v21:Georgia,'Times New Roman',serif;--v20:system-ui,-apple-system,'Segoe UI',sans-serif}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:var(--v14);color:var(--v8);font-family:var(--v20);font-size:18px;line-height:1.68;-webkit-font-smoothing:antialiased;overflow-x:hidden}#prog{position:fixed;top:18px;right:18px;z-index:200;pointer-events:none}#prog svg{width:38px;height:38px;transform:rotate(-90deg)}#prog circle.bg{fill:none;stroke:var(--v18);stroke-width:3}#prog circle.fg{fill:none;stroke:var(--v0);stroke-width:3;stroke-dasharray:94;stroke-dashoffset:94;transition:stroke-dashoffset .15s}.col{max-width:680px;margin:0 auto;padding:0 24px}.wide{max-width:980px;margin:0 auto;padding:0 24px}.bleed{width:100%}.eyebrow{font-family:var(--v11);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--v9);margin-bottom:14px}.lede{font-size:1.18rem;color:var(--v10);line-height:1.58;margin-top:14px}.pull{border-left:3px solid var(--v0);padding:14px 22px;margin:32px 0;color:var(--v10);font-style:italic;font-size:1.04rem;line-height:1.55}h2{font-family:var(--v21);font-size:clamp(1.45rem,3.5vw,2.15rem);font-weight:700;letter-spacing:-.01em;line-height:1.2;margin-bottom:18px}h3{font-size:1.02rem;font-weight:700;margin:26px 0 9px}p{margin-bottom:14px}p:last-child{margin-bottom:0}.intu{background:var(--v3);border-radius:8px;padding:18px 22px;margin:26px 0;border:1px solid var(--v2)}.intu strong{color:var(--v0);display:block;margin-bottom:5px;font-size:.82rem;letter-spacing:.07em;text-transform:uppercase}.note{background:var(--v15);border-radius:6px;padding:14px 18px;margin:22px 0;border-left:3px solid var(--v18);font-size:.93rem;color:var(--v10)}.note strong{color:var(--v8)}.try{background:var(--v12);color:var(--v13);border-radius:8px;padding:16px 22px;margin:26px 0;font-size:.93rem}.try strong{color:#C8A96E;display:block;margin-bottom:5px;font-size:.8rem;letter-spacing:.07em;text-transform:uppercase}section{padding:clamp(56px,8vw,104px) 0}section+section{border-top:1px solid var(--v18)}.fig{background:var(--v15);border-radius:12px;padding:26px 30px;margin:28px 0;border:1px solid var(--v18)}.fig-cap{font-family:var(--v11);font-size:11px;color:var(--v9);margin-top:13px;letter-spacing:.04em;line-height:1.5}.fig-cap strong{color:var(--v10)}.qchip{display:inline-flex;flex-direction:column;gap:2px;border:2px solid var(--v18);border-radius:8px;padding:8px 12px;background:var(--v14);font-size:.8rem;transition:all .22s;cursor:pointer;max-width:280px;min-width:120px;vertical-align:top}.qchip .qc-speaker{font-family:var(--v11);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--v9)}.qchip .qc-text{font-style:italic;color:var(--v10);line-height:1.4}.qchip .qc-code{font-family:var(--v11);font-size:.65rem;margin-top:3px;display:none}.qchip.raw{border-color:var(--v18);background:var(--v14)}.qchip.coded{border-color:var(--v4);background:rgba(46,122,110,.07)}.qchip.coded .qc-code{display:block;color:var(--v4)}.qchip.clustered{border-color:var(--v7);background:rgba(107,78,168,.07)}.qchip.clustered .qc-code{display:block;color:var(--v7)}.qchip.insight-chip{border-color:var(--v5);background:rgba(168,50,40,.07)}.qchip.hot{transform:scale(1.03);box-shadow:0 3px 14px rgba(0,0,0,.12)}.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.68rem;font-family:var(--v11);font-weight:700;letter-spacing:.04em;text-transform:uppercase}.badge.code{background:rgba(46,122,110,.15);color:var(--v4)}.badge.theme{background:rgba(107,78,168,.15);color:var(--v7)}.badge.insight{background:rgba(168,50,40,.15);color:var(--v5)}.badge.raw{background:var(--v16);color:var(--v9)}.scrolly{display:grid;grid-template-columns:1fr 1fr;min-height:500px}.s-pin{position:sticky;top:72px;height:calc(100vh - 144px);display:flex;align-items:center;justify-content:center;padding:20px}.s-steps{padding:60px 40px 100px}.stp{opacity:.28;transition:opacity .3s;margin-bottom:60px;padding:18px 22px;border-radius:8px;border-left:3px solid var(--v18)}.stp.on{opacity:1;border-left-color:var(--v0);background:var(--v3)}.stp h3{margin:0 0 7px;font-size:.97rem}.stp p{margin:0;font-size:.91rem;color:var(--v10)}@media(max-width:720px){.scrolly{grid-template-columns:1fr}.s-pin{position:relative;height:auto;min-height:280px;padding:16px}}.tx-line{display:flex;gap:12px;margin-bottom:16px;padding:10px 14px;border-radius:6px;cursor:pointer;transition:background .18s;border:1px solid transparent}.tx-line:hover{background:var(--v3);border-color:var(--v2)}.tx-line.selected{background:var(--v3);border-color:var(--v0)}.tx-speaker{font-family:var(--v11);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;min-width:70px;flex-shrink:0;padding-top:2px}.tx-speaker.mod{color:var(--v1)}.tx-speaker.p1{color:var(--v6)}.tx-speaker.p2{color:var(--v7)}.tx-speaker.p3{color:var(--v5)}.tx-text{font-size:.9rem;color:var(--v10);line-height:1.55;flex:1}.tx-line.coded-line{background:rgba(46,122,110,.06);border-color:rgba(46,122,110,.2)}.tx-codes{margin-top:5px;display:flex;gap:4px;flex-wrap:wrap}.code-panel{border:1px solid var(--v18);border-radius:8px;overflow:hidden}.code-panel-head{background:var(--v12);color:var(--v13);padding:10px 16px;font-family:var(--v11);font-size:.75rem;letter-spacing:.07em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}.code-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--v18);cursor:pointer;transition:background .18s;font-size:.88rem}.code-item:hover{background:var(--v3)}.code-item:last-child{border-bottom:none}.code-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}.code-count{font-family:var(--v11);font-size:.72rem;color:var(--v9);margin-left:auto}.cluster-zone{border:2px dashed var(--v18);border-radius:10px;padding:16px;min-height:100px;transition:border-color .2s;position:relative}.cluster-zone.active-drop{border-color:var(--v0);background:var(--v3)}.cluster-title{font-weight:700;font-size:.88rem;margin-bottom:10px;color:var(--v10)}.cluster-chips{display:flex;flex-wrap:wrap;gap:8px}.insight-card{border:2px solid var(--v5);border-radius:10px;background:rgba(168,50,40,.06);padding:18px 22px;margin-bottom:14px}.insight-card .ic-label{font-family:var(--v11);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--v5);margin-bottom:6px}.insight-card .ic-title{font-weight:700;font-size:.97rem;margin-bottom:8px}.insight-card .ic-body{font-size:.875rem;color:var(--v10);line-height:1.55}.insight-card .ic-evidence{font-size:.78rem;color:var(--v9);margin-top:8px;font-style:italic;padding-top:8px;border-top:1px solid var(--v18)}.code-btn{padding:5px 12px;border-radius:14px;border:2px solid var(--v18);background:none;font-family:var(--v11);font-size:.72rem;cursor:pointer;color:var(--v10);transition:all .18s;letter-spacing:.03em}.code-btn:hover,.code-btn.on{border-color:var(--v4);background:rgba(46,122,110,.12);color:var(--v4)}.ref{border-bottom:1px dashed var(--v0);cursor:help;color:inherit}.dimmed [data-part]:not(.hot){opacity:.18;transition:opacity .2s}[data-part]{transition:opacity .2s}.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}.reveal.in{opacity:1;transform:none}@media(prefers-reduced-motion:reduce){.reveal,.qchip{transition:none}}.sat-bar{height:12px;background:var(--v18);border-radius:6px;overflow:hidden;margin:4px 0}.sat-fill{height:100%;border-radius:6px;transition:width .5s cubic-bezier(.4,0,.2,1)}.sat-label{font-size:.78rem;color:var(--v9);margin-bottom:3px}.hm-cell{display:flex;align-items:center;justify-content:center;border-radius:4px;font-family:var(--v11);font-size:.72rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s}.hm-cell:hover{transform:scale(1.08);box-shadow:0 2px 8px rgba(0,0,0,.15)}.finding-type-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.ft-tab{padding:7px 14px;border-radius:16px;border:2px solid var(--v18);background:none;font-family:inherit;font-size:.82rem;cursor:pointer;color:var(--v10);transition:all .2s}.ft-tab.on{border-color:var(--v0);background:var(--v0);color:#fff}.pg-grid{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:start}@media(max-width:640px){.pg-grid{grid-template-columns:1fr}}.pg-label{font-size:.82rem;font-weight:600;color:var(--v10);margin-bottom:5px}select{width:100%;padding:8px 12px;border:2px solid var(--v18);border-radius:6px;background:var(--v14);font-family:inherit;font-size:.85rem;color:var(--v8);cursor:pointer}select:focus{outline:none;border-color:var(--v0)}.pg-out{background:var(--v12);color:var(--v13);border-radius:10px;padding:22px 26px;font-family:var(--v11);font-size:.8rem;line-height:1.9;min-height:380px}.pg-out .hi{color:#C8A96E;font-weight:700}.pg-out .ok{color:#74D4A8;font-weight:700}.pg-out .risk{color:#E8907A;font-weight:700}.pg-out .dim{opacity:.45}.pg-out .sec{opacity:.55;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}.pg-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.pg-presets button{padding:6px 14px;border-radius:14px;border:2px solid var(--v18);background:none;font-family:inherit;font-size:.8rem;cursor:pointer;color:var(--v10);transition:all .2s}.pg-presets button:hover,.pg-presets button.on{border-color:var(--v0);background:var(--v0);color:#fff}input[type=range]{width:100%;accent-color:var(--v0)}.ctrl-val{font-family:var(--v11);font-size:.76rem;color:var(--v0);margin-top:3px}footer{background:var(--v12);color:var(--v13);padding:52px 24px;font-size:.875rem}.hint{font-family:var(--v11);font-size:11px;letter-spacing:.08em;color:var(--v9);text-align:center;cursor:pointer;padding:32px 0;user-select:none}.hint kbd{border:1px solid var(--v18);border-radius:3px;padding:1px 5px;color:var(--v10)}.hint:hover,.hint:focus-visible{color:var(--v0);outline:none}.weeds[hidden]{display:none}.weeds{background:var(--v15);padding:60px 24px;border-top:1px solid var(--v18);animation:wIn .4s ease}@keyframes wIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}details{margin-bottom:16px;border:1px solid var(--v18);border-radius:8px;overflow:hidden}details summary{cursor:pointer;font-weight:600;padding:13px 18px;background:var(--v15);color:var(--v10);list-style:none;display:flex;align-items:center;gap:10px}details summary::before{content:'▶';font-size:.62rem;color:var(--v0);transition:transform .2s}details[open] summary::before{transform:rotate(90deg)}.weed-body{padding:14px 20px;font-size:.9rem;color:var(--v10);line-height:1.65}.weed-body p{margin-bottom:12px}.weed-body p:last-child{margin-bottom:0}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="A transcript is not a finding. Code it, cluster the codes, test for saturation, then build the theme-by-participant matrix that makes a theme defensible.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/transcript-to-theme">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="From Transcript to Theme">
+  <meta property="og:description" content="Code a transcript, cluster the codes, then build the theme-by-participant matrix.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/transcript-to-theme">
+  <meta property="og:image" content="https://www.loopingly.com/og/transcript-to-theme.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="From Transcript to Theme">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="From Transcript to Theme">
+  <meta name="twitter:description" content="Code a transcript, cluster the codes, then build the theme-by-participant matrix.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/transcript-to-theme.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"From Transcript to Theme","description":"A transcript is not a finding. Code it, cluster the codes, test for saturation, then build the theme-by-participant matrix that makes a theme defensible.","url":"https://www.loopingly.com/explorables/transcript-to-theme","image":"https://www.loopingly.com/og/transcript-to-theme.png","datePublished":"2026-09-17","dateModified":"2026-09-17","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Qualitative analysis, coding and thematic analysis"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"From transcript to theme"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div id="prog" aria-hidden="true">
+  <svg viewBox="0 0 32 32">
+    <circle class="bg" cx="16" cy="16" r="14"/>
+    <circle class="fg" id="progArc" cx="16" cy="16" r="14"/>
+  </svg>
+</div>
+
+
+<div style="min-height:90vh;display:flex;flex-direction:column;justify-content:center;
+            padding:80px 24px 60px;max-width:760px;margin:0 auto">
+  <p class="eyebrow">Qualitative Analysis · The craft of sense-making</p>
+  <h1 style="font-family:var(--v21);font-size:clamp(2.4rem,7vw,4.8rem);font-weight:700;
+              line-height:1.0;letter-spacing:-.025em">
+    From raw words<br>to <em style="font-style:normal;color:var(--v0)">actionable truth</em>
+  </h1>
+  <p class="lede">A transcript is not a finding. It is evidence waiting to be interpreted. The journey from a 90-minute recording to a three-slide insight takes more craft than any other part of qual research — and it is almost never taught explicitly.</p>
+
+  
+  <div style="margin-top:44px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+    <div class="qchip raw">
+      <span class="qc-speaker">P2 · raw</span>
+      <span class="qc-text">"I just stopped using it. Nothing dramatic."</span>
+    </div>
+    <span style="font-size:1.4rem;color:var(--v9)">→</span>
+    <div class="qchip coded">
+      <span class="qc-speaker">P2 · coded</span>
+      <span class="qc-text">"I just stopped using it. Nothing dramatic."</span>
+      <span class="qc-code">[ passive-churn · no-trigger-event ]</span>
+    </div>
+    <span style="font-size:1.4rem;color:var(--v9)">→</span>
+    <div class="qchip clustered">
+      <span class="qc-speaker">P2 · theme: silent exit</span>
+      <span class="qc-text">"I just stopped using it. Nothing dramatic."</span>
+      <span class="qc-code">[ THEME: Drift, not departure ]</span>
+    </div>
+  </div>
+  <p style="font-size:.8rem;color:var(--v9);margin-top:10px">
+    The atom of this explainer: one quote chip, moving through four states as analysis deepens.
+  </p>
+</div>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">The core misunderstanding</p>
+  <h2>Analysis is not reading. It is a deliberate act of reduction and abstraction.</h2>
+  <p>When researchers say "we analysed the transcripts," they usually mean one of three things — and two of them aren't really analysis. <span class="ref" data-ref="reading">Reading</span> is the first pass: becoming familiar with what was said. <span class="ref" data-ref="summarising">Summarising</span> is tidying up what was said into shorter form. <span class="ref" data-ref="analysing">Analysis</span> is the act of moving <em>beyond</em> what was said to identify patterns, tensions, and implications that no single participant stated explicitly.</p>
+  <p>The insight is never in the transcript. It lives in the space <em>between</em> multiple transcripts — the pattern that emerges only when you can see them all at once.</p>
+
+  <div class="intu">
+    <strong>Picture it</strong>
+    Imagine six people each describe their commute to work. Each description is different. Analysis asks: what is structurally similar across all six, despite the surface differences? What tension runs through all of them that none of them named? That structural pattern is the insight — and it doesn't appear in any single transcript.
+  </div>
+</div>
+
+<div class="wide reveal" id="fig1">
+  <div class="fig">
+    <p class="eyebrow">Figure 1</p>
+    <p style="font-weight:700;margin-bottom:6px">The three levels of sense-making — click each to understand the distinction</p>
+    <p style="font-size:.86rem;color:var(--v9);margin-bottom:18px">Most researchers do levels 1–2 well. Level 3 is where findings become genuinely useful.</p>
+    <div id="levels-grid"></div>
+    <p class="fig-cap"><strong>Figure 1</strong> · Click any level to expand its definition and see a worked example from the same raw material.</p>
+  </div>
+</div>
+
+<div class="col">
+  <p>This explainer walks through the full journey from raw transcript to polished insight — not as an abstract process, but with a real (condensed) dataset you can interact with at each step.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Stage one</p>
+  <h2>Immersion: reading with your researcher brain switched on.</h2>
+  <p>The first read of a transcript is not a passive experience. A trained researcher reads with two questions running simultaneously: <em>what is this person literally saying?</em> and <em>what does this suggest about their underlying experience?</em> Those two questions produce different notes.</p>
+  <p>Literal content is what the participant said. Latent meaning is what they revealed without saying it. The best qual findings usually come from the latent level — and you can only access it if you notice it during the first read.</p>
+</div>
+
+<div class="bleed">
+  <div class="scrolly" id="scrolly-read">
+    <div class="s-pin">
+      <div class="fig" style="width:100%;max-width:440px" id="read-graphic"></div>
+    </div>
+    <div class="s-steps">
+      <div class="col" style="margin-bottom:30px">
+        <p class="eyebrow">Reading like a researcher</p>
+      </div>
+      <div class="stp on" data-step="0">
+        <h3>Before you read: set your question</h3>
+        <p>Don't open a transcript without a research question in your head. The question is your filter. Without it, everything feels equally interesting — and nothing gets prioritised. Write the primary research question at the top of your analysis document before you open the first transcript.</p>
+      </div>
+      <div class="stp" data-step="1">
+        <h3>First pass: marginal reactions</h3>
+        <p>Read without stopping. In the margin (or equivalent), mark moments that feel significant — surprising, unexpected, emotionally charged, or directly relevant to the research question. Don't code yet. Just react. These marks are your first instincts and they're valuable.</p>
+      </div>
+      <div class="stp" data-step="2">
+        <h3>Notice what participants DON'T say</h3>
+        <p>Silences are data. Topics that get avoided, questions that get deflected, subjects that everyone talks around — these gaps are often more revealing than what's on the page. Note them explicitly: "P3 never mentioned price, even when asked about trade-offs."</p>
+      </div>
+      <div class="stp" data-step="3">
+        <h3>Track emotional register</h3>
+        <p>How does the participant talk about different topics? Flat and matter-of-fact suggests low engagement or resignation. Animated and digressive suggests genuine investment. The shift in register mid-transcript is often where the real insight lives — the moment they move from the performed answer to the real one.</p>
+      </div>
+      <div class="stp" data-step="4">
+        <h3>Write a one-paragraph memo after each transcript</h3>
+        <p>Before moving to the next transcript, write 3–5 sentences about what stood out. What was unexpected? What would you most want the client to hear from this person? This memo is not a summary — it's your analytical reaction. It forces synthesis and prevents later transcripts from overwriting your first impressions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col" style="margin-top:24px">
+  <div class="try">
+    <strong>Try it now</strong>
+    Before you click into the live transcript in the next section, read this one line and notice your reaction: <em>"I use it every day, but I've never recommended it to anyone."</em> What does that reveal? Write it down before you continue — your first instinct is often your best analytical move.
+  </div>
+  <p>Once you've read all transcripts and written your memos, you have the raw material for analysis. The next stage is open coding — the first formal pass through the data.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Stage two</p>
+  <h2>Open coding: tagging meaning, not content.</h2>
+  <p>Coding is the practice of attaching a short label — a <em>code</em> — to a segment of text. The code captures what the segment means analytically, not what it describes literally. A participant says "I just didn't bother renewing." The literal description is "non-renewal." The analytical code is something like <strong>passive-exit</strong> or <strong>low-urgency-churn</strong> — it names the mechanism, not the event.</p>
+  <p>Good codes are verbs or verb phrases when possible: they describe what the participant is <em>doing</em> or <em>experiencing</em>, not what they're talking about. "Price sensitivity" is a topic. "Mentally anchoring on a competitor's price" is a code — it describes a cognitive act.</p>
+</div>
+
+<div class="wide reveal" id="fig2">
+  <div class="fig">
+    <p class="eyebrow">Figure 2 · Interactive coding workspace</p>
+    <p style="font-weight:700;margin-bottom:6px">Click a transcript line to select it, then click a code to apply it</p>
+    <p style="font-size:.86rem;color:var(--v9);margin-bottom:18px">This is a condensed transcript from a fictional study on subscription app churn. Code the lines below — then see the code frequency emerge.</p>
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:20px" id="coding-workspace">
+    </div>
+    <p class="fig-cap"><strong>Figure 2</strong> · Select a transcript line, then click a code button to apply it. Watch the code frequency panel update live.</p>
+  </div>
+</div>
+
+<div class="col">
+  <h3>The difference between descriptive and interpretive codes</h3>
+  <p>Descriptive codes label what is present: "product usage," "price mention," "competitor reference." Interpretive codes label what it means: "feature-blindness," "price-as-proxy-for-trust," "competitive framing as self-justification." The difference between a mediocre analysis and a great one is often just this: how far the researcher pushed beyond the descriptive into the interpretive.</p>
+
+  <div class="fig reveal" id="fig3">
+    <p class="eyebrow">Figure 3 · Descriptive vs. interpretive codes — click each pair</p>
+    <div id="code-compare"></div>
+    <p class="fig-cap"><strong>Figure 3</strong> · The same quote, coded two ways. Click a pair to see the difference in analytical value.</p>
+  </div>
+
+  <div class="pull">"The best code is the one that will still make sense six months from now when you've forgotten the specific participant."</div>
+
+  <p>Open coding produces a long, messy list of codes. That's exactly right. The mess is evidence that you're not forcing the data into a predetermined structure — you're letting it speak first. The next stage imposes order.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Stage three</p>
+  <h2>Clustering: finding the groups that the codes are already trying to form.</h2>
+  <p>After open coding, you have a list of 30–80 codes across your full dataset. The next step is to look for codes that seem to belong together — that are describing different facets of the same underlying phenomenon. This process is called axial coding, or more simply, clustering.</p>
+  <p>The key discipline: you are not imposing clusters. You are discovering them. The question is always "why do these two codes keep appearing near each other?" — not "where should I put this code to make the structure look clean?"</p>
+</div>
+
+<div class="wide reveal" id="fig4">
+  <div class="fig">
+    <p class="eyebrow">Figure 4 · Code clustering — drag or click codes into theme groups</p>
+    <p style="font-weight:700;margin-bottom:6px">Organise the open codes below into thematic clusters</p>
+    <p style="font-size:.86rem;color:var(--v9);margin-bottom:18px">Click any code chip to cycle it into a cluster. Watch the theme structure emerge. There is no single right answer — that's the point.</p>
+    <div id="cluster-board"></div>
+    <div id="cluster-summary" style="margin-top:16px;font-size:.875rem;color:var(--v10)"></div>
+    <p class="fig-cap"><strong>Figure 4</strong> · Click each code chip to assign it to a cluster. The theme label updates as you add codes.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="intu">
+    <strong>How to tell a real theme from a convenient bucket</strong>
+    A real theme has internal coherence — every code in it is describing the same underlying human experience or mechanism. A convenient bucket is just a group of things you didn't know where else to put. Test each theme: can you write a single sentence that captures what all the codes share? If you can't, it's a bucket, not a theme. Break it up and redistribute.
+  </div>
+
+  <h3>Naming themes: the most underrated skill in qual analysis</h3>
+  <p>A theme name is not a topic label. "Price" is a topic. "Treating price as a proxy for trust" is a theme — it names a relationship, a mechanism, a human behaviour. A good theme name should be surprising enough to make the client think and specific enough to be actionable. If a theme name could appear in any study about any topic, it's not specific enough.</p>
+
+  <div class="fig reveal" id="fig5">
+    <p class="eyebrow">Figure 5 · Theme naming — bad vs. good</p>
+    <div id="theme-naming"></div>
+    <p class="fig-cap"><strong>Figure 5</strong> · Click each theme pair to see why one name is analytically useless and the other drives action.</p>
+  </div>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Stage four</p>
+  <h2>Saturation: knowing when you have enough.</h2>
+  <p>Saturation is the point at which new data stops producing new codes or new themes — you're hearing the same things again. It's the signal that your analysis has covered the territory. Before saturation, findings are provisional. After it, you can present them with confidence.</p>
+  <p>In practice, most qual studies reach thematic saturation between sessions 8 and 14 for a relatively homogeneous audience. For heterogeneous samples or discovery studies, it takes longer. Tracking saturation explicitly — not just feeling it — is how you defend your sample size recommendation to a client who wants to cut it.</p>
+</div>
+
+<div class="wide reveal" id="fig6">
+  <div class="fig">
+    <p class="eyebrow">Figure 6 · Saturation tracker — interactive</p>
+    <p style="font-weight:700;margin-bottom:6px">Simulate data collection across sessions and watch themes reach saturation</p>
+    <p style="font-size:.86rem;color:var(--v9);margin-bottom:18px">Click "Add session" to process each new interview. Watch which themes saturate first and which keep opening new territory.</p>
+    <div id="sat-tracker"></div>
+    <p class="fig-cap"><strong>Figure 6</strong> · Each session may add new codes to existing themes (deepening them) or open new themes. Saturation occurs when sessions stop adding new themes.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="note">
+    <strong>Saturation vs. coverage:</strong> These are different things. You can have saturation in one theme (everyone says the same thing about price) while another theme is still open (new things keep emerging about brand relationship). True saturation means all major themes have stabilised — not just the most prominent one. Track each theme separately.
+  </div>
+
+  <p>Once themes are stable and saturated, you have the analytical foundation. The final step — converting themes into insights — is where the work earns its strategic value.</p>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Stage five — the hardest part</p>
+  <h2>The insight is the theme plus its implication. Without the implication, it's a finding.</h2>
+  <p>A finding reports what happened. An insight explains why it matters and what it means for the client's decision. The difference between them is the "so what" — the sentence that connects the research result to the business context.</p>
+  <p>Most qual reports are full of findings. The client reads them, nods, and files the document. Insights produce a different reaction: a pause, a moment of recognition, occasionally a room of people saying "I didn't know that." That reaction is what you're building toward.</p>
+</div>
+
+<div class="wide reveal" id="fig7">
+  <div class="fig">
+    <p class="eyebrow">Figure 7 · Insight construction — build one live</p>
+    <p style="font-weight:700;margin-bottom:6px">Take a theme through four steps to reach a full insight statement</p>
+    <div id="insight-builder"></div>
+    <p class="fig-cap"><strong>Figure 7</strong> · Click through each stage to build a complete insight from a raw theme. The output is the format used in the final report.</p>
+  </div>
+</div>
+
+<div class="col">
+  <h3>The three insight tests</h3>
+  <p>Before you commit to an insight statement, run these three tests. An insight that fails any one of them needs to be rewritten.</p>
+
+  <div class="fig reveal" id="fig8">
+    <p class="eyebrow">Figure 8 · Insight quality matrix — rate your own findings</p>
+    <div id="insight-matrix"></div>
+    <p class="fig-cap"><strong>Figure 8</strong> · Click each test to expand its criteria and see a worked pass/fail example.</p>
+  </div>
+
+  <div class="try">
+    <strong>The so-what test</strong>
+    Read your insight statement aloud. Then say "so what?" If you have to pause to think of an answer, the insight isn't fully formed yet. A genuine insight contains its own "so what" — the implication is embedded in the statement, not added as an afterthought.
+  </div>
+</div>
+</section>
+
+
+<section>
+<div class="col">
+  <p class="eyebrow">Putting it together</p>
+  <h2>The theme × participant matrix: the most useful analysis tool no one teaches.</h2>
+  <p>Once your themes are named and your quotes are coded, build a matrix: themes across the top, participants down the side. In each cell, note whether that participant spoke to that theme — and if so, how prominently. This single table reveals more about your data than any other tool.</p>
+  <p>It shows you which themes are truly cross-cutting (every participant) and which are minority patterns (2–3 participants only). It shows you which participants were anomalies. It shows you whether the study has the evidence to support the claims you're about to make.</p>
+</div>
+
+<div class="wide reveal" id="fig9">
+  <div class="fig">
+    <p class="eyebrow">Figure 9 · Theme × participant matrix — interactive heatmap</p>
+    <p style="font-weight:700;margin-bottom:6px">Hover any cell to see the supporting quote. Click a theme column to highlight all quotes for that theme.</p>
+    <div id="heatmap-container" style="overflow-x:auto"></div>
+    <div id="heatmap-detail" style="min-height:60px;margin-top:16px;padding:14px;
+                                     background:var(--v14);border-radius:8px;border:1px solid var(--v18);
+                                     font-size:.875rem;color:var(--v10)">
+      <em style="color:var(--v9)">Hover or tap any cell to read the supporting quote.</em>
+    </div>
+    <p class="fig-cap"><strong>Figure 9</strong> · Cell intensity reflects how prominently a participant spoke to each theme. White = not mentioned. Click a column header to filter the detail view.</p>
+  </div>
+</div>
+
+<div class="col">
+  <div class="note">
+    <strong>Minority patterns:</strong> A theme mentioned by only 2 of 12 participants is not a "finding" in the usual sense — but it might be the most important signal in the study. Ask: is this a genuinely unusual perspective, or is it something the majority couldn't articulate because they lacked the language? The matrix helps you spot these and decide consciously how to handle them.
+  </div>
+</div>
+</section>
+
+
+<section style="background:var(--v15)">
+<div class="col">
+  <p class="eyebrow">Capstone playground</p>
+  <h2>Generate a full analysis framework for any study type.</h2>
+  <p>Choose your study parameters and get a complete analysis plan — from first read protocol through to insight statement format — calibrated to your specific project.</p>
+</div>
+<div class="wide">
+  <div class="pg-presets" id="pg-presets-el"></div>
+  <div class="pg-grid">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div>
+        <div class="pg-label">Study type</div>
+        <select id="pg-stype" onchange="renderPG()">
+          <option value="explore">Exploratory / discovery</option>
+          <option value="concept">Concept testing</option>
+          <option value="journey">Journey mapping</option>
+          <option value="persona">Persona development</option>
+        </select>
+      </div>
+      <div>
+        <div class="pg-label">Number of participants</div>
+        <input type="range" id="pg-n" min="6" max="30" value="12" step="2" oninput="renderPG()">
+        <div class="ctrl-val" id="pg-nv">12 participants</div>
+      </div>
+      <div>
+        <div class="pg-label">Data richness</div>
+        <select id="pg-rich" onchange="renderPG()">
+          <option value="thin">Thin (short sessions, few probes)</option>
+          <option value="std" selected>Standard</option>
+          <option value="rich">Rich (long sessions, ethnographic)</option>
+        </select>
+      </div>
+      <div>
+        <div class="pg-label">Analytical depth required</div>
+        <input type="range" id="pg-depth" min="1" max="3" value="2" step="1" oninput="renderPG()">
+        <div class="ctrl-val" id="pg-dv">Standard</div>
+      </div>
+    </div>
+    <div class="pg-out" id="pg-out-el"></div>
+  </div>
+</div>
+</section>
+
+
+<section>
+<div class="col" style="text-align:center;padding:80px 24px">
+  <p class="eyebrow">The bottom line</p>
+  <h2 style="font-size:clamp(1.6rem,4vw,2.5rem)">Analysis is not what happens after the research. It is the research.</h2>
+  <p class="lede" style="max-width:540px;margin:18px auto 0">
+    The words in a transcript are raw material. The insight is something you build from them — through reading, coding, clustering, and the courageous act of saying what the data means. That act is the whole point.
+  </p>
+</div>
+</section>
+
+<p class="hint" id="weedsHint" role="button" tabindex="0" aria-controls="weeds" aria-expanded="false">
+  press <kbd>s</kbd> for the deeper cuts
+</p>
+
+
+<section class="weeds" id="weeds" hidden aria-labelledby="weedsHint">
+<div class="col">
+  <h2 style="margin-bottom:26px">Into the weeds</h2>
+  <details>
+    <summary>Software tools for qualitative analysis — and their hidden costs</summary>
+    <div class="weed-body">
+      <p>NVivo, ATLAS.ti, Dedoose, and MAXQDA are the major qualitative data analysis (QDA) software packages. They are powerful, but they carry a hidden cost: the software's structure nudges your analysis toward certain forms. A node-based system like NVivo makes hierarchical themes feel natural — which is fine if your data is hierarchical, and distorting if it isn't.</p>
+      <p>Many experienced analysts do first-pass coding in a simple text editor or spreadsheet and only move into QDA software when they need to query across a large dataset. The discipline of the craft — noticing, naming, connecting — does not require software. What software helps with is scale: searching for all instances of a code across 40 transcripts, running co-occurrence queries, producing frequency counts.</p>
+      <p>AI-assisted coding is now possible and useful for first-pass descriptive coding. It is not yet reliable for interpretive coding, where the judgment call about what something means requires contextual understanding that LLMs still handle inconsistently. Use AI for coverage, not for interpretation.</p>
+    </div>
+  </details>
+  <details>
+    <summary>The analyst's positionality problem</summary>
+    <div class="weed-body">
+      <p>Every analyst brings a perspective that shapes what they notice, what they code, and what they name as a theme. This is not a flaw — it's unavoidable — but it needs to be managed. Reflexivity is the practice of naming your own perspective explicitly: what assumptions are you carrying into this analysis? What would you need to see to be surprised?</p>
+      <p>One practical technique: after completing your own analysis, give a small subset of the data (5–10 quotes) to a colleague who has not read the transcripts and ask them to code independently. Compare codes. Where you diverge is where your analytical perspective is most active — and most in need of examination.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Negative case analysis: the discipline of seeking disconfirmation</summary>
+    <div class="weed-body">
+      <p>Negative case analysis means actively searching for participants or data points that do not fit your emerging theme. If your theme is "users feel anxious about data privacy," look hard for users who don't feel this. If you can't find any, the theme is well-supported. If you find two, those two cases are analytically important — they tell you the conditions under which the theme doesn't apply, which is often the most actionable finding.</p>
+      <p>Grounded theory, the formal methodology underlying most qual analysis, requires negative case analysis as a check on confirmation bias. Even if you're not doing formal grounded theory, the practice of asking "who doesn't fit this?" before you commit to a theme is one of the most valuable habits an analyst can develop.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Writing findings for non-research audiences</summary>
+    <div class="weed-body">
+      <p>The biggest failure mode in qual reporting is not in the analysis — it's in the translation from analytical language to business language. "Participants exhibited a pattern of passive disengagement marked by absence of negative affect" is not a finding a marketing director can act on. "Customers don't leave angry — they drift away" is the same finding, and it produces a different conversation.</p>
+      <p>A useful exercise: write every insight twice. Once in analytical language (for your own rigour and for the methodology section). Once in plain English with a concrete example (for the headline and recommendation). The plain English version is the one the client will remember. The analytical version is the one that defends it.</p>
+    </div>
+  </details>
+  <details>
+    <summary>How many quotes is enough evidence for a theme?</summary>
+    <div class="weed-body">
+      <p>There is no universal answer — but there are useful heuristics. A theme mentioned by only one participant is a hypothesis, not a finding. A theme supported by 3+ participants across different demographic or attitudinal segments has reasonable evidential weight. A theme that appears in every session with different language is the strongest possible finding.</p>
+      <p>What matters is not just frequency but independence. Five participants who all heard each other in a focus group are not independent sources — the group dynamic may have amplified one voice. Twelve IDI participants who each arrived at the same conclusion independently is much stronger evidence. Document how you established the independence of your evidence in your methodology section.</p>
+    </div>
+  </details>
+  <details>
+    <summary>The difference between a finding, a theme, an insight, and a recommendation</summary>
+    <div class="weed-body">
+      <p><strong>Finding:</strong> An observation grounded in the data. "Seven of twelve participants mentioned difficulty comparing plans." Findings are descriptive and do not require interpretation.</p>
+      <p><strong>Theme:</strong> A pattern that runs across multiple findings. "Price opacity as a trust-eroding mechanism" — this is interpretive and requires the analyst to have made a judgment about what the findings share.</p>
+      <p><strong>Insight:</strong> A theme plus its implication for the client's specific context. "Customers don't churn on price — they churn when they can't verify that they're getting value, which price opacity prevents." This names a mechanism and its consequence.</p>
+      <p><strong>Recommendation:</strong> An action derived from the insight. "Redesign the plan comparison interface to surface value equivalence at the moment of renewal, not just at acquisition." Recommendations are the analyst's job but should be distinguished clearly from findings — they contain a judgment about what to do, not just what is true.</p>
+    </div>
+  </details>
+</div>
+</section>
+
+<footer>
+  <div class="col">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;flex-wrap:wrap">
+      <div>
+        <p class="eyebrow" style="margin-bottom:10px">About this explainer</p>
+        <p>Covers the full qualitative analysis pipeline: immersion reading, open coding, axial clustering, saturation tracking, and insight construction. The atom — a quote chip in four states — carries every figure. Press <kbd style="border:1px solid rgba(255,255,255,.2);padding:1px 5px;border-radius:3px">s</kbd> for deeper methodology notes.</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="margin-bottom:10px">Colour guide</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem">
+          <div style="display:flex;align-items:center;gap:8px;color:var(--v13)"><div style="width:10px;height:10px;border-radius:50%;background:var(--v6);flex-shrink:0"></div>Raw / uncoded quote</div>
+          <div style="display:flex;align-items:center;gap:8px;color:var(--v13)"><div style="width:10px;height:10px;border-radius:50%;background:var(--v4);flex-shrink:0"></div>Coded segment</div>
+          <div style="display:flex;align-items:center;gap:8px;color:var(--v13)"><div style="width:10px;height:10px;border-radius:50%;background:var(--v7);flex-shrink:0"></div>Theme cluster</div>
+          <div style="display:flex;align-items:center;gap:8px;color:var(--v13)"><div style="width:10px;height:10px;border-radius:50%;background:var(--v5);flex-shrink:0"></div>Insight / recommendation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>var TRANSCRIPT=[{id:0,speaker:"P1",sc:"p1",text:"\"I use it every day — honestly I couldn't work without it — but I've never recommended it to anyone. I don't know why. It just doesn't come up.\"",codes:[]},{id:1,speaker:"P2",sc:"p2",text:'"I stopped renewing when they changed the pricing tier. Not because it got more expensive, just... I didn\'t trust that I knew what I was paying for anymore."',codes:[]},{id:2,speaker:"MOD",sc:"mod",text:"What would have changed that for you?",codes:[]},{id:3,speaker:"P2",sc:"p2",text:"\"If I could see clearly what the different plans actually got me. The comparison page was useless. Everything said 'up to' and 'unlimited' but nothing told me what I'd actually lose.\"",codes:[]},{id:4,speaker:"P3",sc:"p3",text:"\"I've been on the free tier for two years. I keep meaning to upgrade but there's never a moment where I feel like I need to. The free version is... fine.\"",codes:[]},{id:5,speaker:"MOD",sc:"mod",text:'Can you describe what "fine" feels like?',codes:[]},{id:6,speaker:"P3",sc:"p3",text:"\"Like, it does what I need. But it doesn't feel like anything. I'm not attached to it. If something better came along I'd leave in a second without feeling bad.\"",codes:[]},{id:7,speaker:"P1",sc:"p1",text:"\"I think the thing is — it's become invisible. Like the electricity. I don't appreciate it until it's gone. That's probably not great for them.\"",codes:[]},{id:8,speaker:"P4",sc:"p3",text:'"When they changed the UI last year I nearly cancelled. Not because it was worse, just — I had a routine, and they broke it. I stayed, but I was annoyed for weeks."',codes:[]},{id:9,speaker:"P2",sc:"p2",text:"\"The thing that really bothers me is when I can't tell if a feature is included in my plan or not. I end up not using things because I'm not sure if I'll get charged.\"",codes:[]},{id:10,speaker:"P3",sc:"p3",text:"\"I've recommended it to my sister but not to work colleagues. At work it would feel weird. Like I'd be endorsing something that's just kind of... good enough.\"",codes:[]},{id:11,speaker:"P4",sc:"p3",text:'"I never think about it until something goes wrong. Which means when something goes wrong, it feels catastrophic even if it\'s small. My tolerance is really low."',codes:[]}],ALL_CODES=[{id:"invisible-utility",label:"invisible-utility",color:"#856527",desc:"Product is used but not consciously valued — like infrastructure"},{id:"passive-churn-risk",label:"passive-churn-risk",color:"#A83228",desc:"Low emotional attachment; would leave without guilt if alternative appeared"},{id:"price-opacity",label:"price-opacity",color:"#2E7A6E",desc:"Inability to clearly understand what is included at current price tier"},{id:"feature-avoidance",label:"feature-avoidance",color:"#6B4EA8",desc:"Avoiding features due to uncertainty about billing or inclusion"},{id:"routine-attachment",label:"routine-attachment",color:"#2E7A56",desc:"Attachment based on habit/routine rather than active value perception"},{id:"word-of-mouth-block",label:"word-of-mouth-block",color:"#A87228",desc:"Using product but unwilling to recommend — social referral suppressed"},{id:"low-tolerance-errors",label:"low-tolerance-errors",color:"#6B2E2E",desc:"High sensitivity to disruption due to low active relationship"},{id:"upgrade-inertia",label:"upgrade-inertia",color:"#2E4E6E",desc:"Persistent upgrade intention without trigger strong enough to act"}],CODE_DESC={"invisible-utility":"The product has become infrastructure — used daily, valued abstractly, but never consciously appreciated.","passive-churn-risk":"No active dissatisfaction, but no loyalty either. Would switch without emotional friction.","price-opacity":"Trust erosion from inability to understand value exchange at current price tier.","feature-avoidance":"Self-imposed product limitation caused by billing uncertainty.","routine-attachment":"Relationship is with the habit, not the product. Disruption to the routine is the churn trigger.","word-of-mouth-block":"Active use coexists with social silence — the product doesn't generate advocacy despite being valued.","low-tolerance-errors":"The absence of an active relationship amplifies negative incidents.","upgrade-inertia":"Free-tier satisfaction removes the friction that would trigger upgrade consideration."},CODE_SUGGEST=[0,2,5,0,7,2,1,0,4,2,5,3],DESC_VS_INTERP=[{quote:'"I use it every day but I\'ve never recommended it to anyone."',desc:{code:"non-recommendation",why:"Labels the absence of a behaviour — tells you what didn't happen, not why."},interp:{code:"word-of-mouth-block",why:"Names the mechanism: there is an active suppression of advocacy, separate from usage satisfaction. This opens the question: what's blocking it?"}},{quote:'"I didn\'t trust that I knew what I was paying for anymore."',desc:{code:"price-confusion",why:"Describes a cognitive state but doesn't explain its consequence for the relationship."},interp:{code:"price-opacity-as-trust-erosion",why:"Names the causal chain: opacity → distrust → churn risk. This directly connects to a business decision about pricing page design."}},{quote:'"It\'s become invisible. Like the electricity."',desc:{code:"habitual-use",why:"Correctly identifies habituation but treats it neutrally, missing its danger."},interp:{code:"infrastructure-without-appreciation",why:"Captures the vulnerability embedded in the metaphor: you only notice electricity when it fails. Low appreciation = high churn sensitivity to any disruption."}}],OPEN_CODES=[{id:"c1",label:"invisible-utility",cluster:null,color:"#856527"},{id:"c2",label:"passive-churn-risk",cluster:null,color:"#A83228"},{id:"c3",label:"price-opacity",cluster:null,color:"#2E7A6E"},{id:"c4",label:"feature-avoidance",cluster:null,color:"#6B4EA8"},{id:"c5",label:"routine-attachment",cluster:null,color:"#2E7A56"},{id:"c6",label:"word-of-mouth-block",cluster:null,color:"#A87228"},{id:"c7",label:"low-tolerance-errors",cluster:null,color:"#6B2E2E"},{id:"c8",label:"upgrade-inertia",cluster:null,color:"#2E4E6E"},{id:"c9",label:"billing-uncertainty",cluster:null,color:"#6B4EA8"},{id:"c10",label:"ui-routine-break",cluster:null,color:"#2E7A56"},{id:"c11",label:"contextual-advocacy-limit",cluster:null,color:"#A87228"},{id:"c12",label:"low-engagement-ceiling",cluster:null,color:"#A83228"}],CLUSTERS=[{id:"cl1",label:"Emotional detachment",desc:"How users relate (or don't) to the product",codes:[]},{id:"cl2",label:"Pricing & trust",desc:"How opacity undermines confidence",codes:[]},{id:"cl3",label:"Habit & disruption",desc:"What holds users in place — and what breaks it",codes:[]},{id:"cl4",label:"Social silence",desc:"Why usage doesn't generate advocacy",codes:[]}],CODE_CLUSTER_HINTS={c1:"cl1",c2:"cl1",c3:"cl2",c4:"cl2",c5:"cl3",c6:"cl4",c7:"cl3",c8:"cl1",c9:"cl2",c10:"cl3",c11:"cl4",c12:"cl1"},THEME_NAMES=[{bad:"Product usage",good:"Infrastructure without appreciation",why:"The bad name could describe any study about any product. The good name captures the specific dynamic discovered here: the product has become like electricity — essential, invisible, and resented only when it fails. This drives directly actionable design decisions."},{bad:"Price issues",good:"Opacity as a trust-erosion mechanism",why:"Price issues could mean it's too expensive. This study found the opposite: users aren't leaving because of cost, they're leaving because they can't verify value. These require completely different solutions. The good name makes that distinction impossible to miss."},{bad:"Lack of loyalty",good:"Habit-bound retention without relationship",why:"Lack of loyalty sounds like a brand problem. This theme reveals something more specific: users are retained by routine, not by affection. When the routine breaks — a UI change, a feature removal — so does the relationship. The name points directly at the intervention."},{bad:"Advocacy gap",good:"Context-dependent word-of-mouth suppression",why:"Advocacy gap suggests users don't like the product enough to recommend it. But these users DO like it — they just won't recommend it in certain social contexts. That's a fundamentally different problem (social framing, not satisfaction), and the good name captures it."}],SAT_THEMES=[{name:"Emotional detachment",sessions:[2,1,1,0,1,0,0,1,0,0],sat:6},{name:"Price opacity / trust",sessions:[1,2,1,1,0,1,0,0,0,0],sat:7},{name:"Habit disruption",sessions:[1,0,2,1,1,0,0,0,0,0],sat:5},{name:"Word-of-mouth block",sessions:[0,1,1,0,2,1,0,0,0,0],sat:8},{name:"Upgrade inertia",sessions:[0,0,1,1,0,2,1,0,0,0],sat:9}],INSIGHT_STEPS=[{stage:"Theme",label:"Start with the theme",content:'<div class="qchip clustered" style="max-width:none;display:block"><span class="qc-speaker">Theme · Emotional detachment</span><span class="qc-text">Users use the product daily but have no active emotional relationship with it. It has become invisible infrastructure.</span><span class="qc-code">[ Codes: invisible-utility · passive-churn-risk · low-engagement-ceiling ]</span></div>'},{stage:"Evidence",label:"Anchor it in data",content:'<div style="font-size:.875rem"><strong>Supporting quotes (3 of 7):</strong><div style="margin-top:10px;display:flex;flex-direction:column;gap:8px"><div class="qchip insight-chip" style="max-width:none;display:block"><span class="qc-speaker">P1</span><span class="qc-text">"It\'s become invisible. Like the electricity. I don\'t appreciate it until it\'s gone."</span></div><div class="qchip insight-chip" style="max-width:none;display:block"><span class="qc-speaker">P3</span><span class="qc-text">"If something better came along I\'d leave in a second without feeling bad."</span></div><div class="qchip insight-chip" style="max-width:none;display:block"><span class="qc-speaker">P4</span><span class="qc-text">"I never think about it until something goes wrong."</span></div></div></div>'},{stage:"Mechanism",label:"Name the underlying mechanism",content:'<div class="intu" style="margin:0"><strong>The mechanism</strong>Users have reached a stable, low-engagement equilibrium: the product does enough that they don\'t leave, but not enough that they invest — emotionally or socially. This equilibrium is fragile: any disruption (pricing change, UI update, competitor offer) tips them toward exit because there is no active relationship to absorb the shock.</div>'},{stage:"Implication",label:"State the business implication",content:'<div style="background:rgba(168,50,40,.08);border:2px solid var(--v5);border-radius:8px;padding:16px 20px"><div style="font-family:var(--v11);font-size:.7rem;color:var(--v5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Business implication</div><div style="font-size:.9rem;font-weight:600;margin-bottom:8px">Retention is not the same as loyalty. The current retention rate masks churn vulnerability.</div><div style="font-size:.85rem;color:var(--v10)">A product that behaves like infrastructure retains users — until it doesn\'t. Any single trigger event (competitor offer, price change, UI disruption) will have outsized effect because there is no relationship buffer. The priority is not reducing churn events but building active emotional engagement before the next disruption.</div></div>'},{stage:"Insight",label:"Write the full insight statement",content:'<div class="insight-card"><div class="ic-label">Insight 1 · Emotional detachment</div><div class="ic-title">Customers don\'t leave this product — they drift away from it. By the time they churn, the decision has already been made.</div><div class="ic-body">Daily usage has become automatic: the product is used but not valued, relied upon but not appreciated. This creates a retention illusion — high DAU masks an absence of loyalty. Because there is no active relationship to absorb disruption, any change to price, interface, or competitive landscape triggers disproportionate churn. Re-engagement is not about winning users back after churn — it is about building genuine connection before the next disruption arrives.</div><div class="ic-evidence">Evidence: 8/12 participants · Quotes: P1, P2, P3, P4 · Theme density: high across all segments</div></div>'}],INSIGHT_TESTS=[{name:"The surprise test",icon:"😮",pass:{label:"Passes",desc:"The insight reveals something the client didn't know or hadn't articulated. A room that doesn't react with \"I didn't know that\" is a room reading a finding, not an insight.",ex:'"Customers don\'t churn angry — they drift away" — most clients assume churn = dissatisfaction. This reframes the mechanism entirely.'},fail:{label:"Fails",desc:"The insight confirms what everyone already knew. It might be useful, but it's not an insight.",ex:'"Customers are price-sensitive" — this fails the surprise test in virtually every study. It adds no new information.'}},{name:"The specificity test",icon:"🎯",pass:{label:"Passes",desc:"The insight is specific to this audience, this category, this moment. It couldn't be cut-pasted from another study.",ex:"\"Free-tier users aren't upgrading because the product is 'fine' — and 'fine' is the enemy of the upgrade trigger\" — this is specific to this product's freemium dynamic."},fail:{label:"Fails",desc:"The insight is so general it could appear in any report about any product.",ex:'"Users want products that are easy to use" — this fails specificity in every study ever written.'}},{name:"The action test",icon:"⚡",pass:{label:"Passes",desc:"The insight implies a concrete change in what the client should do, build, say, or stop doing.",ex:"\"Opacity in plan comparison doesn't just confuse users — it signals that the company doesn't trust them to understand the value\" — implies redesigning the comparison experience from the ground up."},fail:{label:"Fails",desc:"The insight is interesting but doesn't tell the client what to do next.",ex:'"Users have mixed feelings about the pricing structure" — the client could agree with this and not know what to change.'}}],HEATMAP_DATA={themes:["Invisible utility","Price opacity","Habit fragility","WoM suppression","Upgrade inertia"],participants:["P1 — F, 34, daily user","P2 — M, 41, lapsed","P3 — F, 28, free tier","P4 — M, 52, long-term","P5 — F, 37, power user","P6 — M, 29, recent lapsed"],cells:[[3,1,2,3,1],[2,3,1,0,1],[1,0,1,3,3],[2,1,3,1,0],[0,3,1,2,1],[1,2,2,1,2]],quotes:[['"It\'s become invisible. Like electricity."','"I didn\'t trust what I was paying for."','"When they changed the UI I nearly cancelled."','"I\'ve never recommended it to anyone."','"Always meaning to upgrade but never a moment."'],['"The free tier\'s good enough that I stopped thinking about paying."','"I couldn\'t figure out what upgrading actually got me."','"I\'d recommend it to my sister but not at work."','"—"','"Been on free for two years. Inertia mostly."'],['"If something better came along I\'d leave without feeling bad."','"—"','"—"',"\"I won't recommend it — it's just 'good enough'.\"",'"There\'s no moment that makes me want to upgrade."'],['"I never think about it until something goes wrong."','"Fine with the price, confused by what I get."','"Routine matters. Breaks in routine bother me."','"—"','"—"'],['"I couldn\'t work without it — but advocate? No."','"I avoid features I\'m not sure are in my plan."','"—"',"\"I use it but it's not 'mine' exactly.\"",'"The upgrade page made me feel stupid."'],['"Used it daily. Left when they raised prices."','"That was the breaking point — opacity + price."','"New interface, old habits gone. Felt like starting over."',"\"Would've recommended it. Now wouldn't bother.\"",'"—"']]},selectedTxLine=-1,appliedCodes={};TRANSCRIPT.forEach(function(e){appliedCodes[e.id]=[]});var codeCount={};ALL_CODES.forEach(function(e){codeCount[e.id]=0});var satSession=0,selectedTheme=-1,insightStep=0,clusterState={};OPEN_CODES.forEach(function(e){clusterState[e.id]=null});var LEVELS=[{num:"1",color:"var(--v9)",label:"Reading / Summarising",desc:"Restating what participants said in condensed form. Useful for internal notes but not for client deliverables.",ex:'"Participant 3 said she\'d leave if something better came along."',problem:"Could be done by anyone who reads English. Adds no analytical value. Every quote from every participant is equally important — which means nothing is."},{num:"2",color:"var(--v4)",label:"Coding / Pattern-finding",desc:"Identifying what is structurally similar across multiple participants' responses. Requires a judgment about meaning, not just content.",ex:'"Six of twelve participants expressed low emotional attachment: using the product without valuing it actively."',problem:"Better — now we have a pattern. But we still don't know what it means for the client's decision."},{num:"3",color:"var(--v5)",label:"Insight generation",desc:"Connecting the pattern to a mechanism and a consequence — naming what is true, why it matters, and what should change.",ex:'"Users have reached a stable low-engagement equilibrium that looks like loyalty but is actually fragile retention. Any disruption — pricing, UX, competitor — will expose it."',problem:"This is the finding. It wasn't in any transcript. It emerged from the comparison across all of them."}];function buildLevels(){var e=document.getElementById("levels-grid"),t="";LEVELS.forEach(function(e,i){t+='<div style="border:2px solid '+e.color+';border-radius:10px;margin-bottom:12px;overflow:hidden;cursor:pointer" onclick="toggleLevel('+i+')" id="lv'+i+'"><div style="display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--v14)"><div style="width:28px;height:28px;border-radius:50%;background:'+e.color+';color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0">'+e.num+'</div><div><div style="font-weight:700;font-size:.95rem;color:'+e.color+'">'+e.label+'</div><div style="font-size:.8rem;color:var(--v9);margin-top:2px">'+e.desc+'</div></div></div><div id="lvb'+i+'" style="display:none;padding:16px 18px;border-top:1px solid '+e.color+'40"><div style="font-size:.85rem;margin-bottom:10px"><strong>Example output:</strong><br><div style="background:var(--v14);border-radius:6px;padding:10px 14px;margin-top:6px;font-style:italic;font-size:.88rem;color:var(--v10)">'+e.ex+'</div></div><div style="font-size:.83rem;color:var(--v9)"><strong>'+(i<2?"Limitation: ":"Strength: ")+"</strong>"+e.problem+"</div></div></div>"}),e.innerHTML=t}function toggleLevel(e){var t=document.getElementById("lvb"+e);t.style.display="block"===t.style.display?"none":"block"}buildLevels();var READ_STATES=[{title:"Before reading",sub:"Research question pinned at top",body:'<div style="font-family:var(--v11);font-size:.78rem;padding:12px;background:var(--v3);border-radius:6px;border:1px solid var(--v2)"><strong style="color:var(--v0)">Research question:</strong><br>What is driving passive churn among active-but-disengaged subscription users?</div>'},{title:"First pass — reactions marked",sub:"Marginal notes, no formal codes yet",body:'<div style="font-size:.82rem;line-height:1.7"><div style="margin-bottom:8px;padding:8px 12px;background:var(--v15);border-radius:6px"><em style="color:var(--v9)">"I use it every day... never recommended it."</em><br><span style="color:var(--v0);font-size:.72rem">↳ ! Daily use ≠ advocacy. Why?</span></div><div style="margin-bottom:8px;padding:8px 12px;background:var(--v15);border-radius:6px"><em style="color:var(--v9)">"Like the electricity."</em><br><span style="color:var(--v0);font-size:.72rem">↳ !! Infrastructure metaphor — powerful. Invisible = at-risk.</span></div><div style="padding:8px 12px;background:var(--v15);border-radius:6px"><em style="color:var(--v9)">"I\'d leave in a second without feeling bad."</em><br><span style="color:var(--v0);font-size:.72rem">↳ Emotional detachment stated explicitly. Key quote.</span></div></div>'},{title:"Noticing absences",sub:"What didn't get said",body:'<div style="font-size:.83rem;color:var(--v10)"><div class="note" style="margin:0"><strong>Absent topics in this transcript:</strong><ul style="margin:8px 0 0 16px;line-height:1.8"><li>Price never mentioned positively or negatively</li><li>No mention of customer service</li><li>Never compared to a specific competitor</li><li>No moment described when product "delighted"</li></ul><div style="margin-top:8px;font-size:.8rem;color:var(--v9)">Absences suggest: stable, unremarkable experience. Neither satisfied nor dissatisfied. This is the dangerous zone.</div></div></div>'},{title:"Tracking register shifts",sub:"When the language changes",body:'<div style="font-size:.83rem"><div style="margin-bottom:8px;padding:8px 12px;border-radius:6px;background:rgba(46,122,110,.08);border-left:3px solid var(--v4)"><div style="font-size:.7rem;color:var(--v4);font-family:var(--v11);text-transform:uppercase;margin-bottom:4px">Flat / factual register</div><em>"I use it every day. It does what I need."</em></div><div style="padding:8px 12px;border-radius:6px;background:rgba(107,78,168,.08);border-left:3px solid var(--v7)"><div style="font-size:.7rem;color:var(--v7);font-family:var(--v11);text-transform:uppercase;margin-bottom:4px">Animated / engaged register</div><em>"It\'s become invisible. Like the electricity. I don\'t appreciate it until it\'s gone. That\'s probably not great for them."</em><br><span style="font-size:.72rem;color:var(--v9)">↳ Self-aware. Speaking from the brand\'s perspective. High analytical value.</span></div></div>'},{title:"The post-transcript memo",sub:"Written before opening the next transcript",body:'<div style="font-family:var(--v11);font-size:.76rem;background:var(--v12);color:var(--v13);border-radius:8px;padding:14px 16px;line-height:1.8"><span style="color:#C8A96E">MEMO: P1 — post-read</span><br><br>Most striking: the electricity metaphor. Uses daily but never recommends. Not unhappy, not happy — absent. This is a different kind of churn risk than we expected: not dissatisfaction-driven but detachment-driven.<br><br>Question to watch in subsequent transcripts: does this pattern repeat? Is this a personality type or a structural product dynamic?</div>'}];function renderReadGraphic(e){var t=READ_STATES[e];document.getElementById("read-graphic").innerHTML='<p class="eyebrow" style="margin-bottom:8px">Analyst\'s reading log</p><div style="font-weight:700;font-size:.9rem;margin-bottom:4px;color:var(--v0)">'+t.title+'</div><div style="font-size:.75rem;color:var(--v9);margin-bottom:12px">'+t.sub+"</div>"+t.body}function buildCodingWorkspace(){var e=document.getElementById("coding-workspace"),t="<div>";TRANSCRIPT.forEach(function(e){var i="MOD"===e.speaker;t+='<div class="tx-line '+(e.codes&&e.codes.length?"coded-line":"")+'" '+(i?"":'onclick="selectTxLine('+e.id+')" ')+'id="txl'+e.id+'"><div class="tx-speaker '+e.sc+'">'+e.speaker+'</div><div class="tx-text">'+e.text+'<div class="tx-codes" id="txc'+e.id+'"></div></div></div>'}),t+="</div>";var i='<div class="code-panel"><div class="code-panel-head"><span>Code library</span><span id="sel-hint" style="opacity:.6;font-size:.68rem">select a line first</span></div>';ALL_CODES.forEach(function(e){i+='<div class="code-item" id="ci_'+e.id+'" onclick="applyCode(\''+e.id+'\')"><div class="code-dot" style="background:'+e.color+'"></div><div><div style="font-family:var(--v11);font-size:.75rem;font-weight:700;color:var(--v8)">'+e.label+'</div><div style="font-size:.72rem;color:var(--v9)">'+e.desc+'</div></div><div class="code-count" id="cc_'+e.id+'">0</div></div>'}),i+="</div>",i+='<div class="note" style="margin-top:10px;font-size:.8rem" id="code-hint-box"><strong>Tip:</strong> Click a transcript line, then click a code to apply it. Each line can have multiple codes.</div>',e.innerHTML=t+i}function selectTxLine(e){selectedTxLine=e,document.querySelectorAll(".tx-line").forEach(function(e){e.classList.remove("selected")});var t=document.getElementById("txl"+e);t&&t.classList.add("selected"),document.getElementById("sel-hint").textContent="line "+e+" selected";var i=ALL_CODES[CODE_SUGGEST[e]];document.getElementById("code-hint-box").innerHTML='<strong>Suggested code:</strong> <span style="font-family:var(--v11);color:var(--v4)">'+i.label+"</span> — "+CODE_DESC[i.id]}function applyCode(e){if(!(selectedTxLine<0)){var t=appliedCodes[selectedTxLine];if(!(t.indexOf(e)>=0)){t.push(e),codeCount[e]=(codeCount[e]||0)+1;var i=document.getElementById("txc"+selectedTxLine);if(i){var n=ALL_CODES.find(function(t){return t.id===e}),s=document.createElement("span");s.className="badge code",s.style.background=n.color+"20",s.style.color=n.color,s.textContent=n.label,i.appendChild(s),document.getElementById("txl"+selectedTxLine).classList.add("coded-line")}var o=document.getElementById("cc_"+e);o&&(o.textContent=codeCount[e])}}}function buildCodeCompare(){var e=document.getElementById("code-compare"),t="";DESC_VS_INTERP.forEach(function(e,i){t+='<div style="border:1px solid var(--v18);border-radius:8px;margin-bottom:12px;overflow:hidden"><div style="padding:12px 16px;background:var(--v15);font-style:italic;font-size:.9rem;color:var(--v10);cursor:pointer" onclick="toggleDVI('+i+')"><span style="font-size:.7rem;font-family:var(--v11);color:var(--v9);display:block;margin-bottom:4px">QUOTE '+(i+1)+"</span>"+e.quote+'</div><div id="dvib'+i+'" style="display:none"><div style="display:grid;grid-template-columns:1fr 1fr"><div style="padding:14px 16px;border-right:1px solid var(--v18)"><div style="font-size:.7rem;font-family:var(--v11);color:var(--v17);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Descriptive code</div><span class="badge code" style="background:rgba(168,50,40,.12);color:var(--v17)">'+e.desc.code+'</span><div style="font-size:.8rem;color:var(--v9);margin-top:8px">'+e.desc.why+'</div></div><div style="padding:14px 16px"><div style="font-size:.7rem;font-family:var(--v11);color:var(--v19);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Interpretive code</div><span class="badge code" style="background:rgba(46,122,110,.12);color:var(--v19)">'+e.interp.code+'</span><div style="font-size:.8rem;color:var(--v9);margin-top:8px">'+e.interp.why+"</div></div></div></div></div>"}),e.innerHTML=t}function toggleDVI(e){var t=document.getElementById("dvib"+e);t.style.display="block"===t.style.display?"none":"block"}function buildClusterBoard(){var e=document.getElementById("cluster-board"),t='<div style="margin-bottom:14px"><strong style="font-size:.88rem">Open codes</strong><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px" id="unassigned-codes">';OPEN_CODES.forEach(function(e){t+='<div class="qchip coded" style="border-color:'+e.color+";background:"+e.color+'15;min-width:auto;cursor:pointer" id="oc_'+e.id+'" onclick="cycleCluster(\''+e.id+'\')"><span class="qc-speaker" style="color:'+e.color+'">open code</span><span class="qc-text" style="font-style:normal;font-size:.72rem;font-family:var(--v11)">'+e.label+"</span></div>"}),t+="</div></div>",t+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="cluster-zones">',CLUSTERS.forEach(function(e){t+='<div class="cluster-zone" id="cl_'+e.id+'"><div class="cluster-title" style="color:var(--v7)">'+e.label+'</div><div style="font-size:.75rem;color:var(--v9);margin-bottom:8px">'+e.desc+'</div><div class="cluster-chips" id="chips_'+e.id+'"></div></div>'}),t+="</div>",e.innerHTML=t}function cycleCluster(e){var t=clusterState[e],i=CLUSTERS.map(function(e){return e.id}),n=null;if(null===t)n=i[0];else{var s=i.indexOf(t);n=s<i.length-1?i[s+1]:null}clusterState[e]=n,renderClusterBoard()}function renderClusterBoard(){OPEN_CODES.forEach(function(e){var t=document.getElementById("oc_"+e.id),i=clusterState[e.id];t&&(i?(t.style.opacity=".45",t.style.transform="scale(.92)"):(t.style.opacity="1",t.style.transform="none")),CLUSTERS.forEach(function(e){var t=document.getElementById("chips_"+e.id);t&&(t.innerHTML="",OPEN_CODES.forEach(function(i){if(clusterState[i.id]===e.id){var n=document.createElement("div");n.className="qchip clustered",n.style.minWidth="auto",n.style.cursor="pointer",n.style.borderColor=i.color,n.style.background=i.color+"15",n.innerHTML='<span class="qc-text" style="font-style:normal;font-size:.7rem;font-family:var(--v11);color:'+i.color+'">'+i.label+"</span>",n.onclick=function(){cycleCluster(i.id)},t.appendChild(n)}}))})});var e=OPEN_CODES.filter(function(e){return null!==clusterState[e.id]}).length,t=OPEN_CODES.length;document.getElementById("cluster-summary").innerHTML=e+" of "+t+" codes assigned to clusters. "+(e===t?'<span style="color:var(--v19)">All codes placed — review cluster coherence before naming themes.</span>':'<span style="color:var(--v9)">Click each code chip to cycle through clusters. Click again to reassign.</span>')}function buildThemeNaming(){var e=document.getElementById("theme-naming"),t="";THEME_NAMES.forEach(function(e,i){t+='<div style="border:1px solid var(--v18);border-radius:8px;margin-bottom:12px;overflow:hidden"><div style="display:grid;grid-template-columns:1fr 1fr;cursor:pointer" onclick="toggleTN('+i+')"><div style="padding:14px 16px;border-right:1px solid var(--v18);background:rgba(168,50,40,.05)"><div style="font-size:.68rem;font-family:var(--v11);color:var(--v17);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">❌ Too generic</div><div style="font-weight:700;font-size:.9rem">'+e.bad+'</div></div><div style="padding:14px 16px;background:rgba(46,122,80,.05)"><div style="font-size:.68rem;font-family:var(--v11);color:var(--v19);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">✓ Analytically specific</div><div style="font-weight:700;font-size:.9rem;color:var(--v7)">'+e.good+'</div></div></div><div id="tnb'+i+'" style="display:none;padding:14px 16px;border-top:1px solid var(--v18);font-size:.875rem;color:var(--v10)">'+e.why+"</div></div>"}),e.innerHTML=t}function toggleTN(e){var t=document.getElementById("tnb"+e);t.style.display="block"===t.style.display?"none":"block"}function buildSatTracker(){var e=document.getElementById("sat-tracker"),t=(SAT_THEMES.map(function(){return 0}),'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="font-size:.88rem;color:var(--v10)">Sessions completed: <strong id="sat-count">0</strong> / 10</div><button class="code-btn" id="sat-btn" onclick="addSatSession()" style="padding:8px 18px;border-radius:8px">+ Add session →</button></div>');t+='<div id="sat-bars">',SAT_THEMES.forEach(function(e,i){t+='<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:.82rem;font-weight:600;color:var(--v10)">'+e.name+'</span><span class="badge raw" id="sat-badge'+i+'">0 codes</span></div><div class="sat-bar"><div class="sat-fill" id="sat-fill'+i+'" style="width:0%;background:var(--v0)"></div></div></div>'}),t+="</div>",t+='<div id="sat-verdict" style="margin-top:14px;min-height:48px;font-size:.875rem;color:var(--v10)"></div>',e.innerHTML=t}function addSatSession(){if(!(satSession>=10)){var e=[];SAT_THEMES.forEach(function(t,i){for(var n=0,s=0;s<=satSession;s++)n+=t.sessions[s];e.push(n);var o=t.sessions.reduce(function(e,t){return e+t},0),a=Math.round(n/o*100);document.getElementById("sat-fill"+i).style.width=a+"%";var r=satSession>=t.sat-1;document.getElementById("sat-fill"+i).style.background=r?"var(--v19)":"var(--v0)";t.sessions[satSession];var l=document.getElementById("sat-badge"+i);l.textContent=n+" codes",l.className="badge "+(r?"code":"raw"),r?(l.style.background="rgba(46,122,80,.15)",l.style.color="var(--v19)"):(l.style.background="",l.style.color="")}),satSession++,document.getElementById("sat-count").textContent=satSession;var t=SAT_THEMES.filter(function(e){return satSession>=e.sat}).length,i="";i=0===satSession?"":0===t?'<span style="color:var(--v22)">Early sessions — all themes still developing. Keep going.</span>':t<3?'<span style="color:var(--v22)">'+t+" of "+SAT_THEMES.length+" themes reaching saturation. Continue fieldwork.</span>":t<SAT_THEMES.length?'<span style="color:var(--v0)">'+t+" themes saturated. "+(SAT_THEMES.length-t)+" still developing — consider additional sessions for those topics.</span>":'<span style="color:var(--v19)">✓ All themes saturated. Strong evidence base — analysis is defensible. Fieldwork can close.</span>',document.getElementById("sat-verdict").innerHTML=i,satSession>=10&&(document.getElementById("sat-btn").disabled=!0)}}function buildInsightBuilder(){var e=document.getElementById("insight-builder"),t='<div style="display:flex;gap:0;margin-bottom:20px;overflow-x:auto">';INSIGHT_STEPS.forEach(function(e,i){i>0&&(t+='<div style="height:2px;background:'+(i<=insightStep?"var(--v0)":"var(--v18)")+';flex:1;margin-top:15px;transition:background .3s"></div>'),t+='<div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px"><div style="width:30px;height:30px;border-radius:50%;border:2px solid '+(i<insightStep||i===insightStep?"var(--v0)":"var(--v18)")+";background:"+(i<insightStep?"var(--v0)":"var(--v14)")+";color:"+(i<insightStep?"#fff":i===insightStep?"var(--v0)":"var(--v9)")+';display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .25s" onclick="setInsightStep('+i+')">'+(i<insightStep?"✓":i+1)+'</div><div style="font-size:.65rem;font-family:var(--v11);letter-spacing:.04em;color:var(--v9);text-align:center;text-transform:uppercase">'+e.stage+"</div></div>"}),t+="</div>";var i=INSIGHT_STEPS[insightStep],n=t+'<div style="font-weight:700;margin-bottom:12px;color:var(--v8)">'+i.label+"</div>"+i.content;insightStep<INSIGHT_STEPS.length-1&&(n+='<button class="analyze-btn" style="margin-top:16px;background:var(--v0);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-family:inherit;font-size:.88rem;font-weight:600;cursor:pointer" onclick="nextInsightStep()">'+INSIGHT_STEPS[insightStep+1].label+" →</button>"),e.innerHTML=n}function nextInsightStep(){insightStep<INSIGHT_STEPS.length-1&&(insightStep++,buildInsightBuilder())}function setInsightStep(e){insightStep=e,buildInsightBuilder()}function buildInsightMatrix(){var e=document.getElementById("insight-matrix"),t="";INSIGHT_TESTS.forEach(function(e,i){t+='<div style="border:1px solid var(--v18);border-radius:8px;margin-bottom:12px;overflow:hidden"><div style="display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;background:var(--v15)" onclick="toggleIT('+i+')"><span style="font-size:1.4rem">'+e.icon+'</span><span style="font-weight:700">'+e.name+'</span><span style="margin-left:auto;font-size:.72rem;font-family:var(--v11);color:var(--v9)">click to expand</span></div><div id="itb'+i+'" style="display:none;padding:14px 18px;border-top:1px solid var(--v18)"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px"><div><div style="font-size:.7rem;font-family:var(--v11);color:var(--v19);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">✓ Passes when</div><div style="font-size:.85rem;margin-bottom:8px;color:var(--v10)">'+e.pass.desc+'</div><div style="font-size:.82rem;font-style:italic;padding:10px 12px;background:rgba(46,122,80,.08);border-radius:6px">Example: '+e.pass.ex+'</div></div><div><div style="font-size:.7rem;font-family:var(--v11);color:var(--v17);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">✗ Fails when</div><div style="font-size:.85rem;margin-bottom:8px;color:var(--v10)">'+e.fail.desc+'</div><div style="font-size:.82rem;font-style:italic;padding:10px 12px;background:rgba(168,50,40,.08);border-radius:6px">Example: '+e.fail.ex+"</div></div></div></div></div>"}),e.innerHTML=t}function toggleIT(e){var t=document.getElementById("itb"+e);t.style.display="block"===t.style.display?"none":"block"}function buildHeatmap(){var e=document.getElementById("heatmap-container"),t=HEATMAP_DATA,i=["#FFFFFF","rgba(133,101,39,.2)","rgba(133,101,39,.5)","rgba(133,101,39,.85)"],n=["var(--v9)","var(--v10)","var(--v8)","#fff"],s=52,o=150,a=42,r=o+s*t.themes.length+20,l='<svg viewBox="0 0 '+r+" "+(a*(t.participants.length+1)+10)+'" style="min-width:'+r+'px;display:block;font-family:var(--v20)" xmlns="http://www.w3.org/2000/svg">';t.themes.forEach(function(e,t){l+='<rect x="'+(o+t*s)+'" y="0" width="50" height="38" rx="4" fill="var(--v12)" onclick="filterHMTheme('+t+')" style="cursor:pointer" id="hmth'+t+'"/><text x="'+(o+t*s+26)+'" y="21" text-anchor="middle" dominant-baseline="middle" fill="var(--v13)" font-size="9" font-weight="600" onclick="filterHMTheme('+t+')" style="cursor:pointer;pointer-events:none">'+e.split(" ").map(function(i,n){return'<tspan x="'+(o+t*s+26)+'" dy="'+(0===n?e.split(" ").length>1?"-5":"0":11)+'">'+i+"</tspan>"}).join("")+"</text>"}),t.participants.forEach(function(e,r){var d=a*(r+1);l+='<text x="142" y="'+(d+21)+'" text-anchor="end" dominant-baseline="middle" fill="var(--v10)" font-size="10">'+e+"</text>",t.cells[r].forEach(function(e,t){l+='<rect x="'+(o+t*s+1)+'" y="'+(d+1)+'" width="48" height="38" rx="5" fill="'+i[e]+'" stroke="var(--v18)" stroke-width="1" onclick="showHMDetail('+r+","+t+')" style="cursor:pointer" id="hmc'+r+"_"+t+'"/><text x="'+(o+t*s+26)+'" y="'+(d+21)+'" text-anchor="middle" dominant-baseline="middle" fill="'+n[e]+'" font-size="12" font-weight="700" style="pointer-events:none">'+(0===e?"—":"1"===e?"●":"●●".repeat(e>2?2:e).substring(0,e)+"")+"</text>",e>0&&(l+='<rect x="'+(o+t*s+1)+'" y="'+(d+1)+'" width="48" height="38" rx="5" fill="rgba(0,0,0,0)" onclick="showHMDetail('+r+","+t+')" style="cursor:pointer"/>')})}),l+="</svg>",e.innerHTML=l}function showHMDetail(e,t){var i=HEATMAP_DATA.quotes[e][t],n=HEATMAP_DATA.participants[e],s=HEATMAP_DATA.themes[t],o=HEATMAP_DATA.cells[e][t],a=0===o?"Not mentioned":1===o?"Mentioned briefly":2===o?"Discussed prominently":"Central to this participant";document.getElementById("heatmap-detail").innerHTML='<div style="display:flex;gap:10px;align-items:flex-start"><div style="flex:1"><div style="font-size:.72rem;font-family:var(--v11);color:var(--v9);margin-bottom:4px">'+n+" · Theme: "+s+'</div><div class="badge '+(0===o?"raw":1===o?"code":"theme")+'" style="margin-bottom:8px">'+a+"</div>"+("—"!==i?'<div style="font-style:italic;font-size:.9rem;color:var(--v10)">'+i+"</div>":'<div style="color:var(--v9);font-size:.88rem">No direct quote for this theme in this transcript.</div>')+"</div></div>"}function filterHMTheme(e){selectedTheme=selectedTheme===e?-1:e;var t=HEATMAP_DATA;t.participants.forEach(function(e,i){t.themes.forEach(function(e,t){var n=document.getElementById("hmc"+i+"_"+t);n&&(n.style.opacity=selectedTheme<0||t===selectedTheme?"1":"0.2")})}),selectedTheme>=0&&showHMDetail(0,selectedTheme)}renderReadGraphic(0),function(){var e=document.querySelectorAll("#scrolly-read .stp"),t=-1;function i(){var i=-1;(e.forEach(function(e,t){var n=e.getBoundingClientRect();n.top<.6*window.innerHeight&&n.bottom>.3*window.innerHeight&&(i=t)}),i<0&&e.length)&&(e[0].getBoundingClientRect().top>0&&(i=0));i!==t&&(t=i,e.forEach(function(e,i){e.classList.toggle("on",i===t)}),t>=0&&renderReadGraphic(t))}window.addEventListener("scroll",i,{passive:!0}),i()}(),buildCodingWorkspace(),buildCodeCompare(),buildClusterBoard(),renderClusterBoard(),buildThemeNaming(),buildSatTracker(),buildInsightBuilder(),buildInsightMatrix(),buildHeatmap();var PG_PRESETS=[{label:"Churn study",stype:"explore",n:12,rich:"std",depth:2},{label:"Concept test",stype:"concept",n:8,rich:"thin",depth:1},{label:"Journey map",stype:"journey",n:16,rich:"rich",depth:3},{label:"Persona dev",stype:"persona",n:20,rich:"rich",depth:3}],STYPE_DATA={explore:{label:"Exploratory",codeVol:"High (40–80 open codes)",clusters:"4–7 thematic clusters",satN:10,approach:"Open coding → axial clustering → selective coding. Read all transcripts before coding any. Hold codes lightly — expect significant revision after sessions 5–8.",insightFmt:"Theme + mechanism + implication. Prioritise unexpected findings over confirmation."},concept:{label:"Concept testing",codeVol:"Medium (20–40 codes)",clusters:"3–5 clusters (Resonance, Friction, Language, Context)",satN:6,approach:"Stimulus-anchored coding. Code reactions to each concept separately before comparing across concepts. Watch for social desirability bias in group settings.",insightFmt:'Concept × audience matrix. Lead with "which" before "why". Always include a recommendation on which concept to advance.'},journey:{label:"Journey mapping",codeVol:"Medium-high (30–60 codes)",clusters:"Journey stages + emotional register + moment type",satN:10,approach:"Chronological coding first: segment each transcript by journey stage, then code within stages. Build a cross-participant journey timeline before looking for themes.",insightFmt:"Moment + experience + gap + opportunity. The journey map IS the finding — don't summarise it into bullets."},persona:{label:"Persona development",codeVol:"Very high (60–100+ codes)",clusters:"Attitudinal · Behavioural · Motivational · Relationship-to-category",satN:14,approach:"Segment transcripts by participant type as well as by theme. Run two analyses in parallel: cross-participant thematic analysis AND within-participant profile analysis. Personas emerge from the intersection.",insightFmt:"Archetype + defining tension + category relationship + implication for product/comms. Never lead with demographics."}},DEPTH_LABELS=["","Surface (descriptive)","Standard (interpretive)","Deep (analytical + latent)"],RICH_DATA={thin:{readTime:"30–45 min/transcript",codeTime:"45–60 min/transcript",total:"3–4 days"},std:{readTime:"45–75 min/transcript",codeTime:"60–90 min/transcript",total:"5–7 days"},rich:{readTime:"90–120 min/transcript",codeTime:"2–3 hr/transcript",total:"10–14 days"}};function buildPGPresets(){var e=document.getElementById("pg-presets-el");PG_PRESETS.forEach(function(t){var i=document.createElement("button");i.textContent=t.label,i.onclick=function(){document.getElementById("pg-stype").value=t.stype,document.getElementById("pg-n").value=t.n,document.getElementById("pg-rich").value=t.rich,document.getElementById("pg-depth").value=t.depth,document.querySelectorAll(".pg-presets button").forEach(function(e){e.classList.remove("on")}),i.classList.add("on"),renderPG()},e.appendChild(i)})}function renderPG(){var e=document.getElementById("pg-stype").value,t=+document.getElementById("pg-n").value,i=document.getElementById("pg-rich").value,n=+document.getElementById("pg-depth").value;document.getElementById("pg-nv").textContent=t+" participants",document.getElementById("pg-dv").textContent=DEPTH_LABELS[n];var s=STYPE_DATA[e],o=RICH_DATA[i],a=Math.round(t*("thin"===i?1.5:"std"===i?2.5:4.5)*(n/2)),r=s.codeVol,l='<span class="hi">ANALYSIS PLAN</span>\n<span class="dim">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>\n\n<span class="sec">STUDY TYPE</span>  '+s.label+'\n<span class="sec">PARTICIPANTS</span> '+t+'\n<span class="sec">DEPTH</span>      '+DEPTH_LABELS[n]+'\n\n<span class="sec">CODING APPROACH</span>\n'+s.approach+'\n\n<span class="sec">EXPECTED CODE VOLUME</span>\n'+r+'\n\n<span class="sec">CLUSTER STRUCTURE</span>\n'+s.clusters+'\n\n<span class="sec">SATURATION TARGET</span>\n'+s.satN+' sessions before declaring saturation\n\n<span class="sec">TIME ESTIMATES PER TRANSCRIPT</span>\nFirst read:   '+o.readTime+"\nCoding:       "+o.codeTime+'\n\n<span class="sec">TOTAL ANALYSIS TIME (EST.)</span>\n<span class="'+(a>12?"risk":a>7?"ok":"hi")+'">~'+a+' working days</span>\n\n<span class="sec">INSIGHT FORMAT</span>\n'+s.insightFmt;document.getElementById("pg-out-el").innerHTML=l}buildPGPresets(),renderPG();var obs=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&e.target.classList.add("in")})},{threshold:.1});document.querySelectorAll(".reveal").forEach(function(e){obs.observe(e)}),window.addEventListener("scroll",function(){var e=window.scrollY/(document.body.scrollHeight-window.innerHeight);document.getElementById("progArc").style.strokeDashoffset=94-94*Math.min(1,e)},{passive:!0}),function(){var e=document.getElementById("weeds"),t=document.getElementById("weedsHint");function i(){var i=e.hidden;e.hidden=!i,t.setAttribute("aria-expanded",String(i)),t.innerHTML=i?"press <kbd>s</kbd> to hide the deeper cuts":"press <kbd>s</kbd> for the deeper cuts",i&&(e.setAttribute("tabindex","-1"),e.focus({preventScroll:!0}),e.scrollIntoView({behavior:"smooth",block:"start"}))}document.addEventListener("keydown",function(e){if(("s"===e.key||"S"===e.key)&&!(e.metaKey||e.ctrlKey||e.altKey)){var t=e.target,n=(t.tagName||"").toLowerCase();"input"===n||"textarea"===n||t.isContentEditable||(e.preventDefault(),i())}}),t.addEventListener("click",i),t.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),i())})}();
+</script>
+</body>
+</html>

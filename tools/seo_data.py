@@ -72,6 +72,28 @@ BOOKS = {
 
 # Explorables -----------------------------------------------------------------
 EXPLORABLES = {
+    # The research-craft set: brief -> sample -> transcript -> "so what", which is the
+    # order a real project runs in.
+    "brief-to-design": dict(
+        desc="A client email is not a research question. Run the five-question diagnostic on a "
+             "real brief, then watch it rebuilt phrase by phrase into a design.",
+        short="Run the five-question diagnostic on a client brief, then watch it rebuilt.",
+        about="Research design and client briefs"),
+    "sample-design-recruitment": dict(
+        desc="Quota cells, screener rules and incidence rate do not add up, they multiply. Set "
+             "all three and watch a workable sample spec fall out — or blow the budget.",
+        short="Set quota cells, screener rules and incidence rate, and watch them multiply.",
+        about="Survey sample design and respondent recruitment"),
+    "transcript-to-theme": dict(
+        desc="A transcript is not a finding. Code it, cluster the codes, test for saturation, "
+             "then build the theme-by-participant matrix that makes a theme defensible.",
+        short="Code a transcript, cluster the codes, then build the theme-by-participant matrix.",
+        about="Qualitative analysis, coding and thematic analysis"),
+    "so-what": dict(
+        desc="Most reports stop at what happened. Push an observation through five questions "
+             "until it turns into a recommendation, then rewrite it for three different rooms.",
+        short="Push an observation through five questions until it becomes a recommendation.",
+        about="Turning qualitative findings into strategic recommendations"),
     "llm-watermarking": dict(
         desc="A watermark hides in which words the model picks. Shade the dictionary with a secret "
              "key, press the thumb on the scale, then score 300 words for proof.",
