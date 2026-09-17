@@ -8,15 +8,15 @@
   <updated>2026-09-17T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
   <entry>
-    <title>From transcript to theme</title>
+    <title>Survey analysis: from transcript to theme</title>
     <link href="https://www.loopingly.com/explorables/transcript-to-theme"/>
     <id>https://www.loopingly.com/explorables/transcript-to-theme</id>
     <updated>2026-09-17T00:00:00Z</updated>
     <published>2026-09-17T00:00:00Z</published>
-    <summary>A transcript is not a finding. Code it, cluster the codes, test for saturation, then build the theme-by-participant matrix that makes a theme defensible.</summary>
+    <summary>A transcript is not a finding. Code it, cluster the codes, test for saturation, then build the theme-by-participant matrix that makes a survey theme defensible.</summary>
   </entry>
   <entry>
-    <title>Writing the &amp;quot;so what&amp;quot;</title>
+    <title>Survey analysis: writing the “so what”</title>
     <link href="https://www.loopingly.com/explorables/so-what"/>
     <id>https://www.loopingly.com/explorables/so-what</id>
     <updated>2026-09-17T00:00:00Z</updated>
@@ -24,7 +24,7 @@
     <summary>Most reports stop at what happened. Push an observation through five questions until it turns into a recommendation, then rewrite it for three different rooms.</summary>
   </entry>
   <entry>
-    <title>How sample design works</title>
+    <title>Survey design: quotas, screeners, incidence</title>
     <link href="https://www.loopingly.com/explorables/sample-design-recruitment"/>
     <id>https://www.loopingly.com/explorables/sample-design-recruitment</id>
     <updated>2026-09-17T00:00:00Z</updated>
@@ -32,12 +32,12 @@
     <summary>Quota cells, screener rules and incidence rate do not add up, they multiply. Set all three and watch a workable sample spec fall out — or blow the budget.</summary>
   </entry>
   <entry>
-    <title>From brief to research design</title>
+    <title>Survey design: from client brief to question</title>
     <link href="https://www.loopingly.com/explorables/brief-to-design"/>
     <id>https://www.loopingly.com/explorables/brief-to-design</id>
     <updated>2026-09-17T00:00:00Z</updated>
     <published>2026-09-17T00:00:00Z</published>
-    <summary>A client email is not a research question. Run the five-question diagnostic on a real brief, then watch it rebuilt phrase by phrase into a design.</summary>
+    <summary>A client email is not a research question. Run the five-question diagnostic on a real brief, then watch it rebuilt phrase by phrase into a survey design.</summary>
   </entry>
   <entry>
     <title>How watermarks are used with LLMs</title>
