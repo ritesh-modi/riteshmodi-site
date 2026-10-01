@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jev, explained</title>
+  <!-- seo:begin -->
+  <meta name="description" content="Jev answers typed questions with calibrated probabilities in 100 ms. Push 200 support tickets through it, slide the confidence gate, and see who pays for each.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/1-jev-explained">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Jev, explained">
+  <meta property="og:description" content="Push 200 tickets through a typed model and slide the confidence gate.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/1-jev-explained">
+  <meta property="og:image" content="https://www.loopingly.com/og/1-jev-explained.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Jev, explained">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Jev, explained">
+  <meta name="twitter:description" content="Push 200 tickets through a typed model and slide the confidence gate.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/1-jev-explained.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Jev, explained","description":"Jev answers typed questions with calibrated probabilities in 100 ms. Push 200 support tickets through it, slide the confidence gate, and see who pays for each.","url":"https://www.loopingly.com/explorables/1-jev-explained","image":"https://www.loopingly.com/og/1-jev-explained.png","datePublished":"2026-10-01","dateModified":"2026-10-01","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Jev, the System One model from TypeSafe AI"},"keywords":"what is Jev TypeSafe, TypeSafe System One model, calibrated LLM classification, typed AI decisions, LLM routing with confidence"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Jev, explained"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<style>:root{color-scheme: light;--v2:#FBFAF7;--v3:#F4F3EE;--v19:#FFFFFF;--v20:#F0EFE9;--v9:#222938;--v17:#6E7789;--v6:#A0A8B6;--v12:#E5E3DC;--v13:#D5D2C9;--v10:#2A9D90;--v11:#E3F5F2;--v4:#5B82DA;--v5:#E7EDFC;--v14:#C8902F;--v15:#FBF1DD;--v7:#D9536B;--v8:#FCE5E9;--v0:#8E6BD4;--v1:#F0E8FB;--v16: ui-monospace, SFMono-Regular, Menlo, "JetBrains Mono", monospace;--v18: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif}*{box-sizing:border-box}body{background:var(--v2);color:var(--v9);margin:0;font:16px/1.62 var(--v18);-webkit-font-smoothing:antialiased}img{max-width:100%}[hidden]{display:none!important}#topbar{position:fixed;left:0;right:0;top:0;z-index:80;background:rgba(251,250,247,.90);backdrop-filter:blur(12px);border-bottom:1px solid var(--v12);padding-top:env(safe-area-inset-top,0px)}#progress{height:2px;background:linear-gradient(90deg,var(--v10),var(--v4),var(--v0));width:0%}#nav{display:flex;gap:2px;align-items:center;overflow-x:auto;scrollbar-width:none;max-width:1240px;margin:0 auto;padding:7px max(12px,3vw)}#nav::-webkit-scrollbar{display:none}#nav .brand{font:800 13px/1 var(--v16);letter-spacing:.18em;margin-right:10px;background:linear-gradient(90deg,var(--v10),var(--v4));-webkit-background-clip:text;background-clip:text;color:transparent}#nav a{font:500 12.2px/1 var(--v18);color:var(--v17);text-decoration:none;padding:6px 8px;border-radius:6px;white-space:nowrap}#nav a:hover,#nav a.here{color:var(--v9);background:var(--v20)}#nav a i{font-style:normal;font-family:var(--v16);font-weight:700;font-size:10.5px;color:var(--v6);margin-right:5px}#nav a.here i{color:var(--v10)}.act{position:relative}.stage{position:sticky;top:0;height:100vh;height:100svh;z-index:1;overflow:hidden}.stage canvas{display:block;width:100%;height:100%}.glowbg{position:absolute;inset:0;pointer-events:none}.cards{position:relative;z-index:2;margin-top:-100vh;margin-top:-100svh}.card{min-height:92vh;min-height:92svh;display:flex;align-items:center;padding-inline:max(20px,4.5vw)}.card.opener{min-height:100vh;min-height:100svh}.box{width:min(442px,89vw);background:none;border:0;border-radius:0;padding:0;box-shadow:none;backdrop-filter:none}@media (min-width:820px){.box{width:clamp(270px,33vw,432px)}}.box .kicker{font:700 10.5px/1 var(--v16);letter-spacing:.2em;text-transform:uppercase;color:var(--v10);margin:0 0 11px}.box h2{font-size:clamp(22px,3.4vw,30px);line-height:1.14;letter-spacing:-.026em;margin:0 0 12px;font-weight:750}.box p{margin:0;font-size:15.4px;line-height:1.68;color:#454E60}.box p + p{margin-top:11px}.box b{color:var(--v9);font-weight:650}.box .q{color:var(--v10);font-family:var(--v16);font-weight:700;font-size:13.3px}.box .hot{color:var(--v14);font-weight:700}.box .bad{color:var(--v7);font-weight:700}.box em.src{font-style:normal;color:var(--v6);font-size:12.2px;display:block;margin-top:11px;font-family:var(--v16);letter-spacing:.02em}.stat{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}.stat span{font:700 11.5px/1 var(--v16);padding:7px 10px;border-radius:7px;background:var(--v11);color:var(--v10);border:1px solid rgba(0,229,204,.3)}.stat span.w{background:var(--v15);color:var(--v14);border-color:rgba(255,178,36,.3)}.stat span.r{background:var(--v8);color:var(--v7);border-color:rgba(255,77,109,.3)}.box{opacity:0;transform:translateY(20px);transition:opacity .55s ease, transform .6s cubic-bezier(.2,.75,.3,1)}.box.lit{opacity:1;transform:none}@media (prefers-reduced-motion: reduce){.box{opacity:1;transform:none;transition:none}}.card.opener .box{width:min(660px,93vw);background:none;border-color:transparent;box-shadow:none;padding:4px}.card.opener .actno{font:800 11px/1 var(--v16);letter-spacing:.3em;color:var(--v10);margin:0 0 14px}.card.opener h2{font-size:clamp(31px,6.2vw,58px);line-height:1.02;letter-spacing:-.036em;margin:0 0 14px}.card.opener p{font-size:clamp(15.5px,2.1vw,18px);color:#485164;max-width:52ch}.card.hero{align-items:center;min-height:100vh;min-height:100svh}.card.hero .box{width:min(780px,95vw);background:none;border-color:transparent;box-shadow:none;padding:0 4px}.card.hero h1{font-size:clamp(43px,9.6vw,96px);line-height:.96;letter-spacing:-.044em;margin:0 0 20px;font-weight:800;background:linear-gradient(100deg,var(--v9) 8%,var(--v10) 56%,var(--v4) 99%);-webkit-background-clip:text;background-clip:text;color:transparent}.card.hero .tagline{font:700 12px/1 var(--v16);letter-spacing:.22em;color:var(--v10);margin:0 0 20px}.card.hero p{font-size:clamp(16px,2.3vw,19.5px);color:#404A5D;max-width:54ch}.card.hero .hint{margin-top:28px;font:700 11px/1 var(--v16);letter-spacing:.2em;color:var(--v6);display:flex;align-items:center;gap:9px}.card.hero .hint i{display:block;width:1px;height:22px;background:linear-gradient(var(--v10),transparent);animation:drop 1.9s ease-in-out infinite}@keyframes drop{0%,100%{opacity:.25;transform:translateY(-4px)}50%{opacity:1;transform:translateY(4px)}}@media (max-width:819px){.box{background:rgba(251,250,247,.94);backdrop-filter:blur(14px);border-radius:14px;padding:18px 18px 20px}.card.hero .box, .card.opener .box{background:none;backdrop-filter:none;padding:0}.stage{height:44vh;height:44svh}.cards{margin-top:-44vh;margin-top:-44svh}.card{align-items:flex-end;padding-bottom:6vh}.card.hero, .card.opener{align-items:center;padding-bottom:0}}@media (prefers-reduced-motion: reduce){.card.hero .hint i{animation:none}}.codestage{position:sticky;top:0;height:100vh;height:100svh;z-index:1;display:flex;align-items:center;justify-content:flex-end;padding:0 max(16px,4vw) 0 0;pointer-events:none}.codepanel{position:relative;width:min(566px,52vw);height:min(574px,76vh)}.cblock{position:absolute;inset:0;opacity:0;transition:opacity .4s ease;background:#FFFFFF;border:1px solid var(--v13);border-radius:15px;padding:18px;overflow:auto;box-shadow:0 14px 44px rgba(34,41,56,.10)}.cblock.on{opacity:1}.cblock .fn{font:700 10px/1 var(--v16);letter-spacing:.17em;text-transform:uppercase;color:var(--v6);margin:0 0 12px;display:block}.cblock .fn em{font-style:normal;color:var(--v10)}pre{margin:0;font:12.6px/1.74 var(--v16);color:#55607A;white-space:pre}.ln{display:block;opacity:.38;transition:opacity .34s ease, color .34s ease;padding:0 7px;border-left:2px solid transparent;border-radius:3px}.ln.hl{opacity:1;color:#1D2432;background:rgba(42,157,144,.10);border-left-color:var(--v10)}.k{color:var(--v0)}.s{color:var(--v10)}.c{color:var(--v6)}.n{color:var(--v14)}.f{color:var(--v4)}.p{color:var(--v7)}@media (max-width:819px){.codestage{height:46vh;height:46svh;justify-content:center;padding:0 12px}.codepanel{width:100%;height:42vh}pre{font-size:10.6px;line-height:1.62}}@media (prefers-reduced-motion: reduce){.cblock,.ln{transition:none}}section{padding-block:clamp(48px,7vw,92px);border-top:1px solid var(--v12);position:relative;z-index:3;background:var(--v2)}.wrap{max-width:1020px;margin:0 auto;padding-inline:max(16px,3vw)}.eyebrow{font:700 11.5px/1 var(--v16);letter-spacing:.2em;text-transform:uppercase;color:var(--v10);margin:0 0 12px}h2.sec{font-size:clamp(26px,4.3vw,38px);line-height:1.12;letter-spacing:-.028em;margin:0 0 15px;font-weight:750}p{margin:0 0 14px;color:#454E60;max-width:70ch}strong{color:var(--v9);font-weight:650}.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.3,1)}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none}}.tablewrap{overflow-x:auto;border:1px solid var(--v12);border-radius:13px;background:var(--v19)}table{border-collapse:collapse;width:100%;min-width:540px;font-size:13.7px}th,td{text-align:left;padding:12px 15px;border-bottom:1px solid var(--v12);vertical-align:top}th{font:700 11px/1 var(--v16);letter-spacing:.12em;text-transform:uppercase;color:var(--v17)}tr:last-child td{border-bottom:none}td b{font-family:var(--v16);font-weight:700;color:var(--v9);font-size:13.3px}.disclaim{background:var(--v19);border:1px solid var(--v12);border-left:3px solid var(--v7);border-radius:11px;padding:15px 17px;font-size:13.2px;color:var(--v17);margin-top:18px;max-width:76ch;line-height:1.62}footer{border-top:1px solid var(--v12);padding-block:38px 64px;color:var(--v6);font-size:13px;position:relative;z-index:3;background:var(--v2)}footer a{color:var(--v17);text-decoration:none;border-bottom:1px solid var(--v13)}footer a:hover{color:var(--v10);border-bottom-color:var(--v10)}footer ol{padding-left:20px;margin:10px 0 0;max-width:72ch}footer li{margin-bottom:6px}</style></style>
+
+<div id="topbar">
+  <div id="progress"></div>
+  <nav id="nav" aria-label="Sections">
+    <span class="brand">JEV</span>
+    <a href="#a1"><i>1</i> What it is</a>
+    <a href="#a2"><i>2</i> Fast &amp; cheap</a>
+    <a href="#a3"><i>3</i> Honest</a>
+    <a href="#a4"><i>4</i> 200 tickets</a>
+    <a href="#a5"><i>5</i> Asking well</a>
+    <a href="#a6"><i>6</i> With an LLM</a>
+    <a href="#a7"><i>7</i> In the wild</a>
+    <a href="#a8"><i>8</i> Where it breaks</a>
+    <a href="#a9"><i>9</i> In code</a>
+    <a href="#a10"><i>·</i> The card</a>
+  </nav>
+</div>
+
+
+<div class="act" id="a1">
+  <div class="stage"><canvas id="cv1" role="img" aria-label="A diagram that rebuilds itself as you scroll: a judgment no database can answer, the language-model route that returns prose you must parse, the Jev route that returns typed values, the three primitives, parallel questions, and the fast-thinking framing."></canvas></div>
+  <div class="cards">
+
+    <div class="card hero" data-scene="hero">
+      <div class="box">
+        <p class="tagline">TYPESAFE AI · SYSTEM ONE MODEL · JEV 1.13.0</p>
+        <h1>Jev, explained</h1>
+        <p>It cannot write a sentence, hold a conversation or explain itself. It answers typed questions with typed values and honest probabilities — in about a tenth of a second, at a price that rounds to nothing.</p>
+        <div class="hint"><i></i> SCROLL</div>
+      </div>
+    </div>
+
+    <div class="card opener" data-scene="problem">
+      <div class="box">
+        <p class="actno">ACT ONE</p>
+        <h2>What Jev actually is</h2>
+        <p>Start with the problem it was built for — a question your software needs answered that isn't written anywhere in your data.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="problem2">
+      <div class="box">
+        <p class="kicker">01 · The gap</p>
+        <h2>Some questions aren't in the database</h2>
+        <p>Is this customer angry? Does this résumé show real system-design depth? Does this retrieved passage actually support the claim? Is this message a jailbreak attempt?</p>
+        <p>Every one is a <b>judgment</b> — the kind a knowledgeable person makes in a second, and that no amount of SQL will produce. For a decade the only tool that could answer them was a model that answers in English.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="llmway">
+      <div class="box">
+        <p class="kicker">02 · The old shape</p>
+        <h2>You ask for JSON and hope</h2>
+        <p>The standard move is to ask a language model nicely for structured output and parse whatever comes back. Three failure modes at once: it can <span class="bad">invent a field</span>, it can <span class="bad">break your schema</span>, and it is confidently wrong at roughly the rate it is confidently right.</p>
+        <p>You also pay for every word of prose you are about to throw away. Output tokens typically bill at around <b>five times</b> the input rate.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jevway">
+      <div class="box">
+        <p class="kicker">03 · The new shape</p>
+        <h2>Unstructured state in, typed decisions out</h2>
+        <p>Jev takes <b>state</b> — the content to judge, a string or JSON object or array of text — and <b>typed questions</b> about it. It returns answers <span class="q">your code can branch on, sort by, and route with.</span></p>
+        <p>Because it only ever returns an option you supplied, it <b>cannot invent one and cannot break your schema</b>. That is a property of the architecture, not of a prompt. It can still pick the wrong option — which is why every answer carries a probability.</p>
+        <div class="stat"><span>0% type errors</span><span>text only</span></div>
+      </div>
+    </div>
+
+    <div class="card" data-scene="prims">
+      <div class="box">
+        <p class="kicker">04 · The whole vocabulary</p>
+        <h2>Three primitives. That's the entire API.</h2>
+        <p><b>Choice</b> — "which of these?" One of up to <b>255</b> options; back comes the winner, a distribution summing to 1.0, and a confidence.</p>
+        <p><b>Score</b> — "which level?" A position on <b>2 to 10 ordered levels</b>, returned as the probability-weighted mean of the level numbers.</p>
+        <p><b>Noul</b> — "is this true?" One probability from 0 to 1. No confidence field, because with two outcomes the single number already describes the whole distribution.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="parallelq">
+      <div class="box">
+        <p class="kicker">05 · Decomposition is free</p>
+        <h2>Ask ten questions, pay for one round trip</h2>
+        <p>Every question in a request is evaluated <b>in parallel against the same state</b>. The docs are blunt: adding questions <span class="q">"barely changes the response time."</span></p>
+        <p>So the advice is always to decompose. Don't ask "is this spam?" Ask whether it requests credentials, whether the sender identity mismatches, whether it promises an unexpected reward — then weight those signals in code you control.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="kahneman">
+      <div class="box">
+        <p class="kicker">06 · The name</p>
+        <h2>System One, not System Two</h2>
+        <p>Straight from Kahneman. <b>System 2</b> is slow, deliberate reasoning — what a frontier model does when it writes out a chain of thought. <b>System 1</b> is the snap judgment, and it is the only thing Jev was built for.</p>
+        <p>TypeSafe calls this a new class of model. Jev is the first: <span class="q">"a frontier-intelligence function call."</span></p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="cannot">
+      <div class="box">
+        <p class="kicker">07 · The deliberate gaps</p>
+        <h2>It does not replace your LLM</h2>
+        <p>System One models <span class="q">"don't write replies, produce code, or explain reasoning."</span> TypeSafe states plainly that Jev is <b>not a drop-in replacement</b> for the model behind Claude Code, Cursor, opencode or Copilot.</p>
+        <p>It is the decision layer you build <i>inside</i> the software those tools help you write. Act six is about how the two compose.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a2">
+  <div class="stage"><canvas id="cv2" role="img" aria-label="An animation contrasting a language model emitting tokens one at a time over 8.566 seconds with Jev returning everything in one pass in 0.114 seconds, then animated latency and price bars, a batching comparison, and a field of calls multiplying."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open2">
+      <div class="box">
+        <p class="actno">ACT TWO</p>
+        <h2>Why it is fast, and why it is almost free</h2>
+        <p>Two advantages, one cause. Both fall out of the decision to stop generating text.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="serial">
+      <div class="box">
+        <p class="kicker">08 · The token loop</p>
+        <h2>An LLM writes its answer one token at a time</h2>
+        <p>Autoregression means every token waits for the one before it. A longer answer is a slower answer, and the prose carrying your three fields is the expensive part of the bill.</p>
+        <p>Across its own workflow set, TypeSafe measured frontier models taking <span class="hot">3 to 329 seconds</span> per workflow.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="burst">
+      <div class="box">
+        <p class="kicker">09 · The parallel sampler</p>
+        <h2>Jev produces every output at once</h2>
+        <p>There is no token loop to wait on. A <b>parallel sampler</b> generates all outputs simultaneously, in a single pass over one shared piece of state.</p>
+        <p>That is the whole latency story: <b>70 to 500 milliseconds</b>, around 100 typical — fast enough to sit inside a real-time request path rather than behind a spinner.</p>
+        <div class="stat"><span>~100 ms typical</span><span>150 ms = faster than perception</span></div>
+      </div>
+    </div>
+
+    <div class="card" data-scene="latency">
+      <div class="box">
+        <p class="kicker">10 · Side by side</p>
+        <h2>Two orders of magnitude</h2>
+        <p>TypeSafe's headline measurement on its own workflow set: <b>0.114 seconds</b> against <b>8.566 seconds</b> — a <b>193.6×</b> speed-up, and <b>444.6×</b> cheaper on the same run.</p>
+        <p>The company flags that this may represent "the higher end of real world gains." Treat it as the ceiling, not the average.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="price">
+      <div class="box">
+        <p class="kicker">11 · The bill</p>
+        <h2>Input costs cents. Output costs nothing.</h2>
+        <p>Jev's input is <b>$0.042 per million tokens</b> — $42 per billion — and output tokens are <b>free</b>. TypeSafe puts that at 238× below Claude Fable 5.1 on input alone.</p>
+        <p>For contrast, the reasoning model in TypeSafe's own cascade cookbook, gpt-5.5, runs <span class="hot">$5.00 in and $30.00 out</span>. Same units.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="batching">
+      <div class="box">
+        <p class="kicker">12 · Batching, measured</p>
+        <h2>Send the document once, not thirteen times</h2>
+        <p>TypeSafe tested 13 regulatory questions — 8 Nouls, 2 Choices, 3 Scores — against the GDPR Wikipedia article, roughly <b>54,000 characters</b>. Asked one at a time, that article crosses the wire thirteen times.</p>
+        <p>Batched into a single call: <b>12.2× cheaper</b> ($0.00050 against $0.00609) and <b>10.0× faster</b> (0.27 s against 2.71 s). And the answers were identical — across five repeats most came back with a standard deviation of <b>exactly 0.0</b>.</p>
+        <em class="src">cookbook — parallel questions</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jevons">
+      <div class="box">
+        <p class="kicker">13 · Why it's called Jev</p>
+        <h2>Jevons' paradox, as a product strategy</h2>
+        <p>The name nods to the economist <b>William Stanley Jevons</b>, who noticed that making a resource cheaper does not reduce how much of it we burn — it multiplies it.</p>
+        <p>That is the bet. At these prices you stop rationing intelligence to the important requests and start running it over <b>every row, every passage, every message</b>.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a3">
+  <div class="stage"><canvas id="cv3" role="img" aria-label="An animated probability distribution over three options with a confidence value computed from its shape, a comparison of an overconfident versus a calibrated distribution, a scatter of repeated runs showing a language model disagreeing with itself while Jev stays tight, and three routing bands."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open3">
+      <div class="box">
+        <p class="actno">ACT THREE</p>
+        <h2>The number you can actually trust</h2>
+        <p>Speed and price are nice. Calibration is the one that lets you automate.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="dist">
+      <div class="box">
+        <p class="kicker">14 · A distribution, not an answer</p>
+        <h2>Every answer arrives with its own doubt</h2>
+        <p>A Choice doesn't just name a winner. It returns the full probability distribution across every option you gave it, summing to 1.0 — so you can see whether the model picked decisively or barely.</p>
+        <p>Watch the bars. The winner is the same in both cases; the situation is not.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="conf">
+      <div class="box">
+        <p class="kicker">15 · Confidence</p>
+        <h2>Derived from the shape, not the winner</h2>
+        <p>Pile the probability on one option and confidence approaches <b>1.0</b>. Spread it evenly and it collapses toward zero. For three options it works out to about <b>(3 × p<sub>max</sub> − 1) ÷ 2</b>.</p>
+        <p>Scroll, and the distribution concentrates — the readout follows it. The raw <b>probabilities</b> array is always in the response too, if you'd rather compute your own measure.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="rlcd">
+      <div class="box">
+        <p class="kicker">16 · Why it is honest</p>
+        <h2>RLHF makes models confident. RLCD makes them calibrated.</h2>
+        <p>Reinforcement learning from human feedback optimises for what a rater <i>prefers</i> — and raters prefer a confident answer. That is the structural reason frontier models are systematically overconfident.</p>
+        <p>Jev was trained with <b>RLCD — Reinforcement Learning for Calibrated Decisions</b>, where probabilities are optimised against <b>outcomes</b> instead. Synthetic data only. Calibration is the training objective, not a post-hoc patch.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="consist">
+      <div class="box">
+        <p class="kicker">17 · The receipt</p>
+        <h2>Frontier models disagree with themselves</h2>
+        <p>TypeSafe ran a 14-question insurance rubric <b>15 times each</b> across several models. Claude and GPT disagreed with <i>themselves</i> on repeated calls — <b>at temperature 0</b>. One question, <span class="q">covered</span>, wandered from <span class="bad">0.43 to 0.53</span> across samples, crossing the 0.5 line that decides the branch.</p>
+        <p>Jev's mean per-question probability standard deviation on the same rubric: <b>0.0102</b>.</p>
+        <div class="stat"><span>σ = 0.0102</span><span>111 ms</span><span class="w">LLMs: 1–14 s</span></div>
+        <em class="src">cookbook — self-consistency: nouls</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="band">
+      <div class="box">
+        <p class="kicker">18 · Absorbing the wobble</p>
+        <h2>Don't force a binary. Leave a band.</h2>
+        <p>The fix isn't a steadier model — it's refusing to put a hard threshold where the noise lives. Below <b>0.30</b> means no, above <b>0.70</b> means yes, and the middle goes to a human. That <span class="q">"absorbs fluctuation around 0.5 without issuing opposite automatic actions."</span></p>
+        <p>On an 8-question moderation rubric the same trick hit <b>99.2% agreement</b> at a 0.60 threshold while still deciding <b>74.2%</b> of answers automatically — at 114 ms a call against 826 ms to 13 seconds for the LLM baselines.</p>
+        <em class="src">cookbook — self-consistency: choices</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="tiers">
+      <div class="box">
+        <p class="kicker">19 · The second axis</p>
+        <h2>The answer tells you what. Confidence tells you whether you may act.</h2>
+        <p>The documented default has three bands: above <b>0.9</b> act automatically, between <b>0.5</b> and 0.9 confirm or flag, below <b>0.5</b> route to a human.</p>
+        <p>Thresholds scale with stakes, not with the model. TypeSafe's banking example clears a read-only balance check at <b>0.6</b> and holds a risky transfer to <b>0.85</b>. Same system, same model, different gate.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a4">
+  <div class="stage"><canvas id="cv4" role="img" aria-label="Two hundred support tickets drawn as circles. They pile up, line up one at a time for a language model, snap through Jev in one pass, split into three intent clusters, resize by urgency, get ringed for refunds, spread along a confidence axis, and sort into three routing silos."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open4">
+      <div class="box">
+        <p class="actno">ACT FOUR</p>
+        <h2>Two hundred tickets, end to end</h2>
+        <p>Enough theory. Here is a morning's support queue going through all of it — one circle per ticket, the same two hundred the whole way down.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="pile">
+      <div class="box">
+        <p class="kicker">20 · The workload</p>
+        <h2>A morning's queue</h2>
+        <p><b id="f-total">200</b> tickets, piled up overnight. Each is a short piece of text: a complaint, a question, a demand for money back.</p>
+        <p>These tickets are a <b>simulated workload</b> — invented so you can watch them move. Every fact about Jev on this page is not.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="grid">
+      <div class="box">
+        <p class="kicker">21 · The judgments</p>
+        <h2>Four decisions each</h2>
+        <p>For every ticket: <b>which queue</b>, <b>how urgent</b>, is a <b>refund</b> being asked for, and is it <b>simple enough to close automatically</b>.</p>
+        <p>Eight hundred judgments. None needs an essay.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="serial4">
+      <div class="box">
+        <p class="kicker">22 · The slow way</p>
+        <h2>A language model takes them one at a time</h2>
+        <p>Four judgments means prose you then parse, and a follow-up question means another round trip. Watch the counter crawl.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="parallel4">
+      <div class="box">
+        <p class="kicker">23 · One pass</p>
+        <h2>Jev answers all four at once</h2>
+        <p>Every question evaluated in parallel against the same state, in one request. <b>~100 ms</b>, and a fifth question would have been close to free.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="choice">
+      <div class="box">
+        <p class="kicker">24 · Choice</p>
+        <h2>The pile splits three ways</h2>
+        <p>Billing <b id="f-billing">·</b> · technical <b id="f-tech">·</b> · account <b id="f-account">·</b>. One option from the set you defined, every time — nothing to parse, nothing invented.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="score">
+      <div class="box">
+        <p class="kicker">25 · Score</p>
+        <h2>Urgency resizes every ticket</h2>
+        <p>The value is the probability-weighted mean of the level numbers, so a ticket caught between <i>medium</i> and <i>high</i> reads as <b>1.43</b> rather than being forced into one box.</p>
+        <p>Describe situations, not degrees — the model never sees a level's number or its neighbours.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="noul">
+      <div class="box">
+        <p class="kicker">26 · Noul</p>
+        <h2>The refunds light up</h2>
+        <p><b id="f-refund">·</b> tickets clear the threshold for "a refund is being requested." One question, one probability, one ring.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="conf4">
+      <div class="box">
+        <p class="kicker">27 · Confidence</p>
+        <h2>Now spread them by how sure the model is</h2>
+        <p>Scroll, and the threshold sweeps from paranoid to permissive. The count of tickets clearing it moves with you — that count is the whole economics of the system.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="route">
+      <div class="box">
+        <p class="kicker">28 · The gate</p>
+        <h2>Three bands, three destinations</h2>
+        <p>Above <b>0.90</b> act automatically. Between <b>0.50</b> and 0.90, confirm or escalate. Below <b>0.50</b>, a person looks at it.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="handoff">
+      <div class="box">
+        <p class="kicker">29 · The handoff</p>
+        <h2>The expensive model only wakes for the hard ones</h2>
+        <p><b id="f-auto">·</b> close in plain code for no model spend at all. <b id="f-llm">·</b> go to a language model. <b id="f-human">·</b> go to a person.</p>
+        <p>That middle number is the bill. Jev costs $0.042 per million input tokens with free output; gpt-5.5 costs <span class="hot">$5.00 in and $30.00 out</span>. The gate decides how often you pay the second one.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="drain">
+      <div class="box">
+        <p class="kicker">30 · The shape of it</p>
+        <h2>Code owned the control flow the whole time</h2>
+        <p>Nothing there was an agent choosing its own next step and compounding a failure rate every loop. It was ordinary software calling out for the judgments software can't make.</p>
+        <p>TypeSafe's position in one line: <span class="q">"Build a normal software workflow and insert System One only where AI is needed."</span></p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a5">
+  <div class="stage"><canvas id="cv5" role="img" aria-label="A diagram showing one broad question splitting into atomic ones, option criteria gaining structured descriptions, a catch-all option appearing, score levels described as situations, and a classification taxonomy walked first greedily down a wrong branch and then by beam search which recovers the correct leaf."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open5">
+      <div class="box">
+        <p class="actno">ACT FIVE</p>
+        <h2>The question <i>is</i> the program</h2>
+        <p>There is no fine-tuning. You customise Jev entirely through state, instructions and criteria — so how you phrase a question is the engineering.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="atomic">
+      <div class="box">
+        <p class="kicker">31 · Decompose</p>
+        <h2>Never ask the big question</h2>
+        <p>"Is this email spam?" bundles a dozen judgments into one and hides the weighting inside the model. Ask instead whether it <b>requests credentials</b>, whether the <b>sender identity mismatches</b> the display name, whether it promises an <b>unexpected reward</b>.</p>
+        <p>Then combine those signals with weights you can read. Because questions run in parallel, splitting one into five costs you nothing in latency and hands you five knobs.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="criteria">
+      <div class="box">
+        <p class="kicker">32 · Structured criteria</p>
+        <h2>Options can be objects, not just labels</h2>
+        <p>Instructions, Choice options, Score levels and Noul criteria all accept JSON structure — string, object, array or null. When two options could be confused, describe each with <span class="q">what</span>, <span class="q">not_for</span> and <span class="q">examples</span> fields.</p>
+        <p>A Noul whose boundary is subtle gets explicit true/false definitions. A Score level that keeps catching cases from its neighbour gets a summary plus a list of signals. The structure removes the ambiguity you were hoping the model would resolve.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="catchall">
+      <div class="box">
+        <p class="kicker">33 · The escape hatch</p>
+        <h2>Always leave a way out</h2>
+        <p>A Choice must return one of your options — so if none of them fit, it returns the least-bad one anyway. Add <b>"other"</b> or <b>"none of the above"</b> whenever the list might not cover every input.</p>
+        <p>Confidence will usually tell you this has happened: the distribution flattens. But a catch-all turns a silent wrong answer into an explicit one.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="situations">
+      <div class="box">
+        <p class="kicker">34 · Describing levels</p>
+        <h2>Situations, not degrees</h2>
+        <p>The model never sees a level's number, and never sees its neighbours — each description is judged entirely on its own. So "somewhat severe" tells it nothing, while "the user cannot log in but a workaround exists" tells it everything.</p>
+        <p>Use as many levels as you can describe distinctly, between <b>3 and 10</b>. And test against real data: high confidence means the model found your description clear, not that your description was right.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="taxonomy">
+      <div class="box">
+        <p class="kicker">35 · Going deep</p>
+        <h2>255 options, and what to do past that</h2>
+        <p>One Choice holds up to <b>255</b> options — enough for most taxonomies, not for a patent classification with <b>13,000+ nodes</b>. The move is to walk the tree: one Choice per level, showing the subtree under each branch so the model can see what lives down there before committing.</p>
+        <p>The same two-pass trick scales other things. Semantic search over a document ranks up to 255 lines directly; beyond that, one Choice picks a window and a second ranks inside it.</p>
+        <em class="src">docs — advanced structure · cookbooks — hierarchical classification, line-by-line search</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="beam">
+      <div class="box">
+        <p class="kicker">36 · Beam search</p>
+        <h2>One early mistake cannot be recovered — unless you keep options open</h2>
+        <p>Greedy walking takes the highest-probability branch at every node, and a wrong turn at depth one is fatal. <b>Beam search</b> keeps K plausible paths alive and classifies every frontier in parallel — which, given Jev's pricing, costs almost nothing.</p>
+        <p>Paths are scored by <b>geometric-mean probability</b>, so a shallow leaf and a deep one compare fairly. On TypeSafe's four taxonomies — patents, retail, biomedical, source code — greedy got <span class="bad">2 of 4</span>. Beam search with <b>K=3</b> got <b>4 of 4</b>, recovering a patent the greedy walk had already lost.</p>
+        <em class="src">cookbook — hierarchical classification</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="paths">
+      <div class="box">
+        <p class="kicker">37 · Why this shape pays</p>
+        <h2>A tree you can debug</h2>
+        <p>Decomposing a classification into per-level decisions buys two things a single opaque call never gives you: <b>observability</b> — you can see exactly which node sent a document down the wrong branch — and <b>testability</b> — you can unit-test a taxonomy change without re-running the whole corpus.</p>
+        <p>This is the recurring theme. Jev is not trying to be the system. It is trying to be a primitive the system is built from.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a6">
+  <div class="stage"><canvas id="cv6" role="img" aria-label="A pipeline diagram that rearranges itself for each of nine patterns: Jev as a front door, as guardrails on both sides of an LLM, as a verifier in a model cascade, as a citation auditor, as a search reranker, as a context filter, as a skill selector, as a function-call dispatcher, and as a hand-back loop."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open6">
+      <div class="box">
+        <p class="actno">ACT SIX</p>
+        <h2>It doesn't replace your LLM. It surrounds it.</h2>
+        <p>Nine documented ways the two compose. Watch the Jev box hold its place while everything rearranges around it.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="door">
+      <div class="box">
+        <p class="kicker">PATTERN 01 · THE FRONT DOOR</p>
+        <h2>Classify first, spend second</h2>
+        <p>Put Jev in front of everything. A confident, simple intent goes to a database lookup — no model at all. A confident, specialised one goes to a domain LLM. Anything uncertain or complex goes to a person.</p>
+        <p>The expensive resources only wake when they're needed, and the thing deciding costs a fraction of a cent.</p>
+        <em class="src">docs — patterns/intent-routing</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="guard">
+      <div class="box">
+        <p class="kicker">PATTERN 02 · GUARDRAILS</p>
+        <h2>Screen both sides of the conversation</h2>
+        <p>Screen the user's message <i>before</i> it reaches the model and the reply <i>before</i> it reaches the user — with something fast enough that nobody notices. One request: four yes/no hazard checks (jailbreak, harmful or illegal assistance, medical advice, self-harm) plus a severity score.</p>
+        <p>Two thresholds per hazard: an <b>action</b> threshold that fires the response, and a lower <b>review</b> threshold that sends it to a human. A dosage question goes to review, not refusal; a self-harm signal routes to support, not a block. Strict and permissive policies reuse the same scores — retuning costs no API calls.</p>
+        <em class="src">cookbook — guardrails for LLMs</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="cascade">
+      <div class="box">
+        <p class="kicker">PATTERN 03 · THE CASCADE</p>
+        <h2>Cheap model extracts, Jev verifies, big model only on failure</h2>
+        <p>A cheap model does the work. Jev checks it field by field with narrow, falsifiable yes/no questions — not "is this good?" but "is this specific field wrong?", framed so an error is the <i>true</i> case. Only flagged cases reach the expensive model.</p>
+        <p><b>gpt-5.4-mini</b> at $0.75/$4.50, <b>gpt-5.5</b> at $5.00/$30.00 — seven times dearer — <b>jev-1.12</b> verifying at $0.042/$0.00, escalating above about <b>0.7</b>. Across 100 prompts the cascade's pareto frontier sat <b>up-and-left of every single model run alone</b>.</p>
+        <em class="src">cookbook — SDE cascade</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="audit">
+      <div class="box">
+        <p class="kicker">PATTERN 04 · THE AUDITOR</p>
+        <h2>Check the LLM's citations against the source</h2>
+        <p>Two stages, and the first needs no model: search the source for the exact quote. Missing entirely? Fabricated — caught for free. For quotes that <i>are</i> present, Jev judges the surrounding context: does it <b>support</b> the claim, <b>contradict</b> it, or <b>say nothing</b>? Above 0.8 confidence it auto-accepts.</p>
+        <p>Why the second stage earns its place: in the RFC 7519 test one citation had a <b>verbatim, genuinely present quote whose section contradicted the claim</b>. String matching alone would have passed it.</p>
+        <em class="src">cookbook — double-checking citations</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="rerank">
+      <div class="box">
+        <p class="kicker">PATTERN 05 · THE RERANKER</p>
+        <h2>Fix what retrieval got in the shortlist but in the wrong order</h2>
+        <p>Keyword search is fast across millions of documents and routinely puts the right answer at rank nine. Jev rescores the shortlist with a single Noul per candidate rather than inventing a ranking scale — which keeps scores comparable across queries.</p>
+        <p>On the CLERC legal set — BM25 narrowing <b>3,565 court-opinion passages</b> to 30-candidate shortlists over 40 queries — top-1 accuracy went <b>5% → 18%</b> and top-10 <b>38% → 62%</b>. The 1,200 calls cost about <b>$0.06</b>.</p>
+        <em class="src">cookbook — re-ranking</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="filter">
+      <div class="box">
+        <p class="kicker">PATTERN 06 · THE FILTER</p>
+        <h2>Decide what the LLM is allowed to read</h2>
+        <p>Similarity ranking cannot tell relevant evidence from noisy, contradictory or <i>malicious</i> content. So between retrieval and generation, ask four questions of each of the top 12 passages: is it relevant, does it carry usable evidence, does it <b>contradict the query's premise</b>, is it <b>attempting prompt injection</b>?</p>
+        <p>In TypeSafe's test a seeded forum post ranked <b>first by similarity</b> (0.584) and scored <span class="bad">0.99 on injection</span> — excluded. Across six queries at least two-thirds of every retrieval set was dropped.</p>
+        <em class="src">cookbook — classifying RAG passages</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="skills">
+      <div class="box">
+        <p class="kicker">PATTERN 07 · THE SHORTLIST</p>
+        <h2>Tell the agent which tool to look at first</h2>
+        <p>An agent with <b>182 skills</b> loads them all into its system message, where the descriptions get truncated to 60 characters and a skill that <i>edits</i> PowerPoint looks identical to one that <i>authors</i> it. Cost, context rot, and bad picks.</p>
+        <p>Two Jev requests fix it: a wide Choice ranks all 182 plus three Nouls asking whether a skill is needed at all (<b>~0.2 s</b>), then a second pass re-ranks the top 3 with full descriptions (<b>~0.1 s</b>). Over 488 requests: wrong loads <b>16.8% → 7.3%</b>, needless loads <b>9.8% → 4.0%</b>.</p>
+        <em class="src">cookbook — skill suggestion</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="fncall">
+      <div class="box">
+        <p class="kicker">PATTERN 08 · THE DISPATCHER</p>
+        <h2>Natural language into a typed function call</h2>
+        <p>A sentence goes in; a function name and its arguments come out as evaluated enums, each with a confidence. Arguments are <b>choices</b> (one of a fixed list), <b>sets</b> (several) or <b>flags</b> (booleans) — so an argument that isn't in your enum simply cannot be produced.</p>
+        <p>"Plot rolling correlation between nvda and spy for the past month" becomes <span class="q">rolling_correlation(symbol='NVDA', benchmark='SPY', window='1mo')</span>. Role-descriptive questions keep the two tickers apart — one is "being measured", the other is "the yardstick".</p>
+        <p>The call's confidence is reported as <b>the least certain argument</b>, not the product: one wrong parameter defeats the whole call.</p>
+        <em class="src">cookbook — function calling</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="handback">
+      <div class="box">
+        <p class="kicker">PATTERN 09 · THE HAND-BACK</p>
+        <h2>Let the LLM do the one thing Jev can't, then come back</h2>
+        <p>When Jev detects a <b>compound request</b> — "turn off the lights and set the thermostat to 20" — an LLM splits it into atomic commands, and each re-enters Jev for typed routing. When it turns out to be general conversation, it goes to a generative model instead.</p>
+        <p>The justification for the extra hop: Jev is <span class="q">"so fast compared to the LLM response that it adds negligible latency."</span> You aren't choosing between the two models — you're paying ~100 ms to learn which one you needed.</p>
+        <em class="src">demo — smart home</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="thread">
+      <div class="box">
+        <p class="kicker">38 · The thread</p>
+        <h2>Same move, nine times</h2>
+        <p>None of these ask Jev to be smarter than a frontier model. They ask it to be <b>cheap enough to run everywhere</b> and <b>calibrated enough to trust with a threshold</b>.</p>
+        <p>Put a fast, typed, honest judgment in front of a slow, expensive, confident one — and let ordinary code decide what happens next.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a7">
+  <div class="stage"><canvas id="cv7" role="img" aria-label="A board that fills in as you scroll: five high-level use-case categories, nine task primitives, a cloud of industry names, and animated scoreboards of measured results from TypeSafe's cookbooks."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open7">
+      <div class="box">
+        <p class="actno">ACT SEVEN</p>
+        <h2>Where this actually gets used</h2>
+        <p>TypeSafe publishes a map of what System One is for, and a shelf of cookbooks with the numbers to back it. Here is both.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="cats">
+      <div class="box">
+        <p class="kicker">39 · Five shapes</p>
+        <h2>The categories TypeSafe names</h2>
+        <p><b>AI automation software</b> — <span class="q">"run it a million times in the background without a human co-pilot."</span></p>
+        <p><b>Real-time applications</b> — <span class="q">"frontier intelligence at real-time speeds (150ms) means AI can make decisions faster than human perception."</span></p>
+        <p><b>Map-reduce over big data</b> — <span class="q">"100x cheaper means you can process giant datasets."</span></p>
+        <p><b>Universal verification</b> — check the prompt, the extraction, the reasoning trace, the tool call, or the input of any other AI.</p>
+        <p><b>Harness engineering</b> — model routing, semantic context retrieval, LLM error detection, guardrails.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="prims9">
+      <div class="box">
+        <p class="kicker">40 · Nine task shapes</p>
+        <h2>What a judgment turns into</h2>
+        <p>Classification · Detection · Scoring · Routing · Search · Retrieval · Ranking · Verification · ML feature extraction — plus structured data extraction as a tenth.</p>
+        <p>Notice what is absent: no generation, no planning, no conversation. Every one of these ends in a value a program compares, sorts or branches on.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="inds">
+      <div class="box">
+        <p class="kicker">41 · Where it lands</p>
+        <h2>Nineteen domains, one primitive</h2>
+        <p>Recruiting · lead generation · customer support · insurance claims · financial crime · legal and compliance · e-commerce marketplaces · moderation and trust &amp; safety · advertising · gaming · risk assessment · demand forecasting · knowledge graphs · search and retrieval · scientific discovery · model routing · LLM guardrails · semantic code linting · feature extraction.</p>
+        <p>The same three question types underneath all of it.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="proof1">
+      <div class="box">
+        <p class="kicker">42 · Measured · classification &amp; search</p>
+        <h2>Confidence as a dial, not a filter</h2>
+        <p>Classifying SEC annual reports into the SIC taxonomy — <b>444 industries</b>, <b>75 major groups</b>, <b>10 divisions</b> — one Choice question answers at whatever specificity it has earned. At or above <b>0.9</b> it names the group; below, it names the broader division instead. No extra API call.</p>
+        <p>Result across 60 filings: high-confidence answers were <b>90% accurate</b> at group level; low-confidence ones were only 40% accurate as groups but <b>70% accurate</b> once widened to divisions. Useful answers went from <b>39 of 60 to 48 of 60</b>.</p>
+        <em class="src">cookbook — classification using confidence</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="proof2">
+      <div class="box">
+        <p class="kicker">43 · Measured · extraction &amp; data</p>
+        <h2>Let the model read; let code compute</h2>
+        <p><b>Dates.</b> Jev is bad at date arithmetic — so it never does any. Seven Choice questions name the <i>parts</i> (absolute or relative, month, day, year, weekday anchor); code assembles the calendar date and routes anything below <b>0.60</b> to review. <b>83% accepted automatically</b>, and the one failure was a date the document never actually stated.</p>
+        <p><b>Structure recovery.</b> Rebuilding Markdown from flattened text: 28 lines into 17 blocks, two requests, 10,211 tokens, <b>0.8 s</b>, <b>$0.0015</b> — and every character of output came from the input, because the model only ever classifies, never rewrites.</p>
+        <em class="src">cookbooks — date extraction · structure recovery</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="proof3">
+      <div class="box">
+        <p class="kicker">44 · Measured · ranking &amp; features</p>
+        <h2>Two results worth sitting with</h2>
+        <p><b>Entity alignment.</b> 450 beer-catalogue pairs scored on three levels — different / related-but-uncertain / same product — with three supporting Nouls on name, brewery and style. Outcome: <b>8.9% merged</b>, <b>11.1% queued for a curator</b>, <b>80% left alone</b>. No threshold tuning: the levels <i>are</i> the policy.</p>
+        <p><b>ML features.</b> An LLM proposes questions, Jev answers them into numeric columns, CatBoost fits, the errors drive the next round. Predicting wine critic scores, held-out RMSE fell <b>3.088 → 2.466 → 2.145 → 1.869 → 1.772</b> across baseline, word counts, a direct score question, and five rounds of discovered features. Top feature: "note overall tone positivity," at <b>17.4%</b> importance.</p>
+        <em class="src">cookbooks — entity alignment · autoresearch feature discovery</em>
+      </div>
+    </div>
+
+    <div class="card" data-scene="ecosystem">
+      <div class="box">
+        <p class="kicker">45 · Getting at it</p>
+        <h2>Four doors in</h2>
+        <p><b>The Playground</b> at console.typesafe.ai — paste state, add questions, watch the distributions land, no code.</p>
+        <p><b>Python SDK</b> (3.10+) and <b>JavaScript/TypeScript SDK</b> (Node 20+, shipping ESM, CommonJS and type declarations). Sync and async clients, automatic retry with backoff, types inferred from your question definitions.</p>
+        <p><b>Gateways</b> — the SDK speaks to OpenRouter, the Vercel AI Gateway and the Pydantic AI Gateway via a base-URL override.</p>
+        <p><b>The agent skill</b> — a drop-in for Claude Code and other coding agents that teaches them the API, the patterns and the cookbooks. Its own advice is pointed: agents aren't great at <i>writing</i> the questions, so write those with it, and keep every question and threshold in one place.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a8">
+  <div class="stage"><canvas id="cv8" role="img" aria-label="A grid of eight capability tiles lighting up in turn to show Jev's documented failure modes, then rearranging into three columns showing which work belongs to code, to Jev and to a language model."></canvas></div>
+  <div class="cards">
+
+    <div class="card opener" data-scene="open8">
+      <div class="box">
+        <p class="actno">ACT EIGHT</p>
+        <h2>Where it falls over</h2>
+        <p>TypeSafe publishes a per-version page of known failure modes and calls it <b>jaggedness</b>. It is the most useful page they have.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jmath">
+      <div class="box">
+        <p class="kicker">46 · Numbers</p>
+        <h2>It is not a calculator, and it cannot count</h2>
+        <p>Numeric work is a documented weakness and the guidance is unusually direct: <span class="q">"Jev is not a calculator. We strongly recommend implementing any mathematical logic in code."</span></p>
+        <p>Counting items, characters or occurrences is equally unreliable, and the error grows with scale.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jtime">
+      <div class="box">
+        <p class="kicker">47 · Time and intent</p>
+        <h2>Dates drift, and it reads you literally</h2>
+        <p>Temporal comparisons, intervals and ordering all degrade — especially across mixed formats or domain boundaries like fiscal quarters. This is exactly why the date cookbook has Jev name the <i>parts</i> and lets code do the calendar.</p>
+        <p>And Jev answers the question <b>as written</b>, not as meant. State the exact condition; never lean on implied meaning.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jchain">
+      <div class="box">
+        <p class="kicker">48 · Reasoning and noise</p>
+        <h2>Indirection hurts. Irrelevant context poisons.</h2>
+        <p>Multi-step reasoning and double negatives underperform — if a judgment needs a chain, it isn't a Jev question.</p>
+        <p>And unrelated material in the state <b>measurably reduces accuracy</b>. Send the fields that matter, not the whole record. This is the failure the filter pattern defends against — in both directions.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jinv">
+      <div class="box">
+        <p class="kicker">49 · The subtle one</p>
+        <h2>No invariants across questions</h2>
+        <p>Ask "is X true?" and "is X false?" as two separate questions and the probabilities <b>need not sum to 1.0</b>. Each question is judged independently, so don't build logic that assumes otherwise.</p>
+        <p>And it does not write. Never trained for generation, poor when forced into it.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="jmore">
+      <div class="box">
+        <p class="kicker">50 · The rest of the fine print</p>
+        <h2>Limits that aren't failures, just facts</h2>
+        <p><b>Text only</b> — string, JSON object or array of text. No image, audio or video. <b>English first</b> — other languages are accepted but less accurate. <b>No fine-tuning</b> — the model is not customised per customer; the request <i>is</i> the customisation.</p>
+        <p><b>64K context</b> per request, with state plus the longest question fitting inside <b>32K</b>. <b>100K tokens/sec or 40 requests/sec</b>, adjusting dynamically under demand.</p>
+      </div>
+    </div>
+
+    <div class="card" data-scene="labour">
+      <div class="box">
+        <p class="kicker">51 · The payoff</p>
+        <h2>The weaknesses draw the line for you</h2>
+        <p>Read that list again and a rule appears. <b>Code</b> gets arithmetic, counting, dates, sorting, thresholds and control flow — things software has been excellent at for fifty years.</p>
+        <p><b>Jev</b> gets classification, detection, scoring, verification, filtering, extraction. <b>An LLM</b> gets writing, planning and explanation. <b>A human</b> gets everything below your confidence floor.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="act" id="a9">
+  <div class="codestage">
+    <div class="codepanel">
+      <div class="cblock on" id="cb0"><span class="fn">Python SDK · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="c"># pip install typesafe-sdk  ·  Python 3.10+</span></span><span class="ln"><span class="k">from</span> typesafe_sdk <span class="k">import</span> TypeSafeClient, Noul, Choice, Score</span><span class="ln"></span><span class="ln">client = <span class="f">TypeSafeClient</span>()</span><span class="ln">result = client.<span class="f">system_one</span>(</span><span class="ln">    <span class="s">"I was charged twice. Please help ASAP."</span>,</span><span class="ln">    {</span><span class="ln">        <span class="s">"billing"</span>: <span class="f">Noul</span>(instructions=<span class="s">"Is this about billing?"</span>),</span><span class="ln">        <span class="s">"tone"</span>: <span class="f">Choice</span>(</span><span class="ln">            instructions=<span class="s">"What is the tone?"</span>,</span><span class="ln">            criteria={<span class="s">"calm"</span>: <span class="k">None</span>, <span class="s">"angry"</span>: <span class="k">None</span>}</span><span class="ln">        ),</span><span class="ln">        <span class="s">"urgency"</span>: <span class="f">Score</span>(</span><span class="ln">            instructions=<span class="s">"How urgent is this?"</span>,</span><span class="ln">            criteria=[<span class="s">"low"</span>, <span class="s">"medium"</span>, <span class="s">"high"</span>]</span><span class="ln">        ),</span><span class="ln">    },</span><span class="ln">)</span><span class="ln"><span class="f">print</span>(</span><span class="ln">    result.nouls[<span class="s">"billing"</span>].noul,</span><span class="ln">    result.choices[<span class="s">"tone"</span>].choice,</span><span class="ln">    result.scores[<span class="s">"urgency"</span>].score,</span><span class="ln">)</span></pre></div>
+
+      <div class="cblock" id="cb1"><span class="fn">HTTP + response · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="p">POST</span> https://api.typesafe.ai/v1/systemone</span><span class="ln">Authorization: Bearer &lt;API_KEY&gt;</span><span class="ln">Content-Type: application/json</span><span class="ln"></span><span class="ln"><span class="c"># ── 200 OK ────────────────────────────</span></span><span class="ln">{</span><span class="ln">  <span class="s">"model"</span>: <span class="s">"jev-1.13.0"</span>,</span><span class="ln">  <span class="s">"answers"</span>: { <span class="c">/* one Answer per question */</span> },</span><span class="ln">  <span class="s">"usage"</span>: {</span><span class="ln">      <span class="s">"input_tokens"</span>: <span class="n">296</span>,</span><span class="ln">      <span class="s">"output_tokens"</span>: <span class="n">20</span></span><span class="ln">  }</span><span class="ln">}</span><span class="ln"></span><span class="ln"><span class="c"># 401 bad key   · 422 validation</span></span><span class="ln"><span class="c"># 429 rate limit · 529 overloaded</span></span></pre></div>
+
+      <div class="cblock" id="cb2"><span class="fn">The confidence gate · <em>illustrative</em></span><pre><span class="ln">intent = result.choices[<span class="s">"intent"</span>]</span><span class="ln"></span><span class="ln"><span class="k">if</span> intent.confidence &lt; <span class="n">0.60</span>:</span><span class="ln">    escalate_to_human(ticket)</span><span class="ln"></span><span class="ln"><span class="k">elif</span> is_destructive(intent.choice):</span><span class="ln">    <span class="k">if</span> intent.confidence &gt; <span class="n">0.85</span>:</span><span class="ln">        execute(intent.choice)</span><span class="ln">    <span class="k">else</span>:</span><span class="ln">        confirm_with_user(intent.choice)</span><span class="ln"></span><span class="ln"><span class="k">else</span>:</span><span class="ln">    execute(intent.choice)</span></pre></div>
+
+      <div class="cblock" id="cb3"><span class="fn">Composite scoring · <em>verbatim from the docs</em></span><pre><span class="ln">py   = response.answers[<span class="s">"python_depth"</span>].score / <span class="n">4</span></span><span class="ln">lead = response.answers[<span class="s">"team_leadership"</span>].score / <span class="n">4</span></span><span class="ln"></span><span class="ln">ic_score = (<span class="n">0.40</span> * py)   + (<span class="n">0.10</span> * lead) \</span><span class="ln">         + (<span class="n">0.40</span> * arch) + (<span class="n">0.10</span> * general)</span><span class="ln"></span><span class="ln"><span class="c"># same four answers, different weights for a</span></span><span class="ln"><span class="c"># manager role — a config edit, not a rewrite</span></span></pre></div>
+
+      <div class="cblock" id="cb4"><span class="fn">Typed all the way down · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="k">from</span> typesafe_sdk <span class="k">import</span> SystemOneResponse, NoulAnswer</span><span class="ln"></span><span class="ln"><span class="k">class</span> <span class="f">BillingResponse</span>(SystemOneResponse):</span><span class="ln">    billing: NoulAnswer</span><span class="ln"></span><span class="ln">result = client.<span class="f">system_one</span>(</span><span class="ln">    <span class="s">"I was charged twice."</span>,</span><span class="ln">    {<span class="s">"billing"</span>: <span class="f">Noul</span>(instructions=<span class="s">"Is this about billing?"</span>)},</span><span class="ln">    response_model=BillingResponse,</span><span class="ln">)</span><span class="ln"><span class="k">assert</span> <span class="n">0</span> &lt;= result.billing.noul &lt;= <span class="n">1</span></span></pre></div>
+
+      <div class="cblock" id="cb5"><span class="fn">Aiming a question · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="c"># state can be a nested JSON object; a backtick</span></span><span class="ln"><span class="c"># path reference aims one question at one field</span></span><span class="ln"></span><span class="ln">  `support.tickets[0].message`</span><span class="ln">  `ticket.messages[0].text`</span><span class="ln"></span><span class="ln"><span class="c"># ── for a coding agent ────────────────</span></span><span class="ln"></span><span class="ln">claude plugin marketplace add typesafe-ai/skills</span><span class="ln">claude plugin install typesafe@typesafe-ai</span><span class="ln"></span><span class="ln"><span class="c"># any other agent:</span></span><span class="ln">npx skills add typesafe-ai/skills --skill typesafe-ai</span></pre></div>
+
+      <div class="cblock" id="cb6"><span class="fn">JavaScript / TypeScript · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="c">// npm install @typesafe-ai/sdk   ·   Node 20+</span></span><span class="ln"><span class="k">import</span> { choice, TypeSafeClient } <span class="k">from</span> <span class="s">'@typesafe-ai/sdk'</span>;</span><span class="ln"></span><span class="ln"><span class="k">const</span> client = <span class="k">new</span> <span class="f">TypeSafeClient</span>();</span><span class="ln"></span><span class="ln"><span class="c">// answer types are inferred from your question</span></span><span class="ln"><span class="c">// definitions, so TypeScript knows what came back</span></span><span class="ln"><span class="c">// — ships ESM, CommonJS and .d.ts</span></span></pre></div>
+
+      <div class="cblock" id="cb7"><span class="fn">Environment &amp; failure · <em>verbatim from the docs</em></span><pre><span class="ln"><span class="c"># TYPESAFE_API_KEY    required</span></span><span class="ln"><span class="c"># TYPESAFE_BASE_URL   default https://api.typesafe.ai</span></span><span class="ln"><span class="c"># TYPESAFE_LOG_LEVEL  debug output</span></span><span class="ln"></span><span class="ln"><span class="c"># base_url also points the SDK at OpenRouter, the</span></span><span class="ln"><span class="c"># Vercel AI Gateway or the Pydantic AI Gateway</span></span><span class="ln"></span><span class="ln"><span class="k">from</span> typesafe_sdk <span class="k">import</span> TypeSafeAPIError</span><span class="ln"></span><span class="ln"><span class="k">try</span>:</span><span class="ln">    result = client.<span class="f">system_one</span>(state, questions)</span><span class="ln"><span class="k">except</span> TypeSafeAPIError <span class="k">as</span> error:</span><span class="ln">    <span class="f">print</span>(error.status, error.request_id)</span></pre></div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card opener" data-code="0" data-lines="">
+      <div class="box">
+        <p class="actno">ACT NINE</p>
+        <h2>All of it, in code</h2>
+        <p>One endpoint, three question types, and a response you never parse. Scroll — the panel follows.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="0" data-lines="1,3">
+      <div class="box">
+        <p class="kicker">52 · Setup</p>
+        <h2>One import, one client</h2>
+        <p>The three primitives are the only types you need. The client reads <b>TYPESAFE_API_KEY</b> from the environment and defaults to the latest model — today that resolves to <b>jev-1.13.0</b>.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="0" data-lines="5">
+      <div class="box">
+        <p class="kicker">53 · State</p>
+        <h2>The content to be judged</h2>
+        <p>A string, a JSON object, or an array of text values. Keep facts in the state and judgments in the questions — that separation is what lets you fire a dozen unrelated questions at one ticket in a single round trip.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="0" data-lines="7,16">
+      <div class="box">
+        <p class="kicker">54 · The questions</p>
+        <h2>Three primitives, one request</h2>
+        <p>A <b>Noul</b> for the yes/no, a <b>Choice</b> whose criteria map option names to descriptions, a <b>Score</b> whose criteria are ordered levels. All three evaluated in parallel against that same string.</p>
+        <p>The keys — <i>billing</i>, <i>tone</i>, <i>urgency</i> — are yours, and come back as the keys of the answer map.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="0" data-lines="18,22">
+      <div class="box">
+        <p class="kicker">55 · Reading the answers</p>
+        <h2>No parsing, anywhere</h2>
+        <p><b>.noul</b> is a probability. <b>.choice</b> is one of the options you supplied. <b>.score</b> is a position on your levels. No regex, no JSON repair step, no retry-on-malformed loop.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="1" data-lines="0,2">
+      <div class="box">
+        <p class="kicker">56 · On the wire</p>
+        <h2>One route, every model</h2>
+        <p>A single POST with a bearer token. The <b>model</b> field picks the version, and the aliases <b>jev-latest</b> and <b>jev-preview</b> both currently point at 1.13.0.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="1" data-lines="5,12">
+      <div class="box">
+        <p class="kicker">57 · What comes back</p>
+        <h2>Answers, and the bill</h2>
+        <p>One Answer per question, plus usage. In TypeSafe's own example: <b>296 input tokens, 20 output</b>. At $0.042 per million input and nothing for output, that request cost about <b>$0.000012</b>.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="1" data-lines="14,15">
+      <div class="box">
+        <p class="kicker">58 · When it fails</p>
+        <h2>Four boring errors</h2>
+        <p><b>401</b> bad key, <b>422</b> validation failed, <b>429</b> rate limited, <b>529</b> overloaded. For rate limits the guidance is exponential backoff — and both SDKs do it for you.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="2" data-lines="0,12">
+      <div class="box">
+        <p class="kicker">59 · The gate, in six lines</p>
+        <h2>This is the whole point of the model</h2>
+        <p>A hard floor at <b>0.60</b> catches what the model is genuinely unsure about. Anything irreversible waits for <b>0.85</b>. Everything else just runs.</p>
+        <p>No second model call decides this. A typed value and an honest number come back, and ordinary control flow does the rest.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="3" data-lines="0,4">
+      <div class="box">
+        <p class="kicker">60 · Combining answers</p>
+        <h2>Weights you can read and change</h2>
+        <p>Split a complex judgment into independent Score questions, normalise each by its top level number, then weight them in code. The docs' résumé screener runs 40% Python depth for a senior IC — and 15% for an engineering manager.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="4" data-lines="2,10">
+      <div class="box">
+        <p class="kicker">61 · Static safety</p>
+        <h2>Typed all the way into your editor</h2>
+        <p>Pass a <b>response_model</b> and the SDK returns a validated object rather than a dictionary. The model already couldn't break the schema; now your own code can't either.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="5" data-lines="0,4">
+      <div class="box">
+        <p class="kicker">62 · Precision</p>
+        <h2>Point a question at one field</h2>
+        <p>When state is a nested object, a backtick path reference aims a single question at a single value. This is how TypeSafe fights what its docs call <b>context rot</b> — and the jaggedness page confirms the stakes: unrelated information in the state measurably reduces accuracy.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="5" data-lines="6,12">
+      <div class="box">
+        <p class="kicker">63 · Let the agent write it</p>
+        <h2>The TypeSafe skill</h2>
+        <p>A drop-in for Claude Code and other coding agents, carrying the API, the patterns and the cookbooks. Its own advice: agents are good at spotting where fragile parsing should become a judgment, and <b>not</b> good at writing the questions — so write those together, and keep every question and threshold in one file.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="6" data-lines="0,6">
+      <div class="box">
+        <p class="kicker">64 · The other runtime</p>
+        <h2>JavaScript, with the types inferred</h2>
+        <p>Node 20+, shipping ESM, CommonJS and TypeScript declarations. Define questions with helpers like <b>choice()</b> and the SDK infers the answer type from the definition — so a typo in an option name is a compile error.</p>
+      </div>
+    </div>
+
+    <div class="card" data-code="7" data-lines="0,5">
+      <div class="box">
+        <p class="kicker">65 · Where it plugs in</p>
+        <h2>Three env vars and a base URL</h2>
+        <p>The base-URL override is the interesting one: the same client speaks to <b>OpenRouter</b>, the <b>Vercel AI Gateway</b> and the <b>Pydantic AI Gateway</b>, so Jev drops into a stack that already routes models rather than demanding its own path.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section id="a10" class="wrap reveal">
+  <p class="eyebrow">Reference</p>
+  <h2 class="sec">The card</h2>
+  <div class="tablewrap" style="margin-top:18px">
+    <table>
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>Model</td><td><b>jev-1.13.0</b> — the first System One model. Aliases <b>jev-latest</b> and <b>jev-preview</b> both point at it</td></tr>
+      <tr><td>Maker</td><td><b>TypeSafe AI</b>, San Francisco, founded 2024 by Diogo Almeida, Erik Gafni and Sasha Sheng. $40M seed led by DCVC at a reported $200M valuation; limited early access from <b>15 September 2026</b></td></tr>
+      <tr><td>The name</td><td>After <b>William Stanley Jevons</b> — cheaper resources get consumed more, not less</td></tr>
+      <tr><td>Input price</td><td><b>$0.042 per million tokens</b> ($42 per billion) — TypeSafe claims 238× below Claude Fable 5.1</td></tr>
+      <tr><td>Output price</td><td><b>Free</b></td></tr>
+      <tr><td>Context</td><td><b>64K tokens</b> per request; state plus the longest question must fit inside <b>32K</b></td></tr>
+      <tr><td>Rate limits</td><td><b>100K tokens/sec</b> or <b>40 requests/sec</b>, adjusting dynamically under demand</td></tr>
+      <tr><td>Latency</td><td><b>70–500 ms</b>, around 100 typical</td></tr>
+      <tr><td>Modality</td><td><b>Text only.</b> No image, audio or video. English is the primary training language</td></tr>
+      <tr><td>Primitives</td><td><b>Choice</b> (≤255 options) · <b>Score</b> (2–10 ordered levels) · <b>Noul</b> (one probability, 0–1)</td></tr>
+      <tr><td>Training</td><td><b>RLCD</b> — Reinforcement Learning for Calibrated Decisions, on synthetic data. No per-customer fine-tuning</td></tr>
+      <tr><td>SDKs</td><td><b>Python</b> 3.10+ · <b>JavaScript/TypeScript</b> Node 20+ · OpenRouter, Vercel AI Gateway, Pydantic AI Gateway via base URL · agent skill for Claude Code</td></tr>
+      <tr><td>Headline claim</td><td><b>193.6× faster, 444.6× cheaper</b> — 0.114 s at $0.000081 versus 8.566 s at $0.013880</td></tr>
+    </table>
+  </div>
+  <div class="disclaim">
+    <strong style="color:var(--v7)">Read the benchmarks with a hand on the wall.</strong> Every number on this page is TypeSafe's own claim, or Wikipedia's summary of it — none is independently verified here, and the cookbook results are the vendor's own evaluations on datasets it chose. The company itself flags that its headline figures may represent "the higher end of real world gains," that its reference set is biased toward OpenAI and Anthropic models, that DeepSeek performance may be underestimated, and that its public demos are simplified for clarity. The two hundred tickets in Act Four are a <strong>simulated workload</strong>, invented to make the mechanism visible; the prices, latencies, limits and accuracy figures attached to them are not.
+  </div>
+</section>
+
+
+
+<script>!function(){"use strict";var e=matchMedia("(prefers-reduced-motion: reduce)").matches,t=2*Math.PI,l={jev:"#2A9D90",code:"#5B82DA",llm:"#C8902F",human:"#D9536B",alt:"#8E6BD4",ink:"#222938",muted:"#6E7789",faint:"#A0A8B6",line:"#D5D2C9",dim:"#B4BBC8",jevD:"#E3F5F2",codeD:"#E7EDFC",llmD:"#FBF1DD",humanD:"#FCE5E9",altD:"#F0E8FB"};function o(e,t,l){return e+(t-e)*l}function n(e){return(e=function(e){return e<0?0:e>1?1:e}(e))*e*(3-2*e)}function a(e,t,l,o,n,a){a=Math.min(a,o/2,n/2),e.beginPath(),e.moveTo(t+a,l),e.lineTo(t+o-a,l),e.quadraticCurveTo(t+o,l,t+o,l+a),e.lineTo(t+o,l+n-a),e.quadraticCurveTo(t+o,l+n,t+o-a,l+n),e.lineTo(t+a,l+n),e.quadraticCurveTo(t,l+n,t,l+n-a),e.lineTo(t,l+a),e.quadraticCurveTo(t,l,t+a,l),e.closePath()}function r(e){return function(t,l,o,n,a,r,i){e.fillStyle=n,e.textAlign=i||"center",e.textBaseline="middle",e.font=(r||700)+" "+(a||12)+"px ui-monospace, Menlo, monospace",e.fillText(t,l,o)}}function i(e,t){var l=Math.min(devicePixelRatio||1,2),o=e.clientWidth,n=e.clientHeight;return e.width=Math.round(o*l),e.height=Math.round(n*l),t.setTransform(l,0,0,l,0,0),[o,n]}function s(n,s){var h=n.getContext("2d"),c=0,u=0,f={},d=[],m=[],v=[],w=0,y=r(h);function x(){var e=i(n,h);c=e[0],u=e[1]}function g(e){if(!(e.a<.02)){if(h.globalAlpha=e.a,"text"===e.kind){e.dead&&Math.max(0,e.w/Math.max(1,e.tw||1));return e.glow&&(h.shadowColor=e.col,h.shadowBlur=9),y(e.label,e.x,e.y,e.col,Math.max(1,(e.size||22)*(e.dead?e.a:1)),700),h.shadowBlur=3,e.sub&&y(e.sub,e.x,e.y+.82*(e.size||22),l.faint,11,600),void(h.globalAlpha=1)}if("dot"===e.kind)return e.glow&&(h.shadowColor=e.col,h.shadowBlur=8),h.beginPath(),h.arc(e.x,e.y,Math.max(2,e.w/2),0,t),h.fillStyle=e.col,h.fill(),h.shadowBlur=3,e.label&&y(e.label,e.x,e.y+e.w/2+11,e.col,9.5,700),void(h.globalAlpha=1);var o=e.x-e.w/2,n=e.y-e.h/2;a(h,o,n,e.w,e.h,10),h.fillStyle=e.fill||"#FFFFFF",h.fill(),e.glow&&(h.shadowColor=e.col,h.shadowBlur=8),h.strokeStyle=e.col,h.lineWidth=1.6,h.stroke(),h.shadowBlur=3;var r=Math.max(9,Math.min(12.5,e.w/11));y(e.label||"",e.x,e.sub?e.y-7:e.y,e.col,r,700),e.sub&&y(e.sub,e.x,e.y+8,l.faint,Math.max(7.5,r-1.8),600),e.strike&&(h.strokeStyle=l.human,h.lineWidth=1.8,h.beginPath(),h.moveTo(o+8,n+e.h-7),h.lineTo(o+e.w-8,n+7),h.stroke()),h.globalAlpha=1}}return x(),{resize:x,apply:function(e,t){var n=c<820?{x:.05*c,y:.07*u,w:.9*c,h:.86*u}:{x:.37*c,y:.11*u,w:.59*c,h:.78*u},a=s(e,t,n,c,u)||{nodes:[],edges:[]},r={};a.nodes.forEach(function(e){r[e.id]=1;var t=f[e.id];if(!t){var o=e.from&&f[e.from];t=f[e.id]={x:o?o.x:n.x+n.w/2,y:o?o.y:n.y+n.h/2,w:0,h:0,a:1}}t.tx=e.x,t.ty=e.y,t.tw=e.w||0,t.th=e.h||0,t.ta=null==e.a?1:e.a,t.dead=!1,t.label=e.label,t.sub=e.sub,t.col=e.col||l.dim,t.fill=e.fill,t.strike=!!e.strike,t.kind=e.kind||"box",t.size=e.size,t.glow=!1!==e.glow});var i=n.x+n.w/2,h=n.y+n.h/2;for(var m in f)if(!r[m]){var w=f[m];w.dead=!0,w.ta=1,w.tw=0,w.th=0,w.tx=o(w.x,i,.55),w.ty=o(w.y,h,.55)}d=a.edges||[],v=a.notes||[]},step:function(t){var n=e?1:.15;for(var a in f){var r=f[a];r.x=o(r.x,r.tx,n),r.y=o(r.y,r.ty,n),r.w=o(r.w,r.tw,n),r.h=o(r.h,r.th,n),r.a=o(r.a,r.ta,e?1:.2),r.dead&&r.w<.8&&r.h<.8&&delete f[a]}!e&&t-w>230&&(w=t,d.forEach(function(e){if(!1!==e.flow){var t=f[e.from],o=f[e.to];!t||!o||t.a<.4||o.a<.4||m.push({ax:t.x,ay:t.y,bx:o.x,by:o.y,bow:e.bow||0,t:0,col:e.col||l.jev,sp:.016+.009*Math.random()})}}));for(var i=m.length-1;i>=0;i--)m[i].t+=m[i].sp,m[i].t>=1&&m.splice(i,1)},draw:function(){for(var e in h.clearRect(0,0,c,u),d.forEach(function(e){var t=f[e.from],o=f[e.to];if(t&&o){var n=Math.min(t.a,o.a);n<.05||(h.globalAlpha=.8*n,h.strokeStyle=e.col||l.line,h.lineWidth=1.5,h.setLineDash(!1===e.dash?[]:[5,7]),h.beginPath(),h.moveTo(t.x,t.y),h.quadraticCurveTo((t.x+o.x)/2,(t.y+o.y)/2+(e.bow||0),o.x,o.y),h.stroke(),h.setLineDash([]),h.globalAlpha=1)}}),f)g(f[e]);m.forEach(function(e){var l=e.t,o=(e.ax+e.bx)/2,n=(e.ay+e.by)/2+e.bow,a=(1-l)*(1-l)*e.ax+2*(1-l)*l*o+l*l*e.bx,r=(1-l)*(1-l)*e.ay+2*(1-l)*l*n+l*l*e.by;h.globalAlpha=l<.15?l/.15:l>.85?(1-l)/.15:1,h.shadowColor=e.col,h.shadowBlur=6,h.beginPath(),h.arc(a,r,3.6,0,t),h.fillStyle=e.col,h.fill(),h.shadowBlur=3}),h.globalAlpha=1,v.forEach(function(e){h.shadowColor=e.col||l.faint,h.shadowBlur=!1===e.glow?0:10,y(e.text,e.x,e.y,e.col||l.faint,e.size||11,e.weight||700),h.shadowBlur=3})}}}var h=s(document.getElementById("cv1"),function(e,t,o,n){var a=n<820,r=a?Math.min(.46*o.w,152):Math.min(.26*o.w,182),i=a?40:50,s=o.x+o.w/2,h=o.y+o.h/2;function c(e,t,l,n,a,s){for(var h={id:e,x:o.x+o.w*t,y:o.y+o.h*l,w:r,h:i,label:n,sub:a,col:s},c=6;c<arguments.length;c++){var u=arguments[c];if(u)for(var f in u)h[f]=u[f]}return h}var u={fill:l.jevD},f={fill:l.llmD};if("hero"===e)return{nodes:[c("state",.1,.3,"state","the text to judge",l.dim),c("qs",.1,.7,"questions","typed",l.dim),c("jev",.46,.5,"JEV","one pass",l.jev,u),c("ans",.84,.5,"typed answers","+ probabilities",l.jev)],edges:[{from:"state",to:"jev",col:l.jev},{from:"qs",to:"jev",col:l.jev},{from:"jev",to:"ans",col:l.jev}],notes:[{text:"NO PROSE · NOTHING TO PARSE",x:s,y:o.y+o.h-4,col:l.faint,size:a?9:11}]};if("problem"===e||"problem2"===e)return{nodes:[{id:"q",kind:"text",x:s,y:h-16,label:'"is this customer angry?"',col:l.ink,size:a?13:20},c("db",.5,.78,"SELECT …","no column for this",l.dim,{w:1.3*r})],edges:[]};if("llmway"===e)return{nodes:[c("st",.1,.5,"text","the message",l.dim),c("llmb",.38,.5,"LLM","token by token",l.llm,f),c("prose",.68,.3,"a paragraph","then you parse it",l.llm),c("bad",.68,.74,"{ unknown_field }","hallucinated",l.human,{fill:l.humanD}),c("cost",.93,.5,"5× input","output tokens",l.human)],edges:[{from:"st",to:"llmb",col:l.llm},{from:"llmb",to:"prose",col:l.llm},{from:"llmb",to:"bad",col:l.human},{from:"prose",to:"cost",col:l.human}],notes:[{text:"THREE FAILURE MODES AT ONCE",x:s,y:o.y+4,col:l.human,size:a?9:11.5}]};if("jevway"===e)return{nodes:[c("state",.09,.3,"state","string · JSON · array",l.dim),c("qs",.09,.7,"questions","typed",l.dim),c("jev",.41,.5,"JEV","one pass",l.jev,u),c("ans",.74,.5,"typed values","+ probabilities",l.jev),c("br",.95,.5,"if / else","your code",l.code,{w:.72*r,fill:l.codeD})],edges:[{from:"state",to:"jev",col:l.jev},{from:"qs",to:"jev",col:l.jev},{from:"jev",to:"ans",col:l.jev},{from:"ans",to:"br",col:l.code}],notes:[{text:"CANNOT INVENT AN OPTION · CANNOT BREAK YOUR SCHEMA",x:s,y:o.y+4,col:l.jev,size:a?8.5:11.5}]};if("prims"===e)return{nodes:[c("jev",.5,.12,"JEV",null,l.jev,u,{w:.7*r,h:.8*i}),c("ch",.17,.58,"CHOICE","one of ≤255",l.code,{fill:l.codeD}),c("scr",.5,.58,"SCORE","2–10 levels",l.llm,f),c("nl",.83,.58,"NOUL","one probability",l.alt,{fill:l.altD}),{id:"n1",kind:"text",x:o.x+.17*o.w,y:o.y+.84*o.h,label:"+ distribution",col:l.faint,size:11,glow:!1},{id:"n2",kind:"text",x:o.x+.5*o.w,y:o.y+.84*o.h,label:"weighted mean",col:l.faint,size:11,glow:!1},{id:"n3",kind:"text",x:o.x+.83*o.w,y:o.y+.84*o.h,label:"0 → 1",col:l.faint,size:11,glow:!1}],edges:[{from:"jev",to:"ch",col:l.code},{from:"jev",to:"scr",col:l.llm},{from:"jev",to:"nl",col:l.alt}]};if("parallelq"===e){for(var d=[c("jev",.15,.5,"JEV","one request",l.jev,u)],m=[],v=["intent?","urgent?","refund?","angry?","churn risk?","language?"],w=0;w<6;w++)d.push(c("q"+w,.66,.07+.172*w,v[w],null,w<3?l.jev:l.dim,{w:.86*r,h:.6*i})),m.push({from:"jev",to:"q"+w,col:w<3?l.jev:l.dim});return{nodes:d,edges:m,notes:[{text:"EVALUATED IN PARALLEL · ADDING QUESTIONS BARELY CHANGES RESPONSE TIME",x:s,y:o.y+o.h-2,col:l.jev,size:a?8:11}]}}return"kahneman"===e?{nodes:[{id:"s2t",kind:"text",x:o.x+.27*o.w,y:o.y+.14*o.h,label:"SYSTEM 2",sub:"slow · deliberate",col:l.llm,size:a?13:18},{id:"s1t",kind:"text",x:o.x+.73*o.w,y:o.y+.14*o.h,label:"SYSTEM 1",sub:"fast · intuitive",col:l.jev,size:a?13:18},c("llmb",.27,.52,"an LLM","writes it out",l.llm,f),c("jev",.73,.52,"JEV","snap judgment",l.jev,u),{id:"k",kind:"text",x:s,y:o.y+.88*o.h,label:"Kahneman · Thinking, Fast and Slow",col:l.faint,size:a?10:12.5,glow:!1}],edges:[]}:"cannot"===e?{nodes:[c("jev",.5,.16,"JEV",null,l.jev,u,{w:.7*r,h:.8*i}),c("w",.17,.54,"write",null,l.human,{strike:!0,w:.74*r}),c("e",.39,.54,"explain",null,l.human,{strike:!0,w:.74*r}),c("c",.61,.54,"converse",null,l.human,{strike:!0,w:.74*r}),c("pl",.83,.54,"plan",null,l.human,{strike:!0,w:.74*r}),{id:"note",kind:"text",x:s,y:o.y+.86*o.h,label:"not a drop-in replacement",col:l.muted,size:a?11:14,glow:!1}],edges:[]}:{nodes:[],edges:[]}});function c(e){return[parseInt(e.slice(1,3),16),parseInt(e.slice(3,5),16),parseInt(e.slice(5,7),16)]}function u(e,t,l){if(e===t)return t;var n=c(e),a=c(t);return"rgb("+Math.round(o(n[0],a[0],l))+","+Math.round(o(n[1],a[1],l))+","+Math.round(o(n[2],a[2],l))+")"}function f(n,s,h){var c=n.getContext("2d"),f=0,d=0,m=r(c),v={};function w(){var e=i(n,c);f=e[0],d=e[1]}return w(),{resize:w,apply:function(e,t){var l=h?h(f,d):f<820?{x:.05*f,y:.08*d,w:.9*f,h:.84*d}:{x:.37*f,y:.12*d,w:.59*f,h:.76*d},o=l.x+l.w/2,n=l.y+l.h/2,a=s(e,t,l,f,d)||[],r={};for(var i in a.forEach(function(e){if(e){r[e.id]=1;var t=v[e.id];if(!t){var l=e.from&&v[e.from];t=v[e.id]={x:l?l.x:null!=e.x0?e.x0:o,y:l?l.y:null!=e.y0?e.y0:n,w:0,h:0,s:0,c:e.col}}t.d=e,t.dead=!1}}),v)r[i]||(v[i].dead=!0,v[i].cx=o,v[i].cy=n)},step:function(){var t=e?1:.15;for(var l in v){var n=v[l];if(n.dead)n.w=o(n.w,0,t),n.h=o(n.h,0,t),n.s=o(n.s,0,t),n.x=o(n.x,n.cx,.45*t),n.y=o(n.y,n.cy,.45*t),n.w<.7&&n.h<.7&&n.s<.05&&delete v[l];else{var a=n.d;n.x=o(n.x,a.x,t),n.y=o(n.y,a.y,t),n.w=o(n.w,a.w||0,t),n.h=o(n.h,a.h||0,t),n.s=o(n.s,null==a.s?1:a.s,t),n.c=u(n.c||a.col,a.col,e?1:.18)}}},draw:function(){var e,o,n;for(e in c.clearRect(0,0,f,d),v)!(n=(o=v[e]).d)||o.s<=.01||"rule"===n.kind&&(c.globalAlpha=.9*o.s,c.strokeStyle=o.c,c.lineWidth=n.lw||1,n.dash&&c.setLineDash(n.dash),c.beginPath(),c.moveTo(o.x-o.w/2,o.y-o.h/2),c.lineTo(o.x+o.w/2,o.y+o.h/2),c.stroke(),c.setLineDash([]),c.globalAlpha=1);for(e in v)if((n=(o=v[e]).d)&&!(o.s<=.01))if("bar"===n.kind){if(o.w<.4||o.h<.4)continue;c.globalAlpha=o.s,c.shadowColor=o.c,c.shadowBlur=!1===n.glow?0:15,a(c,o.x-o.w/2,o.y-o.h/2,o.w,o.h,Math.min(null==n.r?5:n.r,o.h/2)),c.fillStyle=o.c,c.fill(),c.shadowBlur=3,c.globalAlpha=1}else if("dot"===n.kind)c.globalAlpha=o.s,c.shadowColor=o.c,c.shadowBlur=!1===n.glow?0:10,c.beginPath(),c.arc(o.x,o.y,Math.max(.3,o.w/2),0,t),c.fillStyle=o.c,c.fill(),c.shadowBlur=3,c.globalAlpha=1;else if("box"===n.kind){if(o.w<2||o.h<2)continue;c.globalAlpha=o.s,a(c,o.x-o.w/2,o.y-o.h/2,o.w,o.h,10),c.fillStyle=n.fill||"#FFFFFF",c.fill(),c.shadowColor=o.c,c.shadowBlur=!1===n.glow?0:13,c.strokeStyle=o.c,c.lineWidth=1.5,c.stroke(),c.shadowBlur=3;var r=Math.max(7,Math.min(n.fs||12.5,o.w/9))*Math.min(1,o.s);n.label&&o.h>14&&m(n.label,o.x,n.sub?o.y-7:o.y,o.c,r,700),n.sub&&o.h>26&&m(n.sub,o.x,o.y+9,l.faint,Math.max(6.5,r-2),600),c.globalAlpha=1}for(e in v)if((n=(o=v[e]).d)&&!(o.s<=.01)&&"text"===n.kind){var i=Math.max(.5,(n.size||12)*o.s);c.globalAlpha=Math.min(1,o.s),!1!==n.glow&&(c.shadowColor=o.c,c.shadowBlur=(n.blur||7)*o.s),m(n.label,o.x,o.y,o.c,i,n.weight||700,n.align),c.shadowBlur=3,c.globalAlpha=1}}}}var d=f(document.getElementById("cv2"),function(e,t,a,r){var i=r<820,s=a.x+a.w/2,h=a.y+a.h/2,c=[],u=d.t0||(d.t0=performance.now());function f(e,t,l,o,n,a,r){var i={id:e,kind:"text",label:t,x:l,y:o,col:n,size:a};if(r)for(var s in r)i[s]=r[s];return i}if("open2"===e||"serial"===e||"burst"===e){for(var m="burst"!==e,v=(performance.now()-u)%6400,w=i?9:13,y=Math.min(26,a.w/(w+2)),x=s-(w-1)*y/2,g=h-1.25*y,E=0;E<26;E++){var p=m?v>240+160*E:v>280;c.push({id:"t"+E,kind:"bar",r:3,x:x+E%w*y,y:g+Math.floor(E/w)*y*1.3,w:p?.58*y:0,h:p?.58*y:0,col:m?l.llm:l.jev})}var b=Math.min(26,Math.max(0,Math.floor((v-240)/160)));return c.push(f("hd",m?"AUTOREGRESSIVE · ONE TOKEN AT A TIME":"PARALLEL SAMPLER · ONE PASS",s,a.y+6,m?l.llm:l.jev,i?9:12,{blur:4})),c.push(f("mid",m?b+" / 26 tokens":"all outputs, simultaneously",s,h+2.7*y,l.muted,i?11:13,{glow:!1})),c.push(f("big",m?"8.566 s   ·   $0.013880":"0.114 s   ·   $0.000081",s,h+3.9*y,m?l.llm:l.jev,i?12:17,{blur:9})),c}if("latency"===e){var j=.7*a.w,T=a.x+.15*a.w;return[["frontier LLM",8.566,l.llm],["Jev",.114,l.jev]].forEach(function(e,t){var l=h-40+78*t,o=Math.max(3,e[1]/8.566*j);c.push({id:"bar"+t,kind:"bar",x:T+o/2,y:l+10,w:o,h:20,col:e[2],r:6}),c.push(f("bl"+t,e[0],T,l-14,e[2],i?10:12.5,{align:"left",glow:!1})),c.push(f("bv"+t,e[1].toFixed(3)+" s",T+o+11,l+10,e[2],i?10:13,{align:"left",blur:8}))}),c.push(f("hd","SECONDS PER WORKFLOW",s,a.y+6,l.muted,i?9:12,{glow:!1})),c.push(f("big","193.6× faster  ·  444.6× cheaper",s,h+96,l.jev,i?13:20,{blur:5})),c.push(f("mid","on TypeSafe's own workflow set",s,h+120,l.faint,i?9:11,{glow:!1,weight:600})),c}if("price"===e){var A=[["gpt-5.5 output",30,l.human],["gpt-5.5 input",5,l.llm],["Jev input",.042,l.jev],["Jev output",0,l.jev]],M=.56*a.w,S=a.x+.34*a.w;return A.forEach(function(e,t){var l=a.y+.24*a.h+t*(i?44:58),o=Math.max(2.5,e[1]/30*M);c.push({id:"bar"+t,kind:"bar",x:S+o/2,y:l+9,w:o,h:18,col:e[2],r:5}),c.push(f("bl"+t,e[0],S-12,l+9,e[2],i?9:12,{align:"right",glow:!1})),c.push(f("bv"+t,0===e[1]?"free":"$"+e[1].toFixed(e[1]<1?3:2),S+o+11,l+9,e[2],i?10:12.5,{align:"left",blur:8}))}),c.push(f("hd","$ PER MILLION TOKENS",s,a.y+6,l.muted,i?9:12,{glow:!1})),c.push(f("mid","238× below Claude Fable 5.1 on input",s,a.y+.93*a.h,l.faint,i?9:11.5,{glow:!1,weight:600})),c}if("batching"===e){for(var O=n(t),k=Math.min(44,.095*a.w),N=1.32*k,C=o(.6*k,0,O),I=0;I<13;I++){var D=0===I?1:1-O;c.push({id:"doc"+I,kind:"bar",r:4,x:s+(I-6)*C,y:a.y+.27*a.h,w:k*(0===I?1:D),h:N*(0===I?1:D),col:0===I?l.jev:l.llm})}var L=o(.00609,5e-4,O),R=o(2.71,.27,O),B=.52*a.w,F=s-B/2;return c.push({id:"bar0",kind:"bar",x:F+B*o(1,.082,O)/2,y:a.y+.56*a.h,w:Math.max(3,B*o(1,.082,O)),h:16,col:O>.5?l.jev:l.llm,r:5}),c.push(f("hd","13 QUESTIONS ABOUT ONE 54,000-CHARACTER ARTICLE",s,a.y+6,l.muted,i?8:11,{glow:!1})),c.push(f("mid",O>.5?"one copy on the wire":Math.max(1,Math.round(o(13,1,O)))+" copies on the wire",s,a.y+.45*a.h,O>.5?l.jev:l.llm,i?10.5:13,{glow:!1})),c.push(f("big","$"+L.toFixed(5)+"   ·   "+R.toFixed(2)+" s",s,a.y+.7*a.h,O>.5?l.jev:l.llm,i?15:23,{blur:4})),c.push(f("foot","12.2× cheaper  ·  10.0× faster  ·  identical answers (σ = 0.0)",s,a.y+.86*a.h,l.faint,i?8.5:11.5,{glow:!1,weight:600})),c}if("jevons"===e){for(var z=Math.floor(12+320*n(t)),P=i?18:28,H=Math.min(15,a.w/(P+2)),q=s-(P-1)*H/2,U=a.y+.26*a.h,V=0;V<z;V++)c.push({id:V<26?"t"+V:"j"+V,kind:"dot",from:"big",x:q+V%P*H,y:U+Math.floor(V/P)*H,w:.54*H,col:l.jev,glow:!1});return c.push(f("hd","WHEN A RESOURCE GETS CHEAP, WE BURN MORE OF IT",s,a.y+6,l.jev,i?8.5:11.5,{blur:4})),c.push(f("big",z+" calls",s,a.y+.89*a.h,l.ink,i?13:18,{blur:5})),c.push(f("mid","$"+(81e-6*z).toFixed(5)+" at TypeSafe's quoted per-call cost",s,a.y+.96*a.h,l.faint,i?8.5:11,{glow:!1,weight:600})),c}return c}),m=f(document.getElementById("cv3"),function(e,t,a,r){var i,s=r<820,h=a.x+a.w/2,c=[];function u(e,t,l,o,n,a,r){var i={id:e,kind:"text",label:t,x:l,y:o,col:n,size:a};if(r)for(var s in r)i[s]=r[s];return i}if("dist"===e){var f=n(t);i=[o(.4,.62,f),o(.34,.28,f),o(.26,.1,f)]}else if("conf"===e){var d=n(t);i=[o(.38,.94,d),o(.34,.04,d),o(.28,.02,d)]}else i="tiers"===e?[.62,.28,.1]:[.94,.04,.02];var m=i[0]+i[1]+i[2],v=i.map(function(e){return e/m}),w=Math.max(v[0],v[1],v[2]),y=Math.max(0,(3*w-1)/2),x=["BILLING","TECHNICAL","ACCOUNT"],g=[l.code,l.jev,l.alt];if("rlcd"===e)return[["RLHF — trained on preference",[.78,.14,.08],l.human,a.x+.26*a.w,"overconfident","b"],["RLCD — trained on outcomes",[.52,.3,.18],l.jev,a.x+.74*a.w,"calibrated","n"]].forEach(function(e){var t=Math.min(.38*a.w,s?108:196),l=e[3]-t/2,o=a.y+.74*a.h;e[1].forEach(function(n,r){var i=t/3-9,s=Math.max(3,n*(.42*a.h));c.push({id:e[5]+r,kind:"bar",from:"b"+r,x:l+r*(t/3)+4.5+i/2,y:o-s/2,w:i,h:s,col:e[2],r:5})}),c.push(u("gh"+e[5],e[0],e[3],a.y+8,e[2],s?8:11,{blur:3})),c.push(u("gs"+e[5],e[4],e[3],o+26,e[2],s?10:13,{blur:3}))}),c.push(u("foot","probabilities tuned against what actually happened, not against what a rater liked",h,a.y+.95*a.h,l.faint,s?8:11,{glow:!1,weight:600})),c;if("consist"===e||"band"===e){var E=a.x+.1*a.w,p=a.x+.9*a.w,b=a.y+.8*a.h;function D(e){return E+e*(p-E)}c.push({id:"ax",kind:"rule",x:(E+p)/2,y:b,w:p-E,h:0,col:l.line,lw:1}),[0,.25,.5,.75,1].forEach(function(e,t){c.push(u("tk"+t,e.toFixed(2),D(e),b+17,l.faint,s?8.5:10,{glow:!1,weight:600}))}),"band"===e?[[0,.3,l.human,"NO"],[.3,.7,l.llm,"ASK A HUMAN"],[.7,1,l.jev,"YES"]].forEach(function(e,t){var l=D(e[1])-D(e[0]);c.push({id:"bd"+t,kind:"bar",x:D(e[0])+l/2,y:a.y+.44*a.h,w:l,h:.56*a.h,col:e[2],r:8,glow:!1,s:1}),c.push(u("bt"+t,e[3],D(e[0])+l/2,a.y+.2*a.h,e[2],s?9:11.5,{blur:3}))}):(c.push({id:"half",kind:"rule",x:D(.5),y:(a.y+.3*a.h+b)/2,w:0,h:b-(a.y+.3*a.h),col:l.human,lw:1.6,dash:[5,5]}),c.push(u("ht","0.50 — the branch flips here",D(.5),a.y+.24*a.h,l.human,s?8.5:11,{blur:3})));var j=991;function L(){return(j=1103515245*j+12345>>>0)/4294967296}return[["a frontier LLM, temperature 0",l.human,a.y+.44*a.h,"l",.43,.1],["Jev",l.jev,a.y+.62*a.h,"j",.478,.016]].forEach(function(e){c.push(u("rl"+e[3],e[0],E,e[2]-22,e[1],s?9:11.5,{align:"left",glow:!1}));for(var t=0;t<15;t++){var l=e[4]+L()*e[5];c.push({id:e[3]+t,kind:"dot",x:D(l),y:e[2]+5.5*(t%3-1),w:8,col:e[1]})}}),c.push(u("foot","band"===e?"leave a band where the noise lives, and the wobble stops mattering":"the same question, asked 15 times  ·  Jev's spread: σ = 0.0102",h,a.y+.95*a.h,l.faint,s?8.5:11.5,{glow:!1,weight:600})),c}for(var T=Math.min(.6*a.w,s?230:364),A=h-T/2,M=a.y+.6*a.h,S=.4*a.h,O=0;O<3;O++){var k=T/3-15,N=Math.max(3,v[O]*S);c.push({id:"b"+O,kind:"bar",x:A+O*(T/3)+7.5+k/2,y:M-N/2,w:k,h:N,col:g[O],r:5}),c.push(u("bn"+O,x[O],A+O*(T/3)+7.5+k/2,M+18,g[O],s?8.5:10.5,{glow:!1})),c.push(u("bp"+O,Math.round(100*v[O])+"%",A+O*(T/3)+7.5+k/2,M-N-14,g[O],s?10:12.5,{blur:3}))}if(c.push(u("hd","ONE CHOICE · THE PROBABILITIES ALWAYS ADD UP TO 1.0",h,a.y+6,l.muted,s?8.5:11.5,{glow:!1})),c.push(u("cl","how sure it is",h,M+50,l.faint,s?9:11,{glow:!1,weight:600})),c.push(u("cv",y.toFixed(2),h,M+(s?78:88),l.jev,s?27:40,{blur:9})),"dist"!==e&&c.push(u("cf","(3 × "+w.toFixed(2)+" − 1) ÷ 2",h,M+(s?101:119),l.faint,s?9:11.5,{glow:!1,weight:600})),"tiers"===e){var C=[["send it to a person",l.human],["check before acting",l.llm],["just do it",l.jev]],I=.28*a.w;C.forEach(function(e,t){var o=y<.5&&0===t||y>=.5&&y<.9&&1===t||y>=.9&&2===t,n=a.x+.08*a.w+t*(I+.03*a.w);c.push({id:"tb"+t,kind:"box",x:n+I/2,y:a.y+.045*a.h,w:I,h:s?24:29,label:e[0],col:o?e[1]:l.line,fs:s?8.5:10.5,fill:o?"#FFFFFF":"#F4F3EE",glow:o})})}return c}),v=function(){var o=document.getElementById("cv4"),a=o.getContext("2d"),s=r(a),h=0,c=0,u="open4",f=0,d="spring",m=200,v=20260915;function w(){return(v=1664525*v+1013904223>>>0)/4294967296}for(var y=[l.code,l.jev,l.alt],x=["BILLING","TECHNICAL","ACCOUNT"],g=[],E=0;E<m;E++){var p=w(),b=p<.42?0:p<.8?1:2,j=.3+.7*Math.pow(w(),.45);w()<.07&&(j=.3+.25*w()),g.push({it:b,urg:2*w(),refund:w()<.22,cf:Math.min(.995,j)})}var T={b:0,t:0,a:0,r:0};g.forEach(function(e){T[["b","t","a"][e.it]]++,e.refund&&T.r++});var A,M,S,O,k=(A=.9,M=0,S=0,O=0,g.forEach(function(e){e.cf<.5?O++:e.cf>=A?M++:S++}),{a:M,l:S,h:O});function N(e,t){var l=document.getElementById(e);l&&(l.textContent=t)}N("f-total",m),N("f-billing",T.b),N("f-tech",T.t),N("f-account",T.a),N("f-refund",T.r),N("f-auto",k.a),N("f-llm",k.l),N("f-human",k.h);var C=g.map(function(e,t){return{x:400*Math.random(),y:-200-900*Math.random(),vx:0,vy:0,r:5,tr:5,tx:0,ty:0,col:l.dim,ring:0,i:t,t:e}});function I(){var e=i(o,a);h=e[0],c=e[1]}function D(){return h<820?{x:.06*h,y:.08*c,w:.88*h,h:.84*c}:{x:.37*h,y:.1*c,w:.59*h,h:.8*c}}function L(e,t,l){var o=l*Math.sqrt((e+.5)/t),n=2.39996*e;return{x:Math.cos(n)*o,y:Math.sin(n)*o}}function R(e,t){return Math.sqrt(e)*t*1.22}return I(),{resize:I,apply:function(e,t){u=e,f=t;var o,n,a,r=D(),i=function(){var e=D();return Math.max(3,Math.min(8.5,.3*Math.sqrt(e.w*e.h/m)))}(),s=r.y+r.h/2;if("open4"!==e&&"pile"!==e)if(d="spring","grid"!==e)if("serial4"!==e&&"parallel4"!==e)if("choice"!==e&&"score"!==e&&"noul"!==e)if("conf4"!==e)if("route"!==e&&"handoff"!==e)if("drain"!==e);else for(d="fall",o=0;o<C.length;o++)C[o].tr=.9*i,C[o].ring=0;else{var c=[[],[],[]];for(o=0;o<C.length;o++)c[(a=C[o].t).cf<.5?2:a.cf>=.9?0:1].push(C[o]);for(var v=[r.x+.17*r.w,r.x+.5*r.w,r.x+.83*r.w],w=[l.jev,l.llm,l.human],x=0;x<3;x++)for(var g=c[x],E=1.08*R(g.length,i),p=0;p<g.length;p++){var b=L(p,g.length,E);g[p].tx=v[x]+b.x,g[p].ty=s+b.y,g[p].tr=i,g[p].col=w[x],g[p].ring=0}}else{var j=Math.max(24,.05*r.w),T=r.x+j,A=r.x+r.w-j,M=2.15*i,S={},O=C.slice().sort(function(e,t){return e.t.cf-t.t.cf});for(o=0;o<O.length;o++){var k=T+(n=O[o]).t.cf*(A-T),N=Math.round((k-T)/M),I=S[N]||0;S[N]=I+1;var B=Math.ceil(I/2),F=I%2?1:-1;n.tx=T+N*M,n.ty=s+F*B*(2.1*i),n.tr=.92*i,n.col=y[n.t.it],n.ring=0}}else{var z=[[],[],[]];for(o=0;o<C.length;o++)z[C[o].t.it].push(C[o]);for(var P=[r.x+.17*r.w,r.x+.5*r.w,r.x+.83*r.w],H=0;H<3;H++)for(var q=z[H],U=1.05*R(q.length,i),V=0;V<q.length;V++){a=(n=q[V]).t;var J=L(V,q.length,U);n.tx=P[H]+J.x,n.ty=s+J.y,n.col=y[H],n.tr="choice"===e?i:i*(.52+a.urg/2*.8),n.ring="noul"===e&&a.refund?1:0}}else{var Y="parallel4"===e?m:Math.floor(t*m*1.05),G=r.x+.2*r.w,W=r.x+.8*r.w,$=2.3*i;for(o=0;o<C.length;o++)if((n=C[o]).tr=i,n.ring=0,o<Y){var K=L(o,Math.max(Y,1),R(Math.max(Y,1),i));n.tx=W+K.x,n.ty=s+K.y,n.col="parallel4"===e?l.jev:l.dim}else{var Q=o-Y;n.tx=G+(Q%6-2.5)*$,n.ty=r.y+16+Math.floor(Q/6)*$,n.col=l.dim}}else{var X=h<820?14:20,_=Math.ceil(m/X),Z=Math.min(r.w/X,r.h/_),ee=r.x+(r.w-Z*X)/2+Z/2,te=s-Z*_/2+Z/2;for(o=0;o<C.length;o++)C[o].tx=ee+o%X*Z,C[o].ty=te+Math.floor(o/X)*Z,C[o].tr=Math.min(i,.32*Z),C[o].col=l.dim,C[o].ring=0}else for(d="fall",o=0;o<C.length;o++)C[o].tr=i,C[o].col=l.dim,C[o].ring=0},step:function(){var t,l,o=D(),n=o.y+o.h;if("fall"===d){var a="drain"===u;for(t=0;t<C.length;t++)(l=C[t]).vy+=a?1.1:.42,l.x+=l.vx,l.y+=l.vy,l.r+=.2*(l.tr-l.r),a||(l.y+l.r>n&&(l.y=n-l.r,l.vy*=-.3,l.vx*=.96),l.x-l.r<o.x&&(l.x=o.x+l.r,l.vx*=-.5),l.x+l.r>o.x+o.w&&(l.x=o.x+o.w-l.r,l.vx*=-.5));if(!a)for(var r=0;r<2;r++)for(t=0;t<C.length;t++)for(var i=t+1;i<C.length;i++){var s=C[t],h=C[i],c=h.x-s.x,f=h.y-s.y,m=c*c+f*f,v=s.r+h.r;if(m>0&&m<v*v){var w=Math.sqrt(m),y=.5*(v-w),x=c/w,g=f/w;s.x-=x*y,s.y-=g*y,h.x+=x*y,h.y+=g*y}}}else for(t=0;t<C.length;t++)l=C[t],e?(l.x=l.tx,l.y=l.ty,l.r=l.tr):(l.vx=.8*(l.vx+.15*(l.tx-l.x)),l.vy=.8*(l.vy+.15*(l.ty-l.y)),l.x+=l.vx,l.y+=l.vy,l.r+=.16*(l.tr-l.r))},draw:function(){var e,o;for(a.clearRect(0,0,h,c),a.globalAlpha=.13,e=0;e<C.length;e++)(o=C[e]).r<=.2||(a.beginPath(),a.arc(o.x,o.y,2.1*o.r,0,t),a.fillStyle=o.col,a.fill());for(a.globalAlpha=1,e=0;e<C.length;e++)(o=C[e]).r<=.2||(a.beginPath(),a.arc(o.x,o.y,o.r,0,t),a.fillStyle=o.col,a.fill(),o.ring&&(a.beginPath(),a.arc(o.x,o.y,o.r+3.4,0,t),a.strokeStyle=l.ink,a.lineWidth=1.5,a.stroke()));var r=D(),i=h<820,d=r.x+r.w/2;if("serial4"===u||"parallel4"===u){var v="parallel4"===u?m:Math.max(0,Math.min(m,Math.floor(f*m*1.05)));s("parallel4"===u?"ALL 200 · ONE PASS":v+" / "+m+" PROCESSED",r.x+.8*r.w,r.y+4,"parallel4"===u?l.jev:l.muted,i?9:11.5),s("parallel4"===u?"~100 ms":"one at a time",r.x+.8*r.w,r.y+20,l.faint,i?8.5:10,600)}if("choice"===u||"score"===u||"noul"===u){for(var w=[r.x+.17*r.w,r.x+.5*r.w,r.x+.83*r.w],E=[T.b,T.t,T.a],p=0;p<3;p++)s(x[p],w[p],r.y+4,y[p],i?9:11.5),s(E[p]+" tickets",w[p],r.y+20,l.faint,i?8.5:10,600);"score"===u&&s("size = urgency score (0 → 2)",d,r.y+r.h-2,l.llm,i?9:11),"noul"===u&&s(T.r+" refund requests ringed",d,r.y+r.h-2,l.alt,i?9:11)}if("conf4"===u){var b=Math.max(24,.05*r.w),j=r.x+b,A=r.x+r.w-b,M=r.y+r.h-24;a.strokeStyle=l.line,a.lineWidth=1,a.beginPath(),a.moveTo(j,M),a.lineTo(A,M),a.stroke(),[0,.25,.5,.75,1].forEach(function(e){var t=j+e*(A-j);a.beginPath(),a.moveTo(t,M),a.lineTo(t,M+5),a.stroke(),s(e.toFixed(2),t,M+16,l.faint,i?8.5:10,600)}),s("CONFIDENCE",d,r.y+4,l.muted,i?9:11.5);for(var S=.95-.45*n(f),O=j+S*(A-j),N=0,I=0;I<g.length;I++)g[I].cf>=S&&N++;a.strokeStyle=l.jev,a.lineWidth=1.8,a.setLineDash([5,5]),a.shadowColor=l.jev,a.shadowBlur=6,a.beginPath(),a.moveTo(O,r.y+22),a.lineTo(O,M),a.stroke(),a.setLineDash([]),a.shadowBlur=3,s("threshold "+S.toFixed(2),O,r.y+16,l.jev,i?9:11),s(N+" clear it",O,M+30,l.jev,i?9:10.5,600)}if("route"===u||"handoff"===u)for(var L=[r.x+.17*r.w,r.x+.5*r.w,r.x+.83*r.w],R=[l.jev,l.llm,l.human],B="handoff"===u?["CLOSED IN CODE","SENT TO AN LLM","SENT TO A HUMAN"]:["CONF ≥ 0.90","0.50 – 0.90","CONF < 0.50"],F="handoff"===u?["$0 of model spend","$5.00 / $30.00 per MTok","minutes of someone's day"]:["act automatically","confirm or escalate","route to a human"],z=[k.a,k.l,k.h],P=0;P<3;P++)s(B[P],L[P],r.y+4,R[P],i?8.5:11.5),s(z[P]+" tickets",L[P],r.y+20,l.muted,i?8.5:10.5,600),s(F[P],L[P],r.y+r.h-4,l.faint,i?8:10,600)}}}(),w=s(document.getElementById("cv5"),function(e,t,o,n){var a=n<820,r=a?Math.min(.44*o.w,145):Math.min(.25*o.w,176),i=a?38:48,s=o.x+o.w/2;function h(e,t,l,n,a,s){for(var h={id:e,x:o.x+o.w*t,y:o.y+o.h*l,w:r,h:i,label:n,sub:a,col:s},c=6;c<arguments.length;c++){var u=arguments[c];if(u)for(var f in u)h[f]=u[f]}return h}l.jevD;if("open5"===e||"atomic"===e){var c="open5"===e,u=[h("big",.17,.5,"is this spam?",c?null:"too big to debug",c?l.jev:l.human,{w:1.02*r,fill:c?l.jevD:l.humanD,strike:!c})],f=["requests credentials?","sender mismatch?","unexpected reward?"];if(!c)for(var d=0;d<3;d++)u.push(h("q"+d,.72,.22+.28*d,f[d],null,l.jev,{w:1.04*r,h:.72*i,fill:l.jevD}));return{nodes:u,edges:v=c?[]:[{from:"big",to:"q0",col:l.jev},{from:"big",to:"q1",col:l.jev},{from:"big",to:"q2",col:l.jev}],notes:c?[]:[{text:"THREE SIGNALS YOU CAN WEIGHT YOURSELF",x:s,y:o.y+o.h-2,col:l.jev,size:a?8.5:11}]}}if("criteria"===e)return{nodes:[h("a",.24,.26,'"escalate"',"a bare label",l.human,{w:1.05*r,fill:l.humanD}),h("b",.24,.7,'"urgent"',"a bare label",l.human,{w:1.05*r,fill:l.humanD}),h("w1",.72,.16,"what","it covers",l.jev,{w:.84*r,h:.66*i,fill:l.jevD}),h("w2",.72,.44,"not_for","the near-miss",l.jev,{w:.84*r,h:.66*i,fill:l.jevD}),h("w3",.72,.72,"examples","from your data",l.jev,{w:.84*r,h:.66*i,fill:l.jevD})],edges:[{from:"a",to:"w1",col:l.jev},{from:"a",to:"w2",col:l.jev},{from:"b",to:"w3",col:l.jev}],notes:[{text:"OPTIONS CAN BE OBJECTS — STRING, OBJECT, ARRAY OR NULL",x:s,y:o.y+4,col:l.jev,size:a?8:11}]};if("catchall"===e)return{nodes:[h("o1",.22,.2,"billing",null,l.code,{w:.9*r,h:.7*i,fill:l.codeD}),h("o2",.22,.46,"technical",null,l.code,{w:.9*r,h:.7*i,fill:l.codeD}),h("o3",.22,.72,"account",null,l.code,{w:.9*r,h:.7*i,fill:l.codeD}),h("odd",.6,.9,"a press enquiry","fits none of them",l.human,{w:1.05*r,h:.74*i,fill:l.humanD}),h("other",.8,.46,'"other"',"the escape hatch",l.jev,{w:.96*r,fill:l.jevD})],edges:[{from:"odd",to:"other",col:l.jev}],notes:[{text:"WITHOUT IT, A CHOICE RETURNS THE LEAST-BAD OPTION ANYWAY",x:s,y:o.y+4,col:l.human,size:a?8:11}]};if("situations"===e)return{nodes:[h("l0",.25,.18,"level 0","“everything works”",l.dim,{w:1.16*r,h:.78*i}),h("l1",.25,.5,"level 1","“can’t log in, workaround exists”",l.llm,{w:1.16*r,h:.78*i,fill:l.llmD}),h("l2",.25,.82,"level 2","“data loss, no workaround”",l.human,{w:1.16*r,h:.78*i,fill:l.humanD}),h("eye",.74,.5,"judged alone","no number, no neighbours",l.jev,{w:1.04*r,fill:l.jevD})],edges:[{from:"l0",to:"eye",col:l.dim},{from:"l1",to:"eye",col:l.llm},{from:"l2",to:"eye",col:l.human}],notes:[{text:"SITUATIONS, NOT DEGREES",x:s,y:o.y+4,col:l.jev,size:a?9:11.5}]};if("taxonomy"===e||"beam"===e||"paths"===e){var m="taxonomy"!==e,v=(u=[],[]),w=m?l.jev:l.dim;u.push({id:"root",x:o.x+.5*o.w,y:o.y+.1*o.h,w:.72*r,h:.68*i,label:"root",sub:a?null:"13,000+ nodes",col:w,fill:l.jevD});for(var y=[.18,.5,.82],x=["A — physics","B — computing","C — chemistry"],g=0;g<3;g++){var E;E=m?"beam"===e&&0===g?l.human:1===g?l.jev:l.alt:l.dim,u.push({id:"b"+g,x:o.x+o.w*y[g],y:o.y+.46*o.h,w:.92*r,h:.66*i,label:a?x[g].split(" ")[0]:x[g],col:E,fill:"#FFFFFF"}),v.push({from:"root",to:"b"+g,col:E,flow:!m||(0!==g||"beam"===e)});for(var p=0;p<3;p++){var b=3*g+p,j=m&&4===b?l.jev:m&&0===g&&0===p?l.human:l.dim;u.push({id:"l"+b,kind:"dot",x:o.x+o.w*(y[g]-.1+.1*p),y:o.y+.86*o.h,w:m&&4===b?17:11,h:0,label:m&&4===b?"✓":null,col:j}),v.push({from:"b"+g,to:"l"+b,col:j,flow:m&&4===b})}}return{nodes:u,edges:v,notes:"taxonomy"===e?[{text:"ONE CHOICE PER LEVEL · SHOW THE SUBTREE BEFORE COMMITTING",x:s,y:o.y+o.h-2,col:l.jev,size:a?8:11}]:"beam"===e?[{text:"GREEDY TOOK THE RED BRANCH AND LOST",x:o.x+.18*o.w,y:o.y+.3*o.h,col:l.human,size:a?7.5:10},{text:"BEAM K=3 KEPT ALL THREE ALIVE",x:s,y:o.y+4,col:l.jev,size:a?8.5:11.5},{text:"GREEDY 2/4   ·   BEAM 4/4   ·   SCORED BY GEOMETRIC-MEAN PROBABILITY",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]:[{text:"OBSERVABLE — YOU SEE WHICH NODE WENT WRONG",x:s,y:o.y+4,col:l.jev,size:a?8:11},{text:"TESTABLE — UNIT-TEST A TAXONOMY CHANGE",x:s,y:o.y+o.h-2,col:l.jev,size:a?8:11}]}}return{nodes:[],edges:[]}}),y=s(document.getElementById("cv6"),function(e,t,o,n){var a=n<820,r=a?Math.min(.42*o.w,136):Math.min(.25*o.w,170),i=a?37:47,s=o.x+o.w/2;function h(e,t,l,n,a,s){for(var h={id:e,x:o.x+o.w*t,y:o.y+o.h*l,w:r,h:i,label:n,sub:a,col:s},c=6;c<arguments.length;c++){var u=arguments[c];if(u)for(var f in u)h[f]=u[f]}return h}var c={fill:l.jevD},u={fill:l.llmD};if("open6"===e||"door"===e)return{nodes:[h("in",.07,.5,"request",null,l.dim,{w:.7*r}),h("jev",.33,.5,"JEV",a?null:"classify + confidence",l.jev,c),h("code",.76,.15,"plain code",a?null:"free",l.jev),h("llm",.76,.5,"an LLM",a?null:"$",l.llm,u),h("human",.76,.85,"a human",a?null:"$$$",l.human,{fill:l.humanD})],edges:[{from:"in",to:"jev",col:l.jev},{from:"jev",to:"code",col:l.jev},{from:"jev",to:"llm",col:l.llm},{from:"jev",to:"human",col:l.human}],notes:[{text:"CLASSIFY FIRST, SPEND SECOND",x:s,y:o.y+4,col:l.jev,size:a?9:11.5}]};if("guard"===e)return{nodes:[h("in",.05,.54,"user",null,l.dim,{w:.56*r}),h("jev",.27,.54,"JEV",a?null:"screen in",l.jev,c,{w:.78*r}),h("llm",.51,.54,"an LLM",null,l.llm,u,{w:.7*r}),h("jev2",.75,.54,"JEV",a?null:"screen out",l.jev,c,{w:.78*r}),h("out",.95,.54,"reply",null,l.dim,{w:.54*r}),h("block",.51,.12,"block · review · reroute",null,l.human,{w:1.5*r,h:.7*i,fill:l.humanD})],edges:[{from:"in",to:"jev",col:l.jev},{from:"jev",to:"llm",col:l.jev},{from:"llm",to:"jev2",col:l.llm},{from:"jev2",to:"out",col:l.jev},{from:"jev",to:"block",col:l.human,flow:!1},{from:"jev2",to:"block",col:l.human,flow:!1}],notes:[{text:"4 NOULS + 1 SCORE · ONE REQUEST · ACTION + REVIEW THRESHOLDS",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]};if("cascade"===e)return{nodes:[h("in",.05,.54,"input",null,l.dim,{w:.58*r}),h("mini",.27,.54,"gpt-5.4-mini","$0.75 / $4.50",l.llm,u),h("jev",.53,.54,"JEV verify","$0.042 / free",l.jev,c),h("ok",.84,.22,"clean · ship",null,l.jev),h("llm",.84,.84,"gpt-5.5","$5.00 / $30.00",l.llm,u)],edges:[{from:"in",to:"mini",col:l.llm},{from:"mini",to:"jev",col:l.jev},{from:"jev",to:"ok",col:l.jev},{from:"jev",to:"llm",col:l.llm}],notes:[{text:"ESCALATE ONLY ABOVE ~0.7",x:s,y:o.y+4,col:l.jev,size:a?9:11.5},{text:"PARETO FRONTIER UP-AND-LEFT OF EVERY SINGLE MODEL",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]};if("audit"===e)return{nodes:[h("in",.05,.54,"LLM claim","+ quote",l.llm,u,{w:.72*r}),h("mini",.29,.54,"string match",null,l.dim,{w:.8*r,h:.76*i}),h("block",.29,.13,"absent → fabricated",null,l.human,{w:1.18*r,h:.64*i,fill:l.humanD}),h("jev",.55,.54,"JEV",a?null:"context",l.jev,c,{w:.68*r}),h("ok",.86,.22,"supports",null,l.jev,{w:.78*r,h:.68*i}),h("llm",.86,.54,"contradicts",null,l.human,{w:.78*r,h:.68*i,fill:l.humanD}),h("human",.86,.86,"says nothing",null,l.dim,{w:.78*r,h:.68*i})],edges:[{from:"in",to:"mini",col:l.jev},{from:"mini",to:"block",col:l.human,flow:!1},{from:"mini",to:"jev",col:l.jev},{from:"jev",to:"ok",col:l.jev},{from:"jev",to:"llm",col:l.human},{from:"jev",to:"human",col:l.dim}],notes:[{text:"AUTO-ACCEPT ABOVE 0.8 CONFIDENCE",x:s,y:o.y+o.h-2,col:l.faint,size:a?8:10.5}]};if("rerank"===e)return{nodes:[h("in",.06,.54,"3,565 passages",null,l.dim,{w:.88*r}),h("mini",.31,.54,"BM25","30-item shortlist",l.dim,{w:.82*r}),h("jev",.57,.54,"JEV","one noul each",l.jev,c),h("ok",.87,.54,"reranked",null,l.jev,{w:.74*r})],edges:[{from:"in",to:"mini",col:l.dim},{from:"mini",to:"jev",col:l.jev},{from:"jev",to:"ok",col:l.jev}],notes:[{text:"CLERC · TOP-1  5% → 18%   ·   TOP-10  38% → 62%",x:s,y:o.y+4,col:l.jev,size:a?8:11.5},{text:"1,200 CALLS ≈ $0.06",x:s,y:o.y+o.h-2,col:l.faint,size:a?8:10.5}]};if("filter"===e){for(var f=[h("jev",.44,.5,"JEV","4 questions each",l.jev,c,{w:.84*r}),h("llm",.88,.5,"an LLM","clean context",l.llm,u,{w:.74*r})],d=[],m=[0,0,1,0,1,0,1,0,0,0,0,0],v=0;v<12;v++){var w=!!m[v];f.push(h("p"+v,.08,.05+.0845*v,w?"keep":5===v?"inject":"drop",null,w?l.jev:5===v?l.human:l.dim,{w:.52*r,h:.4*i,fill:5===v?l.humanD:"#FFFFFF"})),d.push({from:"p"+v,to:"jev",col:w?l.jev:5===v?l.human:l.dim,flow:w})}return d.push({from:"jev",to:"llm",col:l.jev}),{nodes:f,edges:d,notes:[{text:"RANKED FIRST BY SIMILARITY (0.584) · SCORED 0.99 ON INJECTION",x:s,y:o.y+4,col:l.human,size:a?7:10},{text:"AT LEAST TWO-THIRDS OF EVERY RETRIEVAL SET DROPPED",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]}}return"skills"===e?{nodes:[h("in",.06,.54,"182 skills",null,l.dim,{w:.74*r}),h("jev",.31,.54,"JEV · pass 1","rank all 182 · 0.2 s",l.jev,c,{w:1*r}),h("mini",.6,.54,"JEV · pass 2","top 3, full text · 0.1 s",l.jev,c,{w:1*r}),h("ok",.89,.54,"one skill",null,l.jev,{w:.68*r}),h("block",.6,.14,"wrong loads 16.8% → 7.3%",null,l.llm,{w:1.5*r,h:.66*i,fill:l.llmD})],edges:[{from:"in",to:"jev",col:l.dim},{from:"jev",to:"mini",col:l.jev},{from:"mini",to:"ok",col:l.jev},{from:"mini",to:"block",col:l.llm,flow:!1}],notes:[{text:"NEEDLESS LOADS 9.8% → 4.0% ACROSS 488 REQUESTS",x:s,y:o.y+o.h-2,col:l.faint,size:a?8:10.5}]}:"fncall"===e?{nodes:[h("in",.06,.54,'"plot nvda vs spy"',"past month",l.dim,{w:1*r}),h("jev",.37,.54,"JEV",a?null:"role-descriptive questions",l.jev,c),h("ok",.78,.2,"symbol = NVDA",null,l.code,{w:1*r,h:.68*i,fill:l.codeD}),h("llm",.78,.54,"benchmark = SPY",null,l.code,{w:1*r,h:.68*i,fill:l.codeD}),h("human",.78,.88,"window = 1mo",null,l.code,{w:1*r,h:.68*i,fill:l.codeD})],edges:[{from:"in",to:"jev",col:l.jev},{from:"jev",to:"ok",col:l.code},{from:"jev",to:"llm",col:l.code},{from:"jev",to:"human",col:l.code}],notes:[{text:"CHOICES · SETS · FLAGS — AN ARGUMENT OUTSIDE THE ENUM CANNOT BE PRODUCED",x:s,y:o.y+4,col:l.jev,size:a?7:10.5},{text:"CONFIDENCE = THE LEAST CERTAIN ARGUMENT, NOT THE PRODUCT",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]}:"handback"===e?{nodes:[h("in",.05,.62,"compound request",null,l.dim,{w:.92*r}),h("jev",.33,.62,"JEV",a?null:"detects it",l.jev,c,{w:.68*r}),h("llm",.6,.16,"an LLM","splits it",l.llm,u),h("ok",.88,.48,"lights off",null,l.dim,{w:.66*r,h:.64*i}),h("human",.88,.8,"temp 20",null,l.dim,{w:.66*r,h:.64*i})],edges:[{from:"in",to:"jev",col:l.jev},{from:"jev",to:"llm",col:l.llm},{from:"llm",to:"ok",col:l.llm},{from:"llm",to:"human",col:l.llm},{from:"ok",to:"jev",col:l.jev,bow:60},{from:"human",to:"jev",col:l.jev,bow:84}],notes:[{text:"EACH ATOMIC COMMAND RE-ENTERS JEV FOR TYPED ROUTING",x:s,y:o.y+o.h-2,col:l.faint,size:a?7.5:10.5}]}:"thread"===e?{nodes:[h("jev",.28,.5,"JEV","fast · typed · honest",l.jev,c),h("llm",.72,.5,"everything expensive","slow · confident",l.llm,u,{w:1.14*r}),{id:"note",kind:"text",x:s,y:o.y+.84*o.h,label:"same move, nine times",col:l.muted,size:a?11:15,glow:!1}],edges:[{from:"jev",to:"llm",col:l.jev}]}:{nodes:[],edges:[]}}),x=f(document.getElementById("cv7"),function(e,t,o,a){var r=a<820,i=o.x+o.w/2,s=[];function h(e,t,l,o,n,a,r){var i={id:e,kind:"text",label:t,x:l,y:o,col:n,size:a};if(r)for(var s in r)i[s]=r[s];return i}var c=[l.jev,l.code,l.alt,l.llm,l.human];if("open7"===e||"cats"===e){var u=Math.min((o.h-32)/5,r?50:66),f=o.y+(o.h-(5*u+32))/2;return[["RUN IT A MILLION TIMES","automation nobody has to watch"],["DECIDE IN 150 ms","faster than a person notices"],["READ EVERY ROW","100× cheaper over big data"],["CHECK OTHER AI's WORK","prompts, extractions, tool calls"],["MAKE THE HARNESS SMARTER","routing · retrieval · guardrails"]].forEach(function(t,n){var a=f+n*(u+8);s.push({id:"tile"+n,kind:"box",x:o.x+o.w/2,y:a+u/2,w:o.w,h:u,col:c[n%5],glow:"cats"===e}),s.push(h("tl"+n,t[0],o.x+16,a+u/2-8,c[n%5],r?10:12.5,{align:"left",glow:!1})),s.push(h("ts"+n,t[1],o.x+16,a+u/2+12,l.faint,r?8.5:10.5,{align:"left",glow:!1,weight:600}))}),s}if("prims9"===e){var d=r?2:3,m=Math.ceil(9/d),v=(o.w-9*(d-1))/d,w=Math.min((.82*o.h-9*(m-1))/m,r?46:64),y=o.y+(o.h-(w*m+9*(m-1)))/2;return["classify","detect","score","route","search","retrieve","rank","verify","ML features"].forEach(function(e,t){var n=Math.floor(t/d),a=t%d,i=o.x+a*(v+9)+v/2,c=y+n*(w+9)+w/2;s.push({id:"tile"+t,kind:"box",x:i,y:c,w:v,h:w,col:l.jev}),s.push(h("tl"+t,e,i,c,l.jev,r?9.5:12.5,{glow:!1}))}),s.push(h("hd","EVERY ONE ENDS IN A VALUE YOUR CODE CAN COMPARE",i,o.y+4,l.muted,r?8:11,{glow:!1})),s}if("inds"===e){var x=["recruiting","lead gen","support","claims","financial crime","compliance","e-commerce","trust & safety","advertising","gaming","risk","forecasting","knowledge graphs","search","science","model routing","guardrails","code linting","features"],g=n(t),E=Math.max(5,Math.round(x.length*Math.max(.3,g))),p=r?2:3,b=Math.ceil(x.length/p),j=(o.w-7*(p-1))/p,T=Math.min((.94*o.h-7*(b-1))/b,r?28:34),A=o.y+(o.h-(T*b+7*(b-1)))/2;return x.forEach(function(e,t){var n=Math.floor(t/p),a=t%p,i=t<E,u=o.x+a*(j+7)+j/2,f=A+n*(T+7)+T/2;s.push({id:"tile"+t,kind:"box",x:u,y:f,w:j,h:i?T:.3*T,col:i?c[t%5]:l.line,glow:i,s:i?1:.3}),i&&s.push(h("tl"+t,e,u,f,c[t%5],r?8:10,{glow:!1}))}),s}var M={proof1:[["of the confident answers were right",90,"%",0,90],["the unsure ones, answered more broadly",70,"%",0,70],["useful answers out of 60 filings",48," / 60",0,80],["if it had to name a group every time",39," / 60",0,65]],proof2:[["of dates accepted with no human",83,"%",0,83],["seconds to rebuild a document's structure",.8," s",1,30],["dollars for that same job",.0015,"$",4,12],["blocks recovered from 28 flat lines",17,"",0,60]],proof3:[["beer pairs merged automatically",8.9,"%",1,9],["handed to a curator instead",11.1,"%",1,11],["left alone",80,"%",0,80],["wine-score error after five rounds (from 3.088)",1.772,"",3,55]]};if(M[e]){var S=M[e],O=Math.min((.88*o.h-36)/4,r?64:88),k=o.y+(o.h-(4*O+36))/2,N=.92*o.w;return S.forEach(function(e,t){var n=k+t*(O+12),a=N*(e[4]/100);s.push({id:"tile"+t,kind:"bar",x:o.x+a/2,y:n+.86*O,w:a,h:6,col:c[t%5],r:3}),s.push(h("pv"+t,("$"===e[2]?"$":"")+e[1].toFixed(e[3])+("$"===e[2]?"":e[2]),o.x+4,n+.34*O,c[t%5],r?21:31,{align:"left",blur:14})),s.push(h("pl"+t,e[0],o.x+4,n+.68*O,l.muted,r?9:11.5,{align:"left",glow:!1,weight:600}))}),s}if("ecosystem"===e){var C=[["PLAYGROUND","click it, no code",l.jev],["PYTHON SDK","3.10+ · sync & async",l.code],["JS / TS SDK","Node 20+ · types inferred",l.alt],["AGENT SKILL","your coding agent writes it",l.llm]],I=r?1:2,D=Math.ceil(4/I),L=(o.w-10*(I-1))/I,R=Math.min((.8*o.h-10*(D-1))/D,r?58:92),B=o.y+(o.h-(R*D+10*(D-1)))/2;return C.forEach(function(e,t){var n=Math.floor(t/I),a=t%I,i=o.x+a*(L+10)+L/2,c=B+n*(R+10)+R/2;s.push({id:"tile"+t,kind:"box",x:i,y:c,w:L,h:R,col:e[2]}),s.push(h("tl"+t,e[0],i,c-9,e[2],r?10.5:13,{glow:!1})),s.push(h("ts"+t,e[1],i,c+11,l.faint,r?8.5:10.5,{glow:!1,weight:600}))}),s}return s}),g=f(document.getElementById("cv8"),function(e,t,o,n){var a=n<820,r=o.x+o.w/2,i=[];function s(e,t,l,o,n,a,r){var i={id:e,kind:"text",label:t,x:l,y:o,col:n,size:a};if(r)for(var s in r)i[s]=r[s];return i}if("jmore"===e){var h=[["TEXT ONLY","a string, an object, or a list of text",l.alt],["ENGLISH FIRST","other languages work, less well",l.llm],["NO FINE-TUNING","the request is the customisation",l.code],["64K OF CONTEXT","state + longest question ≤ 32K",l.jev],["100K TOKENS / SEC","or 40 requests, moving with demand",l.human]],c=Math.min(.17*o.h,a?48:64),u=o.y+(o.h-5*c)/2;return h.forEach(function(e,t){var n=u+t*c;i.push({id:"tile"+t,kind:"bar",x:o.x+3,y:n+.5*c,w:6,h:.62*c,col:e[2],r:3}),i.push(s("fl"+t,e[0],o.x+20,n+.38*c,e[2],a?10.5:14,{align:"left",blur:8})),i.push(s("fs"+t,e[1],o.x+20,n+.7*c,l.faint,a?8.5:11,{align:"left",glow:!1,weight:600}))}),i}if("labour"===e)return[["CODE",l.code,["arithmetic","counting","dates","sorting","control flow"]],["JEV",l.jev,["classify","detect","score","verify","filter","extract"]],["AN LLM",l.llm,["write","plan","explain","converse","code"]]].forEach(function(e,t){var n=o.x+o.w*(.17+.33*t),r=o.y+.16*o.h;i.push({id:"tile"+t,kind:"bar",x:n,y:r+.3*o.h,w:3,h:.56*o.h,col:e[1],r:2}),i.push(s("nh"+t,e[0],n,r,e[1],a?11:15,{blur:5})),e[2].forEach(function(e,o){i.push(s("ni"+t+"_"+o,e,n,r+(a?22:29)+o*(a?17:23),l.muted,a?9:11.5,{glow:!1,weight:600}))})}),i.push(s("foot","what it is bad at is exactly what code has always been good at",r,o.y+.95*o.h,l.faint,a?9:11.5,{glow:!1,weight:600})),i;var f={open8:[],jmath:[0,1],jtime:[2,3],jchain:[4,5],jinv:[6,7]}[e]||[],d=a?2:4,m=Math.ceil(8/d),v=(o.w-10*(d-1))/d,w=Math.min((.7*o.h-10*(m-1))/m,a?58:84),y=o.y+(.8*o.h-(w*m+10*(m-1)))/2;return[["arithmetic","it is not a calculator"],["counting","worse the more there is"],["dates","intervals and ordering drift"],["literalism","it answers what you wrote"],["indirection","chains and double negatives"],["clutter","irrelevant text hurts"],["invariants","yes + no need not make 1"],["writing","never trained to"]].forEach(function(e,t){var n=Math.floor(t/d),r=t%d,h=f.indexOf(t)>=0,c=o.x+r*(v+10)+v/2,u=y+n*(w+10)+w/2;i.push({id:"tile"+t,kind:"box",x:c,y:u,w:v,h:h?w:.82*w,col:h?l.human:l.line,glow:h}),i.push(s("jl"+t,e[0],c,u-8,h?l.human:l.faint,a?10:12.5,{glow:!1})),i.push(s("js"+t,e[1],c,u+12,l.faint,a?8:10,{glow:!1,weight:600}))}),i.push(s("hd","WHAT JEV 1.13 IS DOCUMENTED TO BE BAD AT",r,o.y+4,l.muted,a?8.5:11.5,{glow:!1})),i}),E=function(){for(var e=[],t=[],l=-1,o=0;o<8;o++){var n=document.getElementById("cb"+o);e.push(n),t.push([].slice.call(n.querySelectorAll(".ln")))}return{apply:function(o){var n=+(o.getAttribute("data-code")||0),a=o.getAttribute("data-lines")||"",r=n+"|"+a;if(r!==l&&(l=r,e.forEach(function(e,t){e.classList.toggle("on",t===n)}),t.forEach(function(e){e.forEach(function(e){e.classList.remove("hl")})}),a)){var i=a.split(",").map(Number),s=i[0],h=i.length>1?i[1]:i[0];t[n].forEach(function(e,t){t>=s&&t<=h&&e.classList.add("hl")})}}}}(),p=[{el:document.getElementById("a1"),stage:h},{el:document.getElementById("a2"),stage:d},{el:document.getElementById("a3"),stage:m},{el:document.getElementById("a4"),stage:v},{el:document.getElementById("a5"),stage:w},{el:document.getElementById("a6"),stage:y},{el:document.getElementById("a7"),stage:x},{el:document.getElementById("a8"),stage:g}];p.forEach(function(e){e.cards=[].slice.call(e.el.querySelectorAll(".card")),e.cv=e.el.querySelector("canvas"),e.lastScene=null,e.vis=!1,new IntersectionObserver(function(t){t.forEach(function(t){e.vis=t.isIntersecting})},{threshold:0,rootMargin:"160px 0px 160px 0px"}).observe(e.el)});var b=document.getElementById("a9"),j=[].slice.call(b.querySelectorAll(".card")),T=[].slice.call(document.querySelectorAll("#nav a")),A=T.map(function(e){return document.querySelector(e.getAttribute("href"))}),M=document.getElementById("progress");function S(){var e=innerHeight;p.forEach(function(t){if(t.vis){for(var l=0,o=0;o<t.cards.length;o++)t.cards[o].getBoundingClientRect().top<=.56*e&&(l=o);var a=t.cards[l].getBoundingClientRect(),r=n((.82*e-a.top)/(.95*a.height)),i=t.cards[l].getAttribute("data-scene");t.lastScene=i,t.stage.apply(i,r)}});var t=b.getBoundingClientRect();if(t.top<e&&t.bottom>0){for(var l=0,o=0;o<j.length;o++)j[o].getBoundingClientRect().top<=.56*e&&(l=o);E.apply(j[l])}var a=document.documentElement,r=a.scrollHeight-a.clientHeight;M.style.width=(r>0?a.scrollTop/r*100:0)+"%";for(var i=0,s=0;s<A.length;s++)A[s]&&A[s].getBoundingClientRect().top<=150&&(i=s);for(s=0;s<T.length;s++)T[s].classList.toggle("here",s===i)}var O=!0,k=performance.now();function N(){p.forEach(function(e){e.stage.resize()}),S()}addEventListener("resize",N),addEventListener("orientationchange",function(){setTimeout(N,150)}),addEventListener("scroll",function(){O=!0},{passive:!0}),N(),requestAnimationFrame(function e(t){var l=Math.min(64,t-k);k=t,O&&(O=!1,S());for(var o=0;o<p.length;o++){var n=p[o];n.vis&&(n.stage.step(t,l),n.stage.draw())}requestAnimationFrame(e)});var C=new IntersectionObserver(function(e){e.forEach(function(e){e.target.classList.toggle("lit",e.isIntersecting)})},{rootMargin:"-22% 0px -22% 0px",threshold:0});document.querySelectorAll(".card .box").forEach(function(e){C.observe(e)});var I=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),I.unobserve(e.target))})},{rootMargin:"0px 0px -8% 0px"});document.querySelectorAll(".reveal").forEach(function(e){I.observe(e)})}();
+</script>
+</body>
+</html>

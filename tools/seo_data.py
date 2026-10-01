@@ -218,6 +218,12 @@ EXPLORABLES = {
         short="Resize retrieval chunks until they ruin the answer, then find each system's scar.",
         about="Generative AI systems in production"),
 
+    "1-jev-explained": dict(
+        desc="Jev answers typed questions with calibrated probabilities in 100 ms. Push 200 support "
+             "tickets through it, slide the confidence gate, and see who pays for each.",
+        short="Push 200 tickets through a typed model and slide the confidence gate.",
+        about="Jev, the System One model from TypeSafe AI"),
+
     "is-it-actually-thinking": dict(
         desc="Short answer: no — an LLM is autocomplete that read the internet. See the one "
              "trick underneath, and two of the biggest beginner worries fall away at once.",
@@ -527,6 +533,8 @@ KEYWORDS = {
                          "what is a learning rate", "how does model training work"],
     "how-twenty-companies-run-generative-ai": ["generative AI in production", "real world LLM examples", "how companies use generative AI",
                                                "LLM production architecture", "retrieval chunk size"],
+    "1-jev-explained": ["what is Jev TypeSafe", "TypeSafe System One model", "calibrated LLM classification",
+                        "typed AI decisions", "LLM routing with confidence"],
     "is-it-actually-thinking": ["how does an LLM work", "do LLMs actually think", "is AI really thinking",
                                 "how do chatbots generate text", "next token prediction explained"],
     "matchbox-language-model": ["how do language models learn", "build a language model by hand",

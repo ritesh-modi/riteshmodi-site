@@ -5,8 +5,16 @@
   <link href="https://www.loopingly.com/feed.xml" rel="self"/>
   <link href="https://www.loopingly.com/explorables"/>
   <id>https://www.loopingly.com/</id>
-  <updated>2026-09-17T00:00:00Z</updated>
+  <updated>2026-10-01T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>Jev, explained</title>
+    <link href="https://www.loopingly.com/explorables/1-jev-explained"/>
+    <id>https://www.loopingly.com/explorables/1-jev-explained</id>
+    <updated>2026-10-01T00:00:00Z</updated>
+    <published>2026-10-01T00:00:00Z</published>
+    <summary>Jev answers typed questions with calibrated probabilities in 100 ms. Push 200 support tickets through it, slide the confidence gate, and see who pays for each.</summary>
+  </entry>
   <entry>
     <title>Survey analysis: from transcript to theme</title>
     <link href="https://www.loopingly.com/explorables/transcript-to-theme"/>
