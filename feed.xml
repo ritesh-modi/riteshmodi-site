@@ -5,8 +5,16 @@
   <link href="https://www.loopingly.com/feed.xml" rel="self"/>
   <link href="https://www.loopingly.com/explorables"/>
   <id>https://www.loopingly.com/</id>
-  <updated>2026-10-01T00:00:00Z</updated>
+  <updated>2026-10-05T00:00:00Z</updated>
   <author><name>Ritesh Modi</name><uri>https://www.loopingly.com/about</uri></author>
+  <entry>
+    <title>HNSW, part 1: how it works</title>
+    <link href="https://www.loopingly.com/explorables/hnsw-how-it-works"/>
+    <id>https://www.loopingly.com/explorables/hnsw-how-it-works</id>
+    <updated>2026-10-05T00:00:00Z</updated>
+    <published>2026-10-05T00:00:00Z</published>
+    <summary>Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, and a query drop through five layers to its ten nearest neighbours.</summary>
+  </entry>
   <entry>
     <title>Jev, explained</title>
     <link href="https://www.loopingly.com/explorables/1-jev-explained"/>

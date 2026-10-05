@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HNSW, part 1: how it works</title>
+  <!-- seo:begin -->
+  <meta name="description" content="Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, and a query drop through five layers to its ten nearest neighbours.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/hnsw-how-it-works">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="HNSW, part 1: how it works">
+  <meta property="og:description" content="Watch a greedy walk get stuck, a beam rescue it, and a query drop through layers.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/hnsw-how-it-works">
+  <meta property="og:image" content="https://www.loopingly.com/og/hnsw-how-it-works.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="HNSW, part 1: how it works">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="HNSW, part 1: how it works">
+  <meta name="twitter:description" content="Watch a greedy walk get stuck, a beam rescue it, and a query drop through layers.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/hnsw-how-it-works.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"HNSW, part 1: how it works","description":"Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, and a query drop through five layers to its ten nearest neighbours.","url":"https://www.loopingly.com/explorables/hnsw-how-it-works","image":"https://www.loopingly.com/og/hnsw-how-it-works.png","datePublished":"2026-10-05","dateModified":"2026-10-05","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Intermediate","isAccessibleForFree":true,"about":{"@type":"Thing","name":"HNSW (Hierarchical Navigable Small World) vector search"},"keywords":"what is HNSW, how does HNSW work, HNSW explained, how do vector databases search, approximate nearest neighbor search, HNSW ef M efConstruction, vector search for RAG"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"HNSW, part 1: how it works"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>:root{color-scheme: light;--v0:#F8F5EF;--v16:#FFFFFF;--v17:#EFEBE3;--v6:#222938;--v10:#6B7385;--v5:#A0A6B2;--v7:#E5E0D6;--v8:#D5CFC3;--v11:#B4442E;--v12:#F6E0DA;--v18:#C8962A;--v19:#F7EDD6;--v1:#5F7F35;--v2:#E6EEDC;--v3:#6B4A3A;--v4:#EEE5E0;--v14:#5A6472;--v15:#ECEEF1;--v9: ui-monospace, SFMono-Regular, Menlo, "JetBrains Mono", monospace;--v13: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif}*{box-sizing:border-box}html{background:var(--v0)}body{background:var(--v0);color:var(--v6);margin:0;font:16px/1.62 var(--v13);-webkit-font-smoothing:antialiased}#topbar{position:fixed;left:0;right:0;top:0;z-index:80;background:rgba(247,245,240,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--v7);padding-top:env(safe-area-inset-top,0px)}#progress{height:2px;background:linear-gradient(90deg,var(--v11),var(--v18),var(--v1));width:0%}#nav{display:flex;gap:2px;align-items:center;overflow-x:auto;scrollbar-width:none;max-width:1240px;margin:0 auto;padding:7px max(12px,3vw)}#nav::-webkit-scrollbar{display:none}#nav .brand{font:800 13px/1 var(--v9);letter-spacing:.18em;margin-right:10px;color:var(--v11)}#nav a{font:500 12.2px/1 var(--v13);color:var(--v10);text-decoration:none;padding:6px 8px;border-radius:6px;white-space:nowrap}#nav a:hover,#nav a.here{color:var(--v6);background:var(--v17)}#nav a:focus-visible{outline:2px solid var(--v18);outline-offset:1px}#nav a i{font-style:normal;font-family:var(--v9);font-weight:700;font-size:10.5px;color:var(--v5);margin-right:5px}#nav a.here i{color:var(--v11)}.act{position:relative}.stage{position:sticky;top:0;height:100vh;height:100svh;z-index:1;overflow:hidden}.stage canvas{display:block;width:100%;height:100%}.cards{position:relative;z-index:2;margin-top:-100vh;margin-top:-100svh}.card{min-height:96vh;min-height:96svh;display:flex;align-items:center;padding-inline:max(20px,4.5vw)}.card.opener{min-height:100vh;min-height:100svh}.box{width:min(452px,89vw);background:none;border:0;padding:0}@media (min-width:820px){.box{width:clamp(280px,33vw,440px)}}.box .kicker{font:700 10.5px/1 var(--v9);letter-spacing:.2em;text-transform:uppercase;color:var(--v11);margin:0 0 11px}.box h2{font-size:clamp(22px,3.3vw,30px);line-height:1.14;letter-spacing:-.024em;margin:0 0 12px;font-weight:750}.box p{margin:0;font-size:15.4px;line-height:1.68;color:#454E60}.box p + p, .box pre + p, .box p + pre, .box .io + p, .box .lab + p{margin-top:11px}.box b{color:var(--v6);font-weight:650}.box code{font:600 13px var(--v9);color:var(--v18);background:var(--v19);padding:1px 5px;border-radius:4px}.run{color:var(--v11);font-weight:700}.wt{color:var(--v18);font-weight:700}.dn{color:var(--v1);font-weight:700}.er{color:var(--v3);font-weight:700}.say{margin-top:13px;padding:11px 13px;border-left:3px solid var(--v11);background:var(--v12);border-radius:0 9px 9px 0;font-size:14.4px;color:#3F4757}.box pre{margin:12px 0 0;background:#FFFFFF;border:1px solid var(--v8);border-radius:11px;padding:12px 13px;font:12.2px/1.62 var(--v9);color:#4A5468;overflow-x:auto;white-space:pre}.box pre .c{color:var(--v5)}.box pre .k{color:var(--v18);font-weight:700}.box pre .t{color:var(--v1)}.box pre .n{color:var(--v11)}.box pre .o{color:var(--v3)}.io{margin-top:14px;border:1px solid var(--v8);border-radius:11px;background:#FFFFFF;font-size:14px;overflow:hidden}.io div{display:grid;grid-template-columns:76px 1fr;gap:10px;padding:9px 12px;border-bottom:1px solid var(--v7)}.io div:last-child{border-bottom:none;background:var(--v17)}.io span{font:700 10.5px/1.9 var(--v9);letter-spacing:.14em;text-transform:uppercase;color:var(--v5)}.io p{font-size:14px!important;line-height:1.55!important;margin:0!important}.box{opacity:0;transform:translateY(20px);transition:opacity .55s ease, transform .6s cubic-bezier(.2,.75,.3,1)}.box.lit{opacity:1;transform:none}@media (prefers-reduced-motion: reduce){.box{opacity:1;transform:none;transition:none}}.card.opener .box{width:min(640px,93vw)}.card.opener .actno{font:800 11px/1 var(--v9);letter-spacing:.3em;color:var(--v11);margin:0 0 14px}.card.opener h2{font-size:clamp(31px,5.6vw,54px);line-height:1.03;letter-spacing:-.034em;margin:0 0 14px}.card.opener p{font-size:clamp(15.5px,2vw,18px);color:#485164;max-width:50ch}.card.hero{min-height:100vh;min-height:100svh}.card.hero .box{width:min(720px,95vw)}.card.hero h1{font-size:clamp(40px,7.6vw,80px);line-height:1;letter-spacing:-.04em;margin:0 0 20px;font-weight:800}.card.hero .tagline{font:700 12px/1 var(--v9);letter-spacing:.22em;color:var(--v11);margin:0 0 20px}.card.hero p{font-size:clamp(16px,2.2vw,19px);color:#404A5D;max-width:52ch}@media (min-width:820px){.card.hero .box{width:clamp(300px,33vw,500px)}.card.hero h1{font-size:clamp(40px,4.4vw,64px)}}.card.hero .hint{margin-top:28px;font:700 11px/1 var(--v9);letter-spacing:.2em;color:var(--v5);display:flex;align-items:center;gap:9px}.card.hero .hint i{display:block;width:1px;height:22px;background:linear-gradient(var(--v11),transparent);animation:drop 1.9s ease-in-out infinite}@keyframes drop{0%,100%{opacity:.25;transform:translateY(-4px)}50%{opacity:1;transform:translateY(4px)}}.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;font:600 12px/1 var(--v9);color:var(--v10)}.legend span::before{content:"";display:inline-block;width:18px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:currentColor}.legend .l1{color:var(--v11)}.legend .l2{color:var(--v18)}.legend .l3{color:var(--v1)}.legend .l4{color:var(--v3)}.lab{margin-top:14px;background:#FFFFFF;border:1px solid var(--v8);border-radius:14px;padding:14px;box-shadow:0 6px 22px rgba(34,41,56,.06)}.lab h4{margin:0 0 10px;font:700 10.5px/1 var(--v9);letter-spacing:.16em;text-transform:uppercase;color:var(--v18)}.lab label{display:grid;grid-template-columns:118px 1fr 44px;gap:8px;align-items:center;font:600 12.5px var(--v9);color:var(--v10);margin-top:6px}.lab input[type=range]{accent-color:var(--v11);width:100%}.lab output{font:700 12.5px var(--v9);color:var(--v6);text-align:right}.lab .out{margin-top:10px;font:12.5px/1.55 var(--v9);color:#2E3546;background:var(--v17);border-radius:9px;padding:9px 10px;white-space:pre-wrap}@media (max-width:819px){.box{background:rgba(247,245,240,.95);backdrop-filter:blur(14px);border-radius:14px;padding:18px 18px 20px}.card.hero .box, .card.opener .box{background:none;backdrop-filter:none;padding:0}.stage{height:44vh;height:44svh}.cards{margin-top:-44vh;margin-top:-44svh}.card{align-items:flex-end;padding-bottom:6vh}.card.hero, .card.opener{align-items:center;padding-bottom:0}.card.hero .box, .card.opener .box{margin-top:30vh}.lab label{grid-template-columns:96px 1fr 40px}}@media (prefers-reduced-motion: reduce){.card.hero .hint i{animation:none}}section{padding-block:clamp(48px,7vw,92px);border-top:1px solid var(--v7);position:relative;z-index:3;background:var(--v0)}.wrap{max-width:1020px;margin:0 auto;padding-inline:max(16px,3vw)}.eyebrow{font:700 11.5px/1 var(--v9);letter-spacing:.2em;text-transform:uppercase;color:var(--v11);margin:0 0 12px}h2.sec{font-size:clamp(26px,4.2vw,38px);line-height:1.12;letter-spacing:-.026em;margin:0 0 15px;font-weight:750}h3.sub{font-size:19px;margin:34px 0 12px;letter-spacing:-.01em}section p{margin:0 0 14px;color:#454E60;max-width:70ch}.tablewrap{overflow-x:auto;border:1px solid var(--v7);border-radius:13px;background:var(--v16)}table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.8px}th,td{text-align:left;padding:12px 15px;border-bottom:1px solid var(--v7);vertical-align:top}th{font:700 11px/1 var(--v9);letter-spacing:.12em;text-transform:uppercase;color:var(--v10)}tr:last-child td{border-bottom:none}td b{font-family:var(--v9);font-weight:700;color:var(--v6);font-size:13.2px}ol.check{padding-left:22px;max-width:70ch;color:#454E60}ol.check li{margin-bottom:8px}.gloss{margin-top:12px;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13.6px;color:#454E60}.gloss code{white-space:nowrap}.series{display:inline-block;margin-top:14px;font:700 11px/1 var(--v9);letter-spacing:.14em;color:var(--v18);background:var(--v19);padding:7px 9px;border-radius:7px}</style></style>
+
+
+<div id="topbar">
+  <div id="progress"></div>
+  <nav id="nav" aria-label="Sections">
+    <span class="brand">HNSW · 1</span>
+    <a href="#a1"><i>1</i> Why approximate</a>
+    <a href="#a2"><i>2</i> Graphs that route</a>
+    <a href="#a3"><i>3</i> Beam search</a>
+    <a href="#a4"><i>4</i> Layers</a>
+    <a href="#a5"><i>5</i> Search</a>
+    <a href="#a6"><i>6</i> Choosing neighbours</a>
+    <a href="#a7"><i>7</i> Insertion</a>
+    <a href="#summary"><i>·</i> Recap</a>
+  </nav>
+</div>
+
+
+<div class="act" id="a1">
+  <div class="stage"><canvas id="cv1" role="img" aria-label="Ninety points in five loose clusters and a query star. A ring grows from the query until it holds the ten nearest points. Exact search draws a line to every one of the 90 points, counting 90 distance computations. An approximate answer that finds 8 of the true 10 has recall 0.8. Bars compare a single exact query at 2.71 milliseconds, batched exact search at 0.059 milliseconds per query, and one HNSW query at 0.31 milliseconds on 60,000 real 784-dimensional vectors."></canvas></div>
+  <div class="cards">
+    <div class="card hero" data-scene="hero">
+      <div class="box">
+        <p class="tagline">VECTOR SEARCH · PART 1 OF 2</p>
+        <h1>HNSW, part 1: how it works</h1>
+        <p>Every "find similar" feature, from semantic search to the retrieval step in a chatbot, ends in the same question: which of my millions of stored vectors are closest to this one? HNSW is the algorithm most systems use to answer it in a fraction of a millisecond. Part 1 builds it from nothing: what a graph is, how you search one, why it has layers, and how it is put together. Part 2 tunes every knob on real data.</p>
+        <div class="legend"><span class="l1">the query</span><span class="l2">being checked</span><span class="l3">found</span><span class="l4">graph links</span></div>
+        <div class="hint"><i></i> SCROLL</div>
+      </div>
+    </div>
+    <div class="card opener" data-scene="open1">
+      <div class="box">
+        <p class="actno">ACT ONE</p>
+        <h2>Nearest neighbours, and why we settle for "nearly"</h2>
+        <p>The problem, the vocabulary, and the honest cases where you don't need HNSW at all.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="problem">
+      <div class="box">
+        <p class="kicker">01 · The problem</p>
+        <h2>Find the closest points to a query</h2>
+        <p>An <b>embedding</b> is a list of numbers that a model produces for a piece of text, an image or a song, arranged so that similar things get similar lists. Treat each list as a point in space: a <b>vector</b>. Two numbers make a point on a page, which is what the stage shows; real embeddings have hundreds of numbers, but the ideas are identical.</p>
+        <p>"Similar" becomes "close", measured by a <b>distance</b>: the straight-line (Euclidean) distance, or the angle between two vectors (cosine). Searching means: given a <b>query</b> vector, return the <b>k</b> stored vectors with the smallest distance to it, the "k nearest neighbours". The star on the stage is a query; the ring grows until it holds its 10 nearest points.</p>
+        <p>The obvious method is <b>exact</b> (or "brute force") search: compute the distance from the query to every stored vector and keep the k smallest. Watch the stage draw a line to all 90 points and count. That count, the number of <b>distance computations</b>, is the cost unit for this whole essay: every method we meet is a way of computing fewer of them.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="recall">
+      <div class="box">
+        <p class="kicker">02 · The trade</p>
+        <h2>Approximate search, and recall</h2>
+        <p>Exact search checks everything, so its cost grows in direct proportion to how much you store: twice the vectors, twice the work. <b>Approximate nearest-neighbour</b> (ANN) search checks only a small, cleverly chosen part of the collection, and in exchange may occasionally miss one of the true nearest points.</p>
+        <p>How often it misses is measured by <b>recall@k</b>: of the true k nearest neighbours, what fraction did the search return? On the stage, the true 10 are ringed; the approximate answer found 8 of them and returned two slightly farther points instead. Recall@10 is <b>8/10 = 0.8</b>. Measuring recall needs the true answer, so in practice you compute exact results for a sample of queries once, and compare against them. That sample is called the <b>ground truth</b>.</p>
+        <p>Recall loss is silent. The search returns 10 plausible results either way; nothing tells you two of them are not the best. That is why later acts measure it on every setting rather than trusting defaults.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="cost">
+      <div class="box">
+        <p class="kicker">03 · The real numbers</p>
+        <h2>When exact search is too slow, and when it isn't</h2>
+        <p>We measured a real dataset: <b>Fashion-MNIST</b>, 60,000 vectors of 784 numbers each, from the public ann-benchmarks suite (which ships the exact answers). One query at a time on one CPU core, exact search took <b>2.71 ms</b> (median). An HNSW index answered in <b>0.31 ms</b> with recall@10 of 0.997: about nine times faster, and the gap widens as the collection grows, because HNSW's work grows far more slowly than the collection does.</p>
+        <p>But look at the third bar. When we sent all 1,000 test queries to exact search <b>together</b>, the library turned them into one big matrix multiplication and the cost fell to <b>0.059 ms per query</b>, faster than one HNSW query. So be honest with yourself: for tens of thousands of vectors, or for offline jobs that can batch queries, exact search is simple, perfectly accurate and fast. HNSW earns its place when collections are large and queries arrive one at a time, as they do behind a search box or a chatbot.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code1">
+      <div class="box">
+        <p class="kicker">04 · In code</p>
+        <h2>Exact search and recall, in ten lines</h2>
+<pre><span class="k">import</span> numpy <span class="k">as</span> np
+
+<span class="k">def</span> exact_knn(X, q, k):
+    d = np.linalg.norm(X - q, axis=<span class="n">1</span>)        <span class="c"># one distance per stored vector</span>
+    idx = np.argpartition(d, k)[:k]          <span class="c"># the k smallest, unordered</span>
+    <span class="k">return</span> idx[np.argsort(d[idx])]            <span class="c"># ... in order</span>
+
+<span class="k">def</span> recall_at_k(found, truth):
+    <span class="k">return</span> len(set(found) &amp; set(truth)) / len(truth)
+
+X = np.random.default_rng(<span class="n">0</span>).normal(size=(<span class="n">60_000</span>, <span class="n">784</span>)).astype(<span class="t">"float32"</span>)
+truth = exact_knn(X, X[<span class="n">0</span>], <span class="n">10</span>)
+print(truth[<span class="n">0</span>], recall_at_k(truth[:<span class="n">8</span>].tolist() + [<span class="n">1</span>, <span class="n">2</span>], truth))   <span class="c"># 0 0.8</span></pre>
+        <p>Every stored vector costs one distance computation per query, which the stage counts. Everything that follows is about avoiding most of them.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io1">
+      <div class="box">
+        <p class="kicker">05 · Inputs and outputs</p>
+        <h2>Act one in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A collection of vectors, a query vector, a number k, and a distance (Euclidean or cosine).</p></div>
+          <div><span>out</span><p>The k closest stored vectors. Exact search guarantees them at a cost of one distance computation per stored vector; approximate search returns most of them (measured as recall@k) at a fraction of the cost.</p></div>
+          <div><span>meaning</span><p>HNSW is a way to skip almost all distance computations while keeping recall near 1. Below tens of thousands of vectors, or for batched offline work, exact search may be the better tool.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a2">
+  <div class="stage"><canvas id="cv2" role="img" aria-label="The same 90 points joined by 216 links into a graph. One point's neighbours light up. A greedy search starts far away and keeps hopping to whichever neighbour is closer to the query, ending at point 81, which is closer than all its neighbours but is not the true nearest point, 77. Forty-five links that bridge clusters glow."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open2">
+      <div class="box">
+        <p class="actno">ACT TWO</p>
+        <h2>Graphs that route</h2>
+        <p>The idea at the heart of HNSW: connect each point to a few nearby points, then search by walking.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="graph">
+      <div class="box">
+        <p class="kicker">06 · The vocabulary</p>
+        <h2>Points, links and neighbours</h2>
+        <p>A <b>graph</b> is a set of points, called <b>nodes</b>, joined by lines, called <b>edges</b> or links. Two linked nodes are <b>neighbours</b>, and the number of neighbours a node has is its <b>degree</b>. A graph says nothing about geometry by itself; it is just a list of "who is connected to whom".</p>
+        <p>The graph on the stage is a <b>proximity graph</b>: each point is linked to a few points near it. It is the bottom layer of the small HNSW we built for this essay, with 216 links among 90 points, so the average degree is just under 5. Watch one node light up with its neighbours.</p>
+        <p>Storing those links is cheap: each one is just the number of the node it points to. The trick is in which links you choose, which takes up Acts six and seven. For now, take the graph as given and ask how to search it.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="greedy">
+      <div class="box">
+        <p class="kicker">07 · Greedy routing</p>
+        <h2>Walk towards the query, one hop at a time</h2>
+        <p>Here is the simplest possible search on a proximity graph. Start at any node. Look at its neighbours. If one of them is closer to the query than you are, hop to the closest one. Repeat. When no neighbour is closer than where you stand, stop and answer with where you are. This is <b>greedy routing</b>.</p>
+        <p>It is how you would find a street in an unfamiliar town by asking people: each one points you a bit closer, and you never need a map of the whole town. Each hop costs one distance computation per neighbour you check, so a short walk touches only a handful of the 90 points.</p>
+        <p>Watch the walk on the stage. It starts at node 35 in the bottom-left cluster and hops 35 → 10 → 5 → 22 → 87 → 81 towards the star: five hops, and only 22 of the 90 points ever had their distance computed. On this query it stopped at node <b>81</b>.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="localmin">
+      <div class="box">
+        <p class="kicker">08 · Where it fails</p>
+        <h2>Stuck in a local minimum</h2>
+        <p>But 81 is not the nearest point. Node <b>77</b> is closer to the query. The walk stopped because every one of 81's neighbours is farther from the query than 81 itself, so the rule "hop only if closer" said stop. 77 was reachable, just not through a step that looked like progress. This dead end is called a <b>local minimum</b>: the best spot in its neighbourhood, not the best overall.</p>
+        <p>How often does this happen? We sent 400 random queries through greedy routing on our graph, each starting from a random node. It returned the wrong nearest point on <b>51</b> of them, about one in eight. The stage shows 81's neighbours ringed, each a little farther than 81, with 77 waiting beyond.</p>
+        <p>Two ideas fix this, and HNSW uses both: look at more than one path at once (Act three), and start each search from a point that is already close (Acts four and five).</p>
+      </div>
+    </div>
+    <div class="card" data-scene="smallworld">
+      <div class="box">
+        <p class="kicker">09 · Small worlds</p>
+        <h2>Why a few long links matter</h2>
+        <p>In the 1960s Stanley Milgram asked people to forward a letter towards a stranger through friends, and chains were surprisingly short: the "six degrees of separation". Networks like that are called <b>small worlds</b>: most links are local, but a few long ones connect distant regions, so any two nodes are only a few hops apart.</p>
+        <p>A graph with only very short links is not a small world. A walk would crawl point by point across the map. HNSW's graph keeps some longer links that <b>bridge clusters</b>: 45 of our 216 links connect two different clusters. They glow on the stage. A greedy walk that finds one crosses the map in a single hop. That is the "Navigable Small World" in HNSW's name: a small-world graph that greedy routing can navigate.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code2">
+      <div class="box">
+        <p class="kicker">10 · In code</p>
+        <h2>Greedy routing on a graph</h2>
+<pre><span class="k">import</span> math
+
+<span class="k">def</span> greedy(graph, P, q, start):
+    <span class="c"># graph: {node: [neighbour, ...]}   P: {node: (x, y)}</span>
+    cur = start
+    <span class="k">while True</span>:
+        best = min(graph[cur], key=<span class="k">lambda</span> n: math.dist(P[n], q))
+        <span class="k">if</span> math.dist(P[best], q) &gt;= math.dist(P[cur], q):
+            <span class="k">return</span> cur                      <span class="c"># no neighbour is closer: stop</span>
+        cur = best
+
+<span class="c"># our 90-point graph, the stage's query, starting at node 35: returns 81 (true nearest: 77)</span></pre>
+        <p>Short and fast, and wrong about one time in eight on our graph. The next act keeps its speed and fixes most of the wrongness.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io2">
+      <div class="box">
+        <p class="kicker">11 · Inputs and outputs</p>
+        <h2>Act two in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A proximity graph (each point linked to a few nearby points), a query, and a starting node.</p></div>
+          <div><span>out</span><p>A node reached by hopping to ever-closer neighbours: found after a handful of distance computations, but stuck in a local minimum on 51 of 400 random queries in our graph.</p></div>
+          <div><span>meaning</span><p>Graphs let search touch only a few points. Long links make walks short; local minima make greedy walks unreliable.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a3">
+  <div class="stage"><canvas id="cv3" role="img" aria-label="The graph and the query, with a short list of slots on the right. The search keeps the best few points found so far in a capped, sorted list, expands each one's neighbours, and greys out every point it has already checked. With a list of four slots the search that greedy routing got wrong now reaches the true nearest point, 77. With ten slots the list fills with the ten true nearest neighbours after 23 distance computations."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open3">
+      <div class="box">
+        <p class="actno">ACT THREE</p>
+        <h2>Beam search: keeping several paths alive</h2>
+        <p>Instead of betting on one path, keep the best few places you have found and explore around all of them. Its width is called ef, and it is the most important knob in HNSW.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="list">
+      <div class="box">
+        <p class="kicker">12 · The concept</p>
+        <h2>A short, sorted list with a size limit</h2>
+        <p>Keep a list of the best points found so far, sorted by distance to the query, and never let it grow beyond a fixed size. That size is called <b>ef</b> (for "exploration factor"). Here ef is 4, so the list on the right of the stage has four slots.</p>
+        <p>The search goes like this. Put the starting point in the list. Then repeatedly take the closest point you have not yet explored, look at all of its neighbours, and offer each one to the list: it gets in if the list has a free slot or if it is closer than the worst point in the list (which then drops out). Stop when the closest unexplored point is already farther than the worst point in the list, because nothing beyond it can improve the list. The answer is the list.</p>
+        <p>Watch the four slots fill and reshuffle as the search expands. Because it keeps four candidates instead of one, a dead end on one path no longer ends the search. It is like sending four scouts instead of one. This is called a <b>beam search</b>, and ef is the width of the beam.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="visited">
+      <div class="box">
+        <p class="kicker">13 · The bookkeeping</p>
+        <h2>Never check the same point twice</h2>
+        <p>Neighbours overlap: the same point is a neighbour of several points the search expands. To avoid paying for it twice, the search keeps a <b>visited set</b>: every point whose distance has been computed. A point already in it is skipped instantly. On the stage, visited points turn grey.</p>
+        <p>The grey area is the true cost of a search: every grey point is one distance computation. Real implementations hold the unexplored points in a structure that always hands back the closest one quickly (a <b>heap</b>), and the list of best results in another that always knows its worst member. You don't need the details to use HNSW; just picture two lists: "still to explore" and "best so far".</p>
+      </div>
+    </div>
+    <div class="card" data-scene="fix">
+      <div class="box">
+        <p class="kicker">14 · The example</p>
+        <h2>The same failed query, with a beam of 4</h2>
+        <p>Back to the query where greedy routing stopped at 81, starting again from node 35. With ef = 4, the search does not stop at 81: it still holds three other good points, and keeps expanding them. One of them leads to <b>77</b>, the true nearest point. Watch the list: 77 enters at the top and stays there. The price was 35 distance computations instead of 22.</p>
+        <p>Over the same 400 random queries, the wrong answers fell from <b>51</b> with ef = 1 to <b>6</b> with ef = 4 and <b>1</b> with ef = 10. Greedy routing is exactly beam search with ef = 1, so the knob runs smoothly from "fastest, often wrong" to "slower, almost always right".</p>
+      </div>
+    </div>
+    <div class="card" data-scene="ef10">
+      <div class="box">
+        <p class="kicker">15 · The price</p>
+        <h2>A wider beam checks more points</h2>
+        <p>Take a new query (the star moves to the middle of the map) and start every search at node 81, near it:</p>
+        <p>ef = 1 checked <b>5</b> points and found the nearest; ef = 4 checked <b>16</b> and found the 4 nearest; ef = 10 checked <b>23</b> and found exactly the 10 true nearest neighbours. Watch the ten slots fill and the grey area spread as the beam widens.</p>
+        <p>That is the bargain you will tune in Part 2: a wider beam means more distance computations (slower queries) and higher recall. Even at ef = 10 the search touched 23 of 90 points here. On the 60,000 Fashion-MNIST vectors, an HNSW search with ef = 40 reached recall 0.995 while computing about <b>474</b> distances per query, not 60,000.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code3">
+      <div class="box">
+        <p class="kicker">16 · In code</p>
+        <h2>Beam search, readable version</h2>
+<pre><span class="k">import</span> math
+
+<span class="k">def</span> beam_search(graph, P, q, start, ef):
+    visited = {start}
+    todo = [(math.dist(P[start], q), start)]          <span class="c"># still to explore</span>
+    best = list(todo)                                 <span class="c"># best so far, at most ef</span>
+    <span class="k">while</span> todo:
+        todo.sort(); d, c = todo.pop(<span class="n">0</span>)                <span class="c"># closest unexplored</span>
+        <span class="k">if</span> d &gt; best[-<span class="n">1</span>][<span class="n">0</span>]:                          <span class="c"># can't improve: stop</span>
+            <span class="k">break</span>
+        <span class="k">for</span> n <span class="k">in</span> graph[c]:
+            <span class="k">if</span> n <span class="k">in</span> visited: <span class="k">continue</span>
+            visited.add(n); dn = math.dist(P[n], q)   <span class="c"># one distance computation</span>
+            <span class="k">if</span> len(best) &lt; ef <span class="k">or</span> dn &lt; best[-<span class="n">1</span>][<span class="n">0</span>]:
+                todo.append((dn, n)); best.append((dn, n)); best.sort()
+                best = best[:ef]
+    <span class="k">return</span> [n <span class="k">for</span> _, n <span class="k">in</span> best], len(visited)</pre>
+        <p>Real libraries use heaps instead of re-sorting, but the logic is this. With <code>ef=1</code> it is exactly greedy routing.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io3">
+      <div class="box">
+        <p class="kicker">17 · Inputs and outputs</p>
+        <h2>Act three in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A graph, a query, a starting node, and a beam width ef.</p></div>
+          <div><span>out</span><p>The ef closest points the search could reach, plus a visited set whose size is the cost: 5, 16 and 23 distance computations for ef = 1, 4 and 10 on our query.</p></div>
+          <div><span>meaning</span><p>ef is the speed–recall dial. ef = 1 is greedy and fragile; a modest ef escapes local minima.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a4">
+  <div class="stage"><canvas id="cv4" role="img" aria-label="The flat graph splits into five stacked layers. Every point appears on layer 0; 28 also appear on layer 1, 7 on layer 2, 4 on layer 3, and one point, node 83, on layer 4, where every search begins. Vertical pillars join each point's copies. Bars show the same thinning in a real index of 100,000 vectors: 100,000, 6,374, 371, 20 and 1. A final comparison shows 104.6 distance computations for a flat graph search against 60.6 for a layered one, on 4,000 points."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open4">
+      <div class="box">
+        <p class="actno">ACT FOUR</p>
+        <h2>Layers: the H in HNSW</h2>
+        <p>A beam search is only as fast as its starting point is good. Layers are a cheap way to start close.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="stack">
+      <div class="box">
+        <p class="kicker">18 · The concept</p>
+        <h2>A stack of ever-sparser maps</h2>
+        <p>Think of how you travel to a friend's house in another country: a flight between big airports, a train between cities, a bus across town, then a walk down the street. Each stage uses a coarser network that covers distance quickly, and each drops you close enough for the next, finer one to finish the job.</p>
+        <p>HNSW builds the same thing out of its graph. <b>Layer 0</b> holds every point, linked to its near neighbours: the street map. <b>Layer 1</b> holds only a random fraction of the points, with links among themselves; because there are fewer of them, their links are longer. Layer 2 holds a fraction of those, and so on, until the top layer holds just a handful. A point that lives on layer 3 also lives on layers 2, 1 and 0, with its own neighbours on each. The stage splits our flat graph into its five layers, and the pillars join each point's copies.</p>
+        <p>This is the <b>Hierarchical</b> in Hierarchical Navigable Small World. The idea comes from a <b>skip list</b>, a classic data structure in which a sorted list carries "express lanes" of every few items, so a lookup can skip ahead before stepping item by item.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="levels">
+      <div class="box">
+        <p class="kicker">19 · Who goes up</p>
+        <h2>Each point rolls a die once</h2>
+        <p>Which points get to live on the higher layers? Nobody chooses. When a point is inserted, it draws a random <b>level</b>: it lands on layer 0 for certain, and climbs one more layer with probability 1/M at each step, where M is the number of links each point keeps (Act seven). With M = 4, a quarter of points reach layer 1, a sixteenth reach layer 2, and so on. In the paper's form, level = ⌊−ln(U) · m<sub>L</sub>⌋ with U uniform between 0 and 1 and m<sub>L</sub> = 1/ln M.</p>
+        <p>Watch the points rise to their drawn levels. In our toy, 90 points live on layer 0, 28 on layer 1, 7 on layer 2, 4 on layer 3 and 1 on layer 4. The 1/4 rule predicts about 22, 6 and 1 for the first three; with only 90 throws of the die, a few extra winners is ordinary luck.</p>
+        <p>Why random? Because it needs no global view. Each point decides alone, at insertion time, so the index can grow one point at a time forever without rebalancing, and the layers still come out thinning by the same factor on average.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="thin">
+      <div class="box">
+        <p class="kicker">20 · The example at scale</p>
+        <h2>100,000 real points, five layers</h2>
+        <p>We built a real index (faiss, M = 16) over 100,000 vectors and counted the layers. All <b>100,000</b> on layer 0, <b>6,374</b> on layer 1, <b>371</b> on layer 2, <b>20</b> on layer 3 and <b>1</b> on layer 4. Each layer holds about a sixteenth of the one below, exactly the 1/M the die promises.</p>
+        <p>The bars are drawn on a log scale, where equal steps mean equal ratios, so the even staircase is the 1/16 thinning made visible. The number of layers grows only with the logarithm of the collection: ten times more points adds less than one layer on average.</p>
+        <p>The cost of layers is small. About 94% of points live only on layer 0, and upper-layer nodes keep half as many links, so the upper layers add only about 3% more link slots. The one point on the top layer is the <b>entry point</b>: every search starts there. In our toy it is node 83. The first point ever inserted is the entry point until some later point draws a higher level and takes over.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="flatvs">
+      <div class="box">
+        <p class="kicker">21 · Do layers help?</p>
+        <h2>Measured, with a caveat</h2>
+        <p>We built two graphs over 4,000 random 2-D points, one layered and one flat (layer 0 only), and ran the same searches, both reaching the true nearest point every time. The flat graph, starting from a random point, needed <b>104.6</b> distance computations per query; the layered graph, starting at the top, needed <b>60.6</b>. The upper layers carried the search most of the way in a few long jumps.</p>
+        <p>Two honest caveats. On our tiny 90-point toy the layers do not pay at all (23.5 distance computations layered against 21.4 flat), because there is no distance to cover. And on high-dimensional embeddings, the gain is much smaller than on flat maps: researchers found in 2024 that a flat graph often searches almost as fast, because a few heavily connected "hub" points do the long-range routing that the layers were meant to do. Layers are cheap insurance, not the main source of HNSW's speed. The main source is the beam search over a well-built graph.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code4">
+      <div class="box">
+        <p class="kicker">22 · In code</p>
+        <h2>Drawing levels</h2>
+<pre><span class="k">import</span> numpy <span class="k">as</span> np
+
+rng = np.random.default_rng(<span class="n">0</span>)
+M = <span class="n">16</span>
+levels = np.floor(-np.log(rng.random(<span class="n">100_000</span>)) / np.log(M)).astype(int)
+print([(levels &gt;= L).sum() <span class="k">for</span> L <span class="k">in</span> range(<span class="n">5</span>)])
+<span class="c"># [100000, 6247, 372, 27, 2]</span></pre>
+        <p>One line of maths per point. Our simulated counts land within a few percent of the real faiss index above; the differences are the luck of the draw.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io4">
+      <div class="box">
+        <p class="kicker">23 · Inputs and outputs</p>
+        <h2>Act four in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>One random number per point, and M.</p></div>
+          <div><span>out</span><p>A stack of graphs, each about 1/M the size of the one below, and an entry point on the top layer.</p></div>
+          <div><span>meaning</span><p>Searches start from one known point and cover distance on sparse upper layers before the dense bottom layer. A modest saving on big, low-dimensional data; less on high-dimensional embeddings.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a5">
+  <div class="stage"><canvas id="cv5" role="img" aria-label="A query descends the stacked layers: it starts at node 83 on layer 4, moves to 67 on layer 3, to 81 on layer 2, stays at 81 on layer 1, and drops to layer 0, where a beam of ten fills a list with the ten true nearest neighbours. Bars show total distance computations of 19, 30, 37 and 56 for beam widths 1, 4, 10 and 20."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open5">
+      <div class="box">
+        <p class="actno">ACT FIVE</p>
+        <h2>A search, start to finish</h2>
+        <p>Now we put layers and the beam together, and follow one query all the way down.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="descent">
+      <div class="box">
+        <p class="kicker">24 · The concept</p>
+        <h2>Greedy at the top, a beam at the bottom</h2>
+        <p>An HNSW search has two phases. In the first, it walks down the upper layers with a beam of width 1, which is plain greedy routing: on each layer, hop to closer neighbours until none is closer, then drop straight down the pillar to the same point on the layer below. Local minima don't matter much here; the only job is to arrive somewhere near the query. In the second phase, on layer 0, it runs the full beam search with width <b>ef</b> and returns the best k.</p>
+        <p>Follow the query on the stage. It starts at the entry point, node <b>83</b>, alone on layer 4. On layer 3 it hops to <b>67</b>. On layer 2 it hops to <b>81</b>. On layer 1, no neighbour of 81 is closer, so it stays. It drops to layer 0 at 81, already among the query's nearest neighbours, and the beam takes over.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="beam0">
+      <div class="box">
+        <p class="kicker">25 · The example</p>
+        <h2>Ten slots on layer 0</h2>
+        <p>With ef = 10, the list on the right fills from 81 outwards. The search finishes holding exactly the ten true nearest neighbours: 87, 81, 27, 22, 7, 82, 32, 77, 72 and 67. In all it computed <b>37</b> distances, 14 of them on the way down and the rest on layer 0, out of the 90 an exact search would need.</p>
+        <p>Over 400 random queries, the layered search with ef = 1 still returned the wrong nearest point <b>36</b> times: a better start helps (flat greedy routing missed 51) but does not remove local minima. With ef = 10 it missed <b>none</b>. Starting close and searching wide are complementary: the layers make the start good, the beam makes the finish reliable.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="efk">
+      <div class="box">
+        <p class="kicker">26 · ef and k</p>
+        <h2>Two numbers that are easy to mix up</h2>
+        <p><b>k</b> is how many results you want back. <b>ef</b> (called efSearch or ef_search in most databases) is how many candidates the search keeps while it looks. They are separate on purpose: a wider search improves the quality of the top k even when k is small. The search returns the best k of its ef candidates.</p>
+        <p>Because you cannot return 10 results from a list of 4, libraries quietly use the larger of the two: hnswlib searches layer 0 with max(ef, k). We asked it for k = 50 with ef = 5 and it returned 50 results, having searched with a beam of 50. So ef below k is not an error, it is just ignored. Some databases behave differently, which Part 2 covers.</p>
+        <p>The bars show the price of a wider beam for our query: <b>19</b>, <b>30</b>, <b>37</b> and <b>56</b> distance computations for ef = 1, 4, 10 and 20, all including the 14 spent on the way down. Cost grows with ef, steadily but slower than ef itself, because neighbourhoods overlap.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code5">
+      <div class="box">
+        <p class="kicker">27 · In code</p>
+        <h2>The real thing, on real data</h2>
+<pre><span class="k">import</span> hnswlib, h5py, numpy <span class="k">as</span> np
+
+f = h5py.File(<span class="t">"fashion-mnist-784-euclidean.hdf5"</span>, <span class="t">"r"</span>)
+X, Q = f[<span class="t">"train"</span>][:], f[<span class="t">"test"</span>][:<span class="n">1000</span>]
+truth = f[<span class="t">"neighbors"</span>][:<span class="n">1000</span>, :<span class="n">10</span>]          <span class="c"># exact answers, shipped</span>
+
+index = hnswlib.Index(space=<span class="t">"l2"</span>, dim=<span class="n">784</span>)
+index.init_index(max_elements=len(X), M=<span class="n">16</span>, ef_construction=<span class="n">200</span>)
+index.add_items(X, num_threads=<span class="n">12</span>)
+
+index.set_ef(<span class="n">64</span>)                                  <span class="c"># the beam width</span>
+labels, dists = index.knn_query(Q, k=<span class="n">10</span>)
+print(np.mean([len(set(a) &amp; set(b)) / <span class="n">10</span>
+               <span class="k">for</span> a, b <span class="k">in</span> zip(labels, truth)]))       <span class="c"># 0.9975</span></pre>
+        <p>This is the whole public surface for most uses: create, add, set ef, query. The dataset is the public ann-benchmarks file; recall@10 is 0.9975.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io5">
+      <div class="box">
+        <p class="kicker">28 · Inputs and outputs</p>
+        <h2>Act five in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A built index, a query vector, k, and ef.</p></div>
+          <div><span>out</span><p>The k best of the ef candidates found on layer 0, sorted by distance, after a greedy descent from the entry point.</p></div>
+          <div><span>meaning</span><p>ef is the dial you turn at query time, with no rebuild. Raise it until recall is high enough; the cost is extra distance computations.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a6">
+  <div class="stage"><canvas id="cv6" role="img" aria-label="Node 0 and its eight nearest candidates. The simple rule links the four closest, 80, 15, 50 and 35, two of them on the same side. The heuristic scans candidates nearest first and keeps one only if it is closer to node 0 than to every point already kept: it keeps 80, 50 and 35 and skips the other five, each of which lies behind a kept point. Across the whole graph the heuristic uses 216 links against 325 and keeps the bridges between clusters; recall at a beam of 5 is 0.99 against 0.747."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open6">
+      <div class="box">
+        <p class="actno">ACT SIX</p>
+        <h2>Choosing neighbours</h2>
+        <p>Which few points a node links to decides how well the whole graph routes. The obvious choice is wrong.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="simple">
+      <div class="box">
+        <p class="kicker">29 · The obvious rule</p>
+        <h2>"Link to the closest M"</h2>
+        <p>Every node may keep only a few links: M of them (we use M = 4 in the toy). The obvious way to choose is to link each node to its M closest points. Look at node 0 on the stage, with its eight nearest candidates numbered by distance. The closest four are 80, 15, 50 and 35.</p>
+        <p>The trouble is redundancy. 80 and 15 sit side by side, to the lower left. A link to 15 adds little once you can reach 80: anything reachable through 15 is almost as reachable through 80. In dense clusters this gets worse: every point links only into its own crowd, and the long links that bridge clusters, which Act two showed are what make walks short, never get chosen because there is always something closer at home.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="occlude">
+      <div class="box">
+        <p class="kicker">30 · The heuristic</p>
+        <h2>Keep a candidate only if nothing kept already covers it</h2>
+        <p>HNSW's rule: go through the candidates <b>nearest first</b>. Keep a candidate only if it is closer to the node than to every point already kept. Otherwise it lies "behind" a kept point, in that point's shadow, and the kept point already gives a route to it.</p>
+        <p>Watch it run for node 0. <b>80</b>, the nearest, is kept. <b>15</b> is closer to 80 than to node 0: skipped, in 80's shadow. <b>50</b>, up and to the right, is kept. <b>35</b>, below, is closer to node 0 than to 80 or 50: kept. Then <b>70, 20, 55 and 10</b> all lie beyond 50: skipped. Node 0 ends with three links pointing in three different directions, rather than four that mostly point one way.</p>
+        <p>Notice it kept only three, fewer than the four allowed. That is normal: the heuristic often leaves slots empty rather than fill them with redundant links. Both hnswlib and faiss use this rule. The paper also describes two optional extras (adding candidates' neighbours to the pool, and refilling empty slots with pruned candidates); hnswlib uses neither.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="bridges">
+      <div class="box">
+        <p class="kicker">31 · What it buys</p>
+        <h2>Fewer links, same bridges, better routing</h2>
+        <p>We built our toy twice, once with each rule. The simple rule made <b>325</b> links, 43 of them between clusters. The heuristic made <b>216</b>, a third fewer, yet kept <b>45</b> bridges. The bridges' share of all links rose from 13% to 21%, and the stage shows the two graphs side by side.</p>
+        <p>Routing follows. With a beam of 5, searches on the heuristic graph found 99% of the true 5 nearest neighbours; on the simple graph, <b>74.7%</b>. Widening the beam to 20 barely helped the simple graph (77.7%): its searches were trapped inside clusters, not short of candidates.</p>
+        <p>The caveat: 2-D clusters are the heuristic's best case, and the original paper says its benefit is largest on clustered or low-dimensional data. On high-dimensional embeddings the gap is smaller. But it never hurts, and every serious implementation uses it.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code6">
+      <div class="box">
+        <p class="kicker">32 · In code</p>
+        <h2>The heuristic in eight lines</h2>
+<pre><span class="k">import</span> math
+
+<span class="k">def</span> select_neighbours(base, candidates, m, P):
+    kept = []
+    <span class="k">for</span> c <span class="k">in</span> sorted(candidates, key=<span class="k">lambda</span> c: math.dist(P[c], P[base])):
+        <span class="k">if</span> len(kept) == m: <span class="k">break</span>
+        <span class="k">if</span> all(math.dist(P[c], P[base]) &lt; math.dist(P[c], P[r]) <span class="k">for</span> r <span class="k">in</span> kept):
+            kept.append(c)                  <span class="c"># not in any kept point's shadow</span>
+    <span class="k">return</span> kept
+
+print(select_neighbours(<span class="n">0</span>, [<span class="n">80</span>, <span class="n">15</span>, <span class="n">50</span>, <span class="n">35</span>, <span class="n">70</span>, <span class="n">20</span>, <span class="n">55</span>, <span class="n">10</span>], <span class="n">4</span>, P))   <span class="c"># [80, 50, 35]</span></pre>
+        <p>The same function is used twice during insertion, as the next act shows: once to pick a new node's links, and again to trim a neighbour whose list overflows.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io6">
+      <div class="box">
+        <p class="kicker">33 · Inputs and outputs</p>
+        <h2>Act six in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A node, a list of candidate neighbours, and a cap M.</p></div>
+          <div><span>out</span><p>At most M links, spread across directions; often fewer than M.</p></div>
+          <div><span>meaning</span><p>Diverse links keep the bridges between regions, so searches don't get trapped. The rule matters most on clustered, low-dimensional data.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="act" id="a7">
+  <div class="stage"><canvas id="cv7" role="img" aria-label="Node 81 is inserted. It draws level 2. It searches greedily down from the top, reaching 67 on layer 3. On layers 2, 1 and 0 it searches with a beam of 16 and links to 67 on layer 2, to 22, 36 and 57 on layer 1, and to 27 and 41 on layer 0. Node 27 already had eight links on layer 0, the maximum, so its list overflows and is trimmed by the heuristic to four, dropping 12, 4, 6, 36 and 41. A bar compares a 42.3 second single-threaded build with a 4.6 second build on 12 threads."></canvas></div>
+  <div class="cards">
+    <div class="card opener" data-scene="open7">
+      <div class="box">
+        <p class="actno">ACT SEVEN</p>
+        <h2>Insertion: how the graph builds itself</h2>
+        <p>There is no separate build algorithm. An HNSW index is just a search, run once for every point you add.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="ins">
+      <div class="box">
+        <p class="kicker">34 · The concept</p>
+        <h2>To add a point, search for it</h2>
+        <p>To insert a new point, HNSW asks: "if this point were a query, who would its nearest neighbours be?" and links it to them. Step by step:</p>
+        <p><b>1.</b> Draw the point's level (Act four). <b>2.</b> From the entry point, walk greedily down the layers above that level, as a search would. <b>3.</b> On each layer from its level down to 0, run a beam search for the new point with width <b>efConstruction</b>, choose up to M neighbours from the results with the heuristic, and link both ways. <b>4.</b> If a neighbour now has too many links, trim its list. <b>5.</b> If the point's level is higher than any before, it becomes the new entry point.</p>
+        <p>efConstruction is the build-time twin of ef: a wider beam during insertion finds better neighbours, at the cost of a slower build. It must be at least M, or the search cannot even supply M candidates to choose from.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="descend7">
+      <div class="box">
+        <p class="kicker">35 · The example</p>
+        <h2>Node 81 joins the graph</h2>
+        <p>Here is the real insertion of node 81, the same point that trapped greedy routing in Act two. It drew level <b>2</b>. At the time, the top layer was 3, so it walked greedily on layer 3 from the entry point and reached <b>67</b>.</p>
+        <p>From layer 2 down, it searched with a beam of 16 (our toy's efConstruction) and chose its links with the heuristic: <b>67</b> on layer 2; <b>22, 36 and 57</b> on layer 1; <b>27 and 41</b> on layer 0. Watch each link grow both ways. The results of each layer's search became the starting points for the next layer down.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="prune">
+      <div class="box">
+        <p class="kicker">36 · Overflow</p>
+        <h2>When a neighbour is full</h2>
+        <p>Links go both ways, so 27 gains a link to 81. But 27 already had <b>8</b> links on layer 0, which is the cap there. Layer 0 allows <b>2M</b> links per node (8 in our toy, 32 for M = 16), because it is the layer where searches finish and needs the most routes; upper layers allow M.</p>
+        <p>With 9 candidates for 8 slots, 27 re-chooses with the same heuristic, over its old neighbours plus 81. It keeps <b>32, 81, 77 and 22</b> and drops <b>12, 4, 6, 36 and 41</b>, ending with four links, not eight, because the dropped ones were in the shadow of kept ones. The same happened on layer 1, where node 36 trimmed to just 51 and 81.</p>
+        <p>One consequence matters in practice: after trimming, links can be one-way. Node 27 dropped 41, but nothing makes 41 drop 27. And memory is reserved for the full 2M links per node whether they are used or not, which is why M sets memory directly. Part 2 measures it.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="build">
+      <div class="box">
+        <p class="kicker">37 · Building fast</p>
+        <h2>Threads, order and randomness</h2>
+        <p>Insertion is a search per point, so building costs about as many distance computations as N searches with a beam of efConstruction. On Fashion-MNIST (60,000 × 784, M = 16, efConstruction = 200), one thread took <b>42.3 s</b>. hnswlib inserts points in parallel with fine-grained locks, and on 12 threads the same build took <b>4.6 s</b>.</p>
+        <p>Parallel builds have a side effect: the graph depends on which thread got there first, so two builds of the same data differ slightly. Over three seeds, recall at ef = 64 was 0.9975, 0.9978 and 0.9977. Small, but it means you should compare settings by more than a single build.</p>
+        <p>Order matters too. Insertion is greedy: early points link to whatever exists when they arrive. We built a 100,000-vector synthetic index twice, once with points sorted by cluster (each cluster arriving all at once), once shuffled. Recall at ef = 64 was <b>0.944</b> sorted and <b>0.985</b> shuffled. If your data arrives grouped, by date or by customer for instance, shuffle it before a bulk build.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="code7">
+      <div class="box">
+        <p class="kicker">38 · In code</p>
+        <h2>Building, with the knobs named</h2>
+<pre>index = hnswlib.Index(space=<span class="t">"l2"</span>, dim=<span class="n">784</span>)
+index.init_index(
+    max_elements=len(X),      <span class="c"># capacity; grow later with resize_index</span>
+    M=<span class="n">16</span>,                     <span class="c"># links per node (2M on layer 0)</span>
+    ef_construction=<span class="n">200</span>,      <span class="c"># beam width while inserting</span>
+    random_seed=<span class="n">1</span>,            <span class="c"># fixes the level draws</span>
+)
+order = np.random.default_rng(<span class="n">0</span>).permutation(len(X))
+index.add_items(X[order], order, num_threads=<span class="n">12</span>)   <span class="c"># shuffled, labelled</span>
+<span class="c"># 12 threads: about 5 s.  1 thread: 42.3 s</span></pre>
+        <p>Passing labels keeps each vector's original id even though we shuffled. The seed fixes the level draws, but with several threads the graph still varies slightly from run to run.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="io7">
+      <div class="box">
+        <p class="kicker">39 · Inputs and outputs</p>
+        <h2>Act seven in a block</h2>
+        <div class="io">
+          <div><span>in</span><p>A new vector, the current index, M and efConstruction.</p></div>
+          <div><span>out</span><p>The vector on its drawn layers, linked both ways to up to M heuristic-chosen neighbours (2M cap on layer 0), with overflowing neighbours trimmed.</p></div>
+          <div><span>meaning</span><p>Build quality is search quality during insertion. efConstruction and M set how good the graph is; ef only decides how much of it each query uses.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section id="summary">
+  <div class="wrap">
+    <p class="eyebrow">Recap · part 1</p>
+    <h2 class="sec">HNSW, from the bottom up</h2>
+    <p>HNSW finds approximate nearest neighbours by walking a graph instead of scanning a list. Read the table from the top: each piece exists because of the one before it.</p>
+    <div class="tablewrap"><table>
+      <tr><th>Piece</th><th>What it is</th><th>What it buys</th></tr>
+      <tr><td><b>Proximity graph</b></td><td>each point linked to a few nearby points</td><td>a search touches a handful of points, not all of them</td></tr>
+      <tr><td><b>Greedy routing</b></td><td>hop to the closest neighbour until none is closer</td><td>fast, but stuck in local minima about one query in eight</td></tr>
+      <tr><td><b>Beam search (ef)</b></td><td>keep the best ef points found; expand them; never revisit</td><td>escapes local minima; ef trades recall for distance computations</td></tr>
+      <tr><td><b>Layers</b></td><td>random levels, each layer about 1/M of the one below</td><td>one entry point and long jumps to start close; most useful on low-dimensional data</td></tr>
+      <tr><td><b>Neighbour heuristic</b></td><td>keep a candidate only if no kept neighbour shadows it</td><td>links spread across directions; bridges between clusters survive</td></tr>
+      <tr><td><b>Insertion (efConstruction)</b></td><td>search for the new point, link both ways, trim overflow</td><td>the index builds itself, one search per point, in parallel</td></tr>
+    </table></div>
+    <h3 class="sub">The four knobs</h3>
+    <ol class="check">
+      <li><b>M</b>: links per node (2M on layer 0). Sets graph quality, memory and build time; fixed at build.</li>
+      <li><b>efConstruction</b>: beam width while building. Better neighbours, slower builds; fixed at build; at least M.</li>
+      <li><b>ef</b>: beam width while searching. Recall against latency; change it any time, no rebuild.</li>
+      <li><b>k</b>: how many results you want. hnswlib searches with max(ef, k).</li>
+    </ol>
+    <p style="margin-top:22px"><b>Part 2</b> turns each knob on real data (60,000 Fashion-MNIST images and 1.18 million GloVe word vectors), then covers memory and quantisation, filters, deletes, scale, a tuning recipe, and how vector databases expose all of this.</p>
+    <p>Measurements were taken with hnswlib 0.8.0 and faiss 1.15.1 on a 12-core Mac; your timings will differ in the decimals, not the shapes. The toy graph is our own small implementation of the published algorithm.</p>
+  </div>
+</section>
+
+<script>!function(){"use strict";var t=matchMedia("(prefers-reduced-motion: reduce)").matches;function n(t){return[parseInt(t.slice(1,3),16),parseInt(t.slice(3,5),16),parseInt(t.slice(5,7),16)]}function e(t,e,r){if(t===e||"#"!==t[0]||"#"!==e[0])return e;var a=n(t),o=n(e);return"rgb("+Math.round(f(a[0],o[0],r))+","+Math.round(f(a[1],o[1],r))+","+Math.round(f(a[2],o[2],r))+")"}function r(n,r,d){var v=n.getContext("2d"),g=0,w=0,m=function(t){return function(n,e,r,a,o,i,l){t.fillStyle=a,t.textAlign=l||"center",t.textBaseline="middle",t.font=(i||700)+" "+(o||12)+"px ui-monospace, Menlo, monospace",t.fillText(n,e,r)}}(v),x={},y=[],b={},M=performance.now();function k(){var t=function(t,n){var e=Math.min(devicePixelRatio||1,2),r=t.clientWidth,a=t.clientHeight;return t.width=Math.round(r*e),t.height=Math.round(a*e),n.setTransform(e,0,0,e,0,0),[r,a]}(n,v);g=t[0],w=t[1]}return k(),{resize:k,apply:function(t,n){var e=d?d(g,w):g<820?{x:.05*g,y:.08*w,w:.9*g,h:.84*w}:{x:.37*g,y:.12*w,w:.59*g,h:.76*w},a=e.x+e.w/2,o=e.y+e.h/2,i=r(t,n,e,g,w)||[],l={};for(var s in i.forEach(function(t){if(t){l[t.id]=1;var n=x[t.id];if(!n){var e=t.from&&x[t.from];if(n=x[t.id]={x:e?e.x:null!=t.x0?t.x0:a,y:e?e.y:null!=t.y0?t.y0:o,w:0,h:0,s:"flow"===t.kind||"pipe"===t.kind?1:0,c:t.col},"arc"===t.kind){var r=null==t.a0?-Math.PI/2:t.a0;n.a0=r,n.a1=r}"poly"===t.kind&&(n.rot=t.rot||0),"path"===t.kind&&t.pts&&t.pts.length&&(n.pts=t.pts.map(function(){return[t.pts[0][0],t.pts[0][1]]}),n.t=0)}n.d=t,n.dead=!1}}),x)l[s]||(x[s].dead=!0,x[s].cx=a,x[s].cy=o)},step:function(n){n=n||performance.now();var r=t?1:.15;if(!t)for(var a in x){var o=x[a],s=o.d;if(s&&"flow"===s.kind&&!o.dead){var u=x[s.from],c=x[s.to];if(!(!u||!c||u.s<.35||c.s<.35)){var d=null==s.rate?.5:s.rate;if(!(d<=0)){var p=420-330*h(d);n-(b[a]||0)>p&&(b[a]=n,y.push({f:s.from,t:s.to,bow:s.bow||0,p:0,sp:.012+.01*h(d)+.004*Math.random(),r:2.2+3.4*h(d),col:s.col||"#888",glyph:s.glyph}))}}}}for(var v=y.length-1;v>=0;v--)y[v].p+=y[v].sp,(y[v].p>=1||!x[y[v].f]||!x[y[v].t])&&y.splice(v,1);for(var g in x){var w=x[g];if(w.dead){if(w.pts){var m=i(w.pts);w.pts.forEach(function(t){t[0]=f(t[0],m[0],r),t[1]=f(t[1],m[1],r)})}w.w=f(w.w,0,r),w.h=f(w.h,0,r),w.s=f(w.s,0,r),w.x=f(w.x,w.cx,.45*r),w.y=f(w.y,w.cy,.45*r),w.w<.7&&w.h<.7&&w.s<.05&&delete x[g]}else{var M=w.d;if("flow"!==M.kind&&"pipe"!==M.kind)if("path"!==M.kind){"arc"===M.kind&&(w.a0=f(w.a0,null==M.a0?-Math.PI/2:M.a0,r),w.a1=f(w.a1,null==M.a1?(null==M.a0?-Math.PI/2:M.a0)+2*Math.PI:M.a1,r)),"poly"===M.kind&&(w.rot=f(w.rot||0,M.rot||0,r)),w.x=f(w.x,M.x,r),w.y=f(w.y,M.y,r);var k="arc"===M.kind||"poly"===M.kind||"dot"===M.kind;w.w=f(w.w,M.w||0,r),w.h=f(w.h,M.h||k&&M.w||0,r),w.s=f(w.s,null==M.s?1:M.s,r),w.c=e(w.c||M.col,M.col,t?1:.18)}else{var E=M.pts||[];w.pts&&w.pts.length===E.length||(w.pts=l(w.pts||E,E.length));for(var q=0;q<E.length;q++)w.pts[q][0]=f(w.pts[q][0],E[q][0],r),w.pts[q][1]=f(w.pts[q][1],E[q][1],r);w.t=f(null==w.t?0:w.t,null==M.t?1:M.t,r);var F=i(w.pts);w.x=F[0],w.y=F[1],w.s=f(w.s,null==M.s?1:M.s,r),w.c=e(w.c||M.col,M.col,t?1:.18)}else w.s=f(w.s,1,r)}}},draw:function(){var t,n,e;for(t in v.clearRect(0,0,g,w),x)if(n=x[t],(e=n.d)&&!(n.s<=.01)&&"pipe"===e.kind){var r=x[e.from],i=x[e.to];if(r&&i){var l=(r.x+i.x)/2,f=(r.y+i.y)/2+(e.bow||0);v.globalAlpha=n.s*Math.min(r.s,i.s),v.lineCap="round",v.beginPath(),v.moveTo(r.x,r.y),v.quadraticCurveTo(l,f,i.x,i.y),v.strokeStyle=e.casing||"#EDE7DB",v.lineWidth=e.lw||9,v.stroke(),v.beginPath(),v.moveTo(r.x,r.y),v.quadraticCurveTo(l,f,i.x,i.y),v.strokeStyle=e.col,v.lineWidth=.38*(e.lw||9),v.setLineDash([11,9]),v.lineDashOffset=-(performance.now()-M)/16,v.stroke(),v.setLineDash([]),v.lineDashOffset=0,v.lineCap="butt";var d=a(r,i,l,f);o(v,d.bx,d.by,d.bx-l,d.by-f,e.col,.8*(e.lw||9)),v.globalAlpha=1}}for(t in x)if(n=x[t],(e=n.d)&&!(n.s<=.01)&&"flow"===e.kind&&!1!==e.edge){var b=x[e.from],k=x[e.to];if(b&&k){var E=h(null==e.rate?.5:e.rate),q=(b.x+k.x)/2,F=(b.y+k.y)/2+(e.bow||0),A=a(b,k,q,F);v.globalAlpha=n.s*Math.min(b.s,k.s)*(.42+.34*E),v.beginPath(),v.moveTo(A.ax,A.ay),v.quadraticCurveTo(q,F,A.bx,A.by),v.strokeStyle=e.col,v.lineWidth=1.3+2.2*E,v.setLineDash(e.solid?[]:[6,5]),v.stroke(),v.setLineDash([]),o(v,A.bx,A.by,A.bx-q,A.by-F,e.col,5.5+3.5*E),v.globalAlpha=1}}for(t in x)n=x[t],!(e=n.d)||n.s<=.01||"rule"!==e.kind||(v.globalAlpha=.9*n.s,v.strokeStyle=n.c,v.lineWidth=e.lw||1,e.dash&&v.setLineDash(e.dash),v.beginPath(),v.moveTo(n.x-n.w/2,n.y-n.h/2),v.lineTo(n.x+n.w/2,n.y+n.h/2),v.stroke(),v.setLineDash([]),v.globalAlpha=1);for(t in x)if(n=x[t],!(!(e=n.d)||n.s<=.01||"path"!==e.kind||!n.pts||n.pts.length<2)){var S=s(n.pts,e.closed&&n.t>.999?1:n.t),C=function(){if(v.moveTo(S[0][0],S[0][1]),e.smooth&&S.length>2){for(var t=1;t<S.length-1;t++){var n=(S[t][0]+S[t+1][0])/2,r=(S[t][1]+S[t+1][1])/2;v.quadraticCurveTo(S[t][0],S[t][1],n,r)}v.lineTo(S[S.length-1][0],S[S.length-1][1])}else for(var a=1;a<S.length;a++)v.lineTo(S[a][0],S[a][1])};if(v.globalAlpha=n.s,e.fill&&null!=e.baseY&&(v.beginPath(),C(),v.lineTo(S[S.length-1][0],e.baseY),v.lineTo(S[0][0],e.baseY),v.closePath(),v.fillStyle=e.fill,v.fill()),v.beginPath(),C(),e.closed&&n.t>.999&&v.closePath(),e.fill&&e.closed&&n.t>.999&&(v.fillStyle=e.fill,v.fill()),0!==e.lw&&(v.strokeStyle=n.c,v.lineWidth=e.lw||2,v.lineJoin="round",v.lineCap="round",e.dash&&v.setLineDash(e.dash),v.stroke(),v.setLineDash([])),e.arrow&&S.length>1){var T=S[S.length-1],P=S[S.length-2];o(v,T[0],T[1],T[0]-P[0],T[1]-P[1],n.c,6+1.5*(e.lw||2))}v.globalAlpha=1}for(t in x)if(n=x[t],(e=n.d)&&!(n.s<=.01))if("bar"===e.kind){if(n.w<.4||n.h<.4)continue;v.globalAlpha=n.s,v.shadowColor=n.c,v.shadowBlur=!1===e.glow?0:7,p(v,n.x-n.w/2,n.y-n.h/2,n.w,n.h,Math.min(null==e.r?5:e.r,n.h/2)),v.fillStyle=n.c,v.fill(),v.shadowBlur=0,v.globalAlpha=1}else if("dot"===e.kind)v.globalAlpha=n.s,v.shadowColor=n.c,v.shadowBlur=!1===e.glow?0:5,v.beginPath(),v.arc(n.x,n.y,Math.max(.3,n.w/2),0,2*Math.PI),v.fillStyle=n.c,v.fill(),v.shadowBlur=0,e.glyph&&n.w>8&&(v.fillStyle=e.glyphCol||"#FFFFFF",v.textAlign="center",v.textBaseline="middle",v.font="700 "+Math.max(6,.55*n.w)+"px ui-monospace, Menlo, monospace",v.fillText(e.glyph,n.x,n.y+.03*n.w)),v.globalAlpha=1;else if("arc"===e.kind){if(n.w<1)continue;v.globalAlpha=n.s;var B=n.w/2;e.pie?(v.beginPath(),v.moveTo(n.x,n.y),v.arc(n.x,n.y,B,n.a0,n.a1),v.closePath(),v.fillStyle=e.fill||n.c,v.fill()):(v.beginPath(),v.arc(n.x,n.y,B,n.a0,n.a1),v.strokeStyle=n.c,v.lineWidth=e.lw||3,v.lineCap="round",v.stroke(),e.fill&&(v.fillStyle=e.fill,v.fill())),v.globalAlpha=1}else if("poly"===e.kind){if(n.w<1)continue;v.globalAlpha=n.s;var O=Math.max(3,e.n||6),D=n.w/2;v.beginPath();for(var L=0;L<=O;L++){var I=n.rot+L/O*Math.PI*2-Math.PI/2,_=n.x+D*Math.cos(I),W=n.y+D*Math.sin(I);L?v.lineTo(_,W):v.moveTo(_,W)}v.closePath(),e.fill&&(v.fillStyle=e.fill,v.fill()),0!==e.lw&&(v.strokeStyle=n.c,v.lineWidth=e.lw||1.5,v.stroke()),v.globalAlpha=1}else if("box"===e.kind){if(n.w<2||n.h<2)continue;v.globalAlpha=n.s,p(v,n.x-n.w/2,n.y-n.h/2,n.w,n.h,10),v.fillStyle=e.fill||"#FFFFFF",v.fill(),v.shadowColor=n.c,v.shadowBlur=!1===e.glow?0:6,v.strokeStyle=n.c,v.lineWidth=1.5,v.stroke(),v.shadowBlur=0;var N=u(v,e.label&&n.h>14?e.label:"",e.sub&&n.h>26?e.sub:"",n.w-12,n.h,(e.fs||12.5)*Math.min(1,n.s)),j=N.L,z=N.S,H=j?1.15*j.fs:0,R=(j?j.lines.length*H:0)+(z?1.25*z.fs:0),U=n.y-R/2+H/2;j&&j.lines.forEach(function(t,e){m(t,n.x,U+e*H,n.c,j.fs,700)}),z&&m(z.lines[0],n.x,U+(j?j.lines.length*H:0)+(j?.15*z.fs:0),"#A0A8B6",z.fs,600),v.globalAlpha=1}for(var Y=0;Y<y.length;Y++){var G=y[Y],Q=x[G.f],V=x[G.t];if(Q&&V){A=G.p;var J=(Q.x+V.x)/2,K=(Q.y+V.y)/2+G.bow,X=a(Q,V,J,K),Z=(1-A)*(1-A)*X.ax+2*(1-A)*A*J+A*A*X.bx,$=(1-A)*(1-A)*X.ay+2*(1-A)*A*K+A*A*X.by;v.globalAlpha=A<.14?A/.14:A>.86?(1-A)/.14:1,v.shadowColor=G.col,v.shadowBlur=5,G.glyph?(v.fillStyle=G.col,v.textAlign="center",v.textBaseline="middle",v.font="700 "+(8+1.6*G.r)+"px ui-monospace, Menlo, monospace",v.fillText(G.glyph,Z,$)):(v.beginPath(),v.arc(Z,$,G.r,0,2*Math.PI),v.fillStyle=G.col,v.fill()),v.shadowBlur=0,v.globalAlpha=1}}for(t in x)if(n=x[t],(e=n.d)&&!(n.s<=.01)&&"text"===e.kind){v.globalAlpha=Math.min(1,n.s),!1!==e.glow&&(v.shadowColor=n.c,v.shadowBlur=(e.blur||7)*n.s);var tt=Math.max(.5,(e.size||12)*n.s),nt=e.label;if(e.maxw){var et=c(v,e.label,e.maxw,tt,e.weight||700,1);tt=et.fs,nt=et.lines[0]}m(nt,n.x,n.y,n.c,tt,e.weight||700,e.align),v.shadowBlur=0,v.globalAlpha=1}}}}function a(t,n,e,r){var a=Math.hypot(e-t.x,r-t.y)||1,o=Math.hypot(n.x-e,n.y-r)||1,i=(t.w,t.h,Math.min(t.w,t.h)/2+4),l=(n.w,n.h,Math.min(n.w,n.h)/2+9);return{ax:t.x+(e-t.x)/a*i,ay:t.y+(r-t.y)/a*i,bx:n.x-(n.x-e)/o*l,by:n.y-(n.y-r)/o*l}}function o(t,n,e,r,a,o,i){var l=Math.atan2(a,r);t.beginPath(),t.moveTo(n,e),t.lineTo(n-i*Math.cos(l-.42),e-i*Math.sin(l-.42)),t.lineTo(n-i*Math.cos(l+.42),e-i*Math.sin(l+.42)),t.closePath(),t.fillStyle=o,t.fill()}function i(t){for(var n=0,e=0,r=0;r<t.length;r++)n+=t[r][0],e+=t[r][1];return[n/(t.length||1),e/(t.length||1)]}function l(t,n){if(!t||!t.length)return[];for(var e=[],r=0;r<n;r++){var a=1===n?0:r*(t.length-1)/(n-1),o=Math.floor(a),i=Math.min(t.length-1,o+1),l=a-o;e.push([f(t[o][0],t[i][0],l),f(t[o][1],t[i][1],l)])}return e}function s(t,n){if(n>=.999)return t;var e,r=[],a=0;for(e=1;e<t.length;e++){var o=Math.hypot(t[e][0]-t[e-1][0],t[e][1]-t[e-1][1]);r.push(o),a+=o}var i=a*h(n),l=[t[0]];for(e=1;e<t.length;e++){if(!(i>=r[e-1])){var s=r[e-1]?i/r[e-1]:0;l.push([f(t[e-1][0],t[e][0],s),f(t[e-1][1],t[e][1],s)]);break}l.push(t[e]),i-=r[e-1]}return l.length>1?l:[t[0],t[0]]}function u(t,n,e,r,a,o){for(var i=function(n,e,r){return t.font=r+" "+e+"px ui-monospace, Menlo, monospace",t.measureText(n).width},l=function(t,n,e){if(i(t,n,700)<=r)return{lines:[t],fs:n};if(e>1&&t.indexOf(" ")>0){for(var a=t.split(" "),o=null,l=1;l<a.length;l++){var s=a.slice(0,l).join(" "),u=a.slice(l).join(" "),c=Math.max(i(s,n,700),i(u,n,700));(!o||c<o.m)&&(o={a:s,b:u,m:c})}if(o.m<=r)return{lines:[o.a,o.b],fs:n}}return null},s=Math.max(6.5,o-2),u=Math.min(7,o),f=function(t,n){return Math.max(1,Math.min(2,Math.floor((a-6-(e?1.3*n:0))/(1.15*t))))},h=o;h>=u;h-=.5){var d=Math.min(s,.92*h),p=f(h,d),v=n?l(n,h,p):null;if(!n||v)return{L:v,S:e?c(t,e,r,d,600,1):null}}var g=Math.min(6.5,.92*u);return{L:n?c(t,n,r,u,700,f(u,g)):null,S:e?c(t,e,r,g,600,1):null}}function c(t,n,e,r,a,o){var i;n=String(n);var l=function(n,e){return t.font=(a||700)+" "+e+"px ui-monospace, Menlo, monospace",t.measureText(n).width},s=function(t){for(var e=n.split(" "),r=null,a=1;a<e.length;a++){var o=e.slice(0,a).join(" "),i=e.slice(a).join(" "),s=Math.max(l(o,t),l(i,t));(!r||s<r.m)&&(r={a:o,b:i,m:s})}return r};if(e<=0)return{lines:[n],fs:r};var u=Math.min(7,r);for(i=r;i>=u;i-=.5){if(l(n,i)<=e)return{lines:[n],fs:i};if((o||1)>1&&n.indexOf(" ")>0){var c=s(i);if(c.m<=e)return{lines:[c.a,c.b],fs:i}}}i=u;var f=function(t){for(;t.length>1&&l(t+"…",i)>e;)t=t.slice(0,-1);return t+"…"};if((o||1)>1&&n.indexOf(" ")>0){var h=s(i);return{lines:[l(h.a,i)<=e?h.a:f(h.a),f(h.b)],fs:i}}return{lines:[f(n)],fs:i}}function f(t,n,e){return t+(n-t)*e}function h(t){return t<0?0:t>1?1:t}function d(t){return(t=h(t))*t*(3-2*t)}function p(t,n,e,r,a,o){o=Math.min(o,r/2,a/2),t.beginPath(),t.moveTo(n+o,e),t.lineTo(n+r-o,e),t.quadraticCurveTo(n+r,e,n+r,e+o),t.lineTo(n+r,e+a-o),t.quadraticCurveTo(n+r,e+a,n+r-o,e+a),t.lineTo(n+o,e+a),t.quadraticCurveTo(n,e+a,n,e+a-o),t.lineTo(n,e+o),t.quadraticCurveTo(n,e,n+o,e),t.closePath()}var v="#B4442E",g="#C8962A",w="#5F7F35",m="#6B4A3A",x="#5A6472",y="#222938",b="#6B7385",M="#D5CFC3",k="#CDD0D6",E="#E6EEDC",q=-Math.PI/2,F=2*Math.PI;function A(t){return Math.max(.55,Math.min(1.2,Math.min(t.w/620,t.h/500)))}function S(t,n){return t.x+n*t.w}function C(t,n){return t.y+n*t.h}function T(t,n){if(n)for(var e in n)t[e]=n[e];return t}function P(t){return t.w<520}function B(t,n,e,r,a,o,i,l,s,u){var c=A(t),f=u&&u.fs||12*c;return s&&String(s).length*Math.max(6.5,.92*f)*.61>a*c-12&&(s=""),T({id:n,kind:"box",x:S(t,e),y:C(t,r),w:a*c,h:o*c,col:i,label:l,sub:s,fill:"#FFFFFF",fs:12*c,glow:!1},u)}function O(t,n,e,r,a,o,i,l){return T({id:n,kind:"text",x:S(t,e),y:C(t,r),label:a,col:o||b,size:(i||11)*A(t),weight:700,glow:!1},l)}function D(t,n,e,r,a,o){return T({id:t,kind:"dot",x:n,y:e,w:r,h:r,col:a,glow:!1},o)}function L(t,n,e,r,a,o,i){return T({id:t,kind:"rule",x:(n+r)/2,y:(e+a)/2,w:r-n,h:a-e,col:o||M,lw:1},i)}function I(t,n,e,r,a,o,i){return T({id:t,kind:"bar",x:n+r/2,y:e,w:Math.max(.5,r),h:a,col:o,glow:!1,r:3},i)}function _(t,n,e,r,a,o,i,l){return T({id:t,kind:"arc",x:n,y:e,w:r,h:r,a0:a,a1:o,col:i,lw:3,glow:!1},l)}function W(t,n,e,r){return T({id:t,kind:"path",pts:n,col:e,lw:2.2},r)}function N(t,n,e){return d((t-n)/(e-n))}function j(t,n,e,r){t.push(O(n,e,.5,1,r,y,11,{maxw:.96*n.w}))}function z(t,n,e,r,a,o,i,l,s,u,c){c=c||{};var f=A(n),d=c.lw||Math.max(5,.08*o);t.push(_(e+"t",r,a,o,q,q+F,M,{lw:d})),t.push(_(e+"v",r,a,o,q,q+F*Math.max(.001,h(i)),l,{lw:d})),s&&t.push(O(n,e+"n",0,0,s,l,c.vs||13,{x:r,y:a,maxw:.8*o})),u&&t.push(O(n,e+"l",0,0,u,y,10.5,{x:r,y:a+o/2+d/2+11*f,maxw:Math.max(1.5*o,90*f)}))}var H={P:[[.0882,.2783],[.8246,.1815],[.4003,.5451],[.2359,.8824],[.7288,.683],[.2329,.2856],[.865,.2937],[.4924,.5294],[.3928,.7783],[.7611,.6946],[.1872,.2609],[.7241,.2153],[.5205,.6019],[.2823,.8157],[.6858,.8326],[.0735,.2371],[.6395,.2202],[.4416,.566],[.4475,.7964],[.8832,.6808],[.1584,.2997],[.743,.2478],[.5077,.4745],[.2423,.7391],[.9604,.7421],[.2315,.2502],[.8214,.1748],[.5749,.5407],[.2947,.8468],[.8306,.7215],[.2376,.2851],[.8731,.1917],[.5416,.5881],[.2212,.8156],[.8337,.7351],[.1039,.2203],[.7943,.3333],[.5733,.629],[.2583,.8524],[.8338,.8379],[.313,.2254],[.698,.367],[.5184,.6228],[.2655,.7148],[.98,.9132],[.1933,.3064],[.7595,.1537],[.4916,.5781],[.2837,.8532],[.8245,.8816],[.1229,.3095],[.8334,.1981],[.3657,.482],[.2178,.8396],[.9361,.7047],[.1802,.2987],[.7382,.0423],[.5605,.7234],[.2753,.7312],[.7891,.7966],[.3667,.2963],[.7585,.3368],[.4939,.6896],[.1486,.7644],[.8741,.8868],[.229,.2726],[.6134,.1665],[.4542,.51],[.244,.7749],[.8791,.7862],[.155,.2589],[.7822,.2844],[.4642,.5325],[.0977,.9203],[.9289,.7666],[.1441,.1573],[.7627,.2355],[.6636,.5685],[.1417,.6167],[.9257,.7942],[.0593,.2635],[.6294,.481],[.5839,.5929],[.1869,.6395],[.8105,.6634],[.2247,.0896],[.6819,.3115],[.6233,.4614],[.085,.866],[.884,.706]],LV:[0,0,0,0,0,0,0,1,0,0,3,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,1,0,1,0,1,0,1,1,0,0,0,2,0,0,0,0,0,0,0,0,1,0,1,1,3,0,0,1,2,1,0,0,0,1,0,0,0,1,3,0,1,0,0,0,1,1,0,0,0,0,0,1,2,0,4,0,0,0,0,0,0],E:{0:[[0,5],[0,13],[0,15],[0,20],[0,50],[0,80],[1,6],[1,11],[1,21],[1,26],[1,31],[1,51],[2,3],[2,5],[2,17],[2,20],[2,23],[2,30],[2,43],[2,52],[3,8],[3,13],[3,28],[3,33],[3,38],[3,73],[4,6],[4,9],[4,12],[4,14],[4,27],[4,37],[4,77],[5,10],[5,22],[5,25],[5,30],[5,45],[5,65],[6,19],[6,27],[6,31],[6,36],[6,51],[7,11],[7,12],[7,16],[7,17],[7,22],[7,32],[7,47],[7,67],[7,72],[8,12],[8,13],[8,14],[8,17],[8,18],[8,43],[9,19],[9,29],[9,84],[10,20],[10,25],[10,35],[10,45],[10,55],[10,65],[10,70],[11,16],[11,21],[11,26],[11,46],[12,18],[12,27],[12,32],[12,42],[12,47],[13,23],[13,28],[13,33],[13,58],[13,68],[14,18],[14,34],[14,39],[14,49],[14,57],[14,59],[15,35],[15,80],[16,22],[16,25],[16,41],[16,66],[16,86],[17,47],[17,67],[17,72],[18,28],[18,37],[18,42],[18,57],[18,62],[19,24],[19,29],[19,54],[19,74],[19,89],[20,45],[20,50],[20,55],[20,70],[21,36],[21,51],[21,61],[21,71],[21,76],[21,86],[22,27],[22,40],[22,87],[23,33],[23,43],[23,50],[23,68],[24,34],[24,54],[24,64],[24,69],[24,74],[25,40],[25,65],[25,75],[26,46],[27,32],[27,36],[27,41],[27,77],[27,81],[27,82],[28,38],[28,48],[29,34],[29,84],[29,89],[30,52],[31,51],[32,37],[32,82],[33,38],[33,53],[33,63],[33,68],[34,39],[34,59],[34,69],[35,70],[35,75],[36,41],[36,61],[36,71],[37,42],[37,57],[37,82],[38,48],[38,53],[39,44],[39,49],[39,59],[39,69],[40,60],[40,85],[41,61],[41,77],[41,81],[41,86],[41,87],[42,58],[42,62],[43,45],[43,58],[43,83],[44,49],[44,64],[44,69],[44,74],[44,79],[45,55],[46,56],[46,76],[49,64],[51,71],[51,76],[52,60],[52,63],[52,67],[52,78],[52,83],[54,89],[56,66],[57,62],[60,66],[63,78],[63,88],[67,72],[69,74],[69,79],[69,89],[71,76],[73,88],[74,79],[75,85],[77,82],[78,83],[81,87]],1:[[7,12],[7,17],[7,22],[7,67],[10,35],[10,40],[12,29],[12,57],[12,62],[17,52],[17,58],[17,67],[22,36],[22,40],[22,81],[26,31],[26,51],[26,56],[29,31],[29,36],[29,49],[29,57],[29,69],[31,51],[33,49],[33,53],[33,58],[35,80],[36,51],[36,66],[36,74],[36,81],[40,52],[40,56],[40,66],[49,69],[52,67],[52,83],[53,73],[56,66],[57,62],[57,81],[58,62],[58,80],[58,83],[66,67],[69,74]],2:[[10,40],[10,53],[40,57],[40,67],[53,57],[53,83],[57,67],[67,81],[67,83]],3:[[10,53],[10,67],[53,67],[53,83],[67,83]],4:[]},ES:[[0,5],[0,10],[0,15],[0,20],[0,25],[0,35],[0,50],[0,80],[1,2],[1,4],[1,5],[1,6],[1,11],[1,16],[1,21],[1,26],[2,6],[2,7],[2,8],[2,11],[2,12],[2,13],[2,15],[2,17],[2,22],[2,52],[2,67],[3,8],[3,13],[3,18],[3,23],[3,28],[3,33],[3,38],[3,48],[3,53],[3,73],[4,6],[4,7],[4,9],[4,12],[4,14],[4,19],[4,24],[4,29],[4,34],[5,6],[5,10],[5,15],[5,20],[5,25],[5,30],[5,40],[5,45],[5,55],[5,60],[5,65],[6,11],[6,16],[6,21],[6,26],[7,9],[7,11],[7,12],[7,16],[7,17],[7,22],[7,27],[7,32],[7,47],[7,52],[7,67],[7,72],[8,9],[8,12],[8,13],[8,14],[8,17],[8,18],[8,23],[8,28],[9,14],[9,19],[9,24],[9,29],[9,34],[10,15],[10,20],[10,25],[10,30],[10,35],[10,40],[10,45],[10,50],[10,55],[10,65],[10,70],[10,75],[10,85],[11,16],[11,21],[11,26],[12,14],[12,17],[12,18],[12,19],[12,22],[12,27],[12,32],[12,37],[12,42],[12,47],[12,57],[12,62],[12,77],[12,82],[13,18],[13,23],[13,28],[13,33],[13,38],[13,43],[13,48],[13,58],[13,68],[14,19],[14,24],[14,39],[14,49],[15,20],[15,35],[15,75],[15,80],[16,21],[17,22],[17,32],[17,42],[17,47],[17,52],[17,67],[17,72],[18,23],[18,57],[18,64],[19,24],[19,29],[19,31],[19,34],[19,54],[20,25],[20,30],[20,35],[20,45],[20,50],[20,55],[20,70],[21,26],[22,27],[22,31],[22,52],[22,67],[22,81],[22,87],[23,28],[23,33],[23,43],[23,58],[23,63],[23,68],[23,78],[23,83],[24,29],[24,39],[24,44],[24,54],[25,30],[25,40],[25,60],[25,65],[25,85],[27,31],[27,32],[27,36],[27,37],[27,41],[27,69],[27,77],[27,81],[27,82],[27,87],[28,33],[28,38],[28,43],[28,48],[29,34],[29,39],[29,44],[29,54],[29,59],[30,40],[30,45],[30,60],[30,65],[31,36],[31,41],[31,46],[31,51],[31,56],[32,37],[32,42],[32,47],[32,77],[32,82],[33,38],[33,43],[33,53],[33,58],[33,63],[33,68],[33,73],[33,88],[34,39],[34,44],[34,49],[34,54],[34,59],[35,75],[35,80],[36,41],[36,46],[36,51],[36,56],[36,61],[36,71],[37,42],[37,57],[37,62],[37,64],[37,69],[37,74],[37,77],[37,82],[38,48],[38,53],[39,44],[39,49],[39,59],[40,60],[40,85],[41,46],[41,51],[41,61],[41,66],[41,71],[41,81],[41,86],[42,57],[42,62],[43,58],[43,63],[43,78],[43,83],[44,49],[45,50],[45,55],[46,51],[46,56],[46,61],[46,66],[46,76],[47,72],[48,53],[49,59],[50,70],[50,80],[51,56],[51,61],[51,66],[51,71],[51,76],[53,63],[53,73],[53,88],[55,70],[56,66],[57,62],[57,64],[57,69],[57,74],[58,68],[58,78],[58,83],[61,71],[61,76],[61,86],[62,64],[63,73],[63,78],[63,88],[64,69],[64,74],[64,79],[67,72],[69,74],[69,79],[69,84],[69,89],[70,75],[71,76],[71,86],[73,88],[74,79],[74,84],[74,89],[75,85],[76,86],[77,79],[77,81],[77,84],[77,87],[78,83],[79,84],[79,89],[81,87],[84,89]],entry:83,Q1:[.58,.47],GF:[.735,.581]},R=H.P,U=H.LV,Y=R.length,G={};function Q(t,n){return Math.hypot(R[t][0]-n[0],R[t][1]-n[1])}function V(t,n){return Math.hypot(R[t][0]-R[n][0],R[t][1]-R[n][1])}function J(t,n){return t[0]-n[0]||t[1]-n[1]}function K(t,n,e,r){var a=[n],o={},i=[[Q(n,t),n]],l=[[Q(n,t),n]],s=[];for(o[n]=1;i.length;){i.sort(J);var u=i.shift(),c=u[1];if(u[0]>l[l.length-1][0])break;(G[r][c]||[]).forEach(function(n){if(!o[n]){o[n]=1,a.push(n);var r=Q(n,t);(l.length<e||r<l[l.length-1][0])&&(i.push([r,n]),l.push([r,n]),l.sort(J),l=l.slice(0,e))}}),s.push({cur:c,best:l.map(function(t){return t[1]}),nv:a.length,todo:i.map(function(t){return t[1]})})}return{steps:s,vis:a,res:l.map(function(t){return t[1]})}}function X(t,n){for(var e=H.entry,r=[[e,4]],a=0,o=[],i=4;i>=1;i--){var l=K(t,e,1,i);a+=l.vis.length,o.push(l.vis);var s=l.res[0];s!==e&&r.push([s,i]),e=s,r.push([e,i-1])}var u=K(t,e,n,0);return{route:r,l0:u,dc:a+u.vis.length,start0:e,upvis:o}}function Z(t,n,e,r){var a=Math.min(t.w,t.h)*r,o=S(t,n),i=C(t,e),l=function(t,n){return[o-a/2+t*a,i+a/2-n*a]};return{s:a,f:l,at:function(t){return l(R[t][0],R[t][1])},q:function(t){return l(t[0],t[1])}}}function $(t,n,e,r,a,o,i){var l=Math.min(t.w,t.h)*r,s=S(t,n),u=C(t,e),c=function(t,n){return[s+(t-a)/i*l,u-(n-o)/i*l]};return{s:l,f:c,at:function(t){return c(R[t][0],R[t][1])},q:function(t){return c(t[0],t[1])},inv:function(t,n){return[a+(t-s)/l*i,o-(n-u)/l*i]},inside:function(n){var e=c(R[n][0],R[n][1]);return e[0]>=t.x-4&&e[0]<=t.x+t.w+4&&e[1]>=t.y-4&&e[1]<=t.y+t.h+4}}}function tt(t,n,e,r,a,o){var i=null==o?1:o,l=t.w*e*.78,s=t.w*e*.22,u=C(t,a),c=(u-C(t,r))/6,f=1.25*c*i,h=u-c-4*f,d=S(t,n),p=function(t,n,e){return[d+t*l+n*s,h+(4-e)*f+(1-n)*c]};return{f:p,D:c,at:function(t,n){return p(R[t][0],R[t][1],n)},q:function(t,n){return p(t[0],t[1],n)},plane:function(t){return[p(0,0,t),p(1,0,t),p(1,1,t),p(0,1,t)]}}}function nt(t,n,e,r,a,o){t.push(D(n,e[0],e[1],r,a,T({x0:e[0],y0:e[1]},o)))}function et(t,n,e,r,a,o,i){t.push(L(n,e[0],e[1],r[0],r[1],a,T({lw:o,x0:(e[0]+r[0])/2,y0:(e[1]+r[1])/2},i)))}function rt(t,n,e){return[f(t[0],n[0],e),f(t[1],n[1],e)]}function at(t,n,e,r,a){nt(t,e,r,15*A(n),v,T({glyph:"q",glyphCol:"#FFFFFF"},a))}function ot(t,n,e,r){for(var a=0;a<Y;a++){var o=e?e(a):x;null!==o&&nt(t,"n"+a,n.at(a),r?r(a):6.5,o)}}function it(t,n,e,r,a,o,i){(i||H.E[e]).forEach(function(e,i){var l=r?r(e,i):M;null!==l&&et(t,(o||"e")+e[0]+"_"+e[1],n.at(e[0]),n.at(e[1]),l,a?a(e,i):1.1)})}function lt(t,n,e,r,a,o,i){t.push(O(n,e,0,0,a,o||y,10,{x:r[0],y:r[1]+(null==i?-12:i)*A(n)}))}function st(t,n,e,r,a,o,i,l){t.push(O(n,e,r,a,o,i||y,11.5,T({maxw:.9*n.w},l)))}function ut(t,n,e,r,a,o,i,l,s){var u=A(n);t.push(O(n,"slh",e,r-.95*a,s||"best "+l,b,10));for(var c=0;c<o;c++){var f=i[c],h=c<i.length,d=P(n),p=Math.max(17/u,Math.min(24,n.h*a/u*.8));t.push(B(n,"sl"+c,e,r+c*a,d?Math.max(44,30/u):66,p,h?w:k,h?d?String(f):"node "+f:"·","",{fill:h?E:"#FFFFFF",fs:Math.max(9,10.5*u)}))}}function ct(t,n,e,r,a,o){return{id:t,kind:"bar",x:n,y:e-Math.max(.5,a)/2,w:r,h:Math.max(.5,a),col:o,glow:!1,r:2}}function ft(t,n,e,r,a,o,i,l,s,u){u=u||{};var c=A(n),f=S(n,r),d=n.w*(u.len||.62);t.push(I(e,f,C(n,a),Math.max(.5,d*h(o)),(u.th||13)*c,i)),t.push(O(n,e+"l",r,a-.045,l,y,10.5,{align:"left",maxw:.9*n.w})),s&&t.push(O(n,e+"v",0,0,s,i,10.5,{align:"left",x:f+d*h(o)+6*c,y:C(n,a)}))}Object.keys(H.E).forEach(function(t){var n=G[t]={};H.E[t].forEach(function(t){(n[t[0]]=n[t[0]]||[]).push(t[1]),(n[t[1]]=n[t[1]]||[]).push(t[0])})});var ht=H.Q1,dt=function(t,n){for(var e=[],r=0;r<Y;r++)e.push(r);return e.sort(function(n,e){return Q(n,t)-Q(e,t)||n-e}),e.slice(0,n)}(ht,12),pt=Q(dt[9],ht);var vt=H.GF,gt=function(t,n,e){var r=[n],a=[n],o={},i=[1];for(o[n]=1;;){var l=r[r.length-1],s=-1,u=1e9;if((G[e][l]||[]).forEach(function(n){o[n]||(o[n]=1,a.push(n));var e=Q(n,t);e<u&&(u=e,s=n)}),i.push(a.length),u>=Q(l,t))return{path:r,vis:a,marks:i};r.push(s)}}(vt,35,0),wt=H.E[0].slice().sort(function(t,n){return V(t[0],t[1])-V(n[0],n[1])}),mt=H.E[0].filter(function(t){return t[0]%5!=t[1]%5}).sort(function(t,n){return V(n[0],n[1])-V(t[0],t[1])});function xt(t){return gt.path.map(function(n){return t.at(n)})}var yt=K(vt,35,4,0),bt=(K(vt,35,1,0),K(ht,81,10,0));K(ht,81,4,0),K(ht,81,1,0);function Mt(t,n,e,r,a,o,i,l,s){var u=A(n),c=function(t,n,e){var r=t.steps.length,a=Math.round(h(n)*r);return 0===a?{cur:e,best:[e],nv:1,todo:[e]}:t.steps[a-1]}(r,l,o),f={},d={},p={};r.vis.slice(0,c.nv).forEach(function(t){f[t]=1}),c.best.forEach(function(t){d[t]=1}),(c.todo||[]).forEach(function(t){p[t]=1}),it(t,e,0,function(t){return t[0]===c.cur||t[1]===c.cur?g:M},function(t){return t[0]===c.cur||t[1]===c.cur?2:1}),ot(t,e,function(t){return d[t]?w:f[t]?"visited"===s?"#9AA1AC":g:x},function(t){return d[t]?10:f[t]?"visited"===s?9:8:6.5}),"todo"===s&&Object.keys(p).forEach(function(n){var r=e.at(+n);t.push(_("td"+n,r[0],r[1],17*u,q,q+F,g,{lw:1.6*u}))});var m=e.at(c.cur);return t.push(_("cur",m[0],m[1],20*u,q,q+F,v,{lw:2.2*u})),at(t,n,"q",e.q(a)),c}function kt(t,n,e,r){r=r||{};var a,o,i=A(n),l=null==r.top?4:r.top;for(a=0;a<=l;a++){var s=e.plane(a);s.push(s[0]),t.push(W("pl"+a,s,x,{lw:1,fill:0===a?"#F1EEE8":"#F3F1EC",closed:!0,s:1})),!1!==r.labels&&t.push(O(n,"pll"+a,0,0,"layer "+a+(r.counts?" · "+r.counts[a]:""),x,9.5,{x:e.f(0,0,a)[0]-4*i,y:e.f(0,0,a)[1]+8*i,align:"left"}))}for(a=0;a<=l;a++)H.E[a]&&(null==r.edgesL||r.edgesL(a))&&H.E[a].forEach(function(o){(null==r.skipNode||o[0]!==r.skipNode&&o[1]!==r.skipNode)&&t.push(W("e"+a+"_"+o[0]+"_"+o[1],[e.at(o[0],a),e.at(o[1],a)],0===a?"#CFC6B8":m,{lw:(0===a?.8:1.4)*A(n)}))});for(o=0;o<Y;o++){var u=r.lv?r.lv(o):U[o];if(r.skipNode!==o){for(nt(t,"n"+o,e.at(o,0),(u>0?6:4.5)*i,r.col?r.col(o,0):u>0?m:x),a=1;a<=Math.min(u,l);a++)nt(t,"c"+a+"_"+o,e.at(o,a),6.5*i,r.col?r.col(o,a):m);u>0&&!1!==r.pillars&&t.push(W("pi"+o,[e.at(o,0),e.at(o,Math.min(u,l))],"#C4BBAD",{lw:.8,dash:[2,3]}))}}}var Et=[0,1,2,3,4].map(function(t){return U.filter(function(n){return n>=t}).length}),qt=[1e5,6374,371,20,1],Ft=[1e5,6247,372,27,2];var At=X(ht,10);var St={node:0,cands:[80,15,50,35,70,20,55,10],dec:[[80,"keep"],[15,"skip",80],[50,"keep"],[35,"keep"],[70,"skip",50],[20,"skip",50],[55,"skip",50],[10,"skip",50]]},Ct=[.12,.265,.17];var Tt={node:81,lv:2,links:{2:[67],1:[22,36,57],0:[27,41]},before27:[12,22,4,6,32,36,41,77],after27:[32,81,77,22]};var Pt=[function(t,n,e){var r,a=[],o=A(e),i=Z(e,.42,.47,.86),l=function(t){return dt.indexOf(t)>=0&&dt.indexOf(t)<10};if("hero"===t||"open1"===t){var s="hero"===t?N(n,.05,.85):1,u="open1"===t?Math.round(f(30,90,n)):90;return ot(a,i,function(t){return t>=u?null:Q(t,ht)<=pt*s+1e-9&&s>0?w:x}),at(a,e,"q",i.q(ht)),a.push(_("ring",i.q(ht)[0],i.q(ht)[1],Math.max(1,2*pt*i.s*s),q,q+F,w,{lw:1.6*o})),st(a,e,"ct",.42,.02,"hero"===t?"the 10 nearest of 90 stored points":u+" stored points · 1 query",y),j(a,e,"cap","hero"===t?"nearest-neighbour search: the closest points to a query":"every point is a vector; the star is a query"),a}if("problem"===t){var c=Math.round(90*N(n,0,.92));for(ot(a,i,function(t){return t<c?l(t)&&n>.92?w:g:x}),r=0;r<c;r++)et(a,"ln"+r,i.q(ht),i.at(r),g,.9);return at(a,e,"q",i.q(ht)),st(a,e,"ct",.42,.02,"distance computations: "+c+" of 90",90===c?v:y),j(a,e,"cap","exact search: one distance per stored point"),a}if("recall"===t){var h=N(n,.1,.8),d=dt.slice(0,8).concat([dt[10],dt[11]]);return ot(a,i,function(t){return dt.indexOf(t)>=0&&dt.indexOf(t)<8?w:d.indexOf(t)>=0?g:l(t)?x:"#C9CDD4"}),dt.slice(0,10).forEach(function(t,e){var r=i.at(t);a.push(_("tr"+e,r[0],r[1],15*o,q,q+F*N(n,.05*e,.05*e+.3),t===dt[8]||t===dt[9]?v:w,{lw:1.6*o}))}),at(a,e,"q",i.q(ht)),z(a,e,"g",S(e,.9),C(e,.2),Math.min(.17*e.w,.2*e.h),.8*h,w,(8*h).toFixed(1)+"/10","recall@10"),j(a,e,"cap","approximate: 8 of the true 10 found · recall 0.8"),a}if("cost"===t){var p=Z(e,.16,.2,.38);return ot(a,p,function(t){return l(t)?w:x},function(){return 4}),at(a,e,"q",p.q(ht),{w:10*o}),[["exact · one query at a time",2.71,g],["exact · 1000 queries batched",.059,w],["HNSW · one query (recall 0.997)",.31,v]].forEach(function(t,r){ft(a,e,"b"+r,.06,.55+.15*r,t[1]/2.71*N(n,.18*r,.18*r+.5),t[2],t[0],t[1]+" ms",{len:.68})}),a.push(O(e,"src",.55,.2,"Fashion-MNIST · 60,000 × 784",b,10.5,{maxw:.5*e.w})),j(a,e,"cap","median latency per query, one CPU core"),a}if("code1"===t){var m=90*N(n,0,.85),M=C(e,.86),k=.88*e.w/90,E=0;for(r=0;r<Y;r++)E=Math.max(E,Q(r,ht));for(r=0;r<Y;r++){var T=S(e,.06)+(r+.5)*k,P=r<m,B=l(r)&&n>.88;a.push(D("n"+r,T,C(e,.16),Math.max(3,.75*k),P?B?w:g:x,{x0:T,y0:C(e,.16)})),P&&a.push(ct("db"+r,T,M,Math.max(1.5,.7*k),Q(r,ht)/E*e.h*.55,B?w:"#D9C8A0"))}return a.push(L("cur",S(e,.06)+m*k,C(e,.22),S(e,.06)+m*k,M,v,{lw:1.5,dash:[3,3]})),a.push(O(e,"axl",.5,.93,"distance to the query, one bar per stored vector",b,10,{maxw:.9*e.w})),st(a,e,"ct",.5,.04,n>.88?"10 shortest bars = the answer":"scanned "+Math.round(m)+" of 90",n>.88?w:y),j(a,e,"cap","exact_knn: compute every distance, keep the k smallest"),a}if("io1"===t){var I=dt.slice(0,10);return ot(a,i,function(t){return l(t)?null:x}),I.forEach(function(t,r){var l=N(n,.05*r,.05*r+.4),s=[S(e,.93),C(e,.08+.085*r)];nt(a,"n"+t,rt(i.at(t),s,l),f(6.5,11,l)*o,w),l>.95&&a.push(O(e,"rl"+r,0,0,"#"+(r+1),b,9.5,{x:s[0]-22*o,y:s[1]}))}),at(a,e,"q",i.q(ht)),a.push(_("ring",i.q(ht)[0],i.q(ht)[1],2*pt*i.s,q,q+F,w,{lw:1.6*o})),j(a,e,"cap","out: the k closest vectors, in order of distance"),a}return a},function(t,n,e){var r,a=[],o=A(e),i=Z(e,.5,.47,.88);if("open2"===t){var l=Math.round(216*N(n,0,.9)),s={};return wt.slice(0,l).forEach(function(t){s[t[0]+"_"+t[1]]=1}),it(a,i,0,function(t){return s[t[0]+"_"+t[1]]?m:null},function(){return 1.1}),ot(a,i),st(a,e,"ct",.5,.02,l+" links · each point joined to a few near points",y),j(a,e,"cap","a proximity graph: the bottom layer of our toy HNSW"),a}if("graph"===t){var u=[27,0,50,83,12][Math.min(4,Math.floor(5*n))],c=G[0][u];return it(a,i,0,function(t){return t[0]===u||t[1]===u?v:M},function(t){return t[0]===u||t[1]===u?2.4:1}),ot(a,i,function(t){return t===u?v:c.indexOf(t)>=0?w:x},function(t){return t===u?12:c.indexOf(t)>=0?9:6.5}),lt(a,e,"hl",i.at(u),"node "+u+" · degree "+c.length,v,-14),j(a,e,"cap","nodes, edges, neighbours: a node's degree is its number of links"),a}if("greedy"===t||"io2"===t||"localmin"===t){var f="localmin"===t?1:N(n,.05,.9),h=gt.path.length-1,d=f*h,p=gt.marks[Math.min(gt.marks.length-1,Math.floor(d)+1)],k={};gt.vis.slice(0,p).forEach(function(t){k[t]=1}),it(a,i,0,function(t){return M});var E="localmin"===t,T=Q(81,vt),P=E?N(n,.1,.7):0;return ot(a,i,function(t){return E&&77===t&&n>.55?w:E&&G[0][81].indexOf(t)>=0?g:gt.path.indexOf(t)>=0&&gt.path.indexOf(t)<=d?v:k[t]?g:x},function(t){return!E||77!==t&&81!==t?gt.path.indexOf(t)>=0?8.5:6.5:11}),a.push(W("route",xt(i),v,{lw:2.6*o,t:Math.max(.001,f),arrow:!0})),at(a,e,"q",i.q(vt)),E?(a.push(_("qr",i.q(vt)[0],i.q(vt)[1],Math.max(1,2*T*i.s*P),q,q+F,v,{lw:1.4*o})),G[0][81].forEach(function(t){et(a,"nb"+t,i.at(81),i.at(t),g,2.2)}),lt(a,e,"l81",i.at(81),"81 · stuck",v,16),n>.55&&lt(a,e,"l77",i.at(77),"77 · true nearest",w,-14),st(a,e,"ct",.5,.02,"every neighbour of 81 is farther than 81 itself",y),j(a,e,"cap","a local minimum: nothing nearby looks like progress"),a):(st(a,e,"ct",.5,.02,"hops: "+Math.min(h,Math.floor(d))+" · distance computations: "+p,y),lt(a,e,"l35",i.at(35),"start · 35",b,14),j(a,e,"cap","io2"===t?"greedy routing: fast, and wrong on 51 of 400 queries":"greedy routing: always hop to the closest neighbour"),a)}if("smallworld"===t){var B=Math.round(mt.length*N(n,0,.85)),O={};return mt.slice(0,B).forEach(function(t){O[t[0]+"_"+t[1]]=1}),it(a,i,0,function(t){return O[t[0]+"_"+t[1]]?v:M},function(t){return O[t[0]+"_"+t[1]]?2.2:1}),ot(a,i,function(t){return[x,m,g,w,"#7A8494"][t%5]}),st(a,e,"ct",.5,.02,B+" of 216 links bridge two clusters",v),j(a,e,"cap","small world: a few long links make every walk short"),a}if("code2"===t){var L=Z(e,.24,.32,.5),I=Math.round(400*N(n,0,.9)),z=Math.min(.42*e.w,.62*e.h)/20;for(it(a,L,0,function(){return M},function(){return.7}),ot(a,L,function(t){return gt.path.indexOf(t)>=0?v:x},function(){return 4}),a.push(W("route",xt(L),v,{lw:1.8*o,arrow:!0})),at(a,e,"q",L.q(vt),{w:10*o}),r=0;r<I;r++){var H=37*r%400<51;a.push(D("w"+r,S(e,.55)+(r%20+.5)*z,C(e,.12)+(Math.floor(r/20)+.5)*z,.78*z,H?v:w,{glow:!1}))}return st(a,e,"ct",.75,.04,"wrong nearest: "+Math.round(51*I/400)+" of "+I,v,{maxw:.45*e.w}),j(a,e,"cap","400 random queries, random start: 51 stuck (red)"),a}return a},function(t,n,e){var r,a=[],o=A(e),i=Z(e,.36,.48,.84);if("open3"===t){var l=N(n,.1,.9);return it(a,i,0),ot(a,i,function(t){return gt.path.indexOf(t)>=0?v:x}),a.push(W("route",xt(i),v,{lw:2.4*o,t:Math.max(.001,1-.999*l),dash:[5,4]})),at(a,e,"q",i.q(vt)),ut(a,e,.86,.2,.09,Math.max(1,Math.round(4*l)),[],4,"the beam"),j(a,e,"cap","one path is fragile; keep several alive"),a}if("list"===t||"visited"===t||"fix"===t)return r=Mt(a,e,i,yt,vt,35,0,N(n,0,.92),"visited"===t?"visited":""),"fix"===t&&(a.push(W("ghost",xt(i),v,{lw:1.6*o,dash:[4,4]})),lt(a,e,"l81",i.at(81),"greedy stopped: 81",v,16),77===r.best[0]&&lt(a,e,"l77",i.at(77),"77 · found",w,-14)),ut(a,e,.86,.24,.09,4,r.best,4),st(a,e,"ct",.36,.02,"visited"===t?"visited set: "+r.nv+" points · each one distance":"ef = 4 · expanding node "+r.cur+" · distance computations: "+r.nv,y,{maxw:.66*e.w}),j(a,e,"cap","list"===t?"a capped, sorted list of the best 4 so far":"visited"===t?"grey = already checked; never computed twice":"the beam reaches 77, the true nearest"),a;if("ef10"===t||"code3"===t)return r=Mt(a,e,i,bt,ht,81,0,N(n,0,.92),"code3"===t?"todo":""),ut(a,e,.86,.12,.075,10,r.best,10),st(a,e,"ct",.36,.02,("code3"===t?"rings = still to explore · ":"ef = 10 · ")+"distance computations: "+r.nv,y,{maxw:.66*e.w}),j(a,e,"cap","code3"===t?"two lists: still to explore, and best so far":"ef = 10: the ten true nearest, 23 distances"),a;if("io3"===t){var s=Z(e,.2,.24,.4),u=bt.res,c=N(n,0,.8);return it(a,s,0,null,function(){return.7}),ot(a,s,function(t){return u.indexOf(t)>=0?w:x},function(){return 4}),at(a,e,"q",s.q(ht),{w:10*o}),[[1,5],[4,16],[10,23]].forEach(function(t,n){ft(a,e,"dc"+n,.46,.12+.12*n,t[1]/23*c,g,"ef = "+t[0]+" · distances",String(t[1]),{len:.42})}),[[1,51],[4,6],[10,1]].forEach(function(t,r){ft(a,e,"ms"+r,.08,.6+.12*r,t[1]/51*N(n,.2,1),v,"ef = "+t[0]+" · wrong nearest, of 400",String(t[1]),{len:.7})}),j(a,e,"cap","wider beam: more distances, far fewer misses"),a}return a},function(t,n,e){var r,a,o=[],i=A(e);if("open4"===t)return kt(o,e,r=tt(e,.04,.92,.06,.84,N(n,.05,.9)),{labels:n>.85,pillars:n>.5,edgesL:function(t){return 0===t||n>.6}}),j(o,e,"cap","the flat graph splits into layers"),o;if("stack"===t)return kt(o,e,r=tt(e,.04,.92,.06,.84),{counts:Et,edgesL:function(t){return n>=.18*(4-t)}}),j(o,e,"cap","sparser layers above, with longer links: express lanes"),o;if("levels"===t){r=tt(e,.04,.92,.06,.84);var l=4*N(n,0,.9);return kt(o,e,r,{lv:function(t){return Math.min(U[t],Math.floor(l))},counts:[0,1,2,3,4].map(function(t){return t<=Math.floor(l)?Et[t]:"?"}),edgesL:function(t){return t<=Math.floor(l)}}),st(o,e,"ct",.5,0,"each point climbs a layer with probability 1/4 (M = 4)",y),j(o,e,"cap","levels drawn at random: 90 · 28 · 7 · 4 · 1"),o}if("thin"===t||"code4"===t){kt(o,e,r=tt(e,.02,.5,.06,.84),{counts:Et,labels:!1});var s=N(n,0,.85),u=S(e,.6),c=.36*e.w;for(a=0;a<=4;a++){var f=r.f(.5,.5,a)[1],h=Math.log10(qt[a]+1)/5.05;if(o.push(I("fb"+a,u,f-("code4"===t?6*i:0),Math.max(.5,c*h*N(s,.12*a,.12*a+.5)),9*i,m)),o.push(O(e,"fbl"+a,0,0,qt[a].toLocaleString("en-US"),m,9.5,{x:u+c*h+6*i,y:f-("code4"===t?6*i:0),align:"left"})),"code4"===t){var d=Math.log10(Ft[a]+1)/5.05;o.push(I("sb"+a,u,f+6*i,Math.max(.5,c*d*N(s,.12*a+.1,.12*a+.6)),9*i,g)),o.push(O(e,"sbl"+a,0,0,Ft[a].toLocaleString("en-US"),g,9.5,{x:u+c*d+6*i,y:f+6*i,align:"left"}))}}return o.push(O(e,"bh",.78,0,"code4"===t?"faiss index vs our 5-line draw":"real faiss index, M = 16 · log scale",b,10,{maxw:.42*e.w})),j(o,e,"cap","code4"===t?"simulated levels match the real index":"each layer ≈ 1/16 of the one below"),o}if("flatvs"===t||"io4"===t){r=tt(e,.04,.92,.04,.66);var p=X(ht,10),w="io4"===t;kt(o,e,r,{col:function(t,n){return t===H.entry?v:n>0?m:x}});var M=p.route.map(function(t){return r.at(t[0],t[1])});o.push(W("route",M,v,{lw:2.6*i,arrow:!0,t:Math.max(.001,w?1:N(n,0,.7))}));var k=r.at(H.entry,4);return o.push(_("ep",k[0],k[1],22*i,q,q+F*(w?N(n,0,.8):1),v,{lw:2*i})),lt(o,e,"epl",k,"entry · node 83",v,-16),w||(ft(o,e,"fv0",.06,.8,1*N(n,.2,.8),x,"flat graph, 4,000 points","104.6 distances",{len:.55,th:11}),ft(o,e,"fv1",.06,.93,60.6/104.6*N(n,.35,.95),v,"layered","60.6 distances",{len:.55,th:11})),j(o,e,"cap",w?"every search starts at the entry point on top":"layers start the search close"),o}return o},function(t,n,e){var r,a=[],o=A(e);if("open5"===t||"descent"===t||"io5"===t){r=tt(e,.04,.92,.08,.86);var i=At,l=i.route.map(function(t){return r.at(t[0],t[1])}),s="open5"===t?0:N(n,0,.9),u={},c=Math.floor(s*(l.length-1)+1e-6);i.route.slice(0,c+1).forEach(function(t){u[t[0]+"@"+t[1]]=1}),kt(a,e,r,{col:function(t,n){return u[t+"@"+n]?v:n>0?m:x}});for(var f=0;f<=4;f++){var h=r.q(ht,f);nt(a,"qq"+f,h,7*o,v,{glow:!1})}if("open5"===t){var d=r.q(ht,4),p=[d[0],C(e,-.02)];at(a,e,"q",rt(p,d,N(n,.1,.8)))}else at(a,e,"q",r.q(ht,4)),a.push(W("route",l,v,{lw:2.8*o,arrow:!0,t:Math.max(.001,s)}));return"open5"!==t&&st(a,e,"ct",.5,0,["83 on layer 4","→ 67 on layer 3","→ 81 on layer 2","81 on layer 1","drop to layer 0"][Math.min(4,Math.floor(5*s))]+" · ef = 1 above layer 0",y),j(a,e,"cap","open5"===t?"a query arrives at the top layer":"greedy descent through the layers"),a}if("beam0"===t){var b=Z(e,.36,.5,.84),M=At.l0,k=Mt(a,e,b,M,ht,At.start0,0,N(n,0,.92),"");return ut(a,e,.86,.12,.075,10,k.best,10),st(a,e,"ct",.36,.02,"layer 0 · ef = 10 · total distances: "+(14+k.nv),y,{maxw:.66*e.w}),j(a,e,"cap","the beam finishes on layer 0: the true 10, 37 distances"),a}if("efk"===t||"code5"===t){var E=Z(e,.2,.24,.4),q=At.l0.res;return it(a,E,0,null,function(){return.7}),ot(a,E,function(t){return q.indexOf(t)>=0?w:x},function(){return 4}),at(a,e,"q",E.q(ht),{w:10*o}),"efk"===t?([[1,19],[4,30],[10,37],[20,56]].forEach(function(t,r){ft(a,e,"dc"+r,.08,.58+.11*r,t[1]/56*N(n,.12*r,.12*r+.5),g,"ef = "+t[0],t[1]+" distances",{len:.7})}),a.push(O(e,"kl",.7,.12,"k = how many you get back",y,10.5,{maxw:.5*e.w})),a.push(O(e,"el",.7,.2,"ef = how many it keeps looking at",y,10.5,{maxw:.5*e.w})),a.push(O(e,"ml",.7,.3,"hnswlib uses max(ef, k)",v,10.5,{maxw:.5*e.w})),j(a,e,"cap","wider beam, more distance computations"),a):(z(a,e,"g",S(e,.68),C(e,.5),Math.min(.34*e.w,.42*e.h),.9975*N(n,0,.85),w,(.9975*N(n,0,.85)).toFixed(4),"recall@10 · Fashion-MNIST, ef 64"),j(a,e,"cap","hnswlib on 60,000 real vectors: recall 0.9975"),a)}return a},function(t,n,e){var r,a=[],o=A(e),i=function(t){return $(e,.5,.48,.9,f(.5,Ct[0],t),f(.5,Ct[1],t),f(1,Ct[2],t))},l=function(t){return St.cands.indexOf(t)};function s(t,n,i){for(i&&it(a,t,0,function(n){return t.inside(n[0])&&t.inside(n[1])?M:null}),r=0;r<Y;r++)t.inside(r)&&nt(a,"n"+r,t.at(r),(0===r?13:l(r)>=0?10:6.5)*o,n(r));St.cands.forEach(function(n){t.inside(n)&&a.push(O(e,"rl"+n,0,0,String(n),y,9.5,{x:t.at(n)[0],y:t.at(n)[1]-11*o}))}),a.push(O(e,"n0l",0,0,"node 0",v,10.5,{x:t.at(0)[0],y:t.at(0)[1]+15*o}))}if("open6"===t){var u=i(N(n,.05,.9));for(it(a,u,0,function(t){return u.inside(t[0])&&u.inside(t[1])?M:null}),r=0;r<Y;r++)u.inside(r)&&nt(a,"n"+r,u.at(r),(0===r?f(6.5,13,n):6.5)*o,0===r?v:x);return j(a,e,"cap","zooming in on node 0 and its candidates"),a}if("simple"===t){var c=i(1);return s(c,function(t){return 0===t?v:l(t)>=0&&l(t)<4?g:x},!1),St.cands.slice(0,4).forEach(function(t,e){var r=N(n,.18*e,.18*e+.3);r>0&&a.push(W("lk"+t,[c.at(0),rt(c.at(0),c.at(t),r)],g,{lw:2.4*o}))}),st(a,e,"ct",.5,.02,"closest 4: 80, 15, 50, 35 · 80 and 15 point the same way",y),j(a,e,"cap","the obvious rule: link the M closest"),a}if("occlude"===t||"code6"===t){var d=i(1),p=8*N(n,0,.9),m=[];St.dec.forEach(function(t,n){n<p&&"keep"===t[1]&&m.push(t[0])});var b=St.dec[Math.min(7,Math.floor(p))],k=p<8&&"skip"===b[1]?b[2]:null;if(null!=k){var E=function(t,n,e,r){for(var a=t.inv,o=[a(r.x,r.y),a(r.x+r.w,r.y),a(r.x+r.w,r.y+r.h),a(r.x,r.y+r.h)],i=[],l=R[n],s=R[e],u=function(t){return Math.hypot(t[0]-s[0],t[1]-s[1])-Math.hypot(t[0]-l[0],t[1]-l[1])},c=0;c<4;c++){var h=o[c],d=o[(c+1)%4],p=u(h),v=u(d);if(p<=0&&i.push(h),p<0!=v<0){for(var g=0,w=1,m=0;m<30;m++){var x=(g+w)/2;u([f(h[0],d[0],x),f(h[1],d[1],x)])<0==p<0?g=x:w=x}i.push([f(h[0],d[0],g),f(h[1],d[1],g)])}}return i.map(function(n){return t.f(n[0],n[1])})}(d,0,k,e);E.length>2&&(E.push(E[0]),a.push(W("sh",E,"#E8D9B6",{lw:0,fill:"#F6EEDC",closed:!0})))}s(d,function(t){if(0===t)return v;var n=l(t);if(n<0)return x;var e=St.dec[n];return n>=p?x:"keep"===e[1]?w:"#B7AE9F"},!1),St.dec.forEach(function(t,n){var e=h(p-n);if(!(e<=0)){var r=t[0];"keep"===t[1]?a.push(W("lk"+r,[d.at(0),rt(d.at(0),d.at(r),N(e,0,.7))],w,{lw:2.8*o})):a.push(W("oc"+r,[d.at(t[2]),rt(d.at(t[2]),d.at(r),N(e,0,.7))],"#B7AE9F",{lw:1.4*o,dash:[3,3]}))}});var P=St.dec[Math.min(7,Math.floor(p))];if(p<8){var B=d.at(P[0]);a.push(_("cur",B[0],B[1],22*o,q,q+F,v,{lw:2*o}))}return"code6"===t&&n>.9&&m.forEach(function(t){var n;a.push(T({id:"f"+t,kind:"flow",from:"n0",to:"n"+t,rate:.45,col:w},n))}),st(a,e,"ct",.5,.02,p<8?"candidate "+P[0]+": "+("keep"===P[1]?"keep":"skip, in the shadow of "+P[2]):"kept 80, 50, 35 · three directions",y),j(a,e,"cap","code6"===t?"select_neighbours(0, cands, 4) → [80, 50, 35]":"shaded = closer to a kept neighbour than to node 0: skipped"),a}if("bridges"===t||"io6"===t){var D="io6"===t,L=D?Z(e,.5,.42,.8):Z(e,.75,.36,.46),I=Z(e,.25,.36,.46),U=N(n,0,.7),G=function(t){return t[0]%5!=t[1]%5};for(it(a,L,0,function(t){return G(t)&&U>0?v:M},function(t){return G(t)&&U>0?1.8:.8}),D||it(a,I,0,function(t){return G(t)&&U>0?v:M},function(t){return G(t)&&U>0?1.8:.8},"s",H.ES),r=0;r<Y;r++)nt(a,"n"+r,L.at(r),(D?6:4)*o,x),D||nt(a,"sn"+r,I.at(r),4*o,x);return D?(z(a,e,"g",S(e,.9),C(e,.12),Math.min(.15*e.w,.18*e.h),.99*N(n,.2,.9),w,"0.99","recall@5"),j(a,e,"cap","diverse links: bridges survive, searches don't get trapped"),a):(a.push(O(e,"hl",.75,.04,"heuristic · 216 links · 45 bridges",w,10,{maxw:.46*e.w})),a.push(O(e,"sl",.25,.04,"closest-M · 325 links · 43 bridges",g,10,{maxw:.46*e.w})),ft(a,e,"rs",.04,.8,.747*N(n,.3,.9),g,"closest-M · recall@5, ef 5","0.747",{len:.36,th:11}),ft(a,e,"rh",.54,.8,.99*N(n,.3,.9),w,"heuristic · recall@5, ef 5","0.99",{len:.36,th:11}),j(a,e,"cap","fewer links, as many bridges, better routing"),a)}return a},function(t,n,r){var a,o,i,l=[],s=A(r),u=Tt.node;if("open7"===t||"ins"===t||"descend7"===t||"io7"===t){a=tt(r,.04,.92,.08,.86);var c=[[2,67],[1,22],[1,36],[1,57],[0,27],[0,41]],d=("descend7"===t?N(n,0,.9):"io7"===t?1:0)*c.length;if(kt(l,r,a,{skipNode:u,col:function(n,e){return 10===n&&3===e&&"ins"===t||67===n&&e>=2&&"open7"!==t?g:e>0?m:x}}),"open7"===t){var p=Math.min(2,Math.floor(3*N(n,.1,.8))),k=a.at(u,p),E=[k[0],C(r,-.02)];return nt(l,"new",rt(E,k,N(n,0,.25)),16*s,v,{glyph:String(p),glyphCol:"#FFFFFF"}),st(l,r,"ct",.5,0,"new point · level draw: "+p,v),j(l,r,"cap","a new point draws its level: 2"),l}for(i=0;i<=Tt.lv;i++)nt(l,0===i?"n"+u:"c"+i+"_"+u,a.at(u,i),("ins"===t?7:10)*s,v);if("ins"===t){var S=[a.at(10,3),a.at(67,3),a.at(67,2),a.at(u,2)];return l.push(W("route",S,v,{lw:2.6*s,arrow:!0,t:Math.max(.001,N(n,0,.85))})),lt(l,r,"l10",a.at(10,3),"entry then: 10",b,-12),st(l,r,"ct",.5,0,"greedy on layer 3 → 67, then search each layer with ef = efConstruction",y),j(l,r,"cap","to insert a point, search for it"),l}if(c.forEach(function(t,n){var e=h(d-n);if(!(e<=0)){var r=a.at(u,t[0]),o=a.at(t[1],t[0]);l.push(W("nl"+t[0]+"_"+t[1],[r,rt(r,o,N(e,0,.8))],v,{lw:2.6*s}))}}),"io7"===t){var T=a.at(u,0);l.push(_("ring",T[0],T[1],24*s,q,q+F*N(n,0,.8),v,{lw:2*s}))}return st(l,r,"ct",.5,0,"layer 2: 67 · layer 1: 22, 36, 57 · layer 0: 27, 41",v),j(l,r,"cap","io7"===t?"node 81, linked on its three layers":"links chosen by the heuristic, made both ways"),l}if("prune"===t){var P=$(r,.5,.5,.86,R[27][0],R[27][1],.36),B=N(n,.15,.85),D=Tt.after27,L=Tt.before27.concat([81]);for(it(l,P,0,function(t){return P.inside(t[0])&&P.inside(t[1])&&27!==t[0]&&27!==t[1]?"#E3DDD2":null},function(){return.8}),L.forEach(function(t){var n=D.indexOf(t)<0,r=n?B>0?e(m,"#C9C2B6",B):m:81===t?v:w,a=n?f(1.8,0,B):2.4;(!n||B<.98)&&l.push(W("pk"+t,[P.at(27),n?rt(P.at(t),P.at(27),.9*B):P.at(t)],r,{lw:Math.max(.3,a)*s}))}),o=0;o<Y;o++)if(P.inside(o)){var I=L.indexOf(o)>=0;nt(l,"n"+o,P.at(o),(27===o?13:I?9:5)*s,27===o?m:81===o?v:I?D.indexOf(o)<0&&B>.5?"#B7AE9F":w:x),(I||27===o)&&l.push(O(r,"nl"+o,0,0,String(o),y,9.5,{x:P.at(o)[0],y:P.at(o)[1]-11*s}))}return st(l,r,"ct",.5,.02,B<.05?"node 27: 8 links + 81 = 9, but layer 0 allows 8":B>.95?"re-chosen by the heuristic: 4 links kept":"re-choosing with the heuristic",y),j(l,r,"cap","overflow: node 27 trims its list to 32, 81, 77, 22"),l}if("build"===t){var z=Z(r,.2,.24,.4);return it(l,z,0,null,function(){return.7}),ot(l,z,null,function(){return 4}),ft(l,r,"t1",.5,.12,1*N(n,0,.5),x,"1 thread","42.3 s",{len:.36}),ft(l,r,"t12",.5,.26,4.6/42.3*N(n,.1,.6),v,"12 threads","4.6 s",{len:.36}),ft(l,r,"o0",.08,.66,.944*N(n,.3,.85),g,"inserted sorted by cluster · recall@10","0.944",{len:.7}),ft(l,r,"o1",.08,.82,.985*N(n,.4,.95),w,"inserted shuffled · recall@10","0.985",{len:.7}),j(l,r,"cap","parallel builds are fast; grouped insertion order hurts"),l}if("code7"===t){var H=Z(r,.5,.47,.88),U=Math.round(Y*N(n,0,.9)),G=[],Q={};for(o=0;o<Y;o++)G.push((37*o+11)%Y);for(G.slice(0,U).forEach(function(t){Q[t]=1}),it(l,H,0,function(t){return Q[t[0]]&&Q[t[1]]?M:null}),o=0;o<Y;o++)Q[o]&&nt(l,"n"+o,H.at(o),6.5*s,G.indexOf(o)>=U-6?v:x);return st(l,r,"ct",.5,.02,"inserted "+U+" of 90, in shuffled order",y),j(l,r,"cap","add_items: one search-and-link per point"),l}return l}];!function(t){t.forEach(function(t){t.cards=[].slice.call(t.el.querySelectorAll(".card")),t.vis=!1,new IntersectionObserver(function(n){n.forEach(function(n){t.vis=n.isIntersecting}),a=!0},{threshold:0,rootMargin:"160px 0px 160px 0px"}).observe(t.el)});var n=[].slice.call(document.querySelectorAll("#nav a")),e=n.map(function(t){return document.querySelector(t.getAttribute("href"))}),r=document.getElementById("progress"),a=!0,o=performance.now();function i(){var a=innerHeight;if(t.forEach(function(t){if(t.vis){for(var n=0,e=0;e<t.cards.length;e++)t.cards[e].getBoundingClientRect().top<=.56*a&&(n=e);var r=t.cards[n].getBoundingClientRect();t.stage.apply(t.cards[n].getAttribute("data-scene"),d((.82*a-r.top)/(.95*r.height)))}}),r){var o=document.documentElement,i=o.scrollHeight-o.clientHeight;r.style.width=(i>0?o.scrollTop/i*100:0)+"%"}for(var l=0,s=0;s<e.length;s++)e[s]&&e[s].getBoundingClientRect().top<=150&&(l=s);for(s=0;s<n.length;s++)n[s].classList.toggle("here",s===l)}function l(){t.forEach(function(t){t.stage.resize()}),i()}addEventListener("resize",l),addEventListener("orientationchange",function(){setTimeout(l,150)}),addEventListener("scroll",function(){a=!0},{passive:!0}),l(),requestAnimationFrame(function n(e){var r=Math.min(64,e-o);o=e,a&&(a=!1,i());for(var l=0;l<t.length;l++)t[l].vis&&(t[l].stage.step(e,r),t[l].stage.draw());requestAnimationFrame(n)});var s=new IntersectionObserver(function(t){t.forEach(function(t){t.target.classList.toggle("lit",t.isIntersecting)})},{rootMargin:"-22% 0px -22% 0px",threshold:0});document.querySelectorAll(".card .box").forEach(function(t){s.observe(t)})}(Pt.map(function(t,n){return{el:document.getElementById("a"+(n+1)),stage:r(document.getElementById("cv"+(n+1)),t)}}))}();
+</script>
+</body>
+</html>
+</body>
+</html>

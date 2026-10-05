@@ -218,6 +218,12 @@ EXPLORABLES = {
         short="Resize retrieval chunks until they ruin the answer, then find each system's scar.",
         about="Generative AI systems in production"),
 
+    "hnsw-how-it-works": dict(
+        desc="Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, "
+             "and a query drop through five layers to its ten nearest neighbours.",
+        short="Watch a greedy walk get stuck, a beam rescue it, and a query drop through layers.",
+        about="HNSW (Hierarchical Navigable Small World) vector search"),
+
     "1-jev-explained": dict(
         desc="Jev answers typed questions with calibrated probabilities in 100 ms. Push 200 support "
              "tickets through it, slide the confidence gate, and see who pays for each.",
@@ -533,6 +539,8 @@ KEYWORDS = {
                          "what is a learning rate", "how does model training work"],
     "how-twenty-companies-run-generative-ai": ["generative AI in production", "real world LLM examples", "how companies use generative AI",
                                                "LLM production architecture", "retrieval chunk size"],
+    "hnsw-how-it-works": ["what is HNSW", "how does HNSW work", "HNSW explained", "how do vector databases search",
+                          "approximate nearest neighbor search", "HNSW ef M efConstruction", "vector search for RAG"],
     "1-jev-explained": ["what is Jev TypeSafe", "TypeSafe System One model", "calibrated LLM classification",
                         "typed AI decisions", "LLM routing with confidence"],
     "is-it-actually-thinking": ["how does an LLM work", "do LLMs actually think", "is AI really thinking",
