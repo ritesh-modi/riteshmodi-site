@@ -1335,5 +1335,6 @@
 <script>!function(){var t=document.documentElement,e=document.getElementById("themeBtn");function n(n){n&&t.setAttribute("data-theme",n),e.textContent="dark"===r()?"☀":"☾"}function r(){var e=t.getAttribute("data-theme");return e||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}n(null),e.addEventListener("click",function(){n("dark"===r()?"light":"dark")});var c=Array.prototype.slice.call(document.querySelectorAll("#tocnav a")),a={};c.forEach(function(t){a[t.getAttribute("href").slice(1)]=t});var o=new IntersectionObserver(function(t){t.forEach(function(t){if(t.isIntersecting){c.forEach(function(t){t.classList.remove("active")});var e=a[t.target.id];e&&e.classList.add("active")}})},{rootMargin:"-10% 0px -80% 0px",threshold:0});document.querySelectorAll("main section").forEach(function(t){o.observe(t)})}();
 </script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7172bb3e04a4ccf947bf41eaf679b41"}'></script>
+<script src="/assets/share.js" defer></script>
 </body>
 </html>
