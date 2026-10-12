@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why learn machine learning before you build on LLMs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Literata:opsz,wght@7..72,400;7..72,600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>:root{--v11:#F1EEF6;--v12:#E4DFEE;--v3:#191527;--v5:#453E5C;--v4:#635B7C;--v14:#CFC8E0;--v0:#5B3FB5;--v18:#DDD5F0;--v13:#B0333F;--v17:#7D5A10;--v15:#1F6B57;--v9:#16122A;--v10:#E2DCF2;--v6:680px;--v19:1060px;--v8:22px;--v2:"Zilla Slab",Georgia,serif;--v1:"Literata",Georgia,"Times New Roman",serif;--v7:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;--v16:.4s cubic-bezier(.4,0,.2,1)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--v11:#141222;--v12:#1E1A31;--v3:#E7E3F4;--v5:#B6AFCD;--v4:#918AA9;--v14:#322C4A;--v0:#A996F5;--v18:#2A2448;--v13:#EE8A8F;--v17:#D9AE55;--v15:#6FC7AA;--v9:#0B0918;--v10:#E2DCF2}}:root[data-theme="dark"]{--v11:#141222;--v12:#1E1A31;--v3:#E7E3F4;--v5:#B6AFCD;--v4:#918AA9;--v14:#322C4A;--v0:#A996F5;--v18:#2A2448;--v13:#EE8A8F;--v17:#D9AE55;--v15:#6FC7AA;--v9:#0B0918;--v10:#E2DCF2}@media (prefers-reduced-motion:reduce){:root{--v16:0s}}*{box-sizing:border-box}html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--v11);color:var(--v3);font-family:var(--v1);font-size:18.5px;line-height:1.7;overflow-x:hidden;transition:background var(--v16),color var(--v16)}svg{max-width:100%}.col{max-width:var(--v6);margin:0 auto;padding:0 var(--v8);position:relative}.wide{max-width:var(--v19);margin:0 auto;padding:0 var(--v8)}.bleed{width:100%;margin:0}section{padding:clamp(72px,9vw,124px) 0 0}h1,h2,h3{font-family:var(--v2);margin:0;font-weight:700}h2{font-size:clamp(29px,4.2vw,42px);line-height:1.1;margin:0 0 22px;letter-spacing:-.01em}h3{font-size:18px;margin:0 0 8px}p{margin:0 0 20px}a{color:var(--v0);text-underline-offset:3px}code,.m{font-family:var(--v7);font-size:.84em}.lede{font-size:clamp(19px,2.4vw,23px);line-height:1.5;color:var(--v5)}.pull{font-family:var(--v2);font-size:clamp(23px,3vw,30px);line-height:1.28;border-left:3px solid var(--v0);padding-left:20px;margin:34px 0}.intu{border:1px solid var(--v14);border-left:4px solid var(--v0);border-radius:0 8px 8px 0;padding:18px 22px;margin:26px 0;background:var(--v12);font-size:17px}.intu::before{content:"Picture it";display:block;font-family:var(--v7);font-size:12.5px;letter-spacing:.06em;color:var(--v0);margin-bottom:6px}.try{border:1px dashed var(--v0);border-radius:8px;padding:16px 20px;margin:24px 0;font-size:17px}.try::before{content:"Answer before you read on";display:block;font-family:var(--v7);font-size:12.5px;letter-spacing:.06em;color:var(--v0);margin-bottom:6px}.note{background:var(--v12);border-radius:8px;padding:18px 22px;margin:26px 0;font-size:17px;color:var(--v5)}.note h3{color:var(--v3)}.note ul{margin:6px 0 0;padding-left:18px}.note li{margin:6px 0}.note li span{font-family:var(--v7);font-size:12.5px;color:var(--v4);margin-left:6px}.fig{margin:28px auto 8px;border:1px solid var(--v14);border-radius:10px;background:var(--v11);padding:18px}.fig svg{display:block;width:100%;height:auto;touch-action:manipulation}.eyebrow{font-family:var(--v7);font-size:12.5px;color:var(--v4);margin:0 0 12px;line-height:1.45}.eyebrow b{color:var(--v0);font-weight:600}.panel{background:var(--v9);color:var(--v10);border-radius:8px;padding:14px 16px;font-family:var(--v7);font-size:13.5px;line-height:1.55;white-space:pre-wrap;overflow-x:auto}.rail{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}button{font-family:var(--v7);font-size:13.5px;padding:8px 13px;border:1px solid var(--v14);border-radius:7px;background:var(--v11);color:var(--v3);cursor:pointer;min-height:38px;transition:background var(--v16),border-color var(--v16),color var(--v16)}button:hover{border-color:var(--v0)}button.on{background:var(--v0);border-color:var(--v0);color:var(--v11)}button.go{border-color:var(--v0);color:var(--v0);font-weight:600}input[type=range]{accent-color:var(--v0);width:100%;max-width:300px}input[type=text]{font-family:var(--v7);font-size:15px;padding:9px 11px;border:1px solid var(--v14);border-radius:7px;background:var(--v11);color:var(--v3);width:100%}label{font-family:var(--v7);font-size:13.5px;color:var(--v5);display:block;margin-top:10px}:focus-visible{outline:2px solid var(--v0);outline-offset:2px}::selection{background:var(--v0);color:var(--v11)}.lab{font-family:var(--v7);font-size:13px;fill:var(--v4)}.val{font-family:var(--v7);font-size:14px;fill:var(--v3)}.sub{font-family:var(--v7);font-size:13px;fill:var(--v5)}.rev{font-family:var(--v7);font-size:14px;fill:var(--v11)}.case{stroke-width:1;transition:fill var(--v16),stroke var(--v16)}.case.unknown{fill:none;stroke:var(--v14);stroke-dasharray:2 2}.case.no{fill:var(--v18);stroke:var(--v18)}.case.yes{fill:var(--v0);stroke:var(--v0)}.case.miss{fill:var(--v13);stroke:var(--v13)}.hit{fill:transparent;cursor:pointer}.bar{fill:var(--v0)}.readout{font-family:var(--v7);font-size:14.5px;color:var(--v5);margin:10px 0 0}.readout b{color:var(--v3)}.ok{color:var(--v15)}.bad{color:var(--v13)}.meh{color:var(--v17)}.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}@media(max-width:760px){.grid2{grid-template-columns:1fr}}.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}.hr{max-width:var(--v6);margin:clamp(72px,9vw,124px) auto 0;height:1px;background:var(--v14)}footer{padding:70px 0 110px;font-size:15px;color:var(--v5)}.weeds{display:none}.weeds.open{display:block}.lib-item{display:block;padding:12px 0;border-bottom:1px solid var(--v14);text-decoration:none;color:var(--v3)}.lib-item b{color:var(--v0)}.lib-item span{display:block;font-size:15px;color:var(--v5)}.lib-item i{font-style:normal;font-family:var(--v7);font-size:12.5px;color:var(--v4)}table.t{border-collapse:collapse;width:100%;font-size:15px}table.t td{border-bottom:1px solid var(--v14);padding:8px 6px;vertical-align:top}#count{position:fixed;right:16px;bottom:16px;z-index:50;font-family:var(--v7);font-size:12.5px;color:var(--v4);background:var(--v12);border:1px solid var(--v14);border-radius:20px;padding:6px 12px}header.hero{padding:12vh var(--v8) 5vh;max-width:1060px;margin:0 auto}header.hero h1{font-size:clamp(40px,5.6vw,72px);line-height:1.02;max-width:17ch;font-weight:700}header.hero .lede{margin-top:22px;max-width:52ch}header.hero .fig{margin-top:38px}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="A churn model scores 90% and catches almost nobody. Switch predictors, move the threshold and check calibration to see what classic machine learning teaches before LLMs.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/ml-before-llm">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="Why learn machine learning before you build on LLMs">
+  <meta property="og:description" content="A 90% accurate model that catches almost nobody, and what that teaches you before LLMs.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/ml-before-llm">
+  <meta property="og:image" content="https://www.loopingly.com/og/ml-before-llm.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Why learn machine learning before you build on LLMs">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Why learn machine learning before you build on LLMs">
+  <meta name="twitter:description" content="A 90% accurate model that catches almost nobody, and what that teaches you before LLMs.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/ml-before-llm.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"Why learn machine learning before you build on LLMs","description":"A churn model scores 90% and catches almost nobody. Switch predictors, move the threshold and check calibration to see what classic machine learning teaches before LLMs.","url":"https://www.loopingly.com/explorables/ml-before-llm","image":"https://www.loopingly.com/og/ml-before-llm.png","datePublished":"2026-10-03","dateModified":"2026-10-03","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Machine learning fundamentals for LLM builders"},"keywords":"should I learn machine learning before LLMs, accuracy paradox base rate, classification threshold explained, model calibration explained, data leakage machine learning"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"Why learn machine learning before you build on LLMs"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+<div id="count" aria-hidden="true">start</div>
+
+<header class="hero">
+<h1>Learn the boring machine learning first. The LLM part gets easier and safer.</h1>
+<p class="lede">Every tile below is one real decision your model has to get right. Most of them are easy, and the handful that matter are the ones a 90% accuracy score hides. That is the gap this page is about.</p>
+<div class="fig">
+<p style="font-family:var(--v7);font-size:12.5px;color:var(--v4);margin:0 0 10px">Fig. 1 · 600 customers, 71 of whom will leave. Switch between the two predictors and watch who gets caught.</p>
+<div class="rail"><button class="on" data-h="none">predict nobody leaves</button><button data-h="model">use the model</button></div>
+<svg id="heroGrid" viewBox="0 0 640 220" role="img" aria-label="Grid of 600 customer tiles"></svg>
+<p class="readout" id="heroOut"></p>
+</div>
+</header>
+
+<main>
+<section data-ch="01">
+<div class="col reveal">
+<h2>A model can be 90% accurate and catch almost nobody</h2>
+<p>Kestrel Bikes wants to know which subscription customers will cancel next month, so the retention team can call them. A vendor demo reports 90% accuracy. The team buys it. Three months later, churn has not moved at all.</p>
+<div class="try">Out of 600 customers, 71 actually cancel. What accuracy would you score by predicting, with no model at all, that nobody ever cancels?</div>
+<p>88.2%. That is the number to beat, and it comes from a program with no model in it: one line that says no. This is the <b>base rate</b> problem, and it is the first thing a week of ordinary machine learning teaches you. <b>Accuracy</b> counts how often you are right, which is a nearly useless measure when one answer is right 88% of the time by default.</p>
+<p>The trained model in the grid above scores 89.0%. Barely above the do-nothing line. Worse, look at who it catches.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 2</b> · Pick a predictor. The four counts are the whole of model evaluation, and every one of them is a different business consequence.</p>
+<div class="rail" id="cmBtns"></div>
+<div class="grid2">
+<svg id="cmSvg" viewBox="0 0 320 250"></svg>
+<div><svg id="cmBars" viewBox="0 0 320 200"></svg><p class="readout" id="cmOut"></p></div>
+</div>
+</div>
+</div>
+<div class="col reveal">
+<p>At its default setting the model finds 15 of the 71 leavers. <b>Recall</b>, the share of real leavers it catches, is 21%. The retention team was handed a list that misses four out of five people they were trying to save, and the accuracy score on the slide never mentioned it.</p>
+<div class="intu">A smoke alarm that never goes off is right on almost every day of your life. Its accuracy over a year is close to perfect and it is worth nothing, because the only day it is graded on is the day there is a fire. <b>When the thing you care about is rare, being right on average and being useful are different achievements.</b></div>
+<p>None of this is about language models, and that is the point. Anyone who skips straight to prompting a chatbot for predictions inherits every one of these traps, plus a system that cannot even show you its four counts.</p>
+<div class="note">
+<h3>Go deeper: the measurements</h3>
+<ul>
+<li><a href="https://mlu-explain.github.io/precision-recall/" target="_blank" rel="noopener">Precision and recall, visually</a> MLU-Explain<span>visual · beginner</span></li>
+<li><a href="https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall" target="_blank" rel="noopener">Accuracy, precision, recall</a> Google crash course<span>course · beginner</span></li>
+<li><a href="https://www.youtube.com/@statquest" target="_blank" rel="noopener">StatQuest</a> the friendliest explanations of the classical toolkit<span>video · beginner</span></li>
+</ul>
+</div>
+<p>So the model is poor. Except it is not: the same model, with one number changed and no retraining at all, finds more than half the leavers. That number is not part of the model.</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="02">
+<div class="col reveal">
+<h2>The threshold is a business decision wearing a technical costume</h2>
+<p>The model does not output "will leave". It outputs a probability for each customer. Turning that into a phone-call list needs a cut-off, and choosing the cut-off is choosing how many people you are willing to call for nothing in order to save one who would have left.</p>
+<p>Put the retention offer's cost and a saved customer's value in, then drag the cut-off until the money is best.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 3</b> · Same trained model throughout. Only the cut-off moves. Purple tiles are customers the model flags; red tiles are leavers it missed.</p>
+<div class="rail"><label>cut-off <b id="thv">0.50</b></label><input type="range" id="thS" min="0.05" max="0.9" step="0.01" value="0.5"></div>
+<svg id="thGrid" viewBox="0 0 640 200"></svg>
+<div class="grid2">
+<div>
+<label>cost of one retention call and offer <b id="cvA">15</b></label><input type="range" id="cA" min="1" max="80" step="1" value="15">
+<label>value of keeping one customer <b id="cvB">200</b></label><input type="range" id="cB" min="50" max="900" step="10" value="200">
+<p class="readout" id="thOut"></p>
+</div>
+<div><svg id="thCurve" viewBox="0 0 320 220"></svg></div>
+</div>
+</div>
+</div>
+<div class="col reveal">
+<p>At 0.5 the model flags 25 people and saves the ones it catches. Drop the cut-off to 0.2 and it flags 96, catching 38 of the 71 leavers, and at a 15 pound offer against a 200 pound customer, that trade is strongly worth making. Accuracy went down. Profit went up. Those two sentences are the reason accuracy is the wrong slide.</p>
+<p><b>Precision</b> is the other half of the trade: of the people you call, what share would really have left. Precision and recall move against each other, always, and the honest way to present a model is both numbers at the cut-off you actually intend to use.</p>
+<div class="intu">Airport security screening is tuned, not solved. Loosen it and you stop more threats while searching more grandmothers; tighten it and the queue moves while more gets through. <b>Nobody thinks there is a "correct" setting hidden in the scanner, because everyone can see the two costs.</b> A churn model has exactly the same dial, and it is usually left at whatever the library's default was.</div>
+<div class="note">
+<h3>Go deeper: turning scores into decisions</h3>
+<ul>
+<li><a href="https://developers.google.com/machine-learning/crash-course/classification/thresholding" target="_blank" rel="noopener">Thresholds and the confusion matrix</a><span>course · beginner</span></li>
+<li><a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">scikit-learn, getting started</a> the library that does all of this in six lines<span>code · beginner</span></li>
+<li><a href="https://christophm.github.io/interpretable-ml-book/" target="_blank" rel="noopener">Interpretable Machine Learning</a> Molnar, free online<span>book · intermediate</span></li>
+</ul>
+</div>
+<p>A probability you can set a cut-off on is worth more than a label. That is only true if the probability means something, and there is a specific test for whether it does.</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="03">
+<div class="col reveal">
+<h2>A probability is only useful if 30% means it happens three times in ten</h2>
+<p>Group every customer the model scored between 0.2 and 0.4, then look at how many of them actually left. If the model is honest, the answer should be around 30%. This test is called <b>calibration</b>, and it takes one chart.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 4</b> · Tap a bucket to see the customers in it. The diagonal is perfect calibration: predicted on one axis, what actually happened on the other.</p>
+<svg id="calSvg" viewBox="0 0 520 300"></svg>
+<p class="readout" id="calOut"></p>
+</div>
+</div>
+<div class="col reveal">
+<p>A calibrated score lets you do arithmetic with it: expected loss, expected revenue, how many offers to budget for. An uncalibrated one cannot be multiplied by anything, so every downstream decision is guesswork with decimal places.</p>
+<p>Now bring that habit to a language model. Ask one for a percentage and it will produce a confident-looking number, but that number is text it generated, not a measured frequency, and it has not been checked against any outcome. Nothing stops you from checking it, and hardly anyone does. Someone who has drawn this chart once asks for it forever after, which is exactly the instinct that makes an LLM project survive contact with reality.</p>
+<div class="intu">A weather forecaster who says 30% rain is graded over a hundred such days: it should rain on about thirty of them. That grading is why forecasts are trustworthy in a way that a friend's "probably fine" is not. <b>The number is not the claim; the track record of the number is the claim.</b></div>
+<div class="note">
+<h3>Go deeper: probabilities and honesty</h3>
+<ul>
+<li><a href="https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_curve.html" target="_blank" rel="noopener">Calibration curves</a> scikit-learn<span>code · intermediate</span></li>
+<li><a href="https://www.statlearning.com/" target="_blank" rel="noopener">An Introduction to Statistical Learning</a> free, and the best first textbook<span>book · intermediate</span></li>
+</ul>
+</div>
+<p>Say you have fixed all of that: sensible baseline, tuned cut-off, calibrated scores. There is one failure left that makes a model look better than any of this, and it is the one that fools whole teams.</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="04">
+<div class="col reveal">
+<h2>The fastest way to a perfect model is to cheat by accident</h2>
+<p>An analyst adds a promising column to the churn data: <code>days_since_cancel_form_opened</code>. Accuracy jumps to 99.8%. The team celebrates. In production the model flags nobody, because at the moment of prediction that field is always empty. It is only filled in by people who are already leaving.</p>
+<p>Switch the column on and off. The left bar is the score on held-back data, the right is the same model on next month's live data, where the future has not happened yet.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 5</b> · Toggle the columns the model is allowed to use. Everything here is retrained in your browser when you click.</p>
+<div class="rail" id="lkBtns"></div>
+<svg id="lkSvg" viewBox="0 0 520 230"></svg>
+<p class="readout" id="lkOut"></p>
+</div>
+</div>
+<div class="col reveal">
+<p>That is <b>leakage</b>: information in your training data that would not be available at the moment you need the prediction. It has sunk more projects than any modelling mistake, and no amount of model sophistication detects it, because as far as the maths is concerned the column is simply excellent.</p>
+<p>The defence is a habit, not a technique. Hold back data the model never sees during training (the <b>train-test split</b>), split it by time when the task is about the future, and for every column ask one question: would this value exist, in this state, at the moment I have to decide.</p>
+<div class="intu">A student who studies from a textbook with the answers pencilled in the margin scores brilliantly on the practice paper. The pencil marks are not knowledge, and there is no way to tell from the practice score alone. <b>The only test that means anything is the one written by someone who could not see your notes.</b></div>
+<p>The same trap reappears in the LLM world wearing new clothes: a model evaluated on benchmark questions that were in its training data, or a RAG system tested with the exact passages its retriever was tuned on. The word is contamination there, the mechanism is identical, and the person who has been burned by a leaking column once recognises it immediately.</p>
+<div class="note">
+<h3>Go deeper: not fooling yourself</h3>
+<ul>
+<li><a href="https://mlu-explain.github.io/train-test-validation/" target="_blank" rel="noopener">Train, test and validation splits</a> MLU-Explain<span>visual · beginner</span></li>
+<li><a href="https://developers.google.com/machine-learning/guides/rules-of-ml" target="_blank" rel="noopener">Rules of Machine Learning</a> Google, 43 rules from production experience<span>guide · intermediate</span></li>
+<li><a href="https://developers.google.com/machine-learning/crash-course/overfitting/generalization" target="_blank" rel="noopener">Generalisation and overfitting</a><span>course · beginner</span></li>
+<li><a href="https://www.kaggle.com/competitions" target="_blank" rel="noopener">Kaggle competitions</a> where a leaked column shows up as a suspiciously good score<span>practice · intermediate</span></li>
+</ul>
+</div>
+<p>All four of these habits came from problems that have nothing to do with text. Which raises the fair question: how much of your actual work is text?</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="05">
+<div class="col reveal">
+<h2>Most of the value in a company sits in tables, not paragraphs</h2>
+<p>Pick any five decisions your business repeats daily. Which customer to call, which invoice to chase, what to order, what price to set, which transaction to hold. Each one arrives as rows and columns, with a right answer recorded later. That shape is what classical machine learning was built for, and on it a gradient-boosted tree still beats a language model on accuracy, cost and speed, usually by a lot.</p>
+<p>Sort these jobs to the tool that fits.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 6</b> · Tap a job, then tap the tool you would reach for. The panel says what the practical answer is and why.</p>
+<div class="rail" id="toolJobs"></div>
+<div class="rail" id="toolPicks"></div>
+<div class="panel" id="toolOut"></div>
+</div>
+</div>
+<div class="col reveal">
+<p>Now the running cost, which decides what you are allowed to build. Score a million rows a night with a tree model and it costs pennies of compute and finishes over coffee. Send the same million rows through a frontier language model and you are paying per token and waiting on network calls.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 7</b> · Arithmetic, not opinion. Set the volume and the assumptions; both columns update.</p>
+<div class="grid2">
+<div>
+<label>predictions per month <b id="ivV">1000000</b></label><input type="range" id="iv1" min="1000" max="5000000" step="1000" value="1000000">
+<label>tokens per LLM call <b id="ivT">700</b></label><input type="range" id="iv2" min="100" max="4000" step="100" value="700">
+<label>LLM price per million tokens <b id="ivP">5</b></label><input type="range" id="iv3" min="0.2" max="30" step="0.2" value="5">
+</div>
+<div><svg id="ivSvg" viewBox="0 0 320 230"></svg><p class="readout" id="ivOut"></p></div>
+</div>
+</div>
+</div>
+<div class="col reveal">
+<div class="intu">A courier bike and a cargo plane both move parcels. Nobody argues about which is more advanced, because the question is what you are shipping and how far. <b>Sending one envelope across town by cargo plane is not a bold technology choice, it is a bill.</b></div>
+<p>The nuance, honestly: language models are getting cheaper fast, they are unbeatable when the input is messy free text, and a small distilled model can sit in the middle. The judgement of which one fits is exactly what classical training gives you, because it is the only training that makes you compare against a cheap baseline before reaching for the expensive thing.</p>
+<div class="note">
+<h3>Go deeper: the workhorse models</h3>
+<ul>
+<li><a href="https://xgboost.readthedocs.io/en/stable/" target="_blank" rel="noopener">XGBoost</a> and <a href="https://www.tensorflow.org/decision_forests" target="_blank" rel="noopener">decision forests</a><span>code · intermediate</span></li>
+<li><a href="https://arxiv.org/abs/2207.08815" target="_blank" rel="noopener">Why tree models still outperform deep learning on tabular data</a><span>paper · advanced</span></li>
+<li><a href="https://github.com/eugeneyan/applied-ml" target="_blank" rel="noopener">Applied ML</a> how real companies built real systems<span>collection · intermediate</span></li>
+<li><a href="https://madewithml.com/" target="_blank" rel="noopener">Made With ML</a> end-to-end production practice<span>course · intermediate</span></li>
+</ul>
+</div>
+<p>Fine, you might say, but my problem really is text, so none of this applies to me. It applies more, not less, and here is the part that surprises people.</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="06">
+<div class="col reveal">
+<h2>Every idea inside a language model is one of these ideas, scaled up</h2>
+<p>An LLM is not a separate technology that happens to share a research field. It is the same machinery: a loss, gradient descent, layers of weights, a train and test split, overfitting, embeddings. Learning them on a 600-row spreadsheet takes a weekend. Meeting them for the first time inside a 500 billion parameter model takes months, because you cannot see anything.</p>
+<p>Tap a fundamental to see where it shows up once you move to language models.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 8</b> · Left column: what you learn in ordinary machine learning. Tap one to reveal the same idea in its LLM clothes.</p>
+<div class="grid2">
+<svg id="trSvg" viewBox="0 0 320 340"></svg>
+<div class="panel" id="trOut"></div>
+</div>
+</div>
+</div>
+<div class="col reveal">
+<p>The transfer runs the other way too. Every serious language model project ends up needing the classical parts: an evaluation set with labels, a threshold on a classifier that decides whether to escalate, a retrieval step that is plain vector search, a cost model, and a measurement of whether last week's change helped. Teams without that grounding tend to ship prompts and hope, and they are the ones whose pilots produce a good demo and no number.</p>
+<div class="intu">A pianist learning jazz does not skip scales because improvisation sounds more exciting. The scales are not a prerequisite ritual, they are the material the improvisation is made from. <b>When the solo goes somewhere unexpected, the scales are what let you follow.</b></div>
+<p class="pull">The prompt is the easy part. Knowing whether the output is any good is the job, and that skill is entirely classical.</p>
+<div class="note">
+<h3>Go deeper: the bridge</h3>
+<ul>
+<li><a href="https://developers.google.com/machine-learning/crash-course/embeddings" target="_blank" rel="noopener">Embeddings</a> the same idea in both worlds<span>course · beginner</span></li>
+<li><a href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" rel="noopener">3Blue1Brown: what is a neural network</a><span>video · beginner</span></li>
+<li><a href="https://karpathy.ai/zero-to-hero.html" target="_blank" rel="noopener">Karpathy: Neural Networks, Zero to Hero</a> from a single neuron to a small LLM<span>code · intermediate</span></li>
+<li><a href="https://huggingface.co/learn/llm-course" target="_blank" rel="noopener">Hugging Face LLM course</a> once the fundamentals are in place<span>course · intermediate</span></li>
+</ul>
+</div>
+<p>All of which sounds like an argument for two years of study before you are allowed to touch an API. It is not, and that version of the advice does real harm.</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="07">
+<div class="col reveal">
+<h2>Depth is a prerequisite for judgement, not for starting</h2>
+<p>The honest counter-argument, and it is a good one: people learn far better with a working thing in their hands. Nobody learns to cook by studying food chemistry. fast.ai built a whole teaching philosophy on this, starting students with a working image classifier in lesson one and the theory afterwards, and it produces capable practitioners faster than the bottom-up route.</p>
+<p>So the claim on this page is narrower than "study three years first". It is about which parts you cannot skip, and when. Drag the slider to see what each level of grounding does and does not let you do.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 9</b> · Four levels of grounding. The lists are what you can honestly claim and what will quietly bite you.</p>
+<div class="rail"><label>grounding <b id="glv">1</b> of 4</label><input type="range" id="gl" min="0" max="3" step="1" value="1"></div>
+<svg id="glSvg" viewBox="0 0 520 110"></svg>
+<div class="grid2"><div class="panel" id="glCan"></div><div class="panel" id="glCant"></div></div>
+</div>
+</div>
+<div class="col reveal">
+<p>Three things you genuinely do not need before building with an LLM: the maths of backpropagation, the ability to implement a transformer, and a course in statistics. Three things you do need before anyone relies on your output: a baseline to compare against, a labelled set of cases to measure on, and the habit of asking what would have to be true for this number to be lying to you. The first list takes years and is optional. The second list takes about two weeks and is not.</p>
+<div class="intu">A driving licence is not an engineering degree. You are not asked to explain combustion, but you are asked to know what a wet road does to stopping distance, because that is the knowledge that shows up in the moment something goes wrong. <b>Skip the engine, keep the stopping distances.</b></div>
+<p>There is also a career point worth saying plainly. Prompting is the fastest-commoditising skill in the industry; the models absorb prompt craft with every release. Knowing whether a system works, and being able to prove it with an evaluation set and a baseline, has not commoditised at all, and it is the same skill it was in 2015.</p>
+<div class="note">
+<h3>Go deeper: how to learn this</h3>
+<ul>
+<li><a href="https://www.fast.ai/posts/2016-10-08-teaching-philosophy.html" target="_blank" rel="noopener">fast.ai teaching philosophy</a> the strongest case against bottom-up<span>article · beginner</span></li>
+<li><a href="https://course.fast.ai/" target="_blank" rel="noopener">Practical Deep Learning for Coders</a><span>course · intermediate</span></li>
+<li><a href="https://www.kaggle.com/learn" target="_blank" rel="noopener">Kaggle Learn</a> a few hours per topic, all hands-on<span>practice · beginner</span></li>
+</ul>
+</div>
+<p>Which leaves the practical question: in what order, and how long does each part actually take?</p>
+</div>
+</section>
+
+<div class="hr"></div>
+
+<section data-ch="08">
+<div class="col reveal">
+<h2>Two weeks of fundamentals, then build the thing you wanted to build</h2>
+<p>Tell the builder below who you are and what you want to make. It produces an order, with the reason each step is where it is. Nothing in it takes longer than a fortnight before you are building again.</p>
+</div>
+<div class="wide reveal">
+<div class="fig">
+<p class="eyebrow"><b>Fig. 10</b> · Pick a role and a goal. The path changes: some people genuinely should start at the API and come back for the rest.</p>
+<div class="rail" id="pathRole"></div>
+<div class="rail" id="pathGoal"></div>
+<div id="pathOut"></div>
+</div>
+</div>
+<div class="col reveal">
+<p>Whatever path you get, one exercise is worth more than any course on it. Take a decision your team makes weekly, write down 30 past cases with what actually happened, and try to beat the obvious rule. You will hit the base rate, the threshold, the leaking column and the calibration question in a single afternoon, on data you care about, and after that none of them are abstract again.</p>
+<div class="intu">Nobody remembers the chapter on humidity. Everyone remembers the loaf that did not rise, and why. <b>One real failure on your own data installs more judgement than ten tutorials on someone else's.</b></div>
+<p>Then go and build the language model thing. It will be better, because you will be able to tell when it is not.</p>
+</div>
+</section>
+
+<section class="col reveal" style="text-align:center">
+<p class="pull" style="border:0;padding:0;text-align:left">The fundamentals are not a gate you pass to earn the fun part. They are the only reason you will know whether the fun part worked.</p>
+</section>
+
+<div class="hr"></div>
+
+<section id="library">
+<div class="col reveal">
+<h2>Everything linked here, in one list</h2>
+<p>Filter or search. Checked on 20 September 2026.</p>
+<input type="text" id="libQ" placeholder="search, e.g. calibration" aria-label="Search resources">
+<div class="rail" id="libLevel"></div>
+<p class="readout" id="libCount"></p>
+<div id="libList"></div>
+</div>
+</section>
+
+<div class="col" style="margin-top:70px"><p class="eyebrow" id="weedsHint" style="text-align:center;cursor:pointer">press s (or tap here) for the maths and the data behind every figure</p></div>
+<section class="weeds" id="weeds">
+<div class="col">
+<h2>Into the weeds</h2>
+<p>Every figure on this page runs on one synthetic customer base, generated from a fixed seed so your numbers match the ones in the text. 500 customers for training, 600 held back for testing, of whom 71 (11.8%) cancel.</p>
+<div class="panel">Truth used to generate the data (the model never sees it):
+  z = -2.9 - 0.045·tenure + 0.55·tickets + 0.75·late_payments - 0.010·spend + 0.6·premium_plan
+  churn ~ Bernoulli( sigmoid(z) )
+
+The model fitted in your browser:
+  logistic regression, 5 features scaled to roughly 0..1
+  loss   L = -(1/n) Σ [ y·log p + (1-y)·log(1-p) ],  p = sigmoid(w·x + b)
+  fitted by batch gradient descent, learning rate 0.6, 4000 steps
+
+Measures:
+  accuracy  = (TP+TN)/n        recall = TP/(TP+FN)      precision = TP/(TP+FP)
+  expected value = TP·(value - cost) - FP·cost
+  calibration: bucket by predicted p, compare bucket mean of p with observed rate
+
+The leaking column:
+  days_since_cancel_form_opened is non-zero only for customers who churn,
+  which is knowable only after the decision point. Offline it looks perfect.</div>
+<p style="margin-top:24px">Why logistic regression rather than a tree: it is the model whose parameters you can read, its probabilities are close to calibrated without extra work, and it fits in twenty lines of JavaScript, so nothing on this page is hidden behind a library.</p>
+</div>
+</section>
+
+<footer class="col">
+<p><b>Sources and honesty notes.</b> The customer base is synthetic, and it is generated rather than borrowed so that the leakage and base-rate effects are exactly reproducible. All figures compute their numbers live from that data in your browser. The studies referenced in the companion field guide are measured; nothing on this page claims to measure your business. Links checked 20 September 2026.</p>
+<p>A companion page covers the AI, LLM, RAG and agent side, with the same approach.</p>
+</footer>
+</main>
+<script>!function(){"use strict";function e(e){return document.getElementById(e)}function t(e,t,n){var a=document.createElementNS("http://www.w3.org/2000/svg",e);for(var o in t)a.setAttribute(o,t[o]);return n&&n.appendChild(a),a}function n(e,n,a,o,r,i){var s=t("text",Object.assign({x:n,y:a,class:r||"lab"},i||{}),e);return s.textContent=o,s}function a(e){for(;e.firstChild;)e.removeChild(e.firstChild)}function o(e,t,n,a){var o=document.createElement(e);return null!=t&&(o.textContent=t),a&&(o.className=a),n&&n.appendChild(o),o}function r(e){return function(){e=(e|=0)+1831565813|0;var t=Math.imul(e^e>>>15,1|e);return(((t=t+Math.imul(t^t>>>7,61|t)^t)^t>>>14)>>>0)/4294967296}}function i(e,t){var n=e.getBoundingClientRect().width;if(!n){var a=e.parentNode.getBoundingClientRect().width;n=a?a-36:t}return Math.round(Math.max(280,Math.min(t,n)))}var s=[];function l(e,t){for(var n=r(e),a=[],o=0;o<t;o++){var i=Math.round(1+47*n()),s=Math.round(15+85*n()),l=Math.floor(n()*n()*9),c=Math.floor(n()*n()*5),u=n()<.45?1:0,h=-2.9-.045*i+.55*l+.75*c-.01*s+.6*u,d=n()<1/(1+Math.exp(-h))?1:0;a.push({raw:{ten:i,spend:s,tick:l,late:c,plan:u},x:[i/48,s/100,l/8,c/4,u],y:d,leak:0})}return a.forEach(function(t){t.leak=t.y?.4+.6*r(e+7*t.raw.ten+t.raw.spend)():0}),a}addEventListener("resize",function(){clearTimeout(s.t),s.t=setTimeout(function(){s.forEach(function(e){e()})},150)});var c=l(11,500),u=l(77,600),h=u.filter(function(e){return e.y}).length;function d(e,t,n){var a=t.length,o=new Array(a).fill(0),r=0;function i(e,t){return"leak"===t?e.leak:e.x[t]}for(var s=0;s<n;s++){var l=new Array(a).fill(0),c=0;e.forEach(function(e){for(var n=r,s=0;s<a;s++)n+=o[s]*i(e,t[s]);var u=1/(1+Math.exp(-n))-e.y;for(c+=u,s=0;s<a;s++)l[s]+=u*i(e,t[s])}),r-=.6*c/e.length;for(var u=0;u<a;u++)o[u]-=.6*l[u]/e.length}return{w:o,b:r,cols:t,p:function(e,n){for(var a=r,i=0;i<t.length;i++){var s="leak"===t[i]?n?0:e.leak:e.x[t[i]];a+=o[i]*s}return 1/(1+Math.exp(-a))}}}var f=d(c,[0,1,2,3,4],4e3),v=u.map(function(e){return f.p(e)});function p(e){var t={tp:0,fp:0,fn:0,tn:0};return u.forEach(function(n,a){var o=v[a]>=e;o&&n.y?t.tp++:o?t.fp++:n.y?t.fn++:t.tn++}),t.acc=(t.tp+t.tn)/u.length,t.rec=t.tp/(t.tp+t.fn||1),t.prec=t.tp/(t.tp+t.fp||1),t}function g(e,n,o,r){var s=i(e,o),l=Math.ceil(u.length/r),c=Math.min(16,(s-8)/l),h=Math.max(3,c-1.4);return e.setAttribute("viewBox","0 0 "+s+" "+(r*c+18)),a(e),u.forEach(function(a,o){var r=o%l,i=Math.floor(o/l);t("rect",{x:4+r*c,y:4+i*c,width:h,height:h,rx:1,class:"case "+n(a,o)},e)}),s}!function(){var t=e("heroGrid");if(t){var n="none";document.querySelectorAll("[data-h]").forEach(function(e){e.addEventListener("click",function(){n=e.getAttribute("data-h"),document.querySelectorAll("[data-h]").forEach(function(t){t.classList.toggle("on",t===e)}),a()})}),s.push(a),a()}function a(){g(t,function(e,t){return"none"===n?e.y?"miss":"no":v[t]>=.5?e.y?"yes":"no":e.y?"miss":"no"},640,20);var a=p(.5);e("heroOut").innerHTML="none"===n?"predict nobody leaves: accuracy <b>"+(100*(1-h/u.length)).toFixed(1)+"%</b> · leavers caught <b>0 of "+h+'</b> <span class="bad">(every red tile is a customer you lose)</span>':"the model at its default cut-off: accuracy <b>"+(100*a.acc).toFixed(1)+"%</b> · leavers caught <b>"+a.tp+" of "+h+"</b> · higher accuracy, still misses "+a.fn}}(),function(){var r=e("cmSvg");if(r){var l=[{k:"none",n:"say nobody leaves",f:function(){return!1}},{k:"all",n:"call everyone",f:function(){return!0}},{k:"rule",n:"simple rule: 2+ late payments",f:function(e){return e.raw.late>=2}},{k:"model",n:"the trained model",f:function(e,t){return v[t]>=.5}}],c=0;l.forEach(function(t,n){var a=o("button",t.n,e("cmBtns"));n||a.classList.add("on"),a.addEventListener("click",function(){c=n,e("cmBtns").querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===a)}),d()})}),s.push(d),d()}function d(){var o=l[c],s={tp:0,fp:0,fn:0,tn:0};u.forEach(function(e,t){var n=o.f(e,t);n&&e.y?s.tp++:n?s.fp++:e.y?s.fn++:s.tn++});var d=i(r,320);r.setAttribute("viewBox","0 0 "+d+" 250"),a(r);var f=(d-66)/2;[[0,0,["caught","them"],s.tp,1],[1,0,["called for","nothing"],s.fp,0],[0,1,["missed","leavers"],s.fn,2],[1,1,["left alone,","rightly"],s.tn,0]].forEach(function(e){var a=60+e[0]*f,o=34+90*e[1];t("rect",{x:a,y:o,width:f-8,height:80,rx:6,fill:"var(--v12)",stroke:1===e[4]?"var(--v0)":2===e[4]?"var(--v13)":"var(--v14)","stroke-width":e[4]?2.5:1},r);n(r,a+10,o+32,String(e[3]),"val",{style:"font-size:20px"}),n(r,a+10,o+52,e[2][0],"sub",{style:"font-size:12px"}),n(r,a+10,o+68,e[2][1],"sub",{style:"font-size:12px"})}),n(r,4,20,"predicted leave","lab"),n(r,4,66,"they","lab"),n(r,4,82,"left","lab"),n(r,4,156,"they","lab"),n(r,4,172,"stayed","lab");var v=e("cmBars"),p=i(v,320);v.setAttribute("viewBox","0 0 "+p+" 200"),a(v),[["accuracy",(s.tp+s.tn)/u.length],["recall (leavers caught)",s.tp/(s.tp+s.fn||1)],["precision (calls that mattered)",s.tp/(s.tp+s.fp||1)]].forEach(function(e,a){var o=24+58*a;n(v,4,o,e[0],"lab"),t("rect",{x:4,y:o+8,width:Math.max(3,(p-70)*e[1]),height:22,rx:4,class:"bar"},v),n(v,10+(p-70)*e[1],o+25,(100*e[1]).toFixed(1)+"%","val")}),e("cmOut").innerHTML={none:"The do-nothing baseline any model has to beat.",all:"Perfect recall, and you have called 600 people to find 71.",rule:"One line of business logic. Compare it with the model before you pay for the model.",model:"Better accuracy than the rule, and it still misses "+s.fn+" of "+h+" leavers at this cut-off."}[l[c].k]}}(),function(){var o=e("thGrid");function r(e,t,n){var a=p(e);return a.tp*(n-t)-a.fp*t}function l(){var s=+e("thS").value,l=+e("cA").value,c=+e("cB").value;e("thv").textContent=s.toFixed(2),e("cvA").textContent=l,e("cvB").textContent=c,g(o,function(e,t){return v[t]>=s?e.y?"yes":"no":e.y?"miss":"no"},640,18);for(var u=p(s),d=r(s,l,c),f=null,m=.05;m<=.9;m+=.01){var y=r(m,l,c);(!f||y>f.m)&&(f={t:m,m:y})}e("thOut").innerHTML="flagged <b>"+(u.tp+u.fp)+"</b> customers · caught <b>"+u.tp+"</b> of "+h+" · recall "+(100*u.rec).toFixed(0)+"% · precision "+(100*u.prec).toFixed(0)+"% · accuracy "+(100*u.acc).toFixed(1)+"%<br>expected value <b>"+Math.round(d).toLocaleString()+"</b> · best cut-off at these prices is <b>"+f.t.toFixed(2)+"</b> ("+Math.round(f.m).toLocaleString()+")"+(Math.abs(s-f.t)<.03?' <span class="ok">· you are there</span>':"");var b=e("thCurve"),w=i(b,320);b.setAttribute("viewBox","0 0 "+w+" 220"),a(b);for(var x=[],k=-1e9,L=1e9,E=.05;E<=.9;E+=.01){var M=r(E,l,c);x.push([E,M]),M>k&&(k=M),M<L&&(L=M)}var A=40,C=186,S=w-A-12;t("line",{x1:A,y1:C,x2:A+S,y2:C,stroke:"var(--v14)","shape-rendering":"crispEdges"},b),t("polyline",{points:x.map(function(e){return(A+(e[0]-.05)/.85*S).toFixed(1)+","+(C-(e[1]-L)/(k-L||1)*150).toFixed(1)}).join(" "),fill:"none",stroke:"var(--v0)","stroke-width":2.5},b);var T=A+(s-.05)/.85*S;t("line",{x1:T,y1:30,x2:T,y2:C,stroke:"var(--v5)","stroke-width":1.5,"stroke-dasharray":"4 3"},b),n(b,4,20,"money, by cut-off","lab"),n(b,A,206,"0.05","lab"),n(b,A+S-24,206,"0.90","lab")}o&&(["thS","cA","cB"].forEach(function(t){e(t).addEventListener("input",l)}),s.push(l),l())}(),function(){var o=e("calSvg");if(o){var r=0;s.push(l),l()}function l(){var s=i(o,520);o.setAttribute("viewBox","0 0 "+s+" 300"),a(o);var c=52,h=254,d=s-c-18,f=function(){for(var e=[],t=0;t<5;t++)e.push({n:0,y:0,s:0});return u.forEach(function(t,n){var a=Math.min(4,Math.floor(5*v[n]));e[a].n++,e[a].y+=t.y,e[a].s+=v[n]}),e}();t("line",{x1:c,y1:h,x2:c+d,y2:h,stroke:"var(--v14)","shape-rendering":"crispEdges"},o),t("line",{x1:c,y1:h,x2:c,y2:20,stroke:"var(--v14)","shape-rendering":"crispEdges"},o),t("line",{x1:c,y1:h,x2:c+d,y2:26,stroke:"var(--v4)","stroke-width":1.5,"stroke-dasharray":"5 4"},o),n(o,c+d,40,"perfect","lab",{"text-anchor":"end"}),n(o,4,16,"share who actually left","lab"),n(o,c+d,284,"predicted probability","lab",{"text-anchor":"end"}),f.forEach(function(e,n){if(e.n){var a=e.s/e.n,i=e.y/e.n,s=c+a*d,u=h-228*i;t("circle",{cx:s,cy:u,r:Math.max(5,.9*Math.sqrt(e.n)),fill:"var(--v0)","fill-opacity":n===r?.95:.3,stroke:"var(--v0)"},o);var f=t("circle",{cx:s,cy:u,r:20,class:"hit",tabindex:0,role:"button","aria-label":"bucket "+n},o);f.addEventListener("click",v),f.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),v())})}function v(){r=n,l()}});var p=f[r];e("calOut").innerHTML=p.n?"bucket "+(r/5).toFixed(1)+" to "+((r+1)/5).toFixed(1)+": <b>"+p.n+"</b> customers, average predicted <b>"+(p.s/p.n).toFixed(2)+"</b>, actually left <b>"+(p.y/p.n).toFixed(2)+"</b> ("+p.y+" of "+p.n+") · "+(Math.abs(p.s/p.n-p.y/p.n)<.08?'<span class="ok">close to honest</span>':'<span class="meh">off by '+Math.abs(p.s/p.n-p.y/p.n).toFixed(2)+", and the small bucket size is part of why</span>"):"no customers in this bucket"}}(),function(){var r=e("lkSvg");if(r){var l=[{c:0,n:"tenure",on:!0},{c:1,n:"spend",on:!0},{c:2,n:"tickets",on:!0},{c:3,n:"late payments",on:!0},{c:4,n:"premium plan",on:!0},{c:"leak",n:"days since cancel form opened",on:!1}];l.forEach(function(t){var n=o("button",t.n,e("lkBtns"));n.classList.toggle("on",t.on),n.addEventListener("click",function(){t.on=!t.on,n.classList.toggle("on",t.on),f()})}),s.push(f),f()}function f(){var o=l.filter(function(e){return e.on}).map(function(e){return e.c}),s=i(r,520);if(r.setAttribute("viewBox","0 0 "+s+" 230"),a(r),!o.length)return n(r,4,40,"a model with no columns is a coin toss","val"),void(e("lkOut").textContent="Turn at least one column on.");var f=d(c,o,1200);function v(e){var t={tp:0,fp:0,fn:0,tn:0};return u.forEach(function(n){var a=f.p(n,e)>=.5;a&&n.y?t.tp++:a?t.fp++:n.y?t.fn++:t.tn++}),{acc:(t.tp+t.tn)/u.length,rec:t.tp/(t.tp+t.fn||1),tp:t.tp}}var p=v(!1),g=v(!0),m=l[5].on;[["held-back data (what the slide shows)",p],["live data next month (what you get)",g]].forEach(function(e,a){var o=30+92*a,i=s-40;n(r,4,o,e[0],"lab"),t("rect",{x:4,y:o+8,width:i,height:26,rx:5,class:"case no"},r),t("rect",{x:4,y:o+8,width:Math.max(4,i*e[1].acc),height:26,rx:5,fill:"var(--v0)"},r),n(r,10,o+26,"accuracy "+(100*e[1].acc).toFixed(1)+"%","rev"),n(r,4,o+56,"leavers caught "+e[1].tp+" of "+h+" (recall "+(100*e[1].rec).toFixed(0)+"%)","sub")}),e("lkOut").innerHTML=m?'<span class="bad">Leaking.</span> Offline it looks near perfect because the column is filled in only for people who already left. On live data the field is empty for everyone, the model flags <b>'+g.tp+"</b> customers, and you have shipped nothing.":"No leaking column. The two bars agree, which is the boring result you want: what you measured is what you get."}}();var m=[{j:"Predict which customers cancel next month",a:"tabular",w:"Rows and columns with recorded outcomes. A gradient-boosted tree trains in seconds and gives calibrated probabilities. An LLM here is slower, dearer and worse."},{j:"Sort 40,000 support emails into 12 topics",a:"either",w:"Text, so an LLM works with no training data at all. But once you have a few thousand labelled examples, a small classifier on embeddings is far cheaper per email and often just as good. Start with the LLM, measure, then decide."},{j:"Draft a reply to an unusual complaint",a:"llm",w:"Open-ended generation over messy input. This is what language models are genuinely for, and no classical method comes close."},{j:"Flag fraudulent transactions in real time",a:"tabular",w:"Milliseconds matter, the data is numeric, and the class is very rare. Classical models with a tuned threshold, plus rules. Latency alone rules out a chat model."},{j:"Pull the invoice number and total from scanned PDFs",a:"either",w:"A vision-capable model reads them straight away with no training set, which is a real advance. At high volume a purpose-built extraction model is cheaper. Check accuracy on 100 of your own documents before choosing."},{j:"Forecast next quarter demand per product",a:"tabular",w:"Time series with seasonality. Classical forecasting or a tree model with lag features. A language model has no mechanism to do this well."}];!function(){var t=e("toolJobs");if(t){var n=0;m.forEach(function(a,r){var i=o("button",a.j,t);r||i.classList.add("on"),i.style.textAlign="left",i.addEventListener("click",function(){n=r,t.querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===i)}),e("toolOut").textContent="Now pick the tool you would reach for.",e("toolPicks").querySelectorAll("button").forEach(function(e){e.classList.remove("on")})})});var a={tabular:"classical ML on a table",llm:"a language model",either:"either, depending"};["tabular","llm","either"].forEach(function(t){var r=o("button",a[t],e("toolPicks"));r.addEventListener("click",function(){e("toolPicks").querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===r)});var o=m[n];e("toolOut").textContent=(t===o.a?"AGREED · ":'THE PRACTICAL ANSWER IS "'+a[o.a].toUpperCase()+'" · ')+o.w})}),e("toolOut").textContent="Pick a job, then pick the tool."}}(),function(){var o=e("ivSvg");function r(){var r=+e("iv1").value,s=+e("iv2").value,l=+e("iv3").value;e("ivV").textContent=r.toLocaleString(),e("ivT").textContent=s,e("ivP").textContent=l;var c=r*s/1e6*l,u=r/1e6*.02+3,h=i(o,320);o.setAttribute("viewBox","0 0 "+h+" 230"),a(o);var d=Math.max(c,u),f=h-30;[["language model per month",c],["tree model per month",u]].forEach(function(e,a){var r=30+80*a;n(o,4,r,e[0],"lab"),t("rect",{x:4,y:r+8,width:Math.max(3,f*e[1]/d),height:28,rx:5,fill:a?"var(--v15)":"var(--v0)"},o),n(o,10,r+28,e[1]<1?e[1].toFixed(2):Math.round(e[1]).toLocaleString(),"rev")}),n(o,4,200,"ratio "+(u?Math.round(c/u).toLocaleString():"-")+"×","val",{style:"font-size:18px"}),e("ivOut").innerHTML="At "+r.toLocaleString()+" predictions a month the language model costs about <b>"+Math.round(c).toLocaleString()+"</b> and the tree model about <b>"+u.toFixed(2)+"</b>. Latency matters too: milliseconds locally against hundreds of milliseconds per API call, which is what rules chat models out of real-time scoring."}o&&(["iv1","iv2","iv3"].forEach(function(t){e(t).addEventListener("input",r)}),s.push(r),r())}();var y=[["Loss function","Next-token loss. Pretraining is one enormous version of the same downhill stepping you watched fit a churn line: guess, measure how wrong, adjust every weight a little."],["Gradient descent","Identical, at a scale of trillions of tokens. The learning rate, the batch, the plateaus: all the same vocabulary, and the same intuitions about what a stuck loss means."],["Train and test split","Benchmark contamination. When the test questions were in the training data, the score is a memorised answer, which is your leaking column at national scale."],["Overfitting","A model fine-tuned on 200 of your examples that repeats their phrasing and fails on the 201st. The cure is the same: hold data back, and watch the gap."],["Embeddings","The vectors behind semantic search and RAG retrieval. You learn them once on words, and the idea does not change when the items are documents, products or images."],["Class imbalance","Rare failure cases in an evaluation set. If 3% of your tickets are the dangerous kind, an eval set sampled at random tells you almost nothing about them."],["Threshold tuning","The escalate-to-a-human rule. Every serious LLM deployment has a classifier deciding when not to answer, and it needs a cut-off chosen from costs."],["Feature engineering","Context engineering. Deciding what goes in the prompt, in what order, is the same craft as deciding which columns the model sees, with the same reward for knowing the domain."],["Calibration",'Model confidence. An LLM saying "I am 90% sure" has not been graded against outcomes unless you graded it. The chart is yours to draw.']];!function(){var o=e("trSvg");if(o){var r=0;s.push(l),l()}function l(){var s=i(o,320);o.setAttribute("viewBox","0 0 "+s+" "+(34*y.length+16)),a(o),y.forEach(function(e,a){var i=8+34*a;t("rect",{x:4,y:i,width:s-10,height:28,rx:6,class:"case "+(a===r?"yes":"no")},o);n(o,14,i+19,e[0],a===r?"rev":"val",{style:"font-size:13.5px"});var c=t("rect",{x:4,y:i,width:s-10,height:28,class:"hit",tabindex:0,role:"button","aria-label":e[0]},o);function u(){r=a,l()}c.addEventListener("click",u),c.addEventListener("keydown",function(e){"Enter"!==e.key&&" "!==e.key||(e.preventDefault(),u())})}),e("trOut").textContent=y[r][0].toUpperCase()+"\n\n"+y[r][1]}}();var b=[{n:"prompting",can:["Draft, summarise and rewrite text","Prototype an idea in an afternoon","Judge output you are personally expert in"],cant:["Tell whether the system is better than doing nothing","Spot that your test cases were also your examples","Justify a spend to a finance director","Know when the task needs no model at all"]},{n:"+ evaluation",can:["Everything above","Build a labelled set of 50 real cases","Compare two prompts and know which won","Report recall, not just impressive examples"],cant:["Choose between an LLM and a cheap classifier on cost","Recognise a leaking feature in your own data","Read a probability and act on it"]},{n:"+ classical ML",can:["Everything above","Fit a baseline in an afternoon and beat it, or not","Set a threshold from real costs","Spot leakage, imbalance and calibration problems"],cant:["Fine-tune or train a model from scratch","Diagnose why a training run is diverging"]},{n:"+ deep learning",can:["Everything above","Fine-tune a model on your own data","Read the papers and tell hype from result","Debug a training run"],cant:["Nothing on this page, though production engineering is its own craft"]}];!function(){var o=e("glSvg");function r(){var r=+e("gl").value;e("glv").textContent=r+1;var s=i(o,520),l=s<470,c=l?194:110;o.setAttribute("viewBox","0 0 "+s+" "+c),a(o);var u=l?s-8:(s-20)/4;b.forEach(function(e,a){var i=l?4:4+a*u,s=l?26+42*a:26;t("rect",{x:i,y:s,width:u-6,height:l?36:46,rx:6,fill:"var(--v12)",stroke:a<=r?"var(--v0)":"var(--v14)","stroke-width":a<=r?2.5:1},o),n(o,i+8,s+(l?23:28),e.n,a<=r?"val":"sub",{style:"font-size:12px"})}),n(o,4,16,"what you have learned so far","lab"),e("glCan").textContent="YOU CAN\n\n· "+b[r].can.join("\n· "),e("glCant").textContent="STILL BITES YOU\n\n· "+b[r].cant.join("\n· ")}o&&(e("gl").addEventListener("input",r),s.push(r),r())}();var w={py:["Python and pandas basics","You cannot inspect data you cannot load. Two weekends.","https://pandas.pydata.org/docs/getting_started/index.html"],eval:["Baselines and evaluation","Base rate, train and test split, precision and recall. The two weeks that change everything.","https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall"],sk:["One supervised project end to end","Logistic regression or a tree on data you care about. Beat the obvious rule.","https://scikit-learn.org/stable/getting_started.html"],leak:["Leakage and data quality","Google Rules of ML, then re-read your own feature list.","https://developers.google.com/machine-learning/guides/rules-of-ml"],nn:["Neural network fundamentals","What a layer, a loss and gradient descent actually do.","https://www.3blue1brown.com/topics/neural-networks"],dl:["Practical deep learning","fast.ai, top-down, with working models from lesson one.","https://course.fast.ai/"],api:["Build with an LLM API","Prompting, structured output, tool calls. Start here if your problem is text.","https://anthropic.skilljar.com/"],rag:["Retrieval and embeddings","The first serious LLM project for most companies.","https://www.pinecone.io/learn/series/faiss/"],llmev:["Evaluating LLM systems","Your eval-set habit, applied to generated text.","https://github.com/eugeneyan/applied-ml"],scratch:["Build a small LLM from scratch","Karpathy, once everything above is comfortable.","https://karpathy.ai/zero-to-hero.html"],stats:["Statistical learning theory","ISL, when you want to know why the methods work.","https://www.statlearning.com/"]};!function(){var t=e("pathRole");if(t){var n="analyst",a="ship";[{k:"analyst",n:"analyst or data person"},{k:"eng",n:"software engineer"},{k:"mgr",n:"manager or founder"}].forEach(function(e,a){var i=o("button",e.n,t);a||i.classList.add("on"),i.addEventListener("click",function(){n=e.k,t.querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===i)}),r()})}),[{k:"ship",n:"ship an AI feature soon"},{k:"career",n:"change career into ML"},{k:"judge",n:"judge other people’s AI work"}].forEach(function(t,n){var i=o("button",t.n,e("pathGoal"));n||i.classList.add("on"),i.addEventListener("click",function(){a=t.k,e("pathGoal").querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===i)}),r()})}),r()}function r(){var t="judge"===a?{note:"You are not going to write the code, so learn what lets you ask the right question in a review.",steps:["eval","leak","sk","api","llmev"]}:"career"===a?{note:"The long route, and the only one that ends with you able to build the thing yourself.",steps:["py","eval","sk","leak","nn","dl","api","rag","scratch","stats"]}:"mgr"===n?{note:"Enough to run the project and know when you are being shown a demo rather than a result.",steps:["eval","sk","api","llmev"]}:"eng"===n?{note:"You can already build. What is missing is the measurement half, so take it first and keep shipping.",steps:["eval","api","sk","leak","rag","llmev"]}:{note:"You already work with data, which is most of the distance. Two weeks of evaluation habits, one project, then the LLM side.",steps:["py","eval","sk","leak","api","rag","llmev"]},r=e("pathOut");r.innerHTML="",o("p",t.note,r,"readout");var i=o("table",null,r,"t");t.steps.forEach(function(e,t){var n=w[e],a=o("tr",null,i),r=o("td",null,a);r.style.fontFamily="var(--v7)",r.style.color="var(--v0)",r.textContent=t+1;var s=o("td",null,a),l=o("a",n[0],s);l.href=n[2],l.target="_blank",l.rel="noopener",o("div",n[1],s).style.fontSize="15px"})}}(),function(){var t=e("libList");if(t){var n=[],a={};document.querySelectorAll("section[data-ch] .note li").forEach(function(e){var t=(e.querySelector("span")||{}).textContent||"",o=t.split("·").map(function(e){return e.trim()});e.querySelectorAll("a").forEach(function(r){a[r.href]||(a[r.href]=1,n.push({t:r.textContent,u:r.href,d:e.textContent.replace(t,"").replace(r.textContent,"").replace(/\s+/g," ").trim(),fmt:o[0]||"",lvl:o[1]||"any"}))})}),Object.keys(w).forEach(function(e){var t=w[e];a[t[2]]||(a[t[2]]=1,n.push({t:t[0],u:t[2],d:t[1],fmt:"path",lvl:"any"}))});var r="any level";["any level","beginner","intermediate","advanced"].forEach(function(t,n){var a=o("button",t,e("libLevel"));n||a.classList.add("on"),a.addEventListener("click",function(){r=t,e("libLevel").querySelectorAll("button").forEach(function(e){e.classList.toggle("on",e===a)}),i()})}),e("libQ").addEventListener("input",i),i()}function i(){var a=e("libQ").value.toLowerCase();t.innerHTML="";var i=0;n.forEach(function(e){if(!("any level"!==r&&e.lvl!==r||a&&(e.t+" "+e.d+" "+e.fmt).toLowerCase().indexOf(a)<0)){i++;var n=o("a",null,t,"lib-item");n.href=e.u,n.target="_blank",n.rel="noopener",o("b",e.t,n),e.d&&o("span",e.d,n),o("i",e.fmt+" · "+e.lvl,n)}}),e("libCount").innerHTML="<b>"+i+"</b> of "+n.length+" resources"}}(),function(){var t=new IntersectionObserver(function(e){e.forEach(function(e){e.isIntersecting&&(e.target.classList.add("in"),t.unobserve(e.target))})},{threshold:.05,rootMargin:"0px 0px -5% 0px"});document.querySelectorAll(".reveal").forEach(function(e){t.observe(e)});var n=[].slice.call(document.querySelectorAll("section[data-ch]")),a=e("count"),o=new IntersectionObserver(function(e){e.forEach(function(e){if(e.isIntersecting){var t=n.indexOf(e.target);t>=0&&(a.textContent=t+1+" of "+n.length)}})},{rootMargin:"-45% 0px -45% 0px"});function r(){var t=e("weeds");t.classList.toggle("open"),t.classList.contains("open")&&t.scrollIntoView({behavior:"smooth"})}n.forEach(function(e){o.observe(e)}),e("weedsHint").addEventListener("click",r),addEventListener("keydown",function(e){"s"!==e.key||/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)||e.metaKey||e.ctrlKey||r()})}(),window.__T2={counts:p,POS:h,M:f,TEST:u,TRAIN:c,fit:d,SCORES:v}}();
+</script>
+</body></html>

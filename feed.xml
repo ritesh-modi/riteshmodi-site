@@ -16,6 +16,38 @@
     <summary>Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, and a query drop through five layers to its ten nearest neighbours.</summary>
   </entry>
   <entry>
+    <title>Why learn machine learning before you build on LLMs</title>
+    <link href="https://www.loopingly.com/explorables/ml-before-llm"/>
+    <id>https://www.loopingly.com/explorables/ml-before-llm</id>
+    <updated>2026-10-03T00:00:00Z</updated>
+    <published>2026-10-03T00:00:00Z</published>
+    <summary>A churn model scores 90% and catches almost nobody. Switch predictors, move the threshold and check calibration to see what classic machine learning teaches before LLMs.</summary>
+  </entry>
+  <entry>
+    <title>AI, ML, LLMs, RAG and agents: a hands-on field guide</title>
+    <link href="https://www.loopingly.com/explorables/ai-field-guide"/>
+    <id>https://www.loopingly.com/explorables/ai-field-guide</id>
+    <updated>2026-10-03T00:00:00Z</updated>
+    <published>2026-10-03T00:00:00Z</published>
+    <summary>Train a spam filter, teach a robot a maze, search a vector space and price an AI business case. A hands-on field guide to AI, ML, LLMs, RAG and agents.</summary>
+  </entry>
+  <entry>
+    <title>Multimodal lab: vision and speech</title>
+    <link href="https://www.loopingly.com/explorables/multimodal-lab"/>
+    <id>https://www.loopingly.com/explorables/multimodal-lab</id>
+    <updated>2026-10-02T00:00:00Z</updated>
+    <published>2026-10-02T00:00:00Z</published>
+    <summary>Bring your own DeepSeek key: turn receipts into checked JSON, grade chart answers, search a catalogue by photo, and test speech in the browser until it breaks.</summary>
+  </entry>
+  <entry>
+    <title>LLM lab: calls, tokens, prompts, RAG and agents</title>
+    <link href="https://www.loopingly.com/explorables/llm-lab"/>
+    <id>https://www.loopingly.com/explorables/llm-lab</id>
+    <updated>2026-10-02T00:00:00Z</updated>
+    <published>2026-10-02T00:00:00Z</published>
+    <summary>Bring your own DeepSeek key and run eight missions: your first API call, tokens, next-word probabilities, temperature, prompting, reasoning, RAG and an agent.</summary>
+  </entry>
+  <entry>
     <title>Jev, explained</title>
     <link href="https://www.loopingly.com/explorables/1-jev-explained"/>
     <id>https://www.loopingly.com/explorables/1-jev-explained</id>

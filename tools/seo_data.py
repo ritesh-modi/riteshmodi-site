@@ -230,6 +230,30 @@ EXPLORABLES = {
         short="Push 200 tickets through a typed model and slide the confidence gate.",
         about="Jev, the System One model from TypeSafe AI"),
 
+    "ml-before-llm": dict(
+        desc="A churn model scores 90% and catches almost nobody. Switch predictors, move the threshold "
+             "and check calibration to see what classic machine learning teaches before LLMs.",
+        short="A 90% accurate model that catches almost nobody, and what that teaches you before LLMs.",
+        about="Machine learning fundamentals for LLM builders"),
+
+    "ai-field-guide": dict(
+        desc="Train a spam filter, teach a robot a maze, search a vector space and price an AI business "
+             "case. A hands-on field guide to AI, ML, LLMs, RAG and agents.",
+        short="Train a spam filter, search a vector space, and price an AI business case.",
+        about="Artificial intelligence, machine learning, LLMs, RAG and agents"),
+
+    "multimodal-lab": dict(
+        desc="Bring your own DeepSeek key: turn receipts into checked JSON, grade chart answers, search "
+             "a catalogue by photo, and test speech in the browser until it breaks.",
+        short="Turn receipts into JSON, search by photo, and test speech until it breaks.",
+        about="Multimodal AI: vision and speech"),
+
+    "llm-lab": dict(
+        desc="Bring your own DeepSeek key and run eight missions: your first API call, tokens, next-word "
+             "probabilities, temperature, prompting, reasoning, RAG and an agent.",
+        short="Eight live missions on a real model: calls, tokens, temperature, prompts, RAG, agents.",
+        about="Large language models, hands-on"),
+
     "is-it-actually-thinking": dict(
         desc="Short answer: no — an LLM is autocomplete that read the internet. See the one "
              "trick underneath, and two of the biggest beginner worries fall away at once.",
@@ -541,6 +565,14 @@ KEYWORDS = {
                                                "LLM production architecture", "retrieval chunk size"],
     "hnsw-how-it-works": ["what is HNSW", "how does HNSW work", "HNSW explained", "how do vector databases search",
                           "approximate nearest neighbor search", "HNSW ef M efConstruction", "vector search for RAG"],
+    "ml-before-llm": ["should I learn machine learning before LLMs", "accuracy paradox base rate", "classification threshold explained",
+                      "model calibration explained", "data leakage machine learning"],
+    "ai-field-guide": ["AI vs machine learning vs LLM", "what is RAG", "what is an AI agent", "AI explained for business",
+                       "hands-on introduction to AI"],
+    "multimodal-lab": ["multimodal AI hands-on", "vision language model receipts to JSON", "multimodal RAG",
+                       "speech recognition in the browser", "DeepSeek vision API"],
+    "llm-lab": ["LLM hands-on lab", "how to call an LLM API", "what are tokens LLM", "LLM temperature explained",
+                "build a RAG app", "build an AI agent", "DeepSeek API tutorial"],
     "1-jev-explained": ["what is Jev TypeSafe", "TypeSafe System One model", "calibrated LLM classification",
                         "typed AI decisions", "LLM routing with confidence"],
     "is-it-actually-thinking": ["how does an LLM work", "do LLMs actually think", "is AI really thinking",

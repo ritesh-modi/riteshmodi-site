@@ -14,11 +14,11 @@
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-05</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-05</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/talks</loc>
@@ -35,6 +35,10 @@
   <url>
     <loc>https://www.loopingly.com/explorables/agentic-rag</loc>
     <lastmod>2026-09-05</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/ai-field-guide</loc>
+    <lastmod>2026-10-03</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/ai-transformation-explainer</loc>
@@ -121,6 +125,10 @@
     <lastmod>2026-07-26</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/llm-lab</loc>
+    <lastmod>2026-10-02</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/llm-watermarking</loc>
     <lastmod>2026-09-08</lastmod>
   </url>
@@ -133,8 +141,16 @@
     <lastmod>2026-08-18</lastmod>
   </url>
   <url>
+    <loc>https://www.loopingly.com/explorables/ml-before-llm</loc>
+    <lastmod>2026-10-03</lastmod>
+  </url>
+  <url>
     <loc>https://www.loopingly.com/explorables/multimodal-explainer</loc>
     <lastmod>2026-07-26</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/multimodal-lab</loc>
+    <lastmod>2026-10-02</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/neural-network-by-hand</loc>
