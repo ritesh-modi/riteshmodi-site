@@ -218,6 +218,12 @@ EXPLORABLES = {
         short="Resize retrieval chunks until they ruin the answer, then find each system's scar.",
         about="Generative AI systems in production"),
 
+    "python-asyncio-1": dict(
+        desc="Scroll asyncio from the OS up: watch one cook run three pots, a selector pull ready mail, "
+             "a generator pause on its tape, and the event loop turn its dial.",
+        short="Scroll asyncio from the OS up, from threads and sockets to the event loop's dial.",
+        about="Python asyncio: threads, sockets, generators, coroutines, futures and the event loop"),
+
     "hnsw-how-it-works": dict(
         desc="Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, "
              "and a query drop through five layers to its ten nearest neighbours.",
@@ -563,6 +569,8 @@ KEYWORDS = {
                          "what is a learning rate", "how does model training work"],
     "how-twenty-companies-run-generative-ai": ["generative AI in production", "real world LLM examples", "how companies use generative AI",
                                                "LLM production architecture", "retrieval chunk size"],
+    "python-asyncio-1": ["how does asyncio work", "python asyncio explained", "what is the asyncio event loop",
+                         "asyncio vs threads", "python coroutines explained", "asyncio future vs task", "yield from vs await"],
     "hnsw-how-it-works": ["what is HNSW", "how does HNSW work", "HNSW explained", "how do vector databases search",
                           "approximate nearest neighbor search", "HNSW ef M efConstruction", "vector search for RAG"],
     "ml-before-llm": ["should I learn machine learning before LLMs", "accuracy paradox base rate", "classification threshold explained",
