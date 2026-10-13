@@ -85,13 +85,14 @@
   #side-async .sa-book{display:flex; gap:10px; align-items:center; margin-top:14px; padding-top:14px; border-top:1.5px dashed var(--rule); text-decoration:none; color:var(--ink)}
   #side-async .sa-cover{flex:none; width:38px; height:52px; border-radius:3px 7px 7px 3px; background:linear-gradient(160deg,#C9762E,#9C561C); color:#fff;
     display:grid; place-items:center; font:800 9.5px/1.05 ui-monospace,Menlo,monospace; text-align:center; box-shadow:inset 3px 0 0 rgba(0,0,0,.18)}
+  #side-async .sa-img{flex:none; width:38px; height:54px; object-fit:cover; border-radius:3px 7px 7px 3px; box-shadow:0 3px 8px rgba(80,55,30,.25)}
   #side-async .sa-bs{display:block; font:700 9.5px/1.2 "Baloo 2"; letter-spacing:.1em; text-transform:uppercase; color:var(--grape)}
   #side-async .sa-bt{display:block; font:800 13.5px/1.25 "Baloo 2"}
   #side-async .sa-bg{font-weight:800; font-size:12.5px; color:var(--coral)}
   @media (max-width:640px){ #side-async{top:auto; bottom:84px; transform:none} #side-async .sa-panel{width:min(250px,78vw)} }
 </style>
-<aside id="side-async" aria-label="New: Python asyncio">
-  <button class="sa-tab" type="button" aria-expanded="false" aria-controls="side-async-panel">New: asyncio</button>
+<aside id="side-async" aria-label="New: Python asyncio, and two books">
+  <button class="sa-tab" type="button" aria-expanded="false" aria-controls="side-async-panel">New: asyncio + books</button>
   <div class="sa-panel" id="side-async-panel">
     <button class="sa-x" type="button" aria-label="Close">×</button>
     <span class="sa-k">New explorable</span>
@@ -103,6 +104,12 @@
       <span><span class="sa-bs">Forward Deployed Engineer Series</span>
         <span class="sa-bt">Learn asyncio from the ground up and become a master of it</span>
         <span class="sa-bg">Get the book →</span></span>
+    </a>
+    <a class="sa-book" href="/vector-search-inside-out">
+      <img class="sa-img" src="/assets/vector-search-inside-out-cover.jpg" width="38" height="54" alt="" loading="lazy">
+      <span><span class="sa-bs">New book · Forward Deployed Engineer Series</span>
+        <span class="sa-bt">Vector Search Inside Out: HNSW from first principles</span>
+        <span class="sa-bg">About the book →</span></span>
     </a>
   </div>
 </aside>

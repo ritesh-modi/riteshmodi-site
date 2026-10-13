@@ -47,6 +47,12 @@ PAGES = {
              "applied machine learning, with slides and recordings where available.",
         about="Technical talks",
     ),
+    "vector-search-inside-out": dict(
+        desc="HNSW vector search from first principles: graphs, beam search, layers, and tuning "
+             "M, efConstruction and ef on 1.18 million vectors. The book, by Ritesh Modi.",
+        short="HNSW from first principles: graphs, beams, layers, and every knob measured.",
+        about="HNSW vector search",
+    ),
     "ai-watermarking": dict(
         desc="How a model signs what it writes: the secret key, the split dictionary and the "
              "arithmetic that turns 300 words into proof. The book, by Ritesh Modi.",
@@ -60,6 +66,11 @@ PAGES = {
 # a book" is not the same claim to a crawler as "this is the book". Keyed by slug,
 # consumed by seo_apply.
 BOOKS = {
+    "vector-search-inside-out": dict(
+        name="Vector Search Inside Out: HNSW from First Principles to a Tuned Production Index",
+        buy="https://leanpub.com/vectorsearchinsideout",
+        image="/assets/vector-search-inside-out-cover.jpg",
+    ),
     "ai-watermarking": dict(
         name="AI Watermarking: How a Model Signs What It Writes",
         buy="https://leanpub.com/aillmwatermarks",
