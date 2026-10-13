@@ -16,14 +16,6 @@
     <summary>Scroll asyncio from the OS up: watch one cook run three pots, a selector pull ready mail, a generator pause on its tape, and the event loop turn its dial.</summary>
   </entry>
   <entry>
-    <title>HNSW, part 1: how it works</title>
-    <link href="https://www.loopingly.com/explorables/hnsw-how-it-works"/>
-    <id>https://www.loopingly.com/explorables/hnsw-how-it-works</id>
-    <updated>2026-10-05T00:00:00Z</updated>
-    <published>2026-10-05T00:00:00Z</published>
-    <summary>Scroll a real HNSW search: watch a greedy walk get stuck, a beam of four rescue it, and a query drop through five layers to its ten nearest neighbours.</summary>
-  </entry>
-  <entry>
     <title>Why learn machine learning before you build on LLMs</title>
     <link href="https://www.loopingly.com/explorables/ml-before-llm"/>
     <id>https://www.loopingly.com/explorables/ml-before-llm</id>

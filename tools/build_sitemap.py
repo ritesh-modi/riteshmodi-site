@@ -23,6 +23,13 @@ CHECK = "--check" in sys.argv
 SKIP_SUBJECTS = ("seo:", "untrack")
 
 
+def unpublished(root="."):
+    """Paths .assetsignore keeps off the live site; they stay in the repo but get no URL."""
+    p = os.path.join(root, ".assetsignore")
+    if not os.path.exists(p): return set()
+    return {l.strip() for l in open(p) if l.strip() and not l.startswith("#")}
+
+
 def read(p):
     return io.open(p, encoding="utf-8").read()
 
@@ -80,7 +87,9 @@ def main():
     # any byte moved - a domain migration or a metadata sweep touches all 28 files
     # on one day and flattens every lastmod to that date. The card date is
     # maintained by hand and tracks the writing, which is what lastmod is for.
+    hidden = unpublished()
     for f in sorted(glob.glob("explorables/*.html")):
+        if f in hidden: continue                      # unpublished: no URL to list
         slug = os.path.basename(f)[:-5]
         urls.append((SITE + "/explorables/" + slug,
                      cd.get(slug) or git_date(f) or "2026-07-26"))

@@ -15,3 +15,6 @@ wrangler.jsonc
 .assetsignore
 .github
 README.md
+
+# Unpublished, kept in the repo (2026-10-13)
+explorables/hnsw-how-it-works.html
