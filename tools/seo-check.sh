@@ -35,6 +35,9 @@ bad = []
 pages = (sorted(glob.glob("*.html")) + sorted(glob.glob("explorables/*.html"))
          + sorted(glob.glob("%s/*.html" % NOTES_DIR)))
 descs = {}
+UNPUBLISHED = set()   # pages .assetsignore keeps off the live site
+if os.path.exists(".assetsignore"):
+    UNPUBLISHED = {l.strip() for l in io.open(".assetsignore", encoding="utf-8") if l.strip().endswith(".html")}
 
 for p in pages:
     s = io.open(p, encoding="utf-8", errors="replace").read()
@@ -46,6 +49,11 @@ for p in pages:
     if not head:
         bad.append("%s: no <head> - metadata cannot be seen by a crawler" % name)
         continue
+
+    # every published page carries the analytics tag; 27 pages added after it was pasted
+    # in by hand (2026-07-31) went uncounted until 2026-10-18 because nothing checked this
+    if p not in UNPUBLISHED and "beacon.min.js" not in s:
+        bad.append("%s: no Cloudflare Web Analytics tag - its visitors are not counted" % name)
 
     # exactly one canonical, and it must not be a redirecting URL
     cans = [m[1] for m in re.findall(r'<link[^>]+rel=["\']canonical["\'][^>]+href=(["\'])(.*?)\1', head, re.I)]
