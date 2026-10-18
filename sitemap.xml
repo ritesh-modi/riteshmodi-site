@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://www.loopingly.com/vector-search-inside-out</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-10-13</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/03-words-to-vectors</loc>
@@ -187,6 +187,14 @@
   <url>
     <loc>https://www.loopingly.com/explorables/python-asyncio-1</loc>
     <lastmod>2026-10-12</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/rag-essay</loc>
+    <lastmod>2026-10-16</lastmod>
+  </url>
+  <url>
+    <loc>https://www.loopingly.com/explorables/rag-lab</loc>
+    <lastmod>2026-10-17</lastmod>
   </url>
   <url>
     <loc>https://www.loopingly.com/explorables/rate-limiting-explainer</loc>

@@ -20,6 +20,7 @@ from seo_data import (SITE, AUTHOR, PAGES, EXPLORABLES, PERSON, RENAMES, KEYWORD
                       NOTES, NOTES_DIR, BOOKS)
 
 BEGIN, END = "<!-- seo:begin -->", "<!-- seo:end -->"
+BRAND_TITLE, BRAND_LINE = " · Loopingly by Ritesh Modi", "Loopingly by Ritesh Modi."
 CHECK = "--check" in sys.argv
 
 # The five GRC/atlas pages were authored as bare fragments: they open with <style>
@@ -93,7 +94,7 @@ def strip_unmanaged(head):
     return head
 
 
-def block(url, title, desc, short, image, ld, ART=False):
+def block(url, title, desc, short, image, ld, ART=False, plain=None, og_short=None):
     """The managed head block. og:image is absolute because scrapers do not resolve
     relative URLs - a relative og:image is the single most common reason a share
     card renders blank."""
@@ -106,14 +107,14 @@ def block(url, title, desc, short, image, ld, ART=False):
          '<meta property="og:site_name" content="%s">' % esc(AUTHOR),
          '<meta property="og:locale" content="en_GB">',
          '<meta property="og:title" content="%s">' % esc(title),
-         '<meta property="og:description" content="%s">' % esc(short),
+         '<meta property="og:description" content="%s">' % esc(og_short or short),
          '<meta property="og:url" content="%s">' % url,
          '<meta property="og:image" content="%s">' % image,
          '<meta property="og:image:width" content="1200">',
          '<meta property="og:image:height" content="630">',
-         '<meta property="og:image:alt" content="%s">' % esc(title),
+         '<meta property="og:image:alt" content="%s">' % esc(plain or title),
          '<meta name="twitter:card" content="summary_large_image">',
-         '<meta name="twitter:title" content="%s">' % esc(title),
+         '<meta name="twitter:title" content="%s">' % esc(plain or title),
          '<meta name="twitter:description" content="%s">' % esc(short),
          '<meta name="twitter:image" content="%s">' % image,
          ]
@@ -150,6 +151,13 @@ def apply_page(path, slug, url, meta, info, drift):
     title = page_title(s) or info.get("card_title") or slug
     desc = meta["desc"]
     short = meta.get("short", desc)
+    # Explorables carry the brand (a brand search found only About and Books before):
+    # <title>/og:title end in BRAND_TITLE, the search description and og:description end in
+    # BRAND_LINE. The image alt, Twitter title/description and JSON-LD keep the plain wording.
+    plain, og_short, meta_desc = title, None, desc
+    if "/explorables/" in url:
+        plain = title[:-len(BRAND_TITLE)] if title.endswith(BRAND_TITLE) else title
+        og_short, meta_desc = short + " " + BRAND_LINE, desc + " " + BRAND_LINE
     image = "%s/og/%s.png" % (SITE, slug)
 
     # 2. structured data
@@ -161,7 +169,7 @@ def apply_page(path, slug, url, meta, info, drift):
         ld.append({
             "@context": "https://schema.org",
             "@type": ["Article", "LearningResource"],
-            "headline": title[:110],
+            "headline": plain[:110],
             "description": desc,
             "url": url,
             "image": image,
@@ -273,7 +281,7 @@ def apply_page(path, slug, url, meta, info, drift):
             },
         })
 
-    blk = block(url, title, desc, short, image, ld, ART=is_article)
+    blk = block(url, title, meta_desc, short, image, ld, ART=is_article, plain=plain, og_short=og_short)
 
     # 3. splice into head
     head_end = s.lower().find("</head>")

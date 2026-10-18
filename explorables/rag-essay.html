@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAG, from the ground up · Loopingly by Ritesh Modi</title>
+<style>:root{color-scheme: light;--v0:#F6F3EC;--v16:#FFFFFF;--v17:#ECE7DC;--v4:#232733;--v8:#5F6370;--v3:#A39D92;--v5:#E2DCCF;--v6:#D2CABB;--v1:#5F7A55;--v2:#E8EDE3;--v18:#4A6482;--v19:#E1E8F0;--v9:#B5533E;--v10:#F6E3DD;--v12:#B8891A;--v13:#F6EED8;--v14:#6B655E;--v15:#EEEAE4;--v7: ui-monospace, SFMono-Regular, Menlo, "JetBrains Mono", monospace;--v11: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif}*{box-sizing:border-box}html{background:var(--v0)}body{background:var(--v0);color:var(--v4);margin:0;font:16px/1.62 var(--v11);-webkit-font-smoothing:antialiased}#topbar{position:fixed;left:0;right:0;top:0;z-index:80;background:rgba(247,244,238,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--v5);padding-top:env(safe-area-inset-top,0px)}#progress{height:2px;background:linear-gradient(90deg,var(--v1),var(--v18),var(--v9),var(--v12));width:0%}#nav{display:flex;gap:2px;align-items:center;overflow-x:auto;scrollbar-width:none;max-width:1280px;margin:0 auto;padding:7px max(12px,3vw)}#nav::-webkit-scrollbar{display:none}#nav .brand{font:800 12.5px/1 var(--v7);letter-spacing:.16em;margin-right:10px;color:var(--v9);white-space:nowrap}#nav a{font:500 12.2px/1 var(--v11);color:var(--v8);text-decoration:none;padding:6px 8px;border-radius:6px;white-space:nowrap}#nav a:hover,#nav a.here{color:var(--v4);background:var(--v17)}#nav a:focus-visible{outline:2px solid var(--v9);outline-offset:1px}#nav a i{font-style:normal;font-family:var(--v7);font-weight:700;font-size:10.5px;color:var(--v3);margin-right:5px}#nav a.here i{color:var(--v9)}.act{position:relative}.stage{position:sticky;top:0;height:100vh;height:100svh;z-index:1;overflow:hidden}.stage canvas{display:block;width:100%;height:100%}.stage .tag{position:absolute;right:max(16px,2.5vw);top:56px;font:700 10.5px/1 var(--v7);letter-spacing:.16em;text-transform:uppercase;color:var(--v3)}.cards{position:relative;z-index:2;margin-top:-100vh;margin-top:-100svh}.card{min-height:96vh;min-height:96svh;display:flex;align-items:center;padding-inline:max(20px,4.5vw)}.card.opener{min-height:100vh;min-height:100svh}.box{width:min(452px,89vw);background:none;border:0;padding:0}@media (min-width:820px){.box{width:clamp(280px,33vw,440px)}}.box .kicker{font:700 10.5px/1 var(--v7);letter-spacing:.2em;text-transform:uppercase;color:var(--v9);margin:0 0 11px}.box h2{font-size:clamp(22px,3.3vw,30px);line-height:1.14;letter-spacing:-.024em;margin:0 0 12px;font-weight:750}.box p{margin:0;font-size:15.4px;line-height:1.68;color:#434756}.box p + p, .box pre + p, .box p + pre, .box .io + p, .box pre + pre{margin-top:11px}.box b{color:var(--v4);font-weight:650}.box code{font:600 12.8px var(--v7);color:var(--v18);background:var(--v19);padding:1px 5px;border-radius:4px}.d{color:var(--v1);font-weight:700}.t{color:var(--v18);font-weight:700}.qq{color:var(--v9);font-weight:700}.s{color:var(--v12);font-weight:700}.say{margin-top:13px;padding:11px 13px;border-left:3px solid var(--v9);background:var(--v10);border-radius:0 9px 9px 0;font-size:14.4px;color:#3F4352}.box pre{margin:12px 0 0;background:#FFFFFF;border:1px solid var(--v6);border-radius:11px;padding:12px 13px;font:12px/1.6 var(--v7);color:#464C5E;overflow-x:auto;white-space:pre}.box pre .c{color:var(--v3)}.box pre .k{color:var(--v9);font-weight:700}.box pre .v{color:var(--v18)}.box pre .h{display:block;font:700 10px/1 var(--v7);letter-spacing:.16em;color:var(--v3);margin-bottom:8px;text-transform:uppercase}.io{margin-top:14px;border:1px solid var(--v6);border-radius:11px;background:#FFFFFF;font-size:14px;overflow:hidden}.io div{display:grid;grid-template-columns:76px 1fr;gap:10px;padding:9px 12px;border-bottom:1px solid var(--v5)}.io div:last-child{border-bottom:none;background:var(--v17)}.io span{font:700 10.5px/1.9 var(--v7);letter-spacing:.14em;text-transform:uppercase;color:var(--v3)}.io p{font-size:14px!important;line-height:1.55!important;margin:0!important}.box{opacity:0;transform:translateY(20px);transition:opacity .55s ease, transform .6s cubic-bezier(.2,.75,.3,1)}.box.lit{opacity:1;transform:none}@media (prefers-reduced-motion: reduce){.box{opacity:1;transform:none;transition:none}}.card.opener .box{width:min(640px,93vw)}.card.opener .actno{font:800 11px/1 var(--v7);letter-spacing:.3em;color:var(--v9);margin:0 0 14px}.card.opener h2{font-size:clamp(31px,5.4vw,52px);line-height:1.03;letter-spacing:-.034em;margin:0 0 14px}.card.opener p{font-size:clamp(15.5px,2vw,18px);color:#464B5C;max-width:50ch}@media (min-width:820px){.card.opener .box{width:clamp(300px,33vw,470px)}}.card.hero{min-height:100vh;min-height:100svh}.card.hero .box{width:min(720px,95vw)}.card.hero h1{font-size:clamp(38px,7vw,74px);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px;font-weight:800}.card.hero .tagline{font:700 12px/1 var(--v7);letter-spacing:.22em;color:var(--v9);margin:0 0 20px}.card.hero p{font-size:clamp(16px,2.2vw,18.5px);color:#3E4354;max-width:52ch}@media (min-width:820px){.card.hero .box{width:clamp(300px,33vw,500px)}.card.hero h1{font-size:clamp(36px,3.9vw,58px)}}.card.hero .hint{margin-top:28px;font:700 11px/1 var(--v7);letter-spacing:.2em;color:var(--v3);display:flex;align-items:center;gap:9px}.card.hero .hint i{display:block;width:1px;height:22px;background:linear-gradient(var(--v9),transparent);animation:drop 1.9s ease-in-out infinite}@keyframes drop{0%,100%{opacity:.25;transform:translateY(-4px)}50%{opacity:1;transform:translateY(4px)}}.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;font:600 12px/1 var(--v7);color:var(--v8)}.legend span::before{content:"";display:inline-block;width:18px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:currentColor}.legend .l1{color:var(--v1)}.legend .l2{color:var(--v18)}.legend .l3{color:var(--v9)}.legend .l4{color:var(--v12)}@media (max-width:819px){.box{background:rgba(247,244,238,.95);backdrop-filter:blur(14px);border-radius:14px;padding:18px 18px 20px}.card.hero .box, .card.opener .box{background:none;backdrop-filter:none;padding:0}.stage{height:44vh;height:44svh}.stage .tag{top:50px}.cards{margin-top:-44vh;margin-top:-44svh}.card{align-items:flex-end;padding-bottom:6vh}.card.hero, .card.opener{align-items:center;padding-bottom:0}.card.hero .box, .card.opener .box{margin-top:30vh}}@media (prefers-reduced-motion: reduce){.card.hero .hint i{animation:none}}section{padding-block:clamp(48px,7vw,92px);border-top:1px solid var(--v5);position:relative;z-index:3;background:var(--v0)}.wrap{max-width:1020px;margin:0 auto;padding-inline:max(16px,3vw)}.eyebrow{font:700 11.5px/1 var(--v7);letter-spacing:.2em;text-transform:uppercase;color:var(--v9);margin:0 0 12px}h2.sec{font-size:clamp(26px,4.2vw,38px);line-height:1.12;letter-spacing:-.026em;margin:0 0 15px;font-weight:750}h3.sub{font-size:19px;margin:34px 0 12px;letter-spacing:-.01em}section p{margin:0 0 14px;color:#434756;max-width:70ch}.tablewrap{overflow-x:auto;border:1px solid var(--v5);border-radius:13px;background:var(--v16)}table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.8px}th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--v5);vertical-align:top}th{font:700 11px/1.3 var(--v7);letter-spacing:.1em;text-transform:uppercase;color:var(--v8)}tr:last-child td{border-bottom:none}td code{font:600 12.4px var(--v7);color:var(--v18)}ol.check{padding-left:22px;max-width:72ch;color:#434756}ol.check li{margin-bottom:9px}ol.check b{color:var(--v4)}.gl{display:grid;grid-template-columns:minmax(170px,1fr) 2fr;gap:10px 24px;margin:20px 0 0;max-width:920px}.gl dt{font:700 14px/1.4 var(--v11);color:var(--v4)}.gl dd{margin:0;color:#434756;font-size:14.5px;line-height:1.55}.glossary{padding-block:clamp(56px,8vw,96px)}@media (max-width:640px){.gl{grid-template-columns:1fr}.gl dd{margin-bottom:10px}}.deep{max-width:780px;margin:0 auto;padding:clamp(40px,6vw,64px) max(18px,4vw);border-top:1px solid var(--v5);position:relative;z-index:3;background:var(--v0)}.deep h3{font-size:19px;line-height:1.25;letter-spacing:-.012em;margin:30px 0 10px;font-weight:700}.deep p, .deep li{font-size:15.5px;line-height:1.68;color:#434756;margin:0 0 12px}.deep ul, .deep ol{padding-left:22px;margin:0 0 12px}.deep li{margin-bottom:7px}.deep .eyebrow{margin-bottom:10px}.deep code{font:600 12.4px var(--v7);color:var(--v18);background:var(--v19);padding:1px 5px;border-radius:4px}.formula{font:12.8px/1.6 var(--v7);background:#FFFFFF;border:1px solid var(--v6);border-radius:10px;padding:12px 14px;overflow-x:auto;white-space:pre;color:#2b303d;margin:12px 0 16px}.deep .tablewrap{margin:12px 0 16px}.deep table{min-width:0}.try-wrap{max-width:780px;margin:0 auto;padding:0 max(18px,4vw) 36px;background:var(--v0)}.try{border-left:3px solid var(--v9);background:#FFFFFF;border-radius:0 12px 12px 0;padding:14px 18px;box-shadow:0 1px 0 var(--v5)}.try .eyebrow{margin:0 0 6px}.try p{font-size:15px;line-height:1.6;color:#434756;margin:0 0 8px}.try a{color:var(--v18)}.try-google{font-size:14px;color:var(--v8)}</style></style>
+  <!-- seo:begin -->
+  <meta name="description" content="Scroll RAG from scratch: watch keyword search miss a paraphrase, vectors find it, and hybrid search and a reranker reorder real help articles. Loopingly by Ritesh Modi.">
+  <link rel="canonical" href="https://www.loopingly.com/explorables/rag-essay">
+  <link rel="alternate" type="application/atom+xml" title="Ritesh Modi — Explorables" href="https://www.loopingly.com/feed.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Ritesh Modi">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:title" content="RAG, from the ground up · Loopingly by Ritesh Modi">
+  <meta property="og:description" content="Scroll RAG from scratch: keyword search, vectors, chunking, hybrid search and reranking. Loopingly by Ritesh Modi.">
+  <meta property="og:url" content="https://www.loopingly.com/explorables/rag-essay">
+  <meta property="og:image" content="https://www.loopingly.com/og/rag-essay.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RAG, from the ground up">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RAG, from the ground up">
+  <meta name="twitter:description" content="Scroll RAG from scratch: keyword search, vectors, chunking, hybrid search and reranking.">
+  <meta name="twitter:image" content="https://www.loopingly.com/og/rag-essay.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":["Article","LearningResource"],"headline":"RAG, from the ground up","description":"Scroll RAG from scratch: watch keyword search miss a paraphrase, vectors find it, and hybrid search and a reranker reorder real help articles.","url":"https://www.loopingly.com/explorables/rag-essay","image":"https://www.loopingly.com/og/rag-essay.png","datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en","author":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/about"},"publisher":{"@type":"Person","name":"Ritesh Modi","url":"https://www.loopingly.com/"},"learningResourceType":"Interactive explorable","educationalLevel":"Beginner","isAccessibleForFree":true,"about":{"@type":"Thing","name":"Retrieval-augmented generation: keyword search, BM25, embeddings, chunking, hybrid search and reranking"},"keywords":"what is RAG, how does RAG work, retrieval augmented generation explained, BM25 vs vector search, hybrid search explained, RAG chunking explained, what is a reranker"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.loopingly.com/"},{"@type":"ListItem","position":2,"name":"Explorables","item":"https://www.loopingly.com/explorables"},{"@type":"ListItem","position":3,"name":"RAG, from the ground up"}]}</script>
+  <!-- seo:end -->
+</head>
+<body>
+
+<div id="topbar">
+  <div id="progress"></div>
+  <nav id="nav" aria-label="Sections">
+    <span class="brand">RAG</span>
+    <a href="#a1"><i>1</i> The problem</a>
+    <a href="#a2"><i>2</i> Keyword search</a>
+    <a href="#a3"><i>3</i> BM25</a>
+    <a href="#a4"><i>4</i> Vectors</a>
+    <a href="#a5"><i>5</i> Cosine</a>
+    <a href="#a6"><i>6</i> Vector search</a>
+    <a href="#a7"><i>7</i> The pipeline</a>
+    <a href="#a8"><i>8</i> Chunking</a>
+    <a href="#a9"><i>9</i> Hybrid &amp; rerank</a>
+    <a href="#a10"><i>10</i> Recall &amp; precision</a>
+    <a href="#a11"><i>11</i> Judging answers</a>
+    <a href="#a12"><i>12</i> The system</a>
+    <a href="#glossary"><i>·</i> Glossary</a>
+  </nav>
+</div>
+
+<div class="act" id="h0">
+  <div class="stage"><canvas id="cvh0" role="img" aria-label="A question about refunds goes to a model that has no path to the documents, so its answer box is a guess. Then two searches: an exact match on the word refund, and a meaning match on getting money back that shares no word with it."></canvas><div class="tag">start here · ask, then check</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="h0_a">
+      <div class="box">
+        <p class="actno">START HERE</p>
+        <h2>Ask a model about your documents, then check the answer</h2>
+        <p>Open any language model and ask it: <i>“How long do I have to return an item?”</i> The answer is in our documents, but the model has never seen them. It should say it does not know. If it gives you a number, that number is a guess, and the next acts explain why retrieval exists.</p>
+        <p class="say">Try it now. Ask a model the question with no documents attached. Then ask the same question in the lab’s “Start here” section, where the sample documents are used.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="h0_b">
+      <div class="box">
+        <p class="kicker">EXACT, THEN MEANING</p>
+        <h2>Search Google for the word, then for the idea</h2>
+        <p>Open <a target="_blank" rel="noopener" href="https://www.google.com/search?q=refund">google.com/search?q=refund</a>. Results with the word <b>refund</b> show it in bold: exact keyword matching, where the letters must be the same.</p>
+        <p>Then open <a target="_blank" rel="noopener" href="https://www.google.com/search?q=money+back">google.com/search?q=money+back</a>. Look for pages about getting paid back that never use the word refund. That is meaning. A vector is how a computer represents meaning: a list of numbers, where texts with similar meaning sit close together.</p>
+        <p class="say">Search “notebook”, then “laptop”. Where the bold words are missing from the results, the match is semantic.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scroll the animation above: the question connects to the model, and nothing connects to the documents.</li><li>In the essay’s lab section <b>Labs for the essay · Lab 1</b>, read the three checks. For the question <i>How long do I have to return an item?</i>, the model alone has no check it can make.</li><li>Ask the same question to any language model with no documents attached. Write down its answer.</li></ol><p><b>What to expect.</b> The model either says it does not know, or gives a number. A number that does not appear in the five articles (30 days, 2 business days, 3 to 5 days, two years, 5 to 7 working days, 7 days) is a guess.</p><p><b>Check yourself.</b> Does the model’s answer contain a figure that the five articles do not? If it does, that figure is the guess this essay is about.</p><p class="try-google">Google <a target="_blank" rel="noopener" href="https://www.google.com/search?q=refund">refund</a>: Results whose snippets show <b>refund</b> in bold contain the exact word. Count how many of the first ten do.</p><p class="try-google">Google <a target="_blank" rel="noopener" href="https://www.google.com/search?q=money+back">money back</a>: Pages about getting paid back that never use the word refund match on meaning.</p></div></section>
+<div class="act" id="a1">
+  <div class="stage"><canvas id="cv1" role="img" aria-label="Five document cards drop onto the stage. A probe sweeps down them and the refund-money card lights up. The question, the language model and an answer box appear alone, the documents shrink to a row, and two gold flows carry the right document into the model."></canvas><div class="tag">five documents · one question</div></div>
+  <div class="cards">
+    <div class="card hero" data-scene="a1hero">
+      <div class="box">
+        <p class="tagline">RAG, FROM THE GROUND UP</p>
+        <h1>RAG, from the ground up</h1>
+        <p>Your questions are answered by a language model. Your documents are not inside it. So before it can answer about your refund policy, something has to find the right passage and hand it over.</p>
+        <p>This essay builds that something from the beginning: the old keyword search, the new meaning search, how the two are combined, and how to measure whether it works. The keyword scores are computed from the five sample articles. The vector map is a hand-placed toy, and the model sizes and cost figures are real or labelled as examples. You do not need to know any code to follow it.</p>
+        <div class="legend"><span class="l1">documents</span><span class="l2">words and numbers</span><span class="l3">the question</span><span class="l4">the best match</span></div>
+        <div class="hint"><i></i> SCROLL</div>
+      </div>
+    </div>
+    <div class="card" data-scene="a1ask">
+      <div class="box">
+        <p class="kicker">1 · THE PROBLEM</p>
+        <h2>Five articles, one question</h2>
+        <p>A customer asks: <b>“How do I get my money back?”</b> The answer is in our help centre, in an article called <b>Getting your money back</b>. But the question does not use the article’s words. Nothing in the question says “refund”.</p>
+        <p>Our corpus is five short articles: a refund policy, shipping, a warranty, the money-back article, and a sizing guide. The probe runs down them. It is looking for the one that answers the question, and it finds the money-back article, D4.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a1gap">
+      <div class="box">
+        <p class="kicker">1 · THE GAP</p>
+        <h2>A model answers from memory</h2>
+        <p>A large language model learned from a huge amount of public text. It knows that most shops refund within some window, and it can write a sensible-sounding paragraph about it. It has never seen our article.</p>
+        <p>The grey dots under the articles are what the model cannot see. Asked directly, it will guess. A guess about your refund policy is the most dangerous kind of wrong answer, because it sounds right. The fix is not a bigger model. It is to give the model the right page at the moment it answers.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a1goal">
+      <div class="box">
+        <p class="kicker">1 · THE GOAL</p>
+        <h2>Retrieve first, then answer</h2>
+        <p><b>Retrieval-augmented generation</b>, or RAG, is that fix. It has two steps. A search step finds the few passages most likely to answer. The model then writes its answer from those passages, and can point at them.</p>
+        <p>The gold flows show the idea. Only the two articles that answer the question travel to the model. The other three stay behind on the shelf.</p>
+        <div class="io">
+          <div><span>in</span><p>a question, and a store of documents the model has never seen</p></div>
+          <div><span>out</span><p>an answer built from the passages the search found</p></div>
+          <div><span>means</span><p>the model’s job is to read, not to remember. Search decides what it reads.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e1" data-after="a1">
+  <div class="stage"><canvas id="cve1" role="img" aria-label="Three boxes, Retrieve, Context and Generate, joined by flows. Three red marks appear over them in turn: a missing passage, a buried passage, and an answer that ignored a passage it had."></canvas><div class="tag">where a RAG answer fails</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e1_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT ONE</p>
+        <h2>Three places a RAG answer can go wrong</h2>
+        <p>A wrong answer comes from one of three stages. Retrieval missed the right passage. Context put it in the prompt badly. Generation ignored it or invented something. Each has a different fix, so find the stage first.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e1_b">
+      <div class="box">
+        <p class="kicker">RETRIEVAL MISS</p>
+        <h2>If the answer is not retrieved, nothing downstream can save it</h2>
+        <p>Thirty candidate passages, and the right one sits at rank 17. Searching the top five never sees it. Widening the window to 20 or more finds it. This is a recall problem, so the fixes are in chunking, hybrid search and query rewriting, not in the prompt.</p>
+        <p class="say">A reranker only reorders what was retrieved. If the answer is outside the candidates, no reranker can help.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the first act. Watch the probe reach the money-back article: that is the retrieval step the model cannot do alone.</li><li>Open <b>Lab 1 · Three checks for one bad answer</b>. Work through one bad answer: tick only the boxes that are true.</li><li>Write which box you ticked last, and which stage that points to.</li></ol><p><b>What to expect.</b> No box ticked means retrieval failed. Only the first ticked means the prompt failed. The first two ticked means generation failed. All three ticked means the answer is grounded and faithfulness is the next check.</p><p><b>Check yourself.</b> For your bad answer, which stage failed, and what single change would you test first?</p></div></section>
+
+<div class="act" id="a2">
+  <div class="stage"><canvas id="cv2" role="img" aria-label="A column of five terms on the left, a column of five documents on the right, and lines joining each term to the documents that contain it. A rust query arrives and lights only the refund term and document one. A second query, money back, lights a different path to document four."></canvas><div class="tag">the inverted index</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a2invert">
+      <div class="box">
+        <p class="actno">ACT TWO</p>
+        <h2>Keyword search</h2>
+        <p>The oldest good idea in search: make a list of which documents contain each word, then look the word up.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a2miss">
+      <div class="box">
+        <p class="kicker">2 · THE INDEX</p>
+        <h2>Words point at documents</h2>
+        <p>Break every article into words, lowercase them, and build a table. For each word, write down the documents that contain it. That table is the <b>inverted index</b>. It is “inverted” because the article points to its words; the index points from each word back to its articles.</p>
+        <p>Now search for <b>refund</b>. Look up the word, and follow its line to document one. Done in a fraction of a millisecond here, and it stays fast as the collection grows.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a2synonym">
+      <div class="box">
+        <p class="kicker">2 · THE MISS</p>
+        <h2>The same meaning, different words</h2>
+        <p>Now search for <b>money back</b>. The index finds the money-back article, because it contains both words. But the search never looked at the word <b>refund</b> for this question, so it never looked at a document that matters just as much to a customer.</p>
+        <p class="say">Keyword search does exactly what it is told. It cannot see that “money back” and “refund” mean nearly the same thing. That gap is what the next acts close.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a2exact">
+      <div class="box">
+        <p class="kicker">2 · THE LIMIT</p>
+        <h2>Exact words, or nothing</h2>
+        <p>One word finds one article. Two words, joined by OR, find both. The index can do this very quickly, but every match must be a literal match.</p>
+        <p>Keyword search is precise about words and blind to meaning. It is the right tool when the customer uses the exact product name, and the wrong tool when they describe their problem.</p>
+        <div class="io">
+          <div><span>in</span><p>a word, or several joined by AND and OR</p></div>
+          <div><span>out</span><p>the list of documents that contain those words</p></div>
+          <div><span>means</span><p>every hit is a real word match; no hit can mean something else</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e2" data-after="a2">
+  <div class="stage"><canvas id="cve2" role="img" aria-label="A grid of terms by documents. Dots fill row by row where a word appears in a document. Then two query rows show OR returning two columns and AND returning one."></canvas><div class="tag">postings · AND and OR</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e2_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT TWO</p>
+        <h2>The index is a grid you can read</h2>
+        <p>Rows are words, columns are documents, and a dot is a posting: this word appears in this document. Each row is the postings list for one word. The whole index is this grid, stored sparsely.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e2_b">
+      <div class="box">
+        <p class="kicker">BOOLEAN QUERIES</p>
+        <h2>OR adds columns; AND keeps only the shared ones</h2>
+        <pre>item OR refund   = {D1, D4} ∪ {D1} = {D1, D4}
+item AND refund  = {D1, D4} ∩ {D1} = {D1}</pre>
+        <p>The engine reads only the rows the query names, then combines them. That is why a query with many OR terms is slower, and why AND can return nothing when no document has every word.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the grid. Each dot is a word found in a document.</li><li>Open <b>Lab 2 · Which documents contain which words</b>. Set A to <i>refund</i>, B to <i>money</i>, operator OR. Read the result.</li><li>Switch to AND and read it again. Then try <i>warranty</i> and <i>shipping</i>.</li></ol><p><b>What to expect.</b> OR returns every document containing either word. AND returns only documents with both. With refund and money, the OR result is D1 and D4, and the AND result is empty: no article has both words.</p><p><b>Check yourself.</b> Find a pair of words where AND returns exactly one document. Name the document and the two words.</p><p class="try-google">Google <a target="_blank" rel="noopener" href="https://www.google.com/search?q=money+back">money back</a>: Results with <b>money</b> and <b>back</b> in bold are keyword matches. Results without them are not keyword matches, however relevant they look.</p></div></section>
+
+<div class="act" id="a3">
+  <div class="stage"><canvas id="cv3" role="img" aria-label="Four scenes of bars and curves. A saturation curve shows that each repeat of a word adds less. Bars show that rare words count for more. Document bars compare length with the average, and a score bar chart changes from the refund query to the money back query."></canvas><div class="tag">BM25 · the score for one word</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a3tf">
+      <div class="box">
+        <p class="actno">ACT THREE</p>
+        <h2>BM25: counting words with judgement</h2>
+        <p>Matching words is not enough. Some matches matter more than others. BM25, the standard keyword ranking in search engines, scores each match by three simple judgements.</p>
+        <p>The first is about repeats. A word that appears in a document earns points, but the first mention adds a lot and the fifth adds very little. This is called <b>saturation</b>, and it stops a document from scoring high just by repeating a word. The curve on the stage is the score for one word, using the usual setting for its strength, k1 = 1.2.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a3idf">
+      <div class="box">
+        <p class="kicker">3 · RARE WORDS</p>
+        <h2>Rare words are worth more</h2>
+        <p>The word <b>the</b> appears in nearly every article, so it tells you nothing. The word <b>refund</b> appears in one, so it tells you a lot. BM25 calls this the <b>inverse document frequency</b>, and gives each word a weight from how many documents contain it.</p>
+        <p>On our five articles, <b>refund</b>, <b>policy</b> and <b>money</b> each appear in one article, so each is worth 1.39. <b>Back</b>, <b>item</b> and <b>receipt</b> appear in two, so each is worth 0.88.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a3len">
+      <div class="box">
+        <p class="kicker">3 · LENGTH</p>
+        <h2>A long article gets a fair comparison</h2>
+        <p>A long article is more likely to contain any word by chance. BM25 compares each document’s length with the average length, and discounts long ones a little. Our articles average 68.6 tokens, counting each title. The dashed line is that average.</p>
+        <p>This is the <b>b = 0.75</b> setting. Set it to zero and length stops mattering. Set it to one and length matters as much as it can.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a3rank">
+      <div class="box">
+        <p class="kicker">3 · THE RANKING</p>
+        <h2>One score per document, per query</h2>
+        <p>Add the scores for each query word and you get one number per document. For <b>refund policy</b>, the refund article scores 3.16 and nothing else matches. For <b>money back</b>, the money-back article scores 3.09, and the refund article keeps 0.83 for the word <i>back</i>. The bars move between the two as you scroll.</p>
+        <p class="say">BM25 counts words. It does not know that “money back” means “refund”. It is fast, explainable and strong on exact terms, which is why it is still the default in most search engines.</p>
+        <div class="io">
+          <div><span>in</span><p>the query words, and the words in each document</p></div>
+          <div><span>out</span><p>one score per document; sort them, highest first</p></div>
+          <div><span>means</span><p>higher is more word-level evidence, with rare words and first mentions counting most</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e3" data-after="a3">
+  <div class="stage"><canvas id="cve3" role="img" aria-label="Stacked bars show the refund and policy contributions to the score of D1 adding up to 3.16. A saturation curve steepens and flattens as k1 changes. Two bars for D1 and D3 change as b moves from zero to one."></canvas><div class="tag">BM25 · term by term</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e3_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT THREE</p>
+        <h2>BM25, one term at a time</h2>
+        <p>A document’s score is the sum of one contribution per query word. Here are the two contributions for D1 and the query “refund policy”.</p>
+        <pre>score(D, Q) = Σ IDF(w) · f(w,D)·(k1+1) / ( f(w,D) + k1·(1 − b + b·|D|/avgdl) )
+
+IDF(w) = ln( 1 + (N − n(w) + 0.5) / (n(w) + 0.5) )</pre>
+        <p>refund: f = 2, IDF 1.386, contribution 1.843.
+        policy: f = 1, IDF 1.386, contribution 1.320. Total 3.16.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e3_b">
+      <div class="box">
+        <p class="kicker">k1 · REPEATS</p>
+        <h2>k1 decides how quickly repeats stop counting</h2>
+        <p>At k1 = 0 a second mention adds nothing. At k1 = 2 the curve keeps rising. Most engines start at 1.2. Tune it on your labelled queries, because the right value depends on how long and repetitive your documents are.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e3_c">
+      <div class="box">
+        <p class="kicker">b · LENGTH</p>
+        <h2>b decides how much a long document is punished</h2>
+        <p>At b = 0 length is ignored. At b = 1 the score is scaled fully by length against the average. Our 68-token warranty article scores higher than the 77-token refund article for the same single word once b is near 1. Choose b by testing, not by habit.</p>
+        <p class="say">Improving BM25 means tuning k1 and b on your queries and boosting titles. Changing the formula itself rarely helps.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the BM25 curve. Watch the second mention add less than the first.</li><li>Open <b>Lab 3 · Score one document, word by word</b>. Keep the query <i>refund policy</i> and the document D1.</li><li>Drag k1 to 0, then 2. Drag b to 0, then 1.</li></ol><p><b>What to expect.</b> At k1 = 1.2 and b = 0.75, D1 scores 3.16: refund about 1.84 and policy about 1.32. At k1 = 0, repeats add nothing. At b = 1, the shorter document gains against the longer one.</p><p><b>Check yourself.</b> Which value of b makes D1 score the same as it would against an average-length document?</p></div></section>
+
+<div class="act" id="a4">
+  <div class="stage"><canvas id="cv4" role="img" aria-label="Five document dots travel from a row at the bottom onto a two-dimensional map, where similar documents sit close together. Then the map disappears and a grid of dots grows to show how many numbers one sentence needs. Finally the two queries sit next to the documents they mean."></canvas><div class="tag">vectors · meaning as position</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a4place">
+      <div class="box">
+        <p class="actno">ACT FOUR</p>
+        <h2>Vectors: meaning as numbers</h2>
+        <p>Keyword search cannot tell that two different words mean the same thing. A vector can. It turns a piece of text into a list of numbers, and places that text at a point in a space.</p>
+        <p>Imagine a flat map. The horizontal axis is “how much it is about money”. The vertical axis is “how much it is about delivery”. Each article is a dot, placed by two numbers.</p>
+        <p>The refund article and the money-back article sit far to the right and low down. The shipping article sits high on the delivery axis. Their positions are their meaning, as far as this map is concerned.</p>
+        <p class="say">This map is two-dimensional so you can see it. Real models place each piece of text on a map with hundreds of axes.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a4dims">
+      <div class="box">
+        <p class="kicker">4 · DIMENSIONS</p>
+        <h2>A dimension is one number in the list</h2>
+        <p>Each axis on the map is one <b>dimension</b>, and each dimension is one number in the vector. Our map used two. Real embedding models use many more. The grid on the stage is one sentence turned into 384 numbers, the size of a small, fast model.</p>
+        <p>More dimensions can hold more detail, but they also take more memory and more time to compare. Size is a trade-off, not a score.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a4near">
+      <div class="box">
+        <p class="kicker">4 · NEARBY MEANS SIMILAR</p>
+        <h2>The question lands next to its answer</h2>
+        <p>Turn the question into a vector, put it on the same map, and look at what is near it. The query <b>refund</b> lands next to the refund article. The query <b>money back</b> lands next to the money-back article. Neither word was matched; both were placed.</p>
+        <p>Vector search is this: put everything on one map, then find the nearest points to the question. The next act says how “nearest” is measured.</p>
+        <div class="io">
+          <div><span>in</span><p>a piece of text, turned into a list of numbers by an embedding model</p></div>
+          <div><span>out</span><p>a point in space, with as many coordinates as the model has dimensions</p></div>
+          <div><span>means</span><p>texts with similar meaning get similar numbers, whatever words they use</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="act" id="e4" data-after="a4">
+  <div class="stage"><canvas id="cve4" role="img" aria-label="Three bars for a million chunks at 384, 1536 and 3072 dimensions grow in height, showing storage in gigabytes."></canvas><div class="tag">embeddings · what dimensions cost</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e4_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT FOUR</p>
+        <h2>Dimensions are paid for on every chunk</h2>
+        <p>An embedding model turns a text into d numbers. The memory for an index is the number of chunks times d times the bytes per number. A 32-bit float is four bytes.</p>
+        <pre>storage bytes = N · d · 4
+
+1,000,000 chunks × 384 dims  ≈ 1.5 GB
+1,000,000 chunks × 1536 dims ≈ 6.1 GB
+1,000,000 chunks × 3072 dims ≈ 12.3 GB</pre>
+        <p>More dimensions cost memory and search time, and they do not guarantee better answers. Measure recall on your own questions before paying for them.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the words travelling onto the map. Nearby points are similar in meaning.</li><li>Open <b>Lab 4 · Which document a question lands next to</b>. Choose the query <i>refund</i>, then <i>money back</i>.</li><li>Change dimensions from 384 to 3072 and read the storage line.</li></ol><p><b>What to expect.</b> For refund, D1 is nearest with cosine about 0.998. For money back, D4 is nearest at about 0.999, though it shares no word with the query. Storage for a million chunks is about 1.5 GB at 384 dimensions and 12.3 GB at 3072.</p><p><b>Check yourself.</b> Which document is nearest to <i>money back</i> without sharing a word with it? Why is that a meaning match?</p><p class="try-google">Google <a target="_blank" rel="noopener" href="https://www.google.com/search?q=notebook">notebook</a>: Then <b>laptop</b>. Results change with meaning, not letters alone.</p></div></section>
+
+<div class="act" id="a5">
+  <div class="stage"><canvas id="cv5" role="img" aria-label="Two arrows start from one point. The second arrow swings until it lies along the first, and an arc shows the angle closing. The second arrow then doubles in length while the cosine stays at one. Gauges show near-match and miss, and bars compare the cosine of each document to the question."></canvas><div class="tag">cosine · the angle between two meanings</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a5angle">
+      <div class="box">
+        <p class="actno">ACT FIVE</p>
+        <h2>Cosine similarity: the angle, not the length</h2>
+        <p>Two vectors are close when they point the same way. The standard way to measure that is <b>cosine similarity</b>: the cosine of the angle between them.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a5scale">
+      <div class="box">
+        <p class="kicker">5 · WHY THE ANGLE</p>
+        <h2>Length does not change the answer</h2>
+        <p>Stretch the second arrow and its position changes, but the angle does not. The cosine is the same at any length. That is useful: a long article and a short one about the same thing point the same way.</p>
+        <p>The scale: <b>1</b> means the same direction, <b>0</b> means unrelated. Our refund vector and refund article give 0.998. Where “close enough” starts depends on the model and on your data.</p>
+        <p class="say">Cosine ignores how big a vector is. It only sees direction. That is why it is the default for text.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a5dial">
+      <div class="box">
+        <p class="kicker">5 · READING IT</p>
+        <h2>A match and a miss, side by side</h2>
+        <p>The gauges show the same question against two articles on our toy map. The refund article reads 0.998. The shipping article reads 0.359. The gauge sweeps as you scroll, so you can see how far the value travels.</p>
+        <p>There is no fixed threshold that means “relevant”. What counts as close depends on the model and on your data. You learn the cut-off by measuring, in the last acts.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a5pairs">
+      <div class="box">
+        <p class="kicker">5 · RANKING BY COSINE</p>
+        <h2>Sort the documents by how close they point</h2>
+        <p>Compute the cosine between the question and every document, then sort from highest to lowest. The bars are that list. The refund article and the money-back article are at the top, the shipping article at the bottom, and the warranty and sizing articles sit in between.</p>
+        <div class="io">
+          <div><span>in</span><p>two vectors of the same length</p></div>
+          <div><span>out</span><p>one number between −1 and 1</p></div>
+          <div><span>means</span><p>near 1: same direction, close in meaning. Near 0: unrelated. Length is ignored.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e5" data-after="a5">
+  <div class="stage"><canvas id="cve5" role="img" aria-label="Bars for the dot product, the product of the two lengths, and the cosine. The dot product divided by the lengths gives 0.998. Stretching the question vector grows the first two bars together while the cosine holds."></canvas><div class="tag">cosine · a dot product over lengths</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e5_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT FIVE</p>
+        <h2>Cosine is a dot product divided by two lengths</h2>
+        <pre>cos(a, b) = (a · b) / (‖a‖ · ‖b‖)
+
+a = (0.88, 0.18)    b = (0.82, 0.22)
+a · b  = 0.7216 + 0.0396 = 0.761
+‖a‖·‖b‖ = 0.898 × 0.849  = 0.762
+cos    = 0.761 / 0.762   = 0.998</pre>
+        <p>The dot product rewards size and agreement. Dividing by the lengths removes size, which leaves only direction.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e5_b">
+      <div class="box">
+        <p class="kicker">SCALE</p>
+        <h2>Length cancels out</h2>
+        <p>Multiply a by any positive number s. The dot product grows by s and so does ‖a‖. Their ratio is unchanged. Two passages of different length about the same thing get the same cosine.</p>
+        <p class="say">If you normalise every vector to length 1 at indexing time, the dot product is the cosine. Search faster, same ranking.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the dot product divided by the lengths. Stretch the arrow and watch the cosine hold.</li><li>Open <b>Lab 5 · Angle, not length</b>. Set a to point at the question, then b toward a different document.</li><li>Scale a by 2, then by 3, and read the cosine each time.</li></ol><p><b>What to expect.</b> The cosine changes only when the directions change. Scaling a moves the dot and the length together, so the cosine stays the same.</p><p><b>Check yourself.</b> Make a and b point the same way and scale a. What is the cosine, and why does length not change it?</p></div></section>
+
+<div class="act" id="a6">
+  <div class="stage"><canvas id="cv6" role="img" aria-label="A question and five documents pass through one embedding model and come out as dots. A ring grows from the question on the map until it reaches the two nearest documents. Bars then compare the question with every document. Last, bars show the dimensions of three real embedding models."></canvas><div class="tag">vector search · brute force, then the models</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a6embed">
+      <div class="box">
+        <p class="actno">ACT SIX</p>
+        <h2>Vector search and the embedding model</h2>
+        <p>Now the whole process. Something has to turn text into vectors. That something is an <b>embedding model</b>: a neural network trained so that texts with similar meaning get similar numbers.</p>
+        <p>The question and the documents go through the same model. This matters. If the question and the documents are turned into numbers by different models, the numbers mean different things and cannot be compared.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a6ring">
+      <div class="box">
+        <p class="kicker">6 · NEAREST NEIGHBOURS</p>
+        <h2>Grow a ring until it touches the answers</h2>
+        <p>With every document as a point, the search is a simple question: which points are nearest to the query point? The ring grows from the query until it reaches the two closest documents: the money-back article and the refund article.</p>
+        <p>The simplest method is to measure the distance to every document and keep the closest. That is called <b>brute force</b>. It is exact, and it is fine for thousands of documents. For millions, search engines use an index for vectors, such as HNSW, which finds nearly the same neighbours much faster.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a6scan">
+      <div class="box">
+        <p class="kicker">6 · THE SCAN</p>
+        <h2>Compare the question with everything</h2>
+        <p>Brute force, drawn as bars. On our toy map, the query <b>money back</b> gets a cosine score against each document. The money-back article scores 0.999, the refund article 0.997, and the shipping article 0.481.</p>
+        <p class="say">Notice what happened to the word “refund”. The query never used it. The meaning was enough to bring the refund article to the top.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a6models">
+      <div class="box">
+        <p class="kicker">6 · WHICH MODEL TO USE</p>
+        <h2>Choose the embedding model by testing, not by size</h2>
+        <p>Three real models, three sizes: a small one with 384 numbers per text, and two from OpenAI with 1,536 and 3,072. More numbers can capture more detail, but they cost more storage and slow each comparison.</p>
+        <p>Choose on four things. <b>Language</b>: does the model understand your language and your product words? <b>Size</b>: how much storage and speed can you afford? <b>Price</b>: does it run on your servers or someone else’s, and what does each request cost? <b>Quality</b>: how often does it bring back the right document for <i>your</i> questions? The last one is the only one that decides. Test it.</p>
+        <div class="io">
+          <div><span>in</span><p>a text, and a model that was trained to place texts by meaning</p></div>
+          <div><span>out</span><p>a vector; compare vectors with cosine; keep the nearest</p></div>
+          <div><span>means</span><p>the same model must be used for documents and questions. More dimensions is not automatically better.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e6" data-after="a6">
+  <div class="stage"><canvas id="cve6" role="img" aria-label="Sixty points on a map. A scan compares the question with each in turn. Then a short greedy walk hops between neighbours and reaches the nearest point after a handful of steps."></canvas><div class="tag">exact versus approximate search</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e6_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT SIX</p>
+        <h2>Exact search reads everything</h2>
+        <p>Brute force computes the distance from the question to every point. For N points of d dimensions that is about N × d multiply-adds per query. On a million chunks at 1,536 dimensions, that is about 1.5 billion operations for one question.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e6_b">
+      <div class="box">
+        <p class="kicker">APPROXIMATE · HNSW</p>
+        <h2>A graph walk visits a few points</h2>
+        <p>An approximate index links each point to a few close neighbours. A query starts at one point and hops to whichever neighbour is closer to the question, until no hop helps. It visits a handful of points and usually lands on the true nearest, or one very near it.</p>
+        <pre>M               links per point       more → better recall, bigger index
+efConstruction  effort to build       more → better graph, slower build
+efSearch        candidates per query  more → better recall, slower query
+
+ANN recall = matches with brute force / brute-force matches</pre>
+        <p class="say">Measure ANN recall against brute force on a sample of questions before you trust the speed.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the ring and the scan that counts each document.</li><li>Open <b>Lab 6 · Keyword, meaning, and fused</b>. Keep the query <i>money back</i> and RRF k = 60. Read the three columns.</li><li>Change the query to <i>refund</i> and read the three columns again.</li></ol><p><b>What to expect.</b> The keyword column contains only documents with the query words. The meaning column ranks all five by angle. The fused column keeps documents strong in both. With money back, D4 leads both lists.</p><p><b>Check yourself.</b> Name one document high in one list and absent from the other. Which method missed it, and why?</p></div></section>
+
+<div class="act" id="a7">
+  <div class="stage"><canvas id="cv7" role="img" aria-label="A vertical pipeline of six stations: question, retriever, top two passages, prompt, language model and answer. Flows move down it. Then the prompt is shown as the only text the model sees, a window bar shows that thirty manuals would not fit, and benefits and costs appear."></canvas><div class="tag">RAG · the pipeline</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a7pipe">
+      <div class="box">
+        <p class="actno">ACT SEVEN</p>
+        <h2>RAG, end to end</h2>
+        <p>The pieces are now ready. Put them in order. A question goes to a retriever, which returns the best passages. Those passages are placed into a prompt with the question. The language model reads the prompt and writes the answer.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a7prompt">
+      <div class="box">
+        <p class="kicker">7 · WHAT THE MODEL SEES</p>
+        <h2>The model sees the prompt, and nothing else</h2>
+        <p>The index is not visible to the model. Neither are the other 28 manuals. The model sees only the text in its prompt: our instructions, the passages the retriever chose, and the question.</p>
+        <p>This is the most important fact about RAG. If the right passage is not in the prompt, the model cannot use it. If a wrong passage is in the prompt, the model may use that instead. The quality of the retrieval sets the ceiling for the answer.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a7window">
+      <div class="box">
+        <p class="kicker">7 · THE CONTEXT WINDOW</p>
+        <h2>The model can only read so much at once</h2>
+        <p>Every model has a <b>context window</b>: the most text it can read in one request, measured in tokens. A token is a piece of a word, roughly three quarters of an English word on average.</p>
+        <p>Five help articles fit with room to spare. Thirty manuals do not. So RAG does not paste everything in. It picks the few passages that matter. The window is the reason retrieval exists at all.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a7tradeoff">
+      <div class="box">
+        <p class="kicker">7 · PROS AND CONS</p>
+        <h2>What RAG buys you, and what it costs</h2>
+        <p>RAG is the usual first choice for answering from your own documents, because it is quick to set up and easy to change. The benefits are real, and so are the costs: retrieval can miss, there are more parts to look after, and every question costs an extra search.</p>
+        <p class="say">When a RAG answer is wrong, the question to ask is “did the right passage reach the model?” before “is the model bad?”.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a7goal">
+      <div class="box">
+        <p class="kicker">7 · THE COMPARISON</p>
+        <h2>Three ways to answer the same question</h2>
+        <p>The model alone guesses. Keyword search alone finds the refund article and misses the money-back one. RAG, with a meaning search in front, finds the right article, reads it, and says where the answer came from.</p>
+        <div class="io">
+          <div><span>in</span><p>a question, a retriever, and a model that reads only the prompt</p></div>
+          <div><span>out</span><p>an answer, with the passages it used</p></div>
+          <div><span>means</span><p>the answer can only be as good as what was retrieved. Check retrieval first.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e7" data-after="a7">
+  <div class="stage"><canvas id="cve7" role="img" aria-label="A stacked budget column: instructions, question and reserved answer space first, then passages filling the rest. A U-shaped attention curve shows the middle slot is weakest, and a gold best passage sits in it."></canvas><div class="tag">context budget · lost in the middle</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e7_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT SEVEN</p>
+        <h2>The window is a budget, not a bucket</h2>
+        <pre>passage budget = window − instructions − question − reserved output
+passages that fit ≈ passage budget / tokens per passage</pre>
+        <p>With an 8,000-token window, 400 for instructions, 30 for the question and 600 kept for the answer, about 23 passages of 300 tokens fit. Fill it further and something must be cut, silently or by design.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e7_b">
+      <div class="box">
+        <p class="kicker">ORDER</p>
+        <h2>Put the strongest passage at the edges</h2>
+        <p>Research on long contexts (Liu and colleagues, “Lost in the Middle”, 2023) found that models use the start and end of a long input more reliably than its middle. The curve here is illustrative, not a measurement. Put the best passage first, and keep the total short enough that the middle matters less.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the pipeline. Note which box the model reads from.</li><li>Open <b>Lab 7 · How many passages fit</b>. Keep the window at 8,000 tokens and drag passages from 3 to 8.</li><li>Set tokens per passage to 1,200 and drag passages again.</li></ol><p><b>What to expect.</b> At 300 tokens per passage, the prompt fits 23 passages. At 8 passages of 300 tokens it uses 3,430 tokens and fits. At 1,200 tokens per passage, 8 passages overflow the window.</p><p><b>Check yourself.</b> What is the largest number of passages that fits when each is 1,200 tokens?</p></div></section>
+
+<div class="act" id="a8">
+  <div class="stage"><canvas id="cv8" role="img" aria-label="The refund policy article of 75 words shown as a bar, with a mark at each sentence. A cutter splits it into three chunks every 25 words, with rust marks where it cuts mid-sentence. Overlap bands repeat the edges. Sentence cuts move to the full stops. Three bars show small, medium and large chunks."></canvas><div class="tag">chunking · cutting documents to fit</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a8whole">
+      <div class="box">
+        <p class="actno">ACT EIGHT</p>
+        <h2>Chunking: cutting documents to a useful size</h2>
+        <p>So far each document has been a single unit. Real documents are long: a manual can run to thousands of words, and a whole manual is too big to place on the map as one point, or to fit in a prompt.</p>
+        <p>The answer is to cut each document into <b>chunks</b>, and to search the chunks instead. Each chunk gets its own vector and its own entry in the index.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a8fixed">
+      <div class="box">
+        <p class="kicker">8 · FIXED SIZE</p>
+        <h2>The simplest method: cut every N words</h2>
+        <p>Fixed-size chunking cuts every 25 words, regardless of what the words say. It is easy, fast and predictable. Its weakness is visible on the stage: the rust marks show cuts that land mid-sentence, so a chunk can start with half a thought.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a8overlap">
+      <div class="box">
+        <p class="kicker">8 · OVERLAP</p>
+        <h2>Repeat the edges so no idea is lost</h2>
+        <p>Overlap makes each chunk repeat the end of the one before. Here 6 words are shared, about a quarter of each chunk. An idea that straddles a cut now appears whole in at least one chunk.</p>
+        <p>The cost is storage and repetition: the same words are embedded twice, and results can repeat. A common starting point is 10 to 20 percent. Treat it as a setting to test.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a8sentence">
+      <div class="box">
+        <p class="kicker">8 · SENTENCE-AWARE</p>
+        <h2>Cut at the full stops instead</h2>
+        <p>Sentence-aware chunking moves each cut to the nearest sentence end. The chunks are slightly uneven in size, but each one starts and ends on a complete thought. Other methods go further and follow headings, or split by meaning. The more a method respects the document’s own structure, the more work it takes to set up.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a8size">
+      <div class="box">
+        <p class="kicker">8 · SIZE</p>
+        <h2>Small chunks are precise. Large chunks have context.</h2>
+        <p>A 5-word chunk matches a question exactly, but it may not contain enough to answer it. A 75-word chunk, the whole article, has the context, but it mixes several points, so its vector is blurred. Around 25 words suits a short article like this one; real documents usually use a few hundred tokens. It is not a rule.</p>
+        <div class="io">
+          <div><span>in</span><p>a document, a target size, and some overlap</p></div>
+          <div><span>out</span><p>chunks, each with its own vector and its own index entry</p></div>
+          <div><span>means</span><p>what is searched is the chunk, so the chunk is what you must get right. Measure with the tests in the last acts.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="act" id="e8" data-after="a8">
+  <div class="stage"><canvas id="cve8" role="img" aria-label="A document bar with cut marks. As chunk size grows, the number of cuts falls. In a second scene the same document is cut three ways: fixed size, sentence-aware, then by section, with the cut marks moving."></canvas><div class="tag">chunking · counts and methods</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e8_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT EIGHT</p>
+        <h2>How many chunks a document becomes</h2>
+        <pre>n = ⌈ (T − o) / (s − o) ⌉
+
+Hypothetical: T = 10,000 tokens, o = 50, s = 500
+n = ⌈ 9,950 / 450 ⌉ = 23 chunks</pre>
+        <p>Smaller chunks mean more chunks, more index entries, more storage, and more duplicates from overlap. Watch the count move as the size changes.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e8_b">
+      <div class="box">
+        <p class="kicker">METHODS</p>
+        <h2>Where the cut goes depends on the method</h2>
+        <p><b>Fixed size</b> cuts at a count of tokens and can split a sentence. <b>Recursive</b> prefers paragraph breaks, then sentences, then words, until a chunk fits; it is the usual default. <b>Sentence-aware</b> cuts at full stops. <b>Structure-aware</b> follows headings and keeps tables whole. <b>Semantic</b> cuts where the meaning of neighbouring sentences shifts, which costs an embedding per sentence. <b>Parent–child</b> searches small chunks and returns their parent section.</p>
+        <p class="say">Choose by recall@k on your labelled questions. The method that finds the answer wins, whatever it looks like.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the chunk cut from fixed size to sentence-aware and watch the marks move.</li><li>Open <b>Lab 8 · Count the chunks, then see them</b>. Choose D1, size 8, overlap 0.</li><li>Set overlap to 2 and read it again. Then set size to 4.</li></ol><p><b>What to expect.</b> The chunk count is the word total divided by the size, rounded up. D1 has 75 words, so size 8 without overlap gives 10 chunks. Overlap repeats words at each boundary and raises the count; smaller chunks mean more chunks.</p><p><b>Check yourself.</b> How many chunks does D1 make at size 10 with overlap 3? Check your answer in the lab.</p></div></section>
+
+<div class="act" id="a9">
+  <div class="stage"><canvas id="cv9" role="img" aria-label="A question becomes an intent and a rewritten query. The rewritten query produces a keyword list of two documents and a meaning list of five. Reciprocal rank fusion merges them into one list with the money-back article on top. A reranker and a cut line keep the top two. Then four configuration knobs are shown as bars."></canvas><div class="tag">hybrid search · one question, two lists, one answer</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a9intent">
+      <div class="box">
+        <p class="actno">ACT NINE</p>
+        <h2>Understanding the query, then searching well</h2>
+        <p>Search quality is decided before any document is looked at. The question has to be understood, and the words used for the search have to be chosen with care.</p>
+        <p>The customer’s sentence is not the best search. First find the <b>intent</b>: a refund request. Then rewrite the query into words the documents use, such as “refund” and “money back”. A rewrite is usually a language model call, and a small one is enough.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a9lists">
+      <div class="box">
+        <p class="kicker">9 · TWO SEARCHES</p>
+        <h2>The rewritten query goes two ways at once</h2>
+        <p>Keyword search gives a list ranked by BM25. Meaning search gives a list ranked by cosine. Each list is good at something the other misses: the keyword list is strict about words, and the meaning list is generous about them.</p>
+        <p>Notice the lists are different lengths. BM25 only returns documents that share a word with the query. The meaning list ranks all five, because every document has a position on the map.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a9fuse">
+      <div class="box">
+        <p class="kicker">9 · HYBRID SEARCH</p>
+        <h2>Combine the two lists</h2>
+        <p>Hybrid search runs both searches and merges the results. The usual merge is <b>reciprocal rank fusion</b>. Each document gets 1 divided by (60 plus its rank) from every list it appears in, and the scores are added.</p>
+        <p>A document near the top of both lists rises fastest. The money-back article is first on both, so it ends up first. You never need to make the two scores comparable: only the ranks are used.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a9rerank">
+      <div class="box">
+        <p class="kicker">9 · RERANKING</p>
+        <h2>Read the best candidates twice</h2>
+        <p>A <b>reranker</b> takes the top candidates and reads each one together with the question, instead of comparing two separate vectors. It is slower, so it runs only on the top few. It is usually more accurate, and it is a common way to lift quality without changing the index.</p>
+        <p>Here the cut line keeps the top two for the prompt. The reranker’s own scores are not shown, because we did not run one. What matters is the place it has in the pipeline.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a9config">
+      <div class="box">
+        <p class="kicker">9 · CONFIGURATION</p>
+        <h2>The knobs, and what each one trades</h2>
+        <p><b>k</b> is how many passages reach the prompt. More gives the model more to work with, and more to be distracted by. <b>Chunk size</b> and <b>overlap</b> were covered in the last act. The <b>keyword ↔ meaning</b> weight decides how much each list counts when they are not simply fused. <b>Rerank top N</b> is how many candidates the reranker reads.</p>
+        <p class="say">Change one knob at a time. A search with four changes at once cannot tell you which one helped.</p>
+        <div class="io">
+          <div><span>in</span><p>a rewritten query, two rankings, and a few settings</p></div>
+          <div><span>out</span><p>the best passages, in order, for the prompt</p></div>
+          <div><span>means</span><p>each setting trades quality against speed and cost. Measure each change.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e9" data-after="a9">
+  <div class="stage"><canvas id="cve9" role="img" aria-label="One question fans out into three phrasings. Each is searched against the index, and the results merge. A second scene compares the documents retrieved by an original and a rewritten query, with bars for overlap, union and Jaccard similarity."></canvas><div class="tag">query rewriting · fan-out and drift</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e9_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT NINE</p>
+        <h2>Rewrite when the words are the problem</h2>
+        <p>A rewrite is worth it when the user’s words are not the document’s words, the question depends on earlier turns, or it is very short. Do not rewrite a clear query that already finds its documents. Multi-query fans the question out and merges the results, which lifts recall at the cost of more searches.</p>
+        <pre>multi-query: 3 phrasings → 3 searches → merge with RRF
+HyDE:        draft an answer → embed the draft → search with it</pre>
+      </div>
+    </div>
+    <div class="card" data-scene="e9_b">
+      <div class="box">
+        <p class="kicker">DRIFT</p>
+        <h2>Check that a rewrite did not wander</h2>
+        <pre>Jaccard = |A ∩ B| / |A ∪ B|
+
+A (original)  = {D4, D1}
+B (rewrite)   = {D1, D4, D3}  → 2 / 3 = 0.67   keep it
+B (drifted)   = {D3, D2}      → 0 / 5 = 0.00   drop it</pre>
+        <p>Run this on every labelled question, with and without the rewrite. A rewrite that keeps the original’s good documents and adds a few is helping. One that shares nothing has changed the question.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e10" data-after="a9">
+  <div class="stage"><canvas id="cve10" role="img" aria-label="Stacked bars for reciprocal rank fusion, each document's keyword and meaning contributions stacked. Then weighted fusion: a slider moves from keywords to meaning and the bars reorder."></canvas><div class="tag">fusion · RRF and weighted scores</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e10_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT TEN</p>
+        <h2>Reciprocal rank fusion</h2>
+        <pre>RRF(d) = Σ over lists L containing d:  1 / (60 + rank_L(d))
+
+D4: 1/61 + 1/61 = 0.0328
+D1: 1/62 + 1/62 = 0.0323
+D3: 1/63        = 0.0159</pre>
+        <p>No scores are compared, only ranks, so the two lists need no common scale. The constant 60 damps the top ranks. The cost: a document far ahead in one list gains only a little more than one slightly ahead.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e10_b">
+      <div class="box">
+        <p class="kicker">WEIGHTED</p>
+        <h2>Scale each list, then choose how much each counts</h2>
+        <pre>norm(s)   = (s − min) / (max − min)
+hybrid(d) = α · norm_keyword(d) + (1 − α) · norm_meaning(d)</pre>
+        <p>Min-max puts both lists on 0..1. α is the weight on keywords. Tune it on labelled questions: exact product codes favour keywords, descriptive questions favour meaning. Re-check α when the corpus changes a lot, because one outlier score squashes everything else.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e11" data-after="a9">
+  <div class="stage"><canvas id="cve11" role="img" aria-label="A question and five candidates pass through a reranker, one pair at a time, while a counter counts model passes. Then five match scores are compared with a threshold line, and the answer or no answer is decided."></canvas><div class="tag">reranking · cost and the cut-off</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e11_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT ELEVEN</p>
+        <h2>A reranker reads the question with each candidate</h2>
+        <p>A cross-encoder scores one (question, passage) pair per forward pass. It is more accurate than comparing two independent vectors, because it reads both texts together. It is also slower: cost grows with the number of candidates, on every question.</p>
+        <pre>cost per query   ≈ N · cost_per_pair
+latency         ≈ N · time_per_pair   (when run one at a time)</pre>
+      </div>
+    </div>
+    <div class="card" data-scene="e11_b">
+      <div class="box">
+        <p class="kicker">THE CUT-OFF</p>
+        <h2>Score is not the decision; the threshold is</h2>
+        <p>Once you have scores, set a threshold on labelled data: answer when the best candidate clears it, otherwise say no answer. Scores here are the cosine values from Act 5, standing in for a reranker’s scores, to show the mechanism. Rerank a candidate set of 20 to 50, keep 3 to 8 for the prompt, and check precision and answer quality with and without the reranker.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the query fanning out into three phrasings, and the Jaccard overlap.</li><li>Open <b>Lab 9 · RRF and weighted scores side by side</b>. Keep the default lists: keyword D4, D1; meaning D4, D1, D3, D5, D2.</li><li>Drag α from 0 to 1 and watch the weighted order change.</li></ol><p><b>What to expect.</b> RRF gives D4 first, D1 second, then D3, D5, D2. In the weighted column, α is the weight on meaning: at α = 0, D3, D5 and D2 score zero; at α = 1, only the meaning list counts.</p><p><b>Check yourself.</b> Move D3 to the top of the keyword list. Does RRF put D3 first? What does that show about RRF ignoring score size?</p></div></section>
+
+<div class="act" id="a10">
+  <div class="stage"><canvas id="cv10" role="img" aria-label="Five ranked results, two of them marked relevant. A cut line sweeps down the list as k rises from one to five. Then a precision curve falls as irrelevant results enter, and a recall curve rises to one as the relevant ones are found."></canvas><div class="tag">measuring retrieval · recall@k and precision@k</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a10list">
+      <div class="box">
+        <p class="actno">ACT TEN</p>
+        <h2>Measuring retrieval</h2>
+        <p>How do you know the search is good? You need two things: a list of questions with the documents that should answer them, and a way to count how many of those documents came back.</p>
+        <p>Here is a ranked result for one question. Two documents are marked relevant. The ranking is the system’s guess; the marks are the truth we decided in advance.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a10k">
+      <div class="box">
+        <p class="kicker">10 · k</p>
+        <h2>Look only at the first k results</h2>
+        <p>Users rarely read past the first few results, and a RAG prompt only takes the top few passages. So we measure the first <b>k</b>. Move the cut line down the list and the measurements change with it.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a10prec">
+      <div class="box">
+        <p class="kicker">10 · PRECISION@k</p>
+        <h2>Of what you showed, how much was right?</h2>
+        <p><b>Precision@k</b> is the share of the first k results that are relevant. At k = 1, the top result is relevant: 1.00. At k = 2, one of two is relevant: 0.50. At k = 3, two of three are: 0.67.</p>
+        <p class="say">High precision can hide a problem. If k is too small, precision looks perfect and the answer is still missing.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a10rec">
+      <div class="box">
+        <p class="kicker">10 · RECALL@k</p>
+        <h2>Of what was right, how much did you find?</h2>
+        <p><b>Recall@k</b> is the share of all relevant documents that appear in the first k. There are two relevant documents, so at k = 1 we have found one of two: 0.50. At k = 3 we have found both: 1.00.</p>
+        <p>The two measures pull against each other. Raising k raises recall and lowers precision. Choosing k is choosing which failure you accept.</p>
+        <div class="io">
+          <div><span>in</span><p>a ranked list, a set of relevant documents, and a value of k</p></div>
+          <div><span>out</span><p>precision@k and recall@k, each between 0 and 1</p></div>
+          <div><span>means</span><p>precision asks “was what I showed right?” and recall asks “did I miss anything?”</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e12" data-after="a10">
+  <div class="stage"><canvas id="cve12" role="img" aria-label="Five bars of gain times discount for the ranking as found, then morphing to the ideal ranking with the best answer first. A second scene shows reciprocal rank for two queries and their mean."></canvas><div class="tag">nDCG and MRR</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e12_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT TWELVE</p>
+        <h2>nDCG: order matters, and answers differ in quality</h2>
+        <pre>DCG@k  = Σ_i (2^rel_i − 1) / log2(i + 1)
+nDCG@k = DCG@k / IDCG@k
+
+relevance: D4 = 2, D1 = 1
+ranking [D1, D5, D4, D2, D3]:
+DCG@5  = 1/log2(2) + 3/log2(4) = 1 + 1.5 = 2.5
+IDCG@5 = 3/log2(2) + 1/log2(3) = 3 + 0.63 = 3.63
+nDCG@5 = 2.5 / 3.63 = 0.69</pre>
+        <p>Gain doubles with each grade, and the discount falls with rank. The bars show each position’s contribution. Scrub to see the ideal order.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e12_b">
+      <div class="box">
+        <p class="kicker">MRR</p>
+        <h2>When one good answer is all that matters</h2>
+        <pre>RR(q)  = 1 / rank of the first relevant result
+MRR    = mean of RR(q) over questions
+
+first relevant at rank 1 and rank 3:
+MRR = (1 + 1/3) / 2 = 0.667</pre>
+        <p>MRR is right for a chatbot that quotes one passage. It ignores everything after the first hit, so use nDCG when the whole list is read.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub precision falling and recall rising as k changes.</li><li>Open <b>Lab 10 · Precision, recall, MRR, nDCG</b>. Keep the relevant documents as D1 and D4. Set k to 1, 3 and 5 and read precision and recall.</li><li>Lower D4’s grade to 1 and read nDCG.</li></ol><p><b>What to expect.</b> At k = 1: precision 1.00, recall 0.50. At k = 3: precision 0.67, recall 1.00. Lowering D4’s grade from 2 to 1 raises nDCG to about 0.92, because the two relevant documents are then worth the same.</p><p><b>Check yourself.</b> At which k does recall reach 1.00, and what is precision at that k?</p></div></section>
+
+<div class="act" id="a11">
+  <div class="stage"><canvas id="cv11" role="img" aria-label="A golden set of five question and document pairs appears. A model answer flows into an LLM judge with a rubric of three checks. Then twenty items are sampled, and a person labels them to check the judge’s agreement."></canvas><div class="tag">measuring answers · evals and the judge</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a11golden">
+      <div class="box">
+        <p class="actno">ACT ELEVEN</p>
+        <h2>Measuring answers</h2>
+        <p>Retrieval has a score. The answer does too, and it is harder to score. Two kinds of evaluation do the work: a <b>search eval</b> checks the passages, and an <b>LLM eval</b> checks the answer.</p>
+        <p>Both start with a <b>golden set</b>: questions written by people, each with the document or answer that should come back.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a11judge">
+      <div class="box">
+        <p class="kicker">11 · LLM-AS-A-JUDGE</p>
+        <h2>A model grades the answers against a rubric</h2>
+        <p>Reading thousands of answers is slow. So a second model, the <b>judge</b>, reads each answer with the passage it was built from, and grades it against a written rubric. The three checks on the stage are a common start: does the answer stay with the passage, does it answer the question, does it cite where it came from.</p>
+        <p class="say">A judge can be fooled by a confident, fluent answer. Its rubric must ask for evidence, not for tone.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a11check">
+      <div class="box">
+        <p class="kicker">11 · CHECKING THE JUDGE</p>
+        <h2>A judge you have not checked is an opinion</h2>
+        <p>Before you trust a judge, have a person label a sample of answers, a sample you can label in an afternoon, such as twenty to fifty. Then measure how often the judge and the person agree. If they agree most of the time, the judge is useful. If not, fix the rubric and check again.</p>
+        <div class="io">
+          <div><span>in</span><p>a golden set, the system’s answers, and a rubric</p></div>
+          <div><span>out</span><p>a score for each answer, and an agreement rate for the judge</p></div>
+          <div><span>means</span><p>retrieval scores tell you whether the right passage arrived; answer scores tell you whether the model used it well</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e13" data-after="a11">
+  <div class="stage"><canvas id="cve13" role="img" aria-label="Twenty dots fill four groups: both pass, judge pass and person fail, judge fail and person pass, both fail. Then a position-bias scene shows two orders of the same two answers, and the first position wins both times."></canvas><div class="tag">judge agreement · kappa and bias</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e13_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT THIRTEEN</p>
+        <h2>Agreement that means something</h2>
+        <pre>p_o = (8 + 6) / 20 = 0.70          observed agreement
+p_e = (11/20)(11/20) + (9/20)(9/20) = 0.505   chance agreement
+κ   = (p_o − p_e) / (1 − p_e) = 0.39</pre>
+        <p>Seventy percent agreement looks good, but a judge that says “pass” most of the time agrees by chance too. Kappa takes that out. 0.39 is only fair. Fix the rubric where the six disagreements happen, then re-label a fresh sample.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e13_b">
+      <div class="box">
+        <p class="kicker">BIAS</p>
+        <h2>Swap the order and see if the verdict moves</h2>
+        <p>Judges favour whichever answer comes first. Show the pair both ways round, count a win only when both orders agree, and report how often the verdict flipped. Verbosity and self-preference are the other two biases to test.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the golden set and the judge’s rubric checks.</li><li>Open <b>Lab 11 · Judge agreement with kappa</b>. Keep the counts 8, 3, 3, 6 and read p_o, p_e and κ.</li><li>Change the counts and read κ again. Try 75% agreement on 20 items with 60% chance agreement.</li></ol><p><b>What to expect.</b> With 8, 3, 3, 6: p_o = 0.70, p_e = 0.505, κ = 0.39, which is fair. Agreement counts only to the extent it beats chance.</p><p><b>Check yourself.</b> Is 75% agreement with 60% chance agreement good? Compute κ by hand.</p></div></section>
+
+<div class="act" id="a12">
+  <div class="stage"><canvas id="cv12" role="img" aria-label="The whole working system: documents are chunked and embedded into an index across the top. A question is rewritten, searched, reranked, placed into a prompt and answered across the bottom. A timeline at the end shows when an edited article reaches the index."></canvas><div class="tag">the working system</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="a12system">
+      <div class="box">
+        <p class="actno">ACT TWELVE</p>
+        <h2>Everything, working together</h2>
+        <p>Two pipelines share one index. The top row prepares the documents, once and ahead of time. The bottom row answers each question, every time someone asks.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a12trace">
+      <div class="box">
+        <p class="kicker">12 · ONE QUESTION, TRACED</p>
+        <h2>Follow the money-back question through</h2>
+        <p>The question is rewritten, searched by both methods, fused, and reranked. The best passages come out of the index and go into the prompt. The model answers from them and cites the one it used.</p>
+        <p>Every step is a place where the answer can go wrong, and every step can be measured on its own. That is why the evals in the last two acts were built around each stage.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a12cost">
+      <div class="box">
+        <p class="kicker">12 · COST AND SPEED</p>
+        <h2>Most of the time goes to the model</h2>
+        <p>Searching the index is cheap and quick. Embedding the question and reranking the top few cost a little more. The language model call is the slowest step and usually the most expensive. These figures are illustrative: measure your own system before deciding anything.</p>
+        <p class="say">The cheapest way to make answers better is often a better retrieval, because it stops the model from paying to read the wrong passages.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="a12fresh">
+      <div class="box">
+        <p class="kicker">12 · FRESHNESS</p>
+        <h2>An index is only as new as its last rebuild</h2>
+        <p>Documents change. An article is edited, but the index still holds the old text until it is rebuilt. Between the edit and the rebuild, the system answers with the old wording. Choose a refresh schedule that matches how often your documents change.</p>
+        <div class="io">
+          <div><span>in</span><p>documents, a model, a schedule, a question</p></div>
+          <div><span>out</span><p>a cited answer, built from the index as it stood</p></div>
+          <div><span>means</span><p>cost, speed and freshness trade against each other; every one of them is a setting you choose</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="act" id="e14" data-after="a12">
+  <div class="stage"><canvas id="cve14" role="img" aria-label="A latency column stacks the stages of one question: embedding, parallel search, fusion, reranking that grows with the number of pairs, and the model's first token. A second column stacks the tokens in one prompt as passages are added."></canvas><div class="tag">latency and cost · what adds up</div></div>
+  <div class="cards">
+    <div class="card opener" data-scene="e14_a">
+      <div class="box">
+        <p class="actno">DEEP DIVE · ACT FOURTEEN</p>
+        <h2>Where the time goes</h2>
+        <pre>latency ≈ embed(query)
+        + max(keyword time, meaning time)   (in parallel)
+        + fusion
+        + rerank(N)
+        + LLM time to first token
+        + output tokens / tokens per second</pre>
+        <p>Reranking grows with every candidate. The LLM is usually the largest single term. Illustrative timings, not measurements: measure your own system.</p>
+      </div>
+    </div>
+    <div class="card" data-scene="e14_b">
+      <div class="box">
+        <p class="kicker">COST PER QUESTION</p>
+        <h2>Every passage is paid for, every time</h2>
+        <pre>cost ≈ embed_price · query_tokens
+     + rerank_price · N
+     + llm_price_in · prompt_tokens
+     + llm_price_out · output_tokens
+
+prompt_tokens = instructions + k · tokens_per_passage + question</pre>
+        <p>The number of passages is a budget decision. Cut k and the bill falls linearly. Pick k from the budget first, then confirm it with your evals.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="try-wrap"><div class="try"><p class="eyebrow">Try it · step by step</p><ol class="try-steps"><li>Scrub the whole system and follow one question from the right to the answer.</li><li>Open <b>Lab 12 · Where the time and tokens go</b>. Keep 3 passages and 20 candidates. Read tokens and rerank time.</li><li>Raise candidates to 50, then passages to 8, and read again.</li></ol><p><b>What to expect.</b> About 1,530 tokens per question with 3 passages. 20 rerank pairs at 20 ms is 400 ms. Both grow linearly; the model call is usually the largest cost at scale, and the lab does not time it.</p><p><b>Check yourself.</b> Which knob would you cut first to halve the cost, and what would you expect to lose?</p></div></section>
+
+<section class="glossary" id="glossary">
+  <div class="wrap">
+    <p class="eyebrow">Glossary</p>
+    <h2 class="sec">The words, in one place</h2>
+    <dl class="gl">
+      <dt>Token</dt><dd>A piece of a word that a model reads. Roughly three quarters of an English word.</dd>
+      <dt>Inverted index</dt><dd>A table from each word to the documents that contain it. It makes keyword lookup fast.</dd>
+      <dt>Term frequency</dt><dd>How many times a word appears in one document.</dd>
+      <dt>Inverse document frequency</dt><dd>A weight that is higher for words found in few documents.</dd>
+      <dt>BM25</dt><dd>The standard keyword ranking. Scores matches by rarity, saturation and length.</dd>
+      <dt>Embedding</dt><dd>A list of numbers that places a piece of text by its meaning.</dd>
+      <dt>Dimension</dt><dd>One number in an embedding. Real models use 384 to 3,072 of them.</dd>
+      <dt>Cosine similarity</dt><dd>The cosine of the angle between two vectors. Near 1 means the same direction; length is ignored.</dd>
+      <dt>Vector search</dt><dd>Finding the stored vectors nearest to the question’s vector.</dd>
+      <dt>Brute force</dt><dd>Comparing the question with every stored vector. Exact, and slow at very large scale.</dd>
+      <dt>HNSW</dt><dd>An index for vectors that finds near neighbours quickly, at a small cost in exactness.</dd>
+      <dt>Chunk</dt><dd>A piece of a document that is embedded and indexed on its own.</dd>
+      <dt>Overlap</dt><dd>Words repeated at the edge of neighbouring chunks, so no idea is cut in two.</dd>
+      <dt>Context window</dt><dd>The most text a model can read in one request.</dd>
+      <dt>RAG</dt><dd>Retrieval-augmented generation: find passages first, then answer from them.</dd>
+      <dt>Intent</dt><dd>What the user wants, such as a refund request.</dd>
+      <dt>Query rewriting</dt><dd>Turning the user’s question into the words the documents use.</dd>
+      <dt>Hybrid search</dt><dd>Running keyword and meaning search, then merging the two lists.</dd>
+      <dt>Reciprocal rank fusion</dt><dd>A merge that adds 1 ÷ (60 + rank) from each list.</dd>
+      <dt>Reranker</dt><dd>A model that reads each question and candidate passage together, to reorder the top few.</dd>
+      <dt>Precision@k</dt><dd>Of the first k results, the share that are relevant.</dd>
+      <dt>Recall@k</dt><dd>Of all relevant documents, the share found in the first k results.</dd>
+      <dt>Golden set</dt><dd>Questions with the documents or answers that should come back, written by people.</dd>
+      <dt>LLM-as-a-judge</dt><dd>A model that grades answers against a rubric. Check it against people first.</dd>
+      <dt>Latency</dt><dd>How long one request takes, from question to answer.</dd>
+      <dt>Freshness</dt><dd>How up to date the index is with the documents it was built from.</dd>
+    </dl>
+    <p style="margin-top:28px;font-size:1.05em"><b>Build it yourself.</b> The <a href="/explorables/rag-lab">RAG lab</a> runs every step of this essay on documents you bring: chunk them, index them as text and as vectors, search, and measure the result.</p>
+  </div>
+</section>
+
+<script>var reduced=!(!window.matchMedia||!matchMedia("(prefers-reduced-motion: reduce)").matches),ACT_IDS=["h0","a1","e1","a2","e2","a3","e3","a4","e4","a5","e5","a6","e6","a7","e7","a8","e8","a9","e9","e10","e11","a10","e12","a11","e13","a12","e14"];function hex(e){return[parseInt(e.slice(1,3),16),parseInt(e.slice(3,5),16),parseInt(e.slice(5,7),16)]}function mix(e,t,n){if(e===t||"#"!==e[0]||"#"!==t[0])return t;var r=hex(e),a=hex(t);return"rgb("+Math.round(lerp(r[0],a[0],n))+","+Math.round(lerp(r[1],a[1],n))+","+Math.round(lerp(r[2],a[2],n))+")"}function MarkStage(e,t,n){var r=e.getContext("2d"),a=0,s=0,o=mkTxt(r),i={},u=[],h={},l=performance.now();function c(){var t=fitCanvas(e,r);a=t[0],s=t[1]}return c(),{resize:c,apply:function(e,r){var o=n?n(a,s):a<820?{x:.05*a,y:.08*s,w:.9*a,h:.84*s}:{x:.37*a,y:.12*s,w:.59*a,h:.76*s},u=o.x+o.w/2,h=o.y+o.h/2,l=t(e,r,o,a,s)||[],c={};for(var d in l.forEach(function(e){if(e){c[e.id]=1;var t=i[e.id];if(!t){var n=e.from&&i[e.from];if(t=i[e.id]={x:n?n.x:null!=e.x0?e.x0:u,y:n?n.y:null!=e.y0?e.y0:h,w:0,h:0,s:"flow"===e.kind||"pipe"===e.kind?1:0,c:e.col},"arc"===e.kind){var r=null==e.a0?-Math.PI/2:e.a0;t.a0=r,t.a1=r}"poly"===e.kind&&(t.rot=e.rot||0),"path"===e.kind&&e.pts&&e.pts.length&&(t.pts=e.pts.map(function(){return[e.pts[0][0],e.pts[0][1]]}),t.t=0)}t.d=e,t.dead=!1}}),i)c[d]||(i[d].dead=!0,i[d].cx=u,i[d].cy=h)},step:function(e){e=e||performance.now();var t=reduced?1:.15;if(!reduced)for(var n in i){var r=i[n],a=r.d;if(a&&"flow"===a.kind&&!r.dead){var s=i[a.from],o=i[a.to];if(!(!s||!o||s.s<.35||o.s<.35)){var l=null==a.rate?.5:a.rate;if(!(l<=0)){var c=420-330*clamp01(l);e-(h[n]||0)>c&&(h[n]=e,u.push({f:a.from,t:a.to,bow:a.bow||0,p:0,sp:.012+.01*clamp01(l)+.004*Math.random(),r:2.2+3.4*clamp01(l),col:a.col||"#888",glyph:a.glyph}))}}}}for(var d=u.length-1;d>=0;d--)u[d].p+=u[d].sp,(u[d].p>=1||!i[u[d].f]||!i[u[d].t])&&u.splice(d,1);for(var f in i){var p=i[f];if(p.dead){if(p.pts){var C=centroid(p.pts);p.pts.forEach(function(e){e[0]=lerp(e[0],C[0],t),e[1]=lerp(e[1],C[1],t)})}p.w=lerp(p.w,0,t),p.h=lerp(p.h,0,t),p.s=lerp(p.s,0,t),p.x=lerp(p.x,p.cx,.45*t),p.y=lerp(p.y,p.cy,.45*t),p.w<.7&&p.h<.7&&p.s<.05&&delete i[f]}else{var m=p.d;if("flow"!==m.kind&&"pipe"!==m.kind)if("path"!==m.kind){"arc"===m.kind&&(p.a0=lerp(p.a0,null==m.a0?-Math.PI/2:m.a0,t),p.a1=lerp(p.a1,null==m.a1?(null==m.a0?-Math.PI/2:m.a0)+2*Math.PI:m.a1,t)),"poly"===m.kind&&(p.rot=lerp(p.rot||0,m.rot||0,t)),p.x=lerp(p.x,m.x,t),p.y=lerp(p.y,m.y,t);var g="arc"===m.kind||"poly"===m.kind||"dot"===m.kind;p.w=lerp(p.w,m.w||0,t),p.h=lerp(p.h,m.h||g&&m.w||0,t),p.s=lerp(p.s,null==m.s?1:m.s,t),p.c=mix(p.c||m.col,m.col,reduced?1:.18)}else{var v=m.pts||[];p.pts&&p.pts.length===v.length||(p.pts=resample(p.pts||v,v.length));for(var w=0;w<v.length;w++)p.pts[w][0]=lerp(p.pts[w][0],v[w][0],t),p.pts[w][1]=lerp(p.pts[w][1],v[w][1],t);p.t=lerp(null==p.t?0:p.t,null==m.t?1:m.t,t);var k=centroid(p.pts);p.x=k[0],p.y=k[1],p.s=lerp(p.s,null==m.s?1:m.s,t),p.c=mix(p.c||m.col,m.col,reduced?1:.18)}else p.s=lerp(p.s,1,t)}}},draw:function(){var e,t,n;for(e in r.clearRect(0,0,a,s),i)if(t=i[e],(n=t.d)&&!(t.s<=.01)&&"pipe"===n.kind){var h=i[n.from],c=i[n.to];if(h&&c){var d=(h.x+c.x)/2,f=(h.y+c.y)/2+(n.bow||0);r.globalAlpha=t.s*Math.min(h.s,c.s),r.lineCap="round",r.beginPath(),r.moveTo(h.x,h.y),r.quadraticCurveTo(d,f,c.x,c.y),r.strokeStyle=n.casing||"#EDE7DB",r.lineWidth=n.lw||9,r.stroke(),r.beginPath(),r.moveTo(h.x,h.y),r.quadraticCurveTo(d,f,c.x,c.y),r.strokeStyle=n.col,r.lineWidth=.38*(n.lw||9),r.setLineDash([11,9]),r.lineDashOffset=-(performance.now()-l)/16,r.stroke(),r.setLineDash([]),r.lineDashOffset=0,r.lineCap="butt";var p=edgeEnds(h,c,d,f);arrowHead(r,p.bx,p.by,p.bx-d,p.by-f,n.col,.8*(n.lw||9)),r.globalAlpha=1}}for(e in i)if(t=i[e],(n=t.d)&&!(t.s<=.01)&&"flow"===n.kind&&!1!==n.edge){var C=i[n.from],m=i[n.to];if(C&&m){var g=clamp01(null==n.rate?.5:n.rate),v=(C.x+m.x)/2,w=(C.y+m.y)/2+(n.bow||0),k=edgeEnds(C,m,v,w);r.globalAlpha=t.s*Math.min(C.s,m.s)*(.42+.34*g),r.beginPath(),r.moveTo(k.ax,k.ay),r.quadraticCurveTo(v,w,k.bx,k.by),r.strokeStyle=n.col,r.lineWidth=1.3+2.2*g,r.setLineDash(n.solid?[]:[6,5]),r.stroke(),r.setLineDash([]),arrowHead(r,k.bx,k.by,k.bx-v,k.by-w,n.col,5.5+3.5*g),r.globalAlpha=1}}for(e in i)t=i[e],!(n=t.d)||t.s<=.01||"rule"!==n.kind||(r.globalAlpha=.9*t.s,r.strokeStyle=t.c,r.lineWidth=n.lw||1,n.dash&&r.setLineDash(n.dash),r.beginPath(),r.moveTo(t.x-t.w/2,t.y-t.h/2),r.lineTo(t.x+t.w/2,t.y+t.h/2),r.stroke(),r.setLineDash([]),r.globalAlpha=1);for(e in i)if(t=i[e],!(!(n=t.d)||t.s<=.01||"path"!==n.kind||!t.pts||t.pts.length<2)){var y=trimPath(t.pts,n.closed&&t.t>.999?1:t.t),b=function(){if(r.moveTo(y[0][0],y[0][1]),n.smooth&&y.length>2){for(var e=1;e<y.length-1;e++){var t=(y[e][0]+y[e+1][0])/2,a=(y[e][1]+y[e+1][1])/2;r.quadraticCurveTo(y[e][0],y[e][1],t,a)}r.lineTo(y[y.length-1][0],y[y.length-1][1])}else for(var s=1;s<y.length;s++)r.lineTo(y[s][0],y[s][1])};if(r.globalAlpha=t.s,n.fill&&null!=n.baseY&&(r.beginPath(),b(),r.lineTo(y[y.length-1][0],n.baseY),r.lineTo(y[0][0],n.baseY),r.closePath(),r.fillStyle=n.fill,r.fill()),r.beginPath(),b(),n.closed&&t.t>.999&&r.closePath(),n.fill&&n.closed&&t.t>.999&&(r.fillStyle=n.fill,r.fill()),0!==n.lw&&(r.strokeStyle=t.c,r.lineWidth=n.lw||2,r.lineJoin="round",r.lineCap="round",n.dash&&r.setLineDash(n.dash),r.stroke(),r.setLineDash([])),n.arrow&&y.length>1){var D=y[y.length-1],T=y[y.length-2];arrowHead(r,D[0],D[1],D[0]-T[0],D[1]-T[1],t.c,6+1.5*(n.lw||2))}r.globalAlpha=1}for(e in i)if(t=i[e],(n=t.d)&&!(t.s<=.01))if("bar"===n.kind){if(t.w<.4||t.h<.4)continue;r.globalAlpha=t.s,r.shadowColor=t.c,r.shadowBlur=!1===n.glow?0:7,rr(r,t.x-t.w/2,t.y-t.h/2,t.w,t.h,Math.min(null==n.r?5:n.r,t.h/2)),r.fillStyle=t.c,r.fill(),r.shadowBlur=0,r.globalAlpha=1}else if("dot"===n.kind)r.globalAlpha=t.s,r.shadowColor=t.c,r.shadowBlur=!1===n.glow?0:5,r.beginPath(),r.arc(t.x,t.y,Math.max(.3,t.w/2),0,2*Math.PI),r.fillStyle=t.c,r.fill(),r.shadowBlur=0,n.glyph&&t.w>8&&(r.fillStyle=n.glyphCol||"#FFFFFF",r.textAlign="center",r.textBaseline="middle",r.font="700 "+Math.max(6,.55*t.w)+"px ui-monospace, Menlo, monospace",r.fillText(n.glyph,t.x,t.y+.03*t.w)),r.globalAlpha=1;else if("arc"===n.kind){if(t.w<1)continue;r.globalAlpha=t.s;var x=t.w/2;n.pie?(r.beginPath(),r.moveTo(t.x,t.y),r.arc(t.x,t.y,x,t.a0,t.a1),r.closePath(),r.fillStyle=n.fill||t.c,r.fill()):(r.beginPath(),r.arc(t.x,t.y,x,t.a0,t.a1),r.strokeStyle=t.c,r.lineWidth=n.lw||3,r.lineCap="round",r.stroke(),n.fill&&(r.fillStyle=n.fill,r.fill())),r.globalAlpha=1}else if("poly"===n.kind){if(t.w<1)continue;r.globalAlpha=t.s;var S=Math.max(3,n.n||6),E=t.w/2;r.beginPath();for(var M=0;M<=S;M++){var R=t.rot+M/S*Math.PI*2-Math.PI/2,B=t.x+E*Math.cos(R),O=t.y+E*Math.sin(R);M?r.lineTo(B,O):r.moveTo(B,O)}r.closePath(),n.fill&&(r.fillStyle=n.fill,r.fill()),0!==n.lw&&(r.strokeStyle=t.c,r.lineWidth=n.lw||1.5,r.stroke()),r.globalAlpha=1}else if("box"===n.kind){if(t.w<2||t.h<2)continue;r.globalAlpha=t.s,rr(r,t.x-t.w/2,t.y-t.h/2,t.w,t.h,10),r.fillStyle=n.fill||"#FFFFFF",r.fill(),r.shadowColor=t.c,r.shadowBlur=!1===n.glow?0:6,r.strokeStyle=t.c,r.lineWidth=1.5,r.stroke(),r.shadowBlur=0;var F=!(t.dead&&t.s<.8),W=fitBox(r,F&&n.label&&t.h>14?n.label:"",F&&n.sub&&t.h>26?n.sub:"",t.w-12,t.h,(n.fs||12.5)*Math.min(1,t.s)),q=W.L,_=W.S,A=Math.abs(t.w-(n.w||0))>2||Math.abs(t.h-(n.h||0))>2;A&&q&&q.lines.join("").indexOf("…")>=0&&(q=null),A&&_&&_.lines.join("").indexOf("…")>=0&&(_=null);var P=q?1.15*q.fs:0,L=(q?q.lines.length*P:0)+(_?1.25*_.fs:0),I=t.y-L/2+P/2;q&&q.lines.forEach(function(e,n){o(e,t.x,I+n*P,t.c,q.fs,700)}),_&&o(_.lines[0],t.x,I+(q?q.lines.length*P:0)+(q?.15*_.fs:0),"#A0A8B6",_.fs,600),r.globalAlpha=1}for(var V=0;V<u.length;V++){var H=u[V],Q=i[H.f],j=i[H.t];if(Q&&j){k=H.p;var G=(Q.x+j.x)/2,N=(Q.y+j.y)/2+H.bow,Y=edgeEnds(Q,j,G,N),z=(1-k)*(1-k)*Y.ax+2*(1-k)*k*G+k*k*Y.bx,K=(1-k)*(1-k)*Y.ay+2*(1-k)*k*N+k*k*Y.by;r.globalAlpha=k<.14?k/.14:k>.86?(1-k)/.14:1,r.shadowColor=H.col,r.shadowBlur=5,H.glyph?(r.fillStyle=H.col,r.textAlign="center",r.textBaseline="middle",r.font="700 "+(8+1.6*H.r)+"px ui-monospace, Menlo, monospace",r.fillText(H.glyph,z,K)):(r.beginPath(),r.arc(z,K,H.r,0,2*Math.PI),r.fillStyle=H.col,r.fill()),r.shadowBlur=0,r.globalAlpha=1}}for(e in i)if(t=i[e],(n=t.d)&&!(t.s<=.01)&&"text"===n.kind){r.globalAlpha=Math.min(1,t.s),!1!==n.glow&&(r.shadowColor=t.c,r.shadowBlur=(n.blur||7)*t.s);var U=Math.max(.5,(n.size||12)*t.s),X=n.label;if(n.maxw){var J=fitText(r,n.label,n.maxw,U,n.weight||700,1);U=J.fs,X=J.lines[0]}o(X,t.x,t.y,t.c,U,n.weight||700,n.align),r.shadowBlur=0,r.globalAlpha=1}}}}function edgeR(e,t,n,r){var a=e.w||8,s=e.h||8,o=e.d&&e.d.kind;if("dot"===o||"arc"===o||"poly"===o)return Math.min(a,s)/2+r;var i=Math.abs(t)>1e-6?a/2/Math.abs(t):1e9,u=Math.abs(n)>1e-6?s/2/Math.abs(n):1e9;return Math.min(i,u)+r}function edgeEnds(e,t,n,r){var a=Math.hypot(n-e.x,r-e.y)||1,s=Math.hypot(t.x-n,t.y-r)||1,o=[(n-e.x)/a,(r-e.y)/a],i=[(t.x-n)/s,(t.y-r)/s],u=edgeR(e,o[0],o[1],4),h=edgeR(t,i[0],i[1],9);return{ax:e.x+o[0]*u,ay:e.y+o[1]*u,bx:t.x-i[0]*h,by:t.y-i[1]*h}}function arrowHead(e,t,n,r,a,s,o){var i=Math.atan2(a,r);e.beginPath(),e.moveTo(t,n),e.lineTo(t-o*Math.cos(i-.42),n-o*Math.sin(i-.42)),e.lineTo(t-o*Math.cos(i+.42),n-o*Math.sin(i+.42)),e.closePath(),e.fillStyle=s,e.fill()}function centroid(e){for(var t=0,n=0,r=0;r<e.length;r++)t+=e[r][0],n+=e[r][1];return[t/(e.length||1),n/(e.length||1)]}function resample(e,t){if(!e||!e.length)return[];for(var n=[],r=0;r<t;r++){var a=1===t?0:r*(e.length-1)/(t-1),s=Math.floor(a),o=Math.min(e.length-1,s+1),i=a-s;n.push([lerp(e[s][0],e[o][0],i),lerp(e[s][1],e[o][1],i)])}return n}function trimPath(e,t){if(t>=.999)return e;var n,r=[],a=0;for(n=1;n<e.length;n++){var s=Math.hypot(e[n][0]-e[n-1][0],e[n][1]-e[n-1][1]);r.push(s),a+=s}var o=a*clamp01(t),i=[e[0]];for(n=1;n<e.length;n++){if(!(o>=r[n-1])){var u=r[n-1]?o/r[n-1]:0;i.push([lerp(e[n-1][0],e[n][0],u),lerp(e[n-1][1],e[n][1],u)]);break}i.push(e[n]),o-=r[n-1]}return i.length>1?i:[e[0],e[0]]}function fitBox(e,t,n,r,a,s){for(var o=function(t,n,r){return e.font=r+" "+n+"px ui-monospace, Menlo, monospace",e.measureText(t).width},i=function(e,t,n){if(o(e,t,700)<=r)return{lines:[e],fs:t};if(n>1&&e.indexOf(" ")>0){for(var a=e.split(" "),s=null,i=1;i<a.length;i++){var u=a.slice(0,i).join(" "),h=a.slice(i).join(" "),l=Math.max(o(u,t,700),o(h,t,700));(!s||l<s.m)&&(s={a:u,b:h,m:l})}if(s.m<=r)return{lines:[s.a,s.b],fs:t}}return null},u=Math.max(6.5,s-2),h=Math.min(7,s),l=function(e,t){return Math.max(1,Math.min(2,Math.floor((a-6-(n?1.3*t:0))/(1.15*e))))},c=s;c>=h;c-=.5){var d=Math.min(u,.92*c),f=l(c,d),p=t?i(t,c,f):null;if(!t||p)return{L:p,S:n?fitText(e,n,r,d,600,1):null}}var C=Math.min(6.5,.92*h);return{L:t?fitText(e,t,r,h,700,l(h,C)):null,S:n?fitText(e,n,r,C,600,1):null}}function fitText(e,t,n,r,a,s){var o;t=String(t);var i=function(t,n){return e.font=(a||700)+" "+n+"px ui-monospace, Menlo, monospace",e.measureText(t).width},u=function(e){for(var n=t.split(" "),r=null,a=1;a<n.length;a++){var s=n.slice(0,a).join(" "),o=n.slice(a).join(" "),u=Math.max(i(s,e),i(o,e));(!r||u<r.m)&&(r={a:s,b:o,m:u})}return r};if(n<=0)return{lines:[t],fs:r};var h=Math.min(7,r);for(o=r;o>=h;o-=.5){if(i(t,o)<=n)return{lines:[t],fs:o};if((s||1)>1&&t.indexOf(" ")>0){var l=u(o);if(l.m<=n)return{lines:[l.a,l.b],fs:o}}}o=h;var c=function(e){for(;e.length>1&&i(e+"…",o)>n;)e=e.slice(0,-1);return e+"…"};if((s||1)>1&&t.indexOf(" ")>0){var d=u(o);return{lines:[i(d.a,o)<=n?d.a:c(d.a),c(d.b)],fs:o}}return{lines:[c(t)],fs:o}}function lerp(e,t,n){return e+(t-e)*n}function clamp01(e){return e<0?0:e>1?1:e}function smooth(e){return(e=clamp01(e))*e*(3-2*e)}function rr(e,t,n,r,a,s){s=Math.min(s,r/2,a/2),e.beginPath(),e.moveTo(t+s,n),e.lineTo(t+r-s,n),e.quadraticCurveTo(t+r,n,t+r,n+s),e.lineTo(t+r,n+a-s),e.quadraticCurveTo(t+r,n+a,t+r-s,n+a),e.lineTo(t+s,n+a),e.quadraticCurveTo(t,n+a,t,n+a-s),e.lineTo(t,n+s),e.quadraticCurveTo(t,n,t+s,n),e.closePath()}function mkTxt(e){return function(t,n,r,a,s,o,i){e.fillStyle=a,e.textAlign=i||"center",e.textBaseline="middle",e.font=(o||700)+" "+(s||12)+"px ui-monospace, Menlo, monospace",e.fillText(t,n,r)}}function fitCanvas(e,t){var n=Math.min(devicePixelRatio||1,2),r=e.clientWidth,a=e.clientHeight;return e.width=Math.round(r*n),e.height=Math.round(a*n),t.setTransform(n,0,0,n,0,0),[r,a]}function driveActs(e){e.forEach(function(e){e.cards=[].slice.call(e.el.querySelectorAll(".card")),e.vis=!1,new IntersectionObserver(function(t){t.forEach(function(t){e.vis=t.isIntersecting}),a=!0},{threshold:0,rootMargin:"160px 0px 160px 0px"}).observe(e.el)});var t=[].slice.call(document.querySelectorAll("#nav a")),n=t.map(function(e){return document.querySelector(e.getAttribute("href"))}),r=document.getElementById("progress"),a=!0,s=performance.now();function o(){var a=innerHeight;if(e.forEach(function(e){if(e.vis){for(var t=0,n=0;n<e.cards.length;n++)e.cards[n].getBoundingClientRect().top<=.56*a&&(t=n);var r=e.cards[t].getBoundingClientRect();e.stage.apply(e.cards[t].getAttribute("data-scene"),smooth((.82*a-r.top)/(.95*r.height)))}}),r){var s=document.documentElement,o=s.scrollHeight-s.clientHeight;r.style.width=(o>0?s.scrollTop/o*100:0)+"%"}for(var i=0,u=0;u<n.length;u++)n[u]&&n[u].getBoundingClientRect().top<=150&&(i=u);for(u=0;u<t.length;u++)t[u].classList.toggle("here",u===i)}function i(){e.forEach(function(e){e.stage.resize()}),o()}addEventListener("resize",i),addEventListener("orientationchange",function(){setTimeout(i,150)}),addEventListener("scroll",function(){a=!0},{passive:!0}),i(),requestAnimationFrame(function t(n){var r=Math.min(64,n-s);s=n,a&&(a=!1,o());for(var i=0;i<e.length;i++)e[i].vis&&(e[i].stage.step(n,r),e[i].stage.draw());requestAnimationFrame(t)});var u=new IntersectionObserver(function(e){e.forEach(function(e){e.target.classList.toggle("lit",e.isIntersecting)})},{rootMargin:"-22% 0px -22% 0px",threshold:0});document.querySelectorAll(".card .box").forEach(function(e){u.observe(e)})}var C={rust:"#B5533E",sage:"#5F7A55",gold:"#B8891A",mauve:"#7D5B80",steel:"#4A6482",ink:"#232733",grey:"#A7A29A",faint:"#D9D4CA"};function X(e,t){return e.x+t*e.w}function Y(e,t){return e.y+t*e.h}function LW(e,t){return t*e.w}function LH(e,t){return t*e.h}function sm(e){return smooth(e)}function B(e,t,n,r,a,s,o,i,u,h){return Object.assign({id:t,kind:"box",x:X(e,n),y:Y(e,r),w:LW(e,a),h:LH(e,s),label:o,sub:e.w<500?"":i||"",col:u},h||{})}function D(e,t,n,r,a,s,o){return Object.assign({id:t,kind:"dot",x:X(e,n),y:Y(e,r),w:LW(e,a),h:LW(e,a),col:s},o||{})}function BR(e,t,n,r,a,s,o,i){var u=LH(e,s);return Object.assign({id:t,kind:"bar",x:X(e,n),y:Y(e,r)-u/2,w:LW(e,a),h:u,col:o},i||{})}function T(e,t,n,r,a,s,o,i){return Object.assign({id:t,kind:"text",x:X(e,n),y:Y(e,r),label:a,col:s,size:o||12},i||{})}function TW(e,t,n,r,a,s,o,i,u){var h=i||12;return e.w<500&&String(s).length*h*.62>a*e.w?null:T(e,t,n,r,s,o,i,Object.assign({maxw:LW(e,a)},u||{}))}function F(e,t,n,r,a,s){return Object.assign({id:e,kind:"flow",from:t,to:n,rate:r,col:a},s||{})}function P(e,t,n,r,a){return Object.assign({id:t,kind:"path",pts:n.map(function(t){return[X(e,t[0]),Y(e,t[1])]}),col:r},a||{})}function A(e,t,n,r,a,s,o,i,u){return Object.assign({id:t,kind:"arc",x:X(e,n),y:Y(e,r),w:LW(e,a),a0:s,a1:o,col:i},u||{})}var DOCS=[{id:"D1",t:"Refund policy",s:"You can return any item within 30 days for a full refund. The item must be unused and in its original packaging. Start a return from your order page, print the label, and send the item back. We check each returned item within 3 working days of arrival. Items returned after 30 days cannot be refunded, but a faulty item stays covered by the warranty. Keep your receipt, because it proves the date of purchase."},{id:"D2",t:"Shipping",s:"Orders leave our warehouse within 2 business days. Delivery takes 3 to 5 days. We ship to addresses in the UK, Ireland and the EU. Orders over 50 pounds ship free; smaller orders pay a flat fee at checkout. Once your parcel leaves the warehouse you receive a tracking link by email. If a parcel is still not with you after 7 days, contact us and we will trace it."},{id:"D3",t:"Warranty",s:"Every tool has a two-year warranty against manufacturing defects. The warranty starts on the day of delivery and covers faulty parts and workmanship. It does not cover normal wear, misuse, or damage from dropping the tool. To claim, send us your order number and a photo of the fault, and we will repair or replace the tool. A warranty claim does not need the original packaging."},{id:"D4",t:"Getting your money back",s:"Send the item with your receipt and we repay you in full. Refunds go back to the card or account you paid with. The money usually appears within 5 to 7 working days after we receive the item. If you paid with a voucher, we repay the voucher value as store credit. Shipping costs are repaid too when the item was faulty or sent by mistake."},{id:"D5",t:"Sizing guide",s:"If you are between sizes, choose the larger one. Measure your chest and waist with a soft tape, then compare the numbers with the size chart on each product page. Our tools are cut for an average hand, so a glove that feels tight at first loosens with use. All sizes are given in centimetres."}],TOK=function(e){return String(e).toLowerCase().match(/[a-z0-9]+/g)||[]},CORPUS={};DOCS.forEach(function(e){CORPUS[e.id]=TOK(e.t+" "+e.s)});var AVGDL=function(){var e=0;return DOCS.forEach(function(t){e+=CORPUS[t.id].length}),e/DOCS.length}();function idf(e){var t=0;return DOCS.forEach(function(n){CORPUS[n.id].indexOf(e)>=0&&t++}),Math.log(1+(DOCS.length-t+.5)/(t+.5))}function bm25(e,t){var n=CORPUS[t],r=0,a=n.length;return e.forEach(function(e){var t=0;n.forEach(function(n){n===e&&t++}),t&&(r+=idf(e)*t*2.2/(t+1.2*(.25+.75*a/AVGDL)))}),r}var VEC={D1:[.82,.22],D2:[.14,.84],D3:[.42,.58],D4:[.76,.3],D5:[.2,.46]},QV={refund:[.88,.18],"money back":[.8,.28]};function cosv(e,t){return(e[0]*t[0]+e[1]*t[1])/(Math.hypot(e[0],e[1])*Math.hypot(t[0],t[1]))}function ang(e){return Math.atan2(-e[1],e[0])}var SC=SC||{};function docColumn(e,t,n){var r=[],a=null==(n=n||{}).count?5:n.count;return DOCS.forEach(function(t,s){if(!(s>=a)){var o=n.hl&&n.hl[t.id]||C.sage;r.push(B(e,t.id,n.x||.74,(n.y0||.2)+s*(n.dy||.16),n.w||.48,n.h||.11,SHORT[t.id],"",o))}}),r}function docsMove(e,t,n){var r=sm(t);return DOCS.map(function(t,a){var s=.2+.16*a,o=.74+(.1+.2*a-.74)*r,i=s+(.9-s)*r,u=.48+(.17-.48)*r;return B(e,t.id,o,i,u,.11,SHORT[t.id],"",n&&n[t.id]||C.sage)})}function row5(e){return DOCS.map(function(t,n){return B(e,t.id,.1+.2*n,.9,.17,.11,t.t,"",C.sage)})}SC.a1hero=function(e,t){var n=Math.max(1,Math.ceil(5*e));return[A(t,"ringdocs",.2,.5,.22,-Math.PI/2,-Math.PI/2+2*Math.PI*n/5,C.sage,{lw:10}),T(t,"ringlab",.2,.5,n+" of 5",C.ink,16),T(t,"ringsub",.2,.66,"documents read",C.steel,11)].concat(docColumn(t,e,{count:n,y0:.2,dy:.16}))},SC.a1ask=function(e,t){var n=docColumn(t,e,{y0:.2,dy:.16,hl:{D4:e>.55?C.gold:C.sage}});return n.push(B(t,"Q",.74,.07,.48,.08,"How do I get my money back?","a question from a customer",C.rust)),n.push(D(t,"probe",.1,.2+.64*sm(e),.03,C.rust)),n},SC.a1gap=function(e,t){var n=docsMove(t,e);return n.push(B(t,"Q",.74,.07,.48,.08,"How do I get my money back?","a question from a customer",C.rust)),n.push(B(t,"llm",.3,.5,.34,.16,"LLM","trained on public text only",C.steel)),n.push(B(t,"ans",.77,.5,.34,.16,"Answer","a guess from memory",C.grey)),DOCS.forEach(function(r,a){n.push(D(t,"x"+a,.1+.2*a,.77,.022*sm(e),C.grey))}),n},SC.a1goal=function(e,t){var n=docsMove(t,1);return n.push(B(t,"Q",.74,.07,.48,.08,"How do I get my money back?","a question from a customer",C.rust)),n.push(B(t,"llm",.3,.5,.34,.16,"LLM","reads only what we give it",C.steel)),n.push(B(t,"ans",.77,.5,.34,.16,"Answer",e>.5?"grounded in the retrieved passage":"",e>.5?C.gold:C.grey)),n.push(TW(t,"ans_t",.77,.66,.32,e>.5?"Send the item with your receipt; we repay you (D4).":"",C.ink,12.5)),n.push(F("fa","llm","ans",.8*sm(e),C.mauve)),n.push(F("f4","D4","llm",1*sm(e),C.gold)),n.push(F("f1","D1","llm",.4*sm(e),C.gold)),n.push(D(t,"s4",.7,.8,.035*sm(e),C.gold)),n.push(D(t,"s1",.1,.8,.02+.02*sm(e),C.gold)),n};var TERMS=["back","item","money","policy","refund"],POSTINGS=[["back","D4"],["item","D1"],["item","D4"],["money","D4"],["policy","D1"],["refund","D1"]];function indexCast(e,t,n){n=n||{};var r=[];return TERMS.forEach(function(t,a){var s=n.hlTerm&&n.hlTerm[t]||C.mauve;r.push(B(e,"t_"+t,.36,.2+.14*a,.24,.09,t,"",s))}),DOCS.forEach(function(t,a){var s=n.hlDoc&&n.hlDoc[t.id]||C.sage;r.push(B(e,t.id,.86,.16+.17*a,.2,.1,t.id+" "+SHORT[t.id],"",s))}),POSTINGS.forEach(function(e){var t=n.rate&&null!=n.rate[e[0]+e[1]]?n.rate[e[0]+e[1]]:.3;r.push(F("p_"+e[0]+"_"+e[1],"t_"+e[0],e[1],t,C.steel))}),r}SC.a2invert=function(e,t){var n=indexCast(t,e,{rate:{}}).map(function(t){return"flow"===t.kind&&(t.rate=t.rate*sm(e)),t});return n.push(T(t,"hdrT",.36,.06,"TERMS, sorted",C.mauve,11)),n.push(T(t,"hdrD",.86,.07,"DOCUMENTS",C.sage,11)),TERMS.forEach(function(r,a){var s=POSTINGS.filter(function(e){return e[0]===r}).length;n.push(BR(t,"pc"+a,.07+.035*a,.86,.025,s/5*.5*sm(e),C.mauve))}),n.push(TW(t,"pch",.13,.93,.2,"docs per word",C.mauve,10.5)),n},SC.a2miss=function(e,t){var n=sm(e),r=e>.3,a=indexCast(t,e,{hlTerm:{refund:r?C.gold:C.mauve},hlDoc:{D1:r?C.gold:C.sage,D4:C.grey},rate:{refundD1:n}});return a.push(B(t,"q_a",.14,.5,.2,.1,"refund","the query",C.rust)),a.push(F("qa_r","q_a","t_refund",n,C.rust)),a.push(BR(t,"hits",.14,.85,.08,.1*n,C.gold)),a.push(T(t,"hitl",.14,.9,"1 of 5 found",C.ink,11)),a},SC.a2synonym=function(e,t){var n=sm(e),r=e>.3,a=indexCast(t,e,{hlTerm:{money:r?C.gold:C.mauve,back:r?C.gold:C.mauve},hlDoc:{D4:r?C.gold:C.sage,D1:C.grey},rate:{backD4:n,moneyD4:n}});return a.push(B(t,"q_b",.14,.5,.2,.1,"money back","the query",C.rust,{from:"q_a"})),a.push(F("qb_m","q_b","t_money",n,C.rust)),a.push(F("qb_b","q_b","t_back",n,C.rust)),a.push(BR(t,"hits",.14,.85,.08,.1*n,C.gold)),a.push(T(t,"hitl",.14,.9,"1 of 5 found",C.ink,11)),a.push(TW(t,"miss",.14,.66,.2,"D4 never says ‘refund’",C.steel,11)),a},SC.a2exact=function(e,t){var n=indexCast(t,e,{hlDoc:{D1:C.gold,D4:C.gold},rate:{}});return[["refund",1],["money back",1],["either",2]].forEach(function(r,a){var s=.06+.09*a,o=r[1]/5*.55*sm(e);n.push(BR(t,"hits"+a,s,.84,.06,o,2===a?C.gold:C.steel)),n.push(TW(t,"hitn"+a,s,.9,.1,r[0],C.ink,10))}),n};var K1=1.2;SC.a3tf=function(e,t){for(var n=[],r=[],a=[],s=1;s<=5;s++){var o=s*(K1+1)/(s+K1);a.push(o),r.push([.12+.19*(s-1),.84-o/1.8*.56])}for(n.push(P(t,"tfcurve",r,C.gold,{t:sm(e),lw:3})),n.push(P(t,"axis",[[.08,.84],[.94,.84]],C.grey,{lw:1})),s=1;s<=5;s++)e>=(s-1)/5&&(n.push(D(t,"tf"+s,r[s-1][0],r[s-1][1],.03,C.gold)),n.push(T(t,"tfl"+s,r[s-1][0],r[s-1][1]-.06,a[s-1].toFixed(2),C.ink,11))),n.push(T(t,"tfx"+s,.12+.19*(s-1),.9,s+(1===s?" time":" times"),C.steel,11));return n.push(TW(t,"tfn",.5,.1,.8,"Score for one word, from how many times it appears in the document. Each extra repeat adds less.",C.ink,12.5)),n};var IDFW=["refund","policy","money","back","item"];SC.a3idf=function(e,t){var n=[];return IDFW.forEach(function(r,a){var s=idf(r),o=.14+.18*a,i=.3*s*sm(e);n.push(BR(t,"bar"+a,o,.8,.09,i,s>1?C.steel:C.grey)),n.push(T(t,"bn"+a,o,.86,r,C.ink,11)),n.push(T(t,"bv"+a,o,.8-i-.04,s.toFixed(2),C.ink,11))}),n.push(TW(t,"idfn",.5,.1,.85,"Rarer words weigh more. Refund, policy, money: one article each, 1.39. Back, item, receipt: two, 0.88.",C.ink,12.5)),n};var LENS=[["D1",77],["D2",71],["D3",68],["D4",70],["D5",57]];function MX(e){return.14+.78*e}function MY(e){return.86-.74*e}SC.a3len=function(e,t){var n=[];LENS.forEach(function(r,a){var s=.14+.18*a,o=r[1]/80*.5*sm(e);n.push(BR(t,"bar"+a,s,.8,.09,o,r[1]>68.6?C.gold:C.steel)),n.push(T(t,"bn"+a,s,.86,r[0]+" · "+r[1]+" tokens",C.ink,10.5))});var r=.8-68.6/80*.5*sm(e);return n.push(P(t,"avg",[[.06,r],[.94,r]],C.rust,{dash:[6,5],lw:1.5})),n.push(T(t,"avgl",.12,r-.035,"average 68.6 tokens",C.rust,11)),n.push(TW(t,"lenn",.5,.1,.85,"Longer documents get a smaller score for the same word. The average is the yardstick.",C.ink,12.5)),n},SC.a3rank=function(e,t){var n={D1:3.163,D2:0,D3:0,D4:0,D5:0},r={D1:.834,D2:0,D3:0,D4:3.092,D5:0},a=sm(e),s=[];return DOCS.forEach(function(e,o){var i=n[e.id]*(1-a)+r[e.id]*a,u=.14+.18*o,h=i/3.3*.6;s.push(BR(t,"bar"+o,u,.8,.09,h,C.gold)),s.push(T(t,"bn"+o,u,.86,e.id,C.ink,11)),s.push(T(t,"bv"+o,u,.8-h-.04,i.toFixed(2),C.ink,11))}),s.push(TW(t,"rkq",.5,.1,.85,a<.5?"Query: “refund policy”. D1 wins on both words.":"Query: “money back”. D4 wins; D1 keeps 0.83 for the word back.",C.ink,12.5)),s};var MAPPT={D1:[.82,.22],D2:[.14,.84],D3:[.42,.58],D4:[.76,.3],D5:[.2,.46]},SHORT={D1:"Refund",D2:"Shipping",D3:"Warranty",D4:"Money back",D5:"Sizing"},NEAR_OFF={D1:[.075,-.01],D2:[0,-.05],D3:[0,-.05],D4:[-.1,-.03],D5:[0,-.05]};function axes(e,t){return[P(e,"axx",[[.14,.86],[.93,.86]],C.grey,{arrow:!0,lw:1.5,t:sm(t)}),P(e,"axy",[[.14,.86],[.14,.12]],C.grey,{arrow:!0,lw:1.5,t:sm(t)}),T(e,"axxl",.88,.815,"money →",C.steel,11),T(e,"axyl",.24,.1,"delivery ↑",C.steel,11)]}SC.a4place=function(e,t){var n=axes(t,e);return DOCS.forEach(function(r,a){var s=MAPPT[r.id],o=.2+.15*a,i=o+(MX(s[0])-o)*sm(e),u=.95+(MY(s[1])-.95)*sm(e);n.push(D(t,r.id,i,u,.03,C.sage)),n.push(T(t,"lb"+r.id,i+.07,u,r.id+" "+SHORT[r.id],C.ink,10.5))}),n},SC.a4dims=function(e,t){for(var n=Math.round(2+382*sm(e)),r=[],a=0;a<n;a++){var s=a%24,o=Math.floor(a/24);r.push(D(t,"n"+a,.12+.034*s,.34+.034*o,.008,C.mauve))}return r.push(TW(t,"nlab",.5,.14,.86,n<8?n+" numbers: a point on a flat map":"each sentence becomes "+n+" numbers",C.ink,13)),r.push(TW(t,"nsub",.5,.22,.86,"Every number is one dimension. Real embedding models use hundreds of them.",C.steel,11.5)),r},SC.a4near=function(e,t){var n=axes(t,e);DOCS.forEach(function(e){var r=MAPPT[e.id];n.push(D(t,e.id,MX(r[0]),MY(r[1]),.03,C.sage));var a=NEAR_OFF[e.id];n.push(T(t,"lb"+e.id,MX(r[0])+a[0],MY(r[1])+a[1],e.id+" "+SHORT[e.id],C.ink,10.5))});var r=QV.refund,a=QV["money back"];return n.push(D(t,"qr",MX(r[0]),MY(r[1]),.03,C.rust)),n.push(T(t,"lqr",MX(r[0])+.05,MY(r[1])+.035,"refund",C.rust,11)),n.push(D(t,"qm",MX(a[0]),MY(a[1]),.03,C.rust)),n.push(T(t,"lqm",MX(a[0])-.07,MY(a[1])+.05,"money back",C.rust,11)),n.push(TW(t,"dist",.5,.92,.9,"Closer on the map means more similar. Both queries sit next to the documents they mean.",C.ink,11.5)),n};var ORG=[.14,.84];function tipF(e,t,n){var r=.5*Math.min(e.w,e.h);return[ORG[0]+t[0]*n*r/e.w,ORG[1]-t[1]*n*r/e.h]}function lerpV(e,t,n){return[e[0]+(t[0]-e[0])*n,e[1]+(t[1]-e[1])*n]}function dial(e,t,n,r,a,s,o){var i=r*sm(s);return[A(e,t+"t",n,.6,.3,Math.PI,2*Math.PI,C.faint,{lw:10}),A(e,t+"v",n,.6,.3,Math.PI,Math.PI+Math.PI*i,o,{lw:10}),T(e,t+"n",n,.58,i.toFixed(3),C.ink,18),T(e,t+"l",n,.82,a,C.steel,11.5,{maxw:LW(e,.36)})]}SC.a5angle=function(e,t){var n=QV.refund,r=lerpV(VEC.D2,VEC.D1,sm(e)),a=ang(n),s=ang(r),o=Math.min(a,s),i=Math.max(a,s);return[P(t,"arrQ",[ORG,tipF(t,n,1)],C.rust,{arrow:!0,lw:3}),P(t,"arrD",[ORG,tipF(t,r,1)],C.sage,{arrow:!0,lw:3}),A(t,"angle",ORG[0],ORG[1],.24,o,i,C.steel,{lw:2}),T(t,"cosl",.62,.2,"cos = "+cosv(n,r).toFixed(3),C.ink,14),TW(t,"cosn",.62,.26,.36,"the smaller the angle, the closer to 1",C.steel,11),TW(t,"key",.62,.32,.36,"rust arrow: the question · sage arrow: D1, refund policy",C.steel,11)]},SC.a5scale=function(e,t){var n=QV.refund,r=VEC.D1,a=1+sm(e);return[P(t,"arrQ",[ORG,tipF(t,n,1)],C.rust,{arrow:!0,lw:3}),P(t,"arrD",[ORG,tipF(t,r,a)],C.sage,{arrow:!0,lw:3}),T(t,"cosl",.62,.2,"cos = "+cosv(n,r).toFixed(3),C.ink,14),TW(t,"cosn",.62,.26,.36,a>1.5?"Length doubled. The cosine did not move.":"Stretch the arrow: the cosine stays the same.",C.steel,11.5),TW(t,"key",.62,.32,.36,"sage arrow: D1, scaled by "+a.toFixed(1),C.steel,11)]},SC.a5dial=function(e,t){return[].concat(dial(t,"dA",.28,cosv(QV.refund,VEC.D1),"refund vs D1 · a match",e,C.gold),dial(t,"dB",.74,cosv(QV.refund,VEC.D2),"refund vs D2 · a miss",e,C.rust))},SC.a5pairs=function(e,t){var n=[];return[["D1",0],["D4",0],["D3",0],["D5",0],["D2",0]].forEach(function(r,a){var s=cosv(QV.refund,VEC[r[0]]),o=.1+.19*a;n.push(BR(t,"pb"+a,o,.8,.1,.6*s*sm(e),a<2?C.gold:C.steel)),n.push(T(t,"pbn"+a,o,.86,r[0],C.ink,11)),n.push(T(t,"pbv"+a,o,.8-.6*s*sm(e)-.04,s.toFixed(3),C.ink,11))}),n.push(TW(t,"pbt",.5,.12,.86,"Cosine of “refund” against each document. Direction, not length: two documents that talk about the same thing score near 1.",C.ink,12.5)),n},SC.a6embed=function(e,t){var n=[];return n.push(B(t,"Q",.24,.2,.36,.12,"How do I get my money back?","the question, as text",C.rust)),n.push(B(t,"emb",.6,.44,.3,.2,"Embedding model","a neural network that reads text",C.steel)),DOCS.forEach(function(r,a){n.push(B(t,r.id,.24,.5+.09*a,.36,.065,r.id+" "+r.t,"",C.sage)),n.push(D(t,"o"+r.id,.9,.5+.09*a,.025,C.sage)),n.push(F("i"+r.id,r.id,"emb",.3*sm(e),C.sage)),n.push(F("v"+r.id,"emb","o"+r.id,.25*sm(e),C.sage))}),n.push(F("iq","Q","emb",sm(e),C.rust)),n.push(D(t,"qv",.9,.2,.04,C.rust)),n.push(F("oq","emb","qv",.7*sm(e),C.rust)),n.push(TW(t,"ntx",.5,.94,.92,"Question and documents go through the same model. Their numbers can then be compared.",C.ink,11.5)),n},SC.a6ring=function(e,t){var n=[],r=QV["money back"];return DOCS.forEach(function(r){var a=MAPPT[r.id],s="D4"===r.id||"D1"===r.id;n.push(D(t,"r"+r.id,MX(a[0]),MY(a[1]),.03,s&&e>.6?C.gold:C.sage));var o="D1"===r.id?[.1,-.02]:NEAR_OFF[r.id];n.push(T(t,"lb"+r.id,MX(a[0])+o[0],MY(a[1])+o[1],r.id+" "+SHORT[r.id],C.ink,10.5))}),n.push(D(t,"qm",MX(r[0]),MY(r[1]),.03,C.rust)),n.push(T(t,"lqm",MX(r[0])-.12,MY(r[1])+.09,"query",C.rust,11)),n.push(A(t,"ring",MX(r[0]),MY(r[1]),.02+.14*sm(e),-Math.PI/2,1.5*Math.PI,C.steel,{lw:2})),n.push(TW(t,"rtx",.5,.94,.92,"Vector search: grow a ring from the question until it touches the nearest documents.",C.ink,11.5)),n},SC.a6scan=function(e,t){var n=[],r=QV["money back"];return DOCS.forEach(function(a,s){var o=cosv(r,VEC[a.id]),i=.14+.18*s,u=.6*o*sm(Math.max(0,Math.min(1,(e-.1*s)/.5)));n.push(BR(t,"sb"+a.id,i,.8,.09,u,o>.9?C.gold:C.steel)),n.push(T(t,"sn"+a.id,i,.86,a.id,C.ink,11)),n.push(T(t,"sv"+a.id,i,.8-u-.04,o.toFixed(3),C.ink,11))}),n.push(TW(t,"stx",.5,.1,.86,"Brute force: compare the question with every document. Exact, but the work grows with the number of documents.",C.ink,12.5)),n};var MODELS=[["all-MiniLM-L6-v2",384],["text-embedding-3-small",1536],["text-embedding-3-large",3072]];SC.a6models=function(e,t){var n=[];return MODELS.forEach(function(r,a){var s=.22+.28*a,o=r[1]/3072*.6*sm(e);n.push(BR(t,"mb"+a,s,.8,.12,o,0===a?C.steel:1===a?C.mauve:C.gold)),n.push(T(t,"mv"+a,s,.8-o-.04,r[1]+" numbers",C.ink,11)),n.push(TW(t,"mn"+a,s,.86,.26,r[0],C.ink,10.5))}),n.push(TW(t,"mtx",.5,.12,.86,"Dimensions set the size of each vector. More numbers can capture more; they also cost more storage and time. Check quality on your own questions.",C.ink,12.5)),n};var STAGES=[["Question","How do I get my money back?",C.rust],["Retriever","searches the index (keywords + meaning)",C.steel],["Top 2 passages","D4 and D1, the best matches",C.sage],["Prompt","instructions + passages + question",C.steel],["LLM","writes the answer from the prompt",C.steel],["Answer","Send it back with your receipt; we repay you in full. [D4]",C.gold]];SC.a7pipe=function(e,t){var n=[];STAGES.forEach(function(r,a){n.push(B(t,"st"+a,.5,.1+.155*a,.6,.09,r[0],r[1],r[2])),n.push(D(t,"k"+a,.11,.1+.155*a,.03*clamp01(6*e-a+.5),r[2]))});for(var r=0;r<5;r++)n.push(F("sf"+r,"st"+r,"st"+(r+1),.7*sm(e),C.steel));return n},SC.a7prompt=function(e,t){var n=[B(t,"frame",.5,.5,.9,.86,"","",C.steel,{from:"st3"}),T(t,"framel",.5,.1,"What the LLM receives: the whole prompt",C.steel,12)];return["Use only the passages below. Cite the one you used.","[D4] Send the item with your receipt and we repay you in full.","[D1] You can return any item within 30 days for a full refund.","Question: How do I get my money back?"].forEach(function(r,a){e>=a/4&&(n.push(TW(t,"pl"+a,.54,.25+.16*a,.72,r,C.ink,12.5)),n.push(D(t,"lk"+a,.1,.25+.16*a,.014,C.steel)))}),n.push(TW(t,"plx",.5,.9,.8,"The index is never shown to the model. The model sees only this text.",C.steel,11.5)),n},SC.a7window=function(e,t){var n=[],r=.84;return n.push(BR(t,"wp",.3,r,.12,.0045*sm(e),C.sage)),n.push(BR(t,"wm",.62,r,.14,.6*sm(e),C.gold)),n.push(P(t,"win",[[.08,.72],[.94,.72]],C.rust,{dash:[6,5],lw:1.5})),n.push(TW(t,"wpl",.3,.9,.26,"our prompt · ~300 tokens",C.ink,11)),n.push(TW(t,"wml",.62,.9,.26,"all 30 manuals · ~40,000",C.ink,11)),n.push(T(t,"wwl",.8,.72-.04,"window: 8,000 tokens",C.rust,11)),n.push(TW(t,"wtx",.5,.12,.86,"The context window is the most a model can read at once. Five help articles fit easily. Thirty manuals do not. Sizes are examples.",C.ink,12.5)),n};var BEN=["Fresh: update a document, and the next answer uses it","Cites its sources: you can show the passage it used","Cheaper to change than retraining a model"],COST=["Retrieval can miss: the right passage may not reach the top","More moving parts: chunks, index, reranker, prompt","Each question costs an extra search before the model runs"];SC.a7tradeoff=function(e,t){var n=[];return n.push(T(t,"hb",.5,.08,"Benefits",C.sage,13)),BEN.forEach(function(r,a){e>=a/6&&(n.push(TW(t,"be"+a,.54,.18+.12*a,.72,r,C.ink,12.5,{weight:600})),n.push(D(t,"bd"+a,.09,.18+.12*a,.02,C.sage)))}),n.push(T(t,"hc",.5,.56,"Costs",C.rust,13)),COST.forEach(function(r,a){e>=(a+3)/6&&(n.push(TW(t,"co"+a,.54,.66+.12*a,.72,r,C.ink,12.5,{weight:600})),n.push(D(t,"cd"+a,.09,.66+.12*a,.02,C.rust)))}),n},SC.a7goal=function(e,t){var n=[["LLM alone","guesses a generic refund answer; no source to cite",C.grey,.25,0],["Keyword search only","finds D1 and misses D4, because D4 never says “refund”",C.steel,.5,.5],["RAG","finds D4, answers from it, and cites it",C.gold,.75,1]],r=[];return n.forEach(function(n,a){var s=.22+.27*a,o=e>n[3]-.2?n[2]:C.grey;r.push(A(t,"gt"+a,.12,s,.12,0,2*Math.PI,C.faint,{lw:6})),r.push(A(t,"gv"+a,.12,s,.12,-Math.PI/2,-Math.PI/2+2*Math.PI*n[4]*sm(e),o,{lw:6})),r.push(B(t,"g"+a,.62,s,.7,.2,n[0],n[1],o))}),r};var CHUNK_BAR=.88,CHUNK_N=75;function wx(e){return.06+CHUNK_BAR*e/CHUNK_N}function chunkBar(e,t,n,r,a,s){var o=(wx(n)+wx(r))/2,i=CHUNK_BAR*(r-n)/CHUNK_N;return{id:t,kind:"bar",x:X(e,o),y:Y(e,a),w:LW(e,i)-3,h:LH(e,.05),col:s,r:3}}function docBar(e,t){var n=[B(e,"doc",.5,.3,CHUNK_BAR,.07,"Refund policy article · 75 words","",C.sage)];return[0,12,22,37,48,65].forEach(function(r,a){n.push(D(e,"sent"+r,wx(r),.22,.012*(null==t?1:clamp01(6*t-a+1)),C.steel))}),n}SC.a8whole=function(e,t){return docBar(t,e).concat([TW(t,"cx",.5,.7,.86,"A long document is too big to match one question well. So it is cut into chunks.",C.ink,12.5)])},SC.a8fixed=function(e,t){var n=docBar(t),r=75*sm(e);return n.push(D(t,"cutter",wx(r),.36,.02,C.rust)),[[0,25,"c0"],[25,50,"c1"],[50,75,"c2"]].forEach(function(e,a){(r>=e[1]-.5||0===a)&&n.push(chunkBar(t,e[2],e[0],e[1],.5+.1*a,C.steel))}),n.push(D(t,"cut1",wx(25),.38,.014,C.rust)),n.push(D(t,"cut2",wx(50),.38,.014,C.rust)),n.push(TW(t,"cx",.5,.9,.86,"Fixed size: every 25 words, whatever the sentence is doing. Rust marks show where it cut mid-sentence.",C.ink,12.5)),n},SC.a8overlap=function(e,t){var n=sm(e),r=docBar(t);return r.push(chunkBar(t,"c0",0,25+3*n,.5,C.steel)),r.push(chunkBar(t,"c1",25-3*n,50+3*n,.6,C.steel)),r.push(chunkBar(t,"c2",50-3*n,75,.7,C.steel)),r.push(chunkBar(t,"ov0",25-3*n,25+3*n,.6,C.gold)),r.push(chunkBar(t,"ov1",50-3*n,50+3*n,.7,C.gold)),r.push(TW(t,"cx",.5,.9,.86,"Overlap: each chunk repeats the end of its neighbour (here 6 words, about a quarter of a chunk). Gold is the repeat.",C.ink,12.5)),r},SC.a8sentence=function(e,t){var n=sm(e),r=25*(1-n)+22*n,a=50*(1-n)+48*n,s=docBar(t);return s.push(chunkBar(t,"c0",0,r,.5,C.steel)),s.push(chunkBar(t,"c1",r,a,.6,C.steel)),s.push(chunkBar(t,"c2",a,75,.7,C.steel)),s.push(D(t,"cut1",wx(r),.38,.014,n>.5?C.gold:C.rust)),s.push(D(t,"cut2",wx(a),.38,.014,n>.5?C.gold:C.rust)),s.push(TW(t,"cx",.5,.9,.86,"Sentence-aware: cut at the full stop nearest the target size. Each chunk stays a readable unit.",C.ink,12.5)),s};var SIZES=[[5,"5 words · precise, little context"],[25,"25 words · a balance"],[75,"75 words · context, but blurred meaning"]];SC.a8size=function(e,t){var n=[];return SIZES.forEach(function(r,a){var s=.2+.3*a,o=r[0]/75*.5*sm(e);n.push(BR(t,"sz"+a,s,.8,.12,o,1===a?C.gold:C.steel)),n.push(TW(t,"szl"+a,s,.86,.28,r[1],C.ink,11))}),n.push(TW(t,"sztx",.5,.12,.86,"Chunk size is a trade-off: small chunks match precisely but lose context; large chunks keep context but mix several topics.",C.ink,12.5)),n};var BM_Q=TOK("refund money back"),BM_S={};DOCS.forEach(function(e){BM_S[e.id]=bm25(BM_Q,e.id)});var VEC_S={};DOCS.forEach(function(e){VEC_S[e.id]=cosv(QV["money back"],VEC[e.id])});var RRF_K=60;SC.a9intent=function(e,t){var n=sm(e);return[B(t,"q",.24,.2,.36,.12,"How do I get my money back?","the question as typed",C.rust),B(t,"i",.5,.5,.42,.14,"Intent: a refund request","the customer wants their money back",C.steel),B(t,"r",.78,.8,.4,.13,"Rewritten query","refund · money back",C.sage),F("qi","q","i",.6*n,C.steel),F("ir","i","r",.6*n,C.steel),BR(t,"wc0",.1,.9,.05,.3*n,C.rust),BR(t,"wc1",.2,.9,.05,.3*3/8*n,C.sage),TW(t,"wcl0",.09,.95,.1,"8 words",C.ink,10.5),TW(t,"wcl1",.22,.95,.1,"3 words",C.ink,10.5),TW(t,"itx",.5,.06,.9,"Understanding the query first: find the intent, then write the words the documents will use.",C.ink,11.5)]},SC.a9lists=function(e,t){var n=[];return n.push(T(t,"bmh",.2,.36,"keyword list (BM25)",C.steel,11.5)),n.push(T(t,"vch",.7,.36,"meaning list (vectors)",C.mauve,11.5)),BM_ORDER.forEach(function(r,a){var s=DOCS.filter(function(e){return e.id===r})[0].t;n.push(B(t,"bm_"+r,.2,.46+.13*a,.32,.09,r+" "+s,"score "+BM_S[r].toFixed(2),C.steel)),n.push(D(t,"bs_"+r,.02,.46+.13*a,.012+BM_S[r]/2.6*.02*sm(e),C.steel))}),VEC_ORDER.forEach(function(r,a){var s=DOCS.filter(function(e){return e.id===r})[0].t;n.push(B(t,"vc_"+r,.7,.46+.1*a,.34,.075,r+" "+s,"similarity "+VEC_S[r].toFixed(3),C.mauve)),n.push(D(t,"vs_"+r,.5,.46+.1*a,.012+.02*VEC_S[r]*sm(e),C.mauve))}),n.push(TW(t,"lt",.5,.94,.9,"Two lists from one question. Keyword search finds only the two documents that share words. Meaning search ranks all five.",C.ink,11.5)),n};var BM_ORDER=["D4","D1"],VEC_ORDER=DOCS.map(function(e){return e.id}).sort(function(e,t){return VEC_S[t]-VEC_S[e]}),RRF_SCORE={};BM_ORDER.forEach(function(e,t){RRF_SCORE[e]=(RRF_SCORE[e]||0)+1/(RRF_K+t+1)}),VEC_ORDER.forEach(function(e,t){RRF_SCORE[e]=(RRF_SCORE[e]||0)+1/(RRF_K+t+1)});var FUSED_ORDER=Object.keys(RRF_SCORE).sort(function(e,t){return RRF_SCORE[t]-RRF_SCORE[e]});SC.a9fuse=function(e,t){var n=[];return FUSED_ORDER.forEach(function(r,a){var s=BM_ORDER.indexOf(r)>=0?"bm_"+r:"vc_"+r,o=DOCS.filter(function(e){return e.id===r})[0].t;n.push(B(t,"fu_"+r,.5,.42+.1*a,.44,.08,r+" "+o,"RRF "+RRF_SCORE[r].toFixed(4),C.gold,{from:s})),n.push(D(t,"fs_"+r,.77,.42+.1*a,.01+RRF_SCORE[r]/.0328*.03*sm(e),C.gold))}),n.push(TW(t,"ft",.5,.1,.9,"Reciprocal rank fusion: each list gives a document 1 ÷ (60 + its rank). Documents high in both lists rise to the top.",C.ink,12.5)),n},SC.a9rerank=function(e,t){var n=[];return["D4","D1","D3","D5","D2"].forEach(function(r,a){(a<2||e<.5)&&n.push(B(t,"fu_"+r,.5,.42+.1*a,.44,.08,r+" "+function(e){return DOCS.filter(function(t){return t.id===e})[0].t}(r),"RRF "+RRF_SCORE[r].toFixed(4),C.gold))}),n.push(B(t,"rr",.5,.2,.66,.1,"Reranker","reads each (question, passage) pair together: slower, more accurate",C.steel)),n.push(P(t,"cutk",[[.2,.6],[.9,.6]],C.rust,{dash:[6,5],lw:1.5,t:sm(e)})),n.push(T(t,"cutl",.5,.64,"cut: keep the top 2 for the prompt",C.rust,11)),n.push(TW(t,"rt",.5,.92,.9,"A reranker re-reads only the top candidates. Here the order is kept and the top 2 pass on. The scores a real reranker gives are not shown.",C.ink,11.5)),n},SC.a9config=function(e,t){var n=[];return[["k · passages kept",.2,"2"],["chunk size",25/75,"25 words"],["keyword ↔ meaning",.5,"0.5"],["rerank top N",.4,"20"]].forEach(function(r,a){var s=.16+.22*a,o=.6*r[1]*sm(e);n.push(BR(t,"kb"+a,s,.8,.12,o,2===a?C.mauve:C.steel)),n.push(T(t,"kv"+a,s,.8-o-.04,r[2],C.ink,12)),n.push(TW(t,"kn"+a,s,.86,.2,r[0],C.ink,11))}),n.push(TW(t,"kt",.5,.12,.9,"Every knob trades quality against speed and cost. Change one at a time and measure (see the next acts).",C.ink,12.5)),n};var RANKED=["D1","D5","D4","D2","D3"],RELEVANT={D1:1,D4:1},PREC=[1,.5,2/3,.5,.4],REC=[.5,.5,1,1,1];function rankCards(e,t,n){var r=[];return RANKED.forEach(function(a,s){var o=!!RELEVANT[a],i=n?n(s):o?C.gold:C.grey,u=DOCS.filter(function(e){return e.id===a})[0].t;r.push(B(e,"rc"+s,.66,.14+.16*s,.5,.09,s+1+" · "+a+" "+u,"",i)),r.push(T(e,"rm"+s,.22,.14+.16*s,o?"✓ relevant":"✗ not relevant",o?C.gold:C.grey,11.5)),r.push(D(e,"rd"+s,.05,.14+.16*s,.022*sm(t),o?C.gold:C.grey))}),r}function prcCurve(e,t){var n=[];n.push(P(e,"base",[[.1,.84],[.94,.84]],C.grey,{lw:1}));var r=PREC.map(function(e,t){return[.14+.19*t,.84-.6*e]});return n.push(P(e,"pc",r,C.gold,{t:sm(t),lw:3})),PREC.forEach(function(a,s){t>=s/5&&(n.push(D(e,"pd"+s,r[s][0],r[s][1],.028,C.gold)),n.push(T(e,"pl"+s,r[s][0],r[s][1]-.05,"P@"+(s+1)+" "+a.toFixed(2),C.ink,11))),n.push(T(e,"kx"+s,.14+.19*s,.9,"k="+(s+1),C.steel,11))}),n}SC.a10list=function(e,t){var n=rankCards(t,e,null);return n.push(TW(t,"lt",.5,.93,.9,"A search returns a ranked list. Our labels say which documents answer the question: D1 and D4.",C.ink,11.5)),n},SC.a10k=function(e,t){var n=1+4*sm(e),r=rankCards(t,e,function(e){return e+1>n+.01?C.faint:RELEVANT[RANKED[e]]?C.gold:C.steel}),a=.14+.16*(n-1)+.1;return r.push(P(t,"kline",[[.14,a],[.92,a]],C.rust,{lw:2,dash:[6,4]})),r.push(T(t,"kl",.5,.95,"k = "+Math.round(n)+" ·  we look only at the first "+Math.round(n)+" results",C.rust,11.5)),r},SC.a10prec=function(e,t){return prcCurve(t,e).concat([TW(t,"ptx",.5,.12,.9,"Precision@k: of the first k results, how many are relevant? It is 1.00 at k=1 and falls as irrelevant results enter.",C.ink,12.5)])},SC.a10rec=function(e,t){var n=prcCurve(t,e),r=REC.map(function(e,t){return[.14+.19*t,.84-.6*e]});return n.push(P(t,"rc_curve",r,C.steel,{t:sm(e),lw:3})),REC.forEach(function(a,s){e>=s/5&&n.push(T(t,"rl"+s,r[s][0],r[s][1]+.05,"R@"+(s+1)+" "+a.toFixed(2),C.steel,11))}),n.push(TW(t,"rtx",.5,.12,.9,"Recall@k: of all the relevant documents, how many are in the first k? Gold is precision; steel is recall. Each one trades against the other.",C.ink,12.5)),n};var GOLD=[["How do I get my money back?","D4"],["How long do I have to return something?","D1"],["What does the warranty cover?","D3"],["How long does delivery take?","D2"],["I am between sizes. Which one?","D5"]];function station(e,t,n,r,a,s,o){return B(e,t,n,r,.2,.1,a,s,o)}function bm25Term(e,t,n,r){var a=CORPUS[t],s=0;return a.forEach(function(t){t===e&&s++}),s?idf(e)*s*(n+1)/(s+n*(1-r+r*a.length/AVGDL)):0}function minmax(e){var t=Object.keys(e),n=1/0,r=-1/0;t.forEach(function(t){n=Math.min(n,e[t]),r=Math.max(r,e[t])});var a={};return t.forEach(function(t){a[t]=r>n?(e[t]-n)/(r-n):0}),a}function rng(e){return function(){return(e=1103515245*e+12345&2147483647)/2147483647}}SC.a11golden=function(e,t){var n=[];return GOLD.forEach(function(r,a){e>=a/5&&(n.push(B(t,"gq"+a,.5,.14+.16*a,.8,.1,r[0],"right document: "+r[1],C.steel)),n.push(D(t,"gd"+a,.05,.14+.16*a,.02,C.steel)))}),n.push(TW(t,"gt",.5,.94,.9,"A search eval starts with a golden set: questions, each with the document that should come back.",C.ink,11.5)),n},SC.a11judge=function(e,t){var n=[];n.push(B(t,"ans",.22,.6,.36,.22,"Model answer","Refund with a receipt [D4].",C.sage)),n.push(B(t,"judge",.7,.6,.36,.22,"LLM judge","reads the answer, the passage and the rubric",C.steel)),n.push(F("aj","ans","judge",.6*sm(e),C.sage));return["Faithful: does it stay with the passage?","Complete: does it answer the question?","Cited: does it name the passage?"].forEach(function(r,a){e>=a/3&&(n.push(TW(t,"rb"+a,.54,.2+.12*a,.72,r,C.ink,12.5,{weight:600})),n.push(D(t,"rk"+a,.1,.2+.12*a,.022,C.sage)))}),n.push(TW(t,"jt",.5,.92,.9,"A judge scores answers against a rubric you write. Its verdict is only as good as that rubric.",C.ink,11.5)),n},SC.a11check=function(e,t){for(var n=[],r=Math.round(20*sm(e)),a=0;a<20;a++){var s=.2+a%5*.15,o=.3+.13*Math.floor(a/5);n.push(D(t,"it"+a,s,o,.04,a<r?C.sage:C.faint))}return n.push(TW(t,"ct",.5,.12,.9,"Check the judge: a person labels the same 20 answers. Count how often the judge agrees with them.",C.ink,12.5)),n.push(TW(t,"ca",.5,.82,.9,"agreement = items where judge and person agree ÷ 20",C.steel,13)),n.push(TW(t,"cn",.5,.88,.9,r<20?r+" of 20 labelled so far":"all 20 labelled",C.ink,12)),n},SC.a12system=function(e,t){var n=[["docs",.14,.14,"Documents","your help centre",C.sage],["chunk",.38,.14,"Chunk","25-word pieces",C.steel],["embed",.62,.14,"Embed","numbers per chunk",C.mauve],["index",.86,.14,"Index","keyword + vector",C.steel],["q",.14,.6,"Question","as the customer types it",C.rust],["rw",.38,.6,"Rewrite","intent + keywords",C.steel],["hy",.62,.6,"Hybrid search","BM25 + vectors, fused",C.mauve],["rr",.86,.6,"Rerank","top few re-read",C.steel],["pr",.3,.87,"Prompt","instructions + passages",C.steel],["llm",.6,.87,"LLM","writes the answer",C.steel],["ans",.88,.87,"Answer","with citations",C.gold]].map(function(n,r){return[B(t,n[0],n[1],n[2],.2,.1,n[3],n[4],n[5]),D(t,"sd"+r,n[1]-.085,n[2]-.035,.008+.014*sm(clamp01(1.6*e-.08*r)),C.gold)]});return(n=[].concat.apply([],n)).push(F("f1","docs","chunk",.5,C.steel),F("f2","chunk","embed",.5,C.steel),F("f3","embed","index",.5,C.steel)),n.push(F("f4","q","rw",.7,C.rust),F("f5","rw","hy",.7,C.rust),F("f6","hy","rr",.7,C.rust)),n.push(F("f7","rr","pr",.7,C.rust),F("f8","pr","llm",.7,C.rust),F("f9","llm","ans",.7,C.rust)),n.push(F("fi","index","hy",0,C.steel)),n},SC.a12trace=function(e,t){var n=SC.a12system(e,t).filter(function(e){return"flow"!==e.kind});return[["q","rw"],["rw","hy"],["hy","rr"],["rr","pr"],["pr","llm"],["llm","ans"]].forEach(function(t,r){n.push(F("t"+r,t[0],t[1],e>=r/6?1:0,C.rust,{glyph:"?"}))}),n.push(F("ti","index","hy",.9*sm(e),C.steel,{glyph:"D"})),n.push(TW(t,"tt",.5,.97,.96,"One question, traced: the question flows right, the passages come out of the index, the answer is built from them.",C.ink,10.5)),n},SC.a12cost=function(e,t){var n=[];return[["embed the question",50,"~50 ms"],["index lookup",10,"~10 ms"],["rerank top 20",200,"~200 ms"],["LLM answer",2e3,"~2 s"]].forEach(function(r,a){var s=.15+.23*a,o=r[1]/2e3*.6*sm(e);n.push(BR(t,"cb"+a,s,.8,.12,o,3===a?C.gold:C.steel)),n.push(T(t,"cv"+a,s,.8-o-.04,r[2],C.ink,11.5)),n.push(TW(t,"cn"+a,s,.86,.2,r[0],C.ink,10.5))}),n.push(TW(t,"ct",.5,.12,.9,"Where the time goes. The LLM call dominates. These are illustrative figures: measure your own system before you decide.",C.ink,12.5)),n},SC.a12fresh=function(e,t){var n=.08+.84*sm(e),r=n>=.55;return[P(t,"tl",[[.08,.6],[.92,.6]],C.grey,{arrow:!0,lw:1.5}),D(t,"edit",.2,.6,.03,C.rust),T(t,"el",.2,.52,"article edited",C.rust,11),D(t,"reb",.55,.6,.03,C.gold),T(t,"rl",.55,.52,"index rebuilt (batch)",C.gold,11),D(t,"now",n,.6,.035,C.steel),T(t,"nl",n,.68,"now",C.steel,11),TW(t,"ft",.5,.22,.9,r?"The index now matches the article. Answers use the new wording.":"Until the rebuild, answers still use the old wording. Freshness is only as new as the last update.",C.ink,12.5),TW(t,"fb",.5,.9,.9,"Plan the refresh for how fast your documents change, and measure how stale the answers get.",C.steel,11.5)]},SC.e1_a=function(e,t){var n=[B(t,"s1",.2,.5,.22,.2,"Retrieve","finds passages",C.steel),B(t,"s2",.5,.5,.22,.2,"Context","puts passages in the prompt",C.steel),B(t,"s3",.8,.5,.22,.2,"Generate","writes the answer",C.steel),F("g1","s1","s2",.6,C.steel),F("g2","s2","s3",.6,C.steel),TW(t,"cap",.5,.9,.9,"Find the stage that failed before you change anything.",C.ink,12)];return e>.2&&(n.push(D(t,"m1",.2,.27,.035,C.rust)),n.push(TW(t,"l1",.2,.18,.26,"1 · right passage never found",C.rust,11))),e>.5&&(n.push(D(t,"m2",.5,.27,.035,C.rust)),n.push(TW(t,"l2",.5,.18,.26,"2 · found, but buried",C.rust,11))),e>.8&&(n.push(D(t,"m3",.8,.27,.035,C.rust)),n.push(TW(t,"l3",.8,.18,.26,"3 · ignored a passage it had",C.rust,11))),n},SC.e1_b=function(e,t){for(var n=5+25*sm(e),r=[],a=0;a<30;a++){var s=.06+.88*a/30,o=16===a&&n>=17?C.gold:C.steel;r.push(D(t,"r"+a,s,.5,.022,o))}return r.push(P(t,"win",[[.05,.62],[.06+.88*n/30,.62]],C.rust,{lw:3})),r.push(T(t,"kl",.5,.7,"searching the top "+Math.round(n)+" of 30",C.rust,12)),r.push(TW(t,"cap",.5,.84,.9,"The answer sat at rank 17. A window of 5 misses it, and a reranker cannot rescue a passage that was never retrieved. Widen the window.",C.ink,12)),r},SC.e2_a=function(e,t){var n=[];return TERMS.forEach(function(r,a){n.push(T(t,"tr"+a,.2,.2+.14*a,r,C.mauve,12)),DOCS.forEach(function(s,o){POSTINGS.some(function(e){return e[0]===r&&e[1]===s.id})&&e>=a/5&&n.push(D(t,"g"+a+o,.36+.12*o,.2+.14*a,.035,C.mauve))})}),DOCS.forEach(function(e,r){n.push(T(t,"dc"+r,.36+.12*r,.1,SHORT[e.id],C.sage,10.5))}),n.push(TW(t,"cap",.5,.9,.9,"Each dot is a posting: a word found in a document. A query reads one row, or a few rows, and returns the columns it hits.",C.ink,12)),n},SC.e2_b=function(e,t){var n=[];[["item",["D1","D4"],.3],["refund",["D1"],.44]].forEach(function(e,r){n.push(T(t,"qr"+r,.16,.28+.14*r,e[0],C.mauve,12)),DOCS.forEach(function(a,s){e[1].indexOf(a.id)>=0&&n.push(D(t,"q"+r+s,.36+.12*s,.28+.14*r,.035,C.mauve))})}),DOCS.forEach(function(e,r){n.push(T(t,"dc"+r,.36+.12*r,.18,SHORT[e.id],C.sage,10.5))});var r=["D1","D4"],a=["D1"];return e>.35&&(n.push(T(t,"orl",.16,.66,"item OR refund",C.steel,12)),DOCS.forEach(function(e,a){r.indexOf(e.id)>=0&&n.push(D(t,"or"+a,.36+.12*a,.66,.035,C.gold))})),e>.7&&(n.push(T(t,"andl",.16,.8,"item AND refund",C.steel,12)),DOCS.forEach(function(e,r){a.indexOf(e.id)>=0&&n.push(D(t,"and"+r,.36+.12*r,.8,.035,C.gold))})),n.push(TW(t,"cap",.5,.93,.9,"OR keeps every column with either word; AND keeps only the columns that have both.",C.ink,11.5)),n},SC.e3_a=function(e,t){var n=bm25Term("refund","D1",1.2,.75),r=bm25Term("policy","D1",1.2,.75),a=n+r,s=sm(e),o=n/3.3*.6*s,i=r/3.3*.6*s;return[BR(t,"cr",.36,.84,.14,o,C.gold),BR(t,"cp",.36,.84-o,.14,i,C.steel),T(t,"lr",.36,.9,"refund",C.ink,11),T(t,"vr",.52,.84-o/2,n.toFixed(2),C.ink,12),T(t,"vp",.52,.84-o-i/2,r.toFixed(2),C.ink,12),T(t,"lp",.6,.9,"policy",C.ink,11),T(t,"tot",.8,.3,"total "+(a*s).toFixed(2),C.ink,15),TW(t,"cap",.5,.06,.9,"D1 scores 1.84 for refund plus 1.32 for policy. Each word adds its own contribution.",C.ink,11.5)]},SC.e3_b=function(e,t){for(var n=2*sm(e),r=[],a=[],s=1;s<=6;s++){var o=s*(n+1)/(s+n);r.push([.1+.16*(s-1),.84-o/3*.6]),a.push(D(t,"sf"+s,.1+.16*(s-1),.84-o/3*.6,.025,C.gold)),a.push(T(t,"sl"+s,.1+.16*(s-1),.9,s+"×",C.steel,11))}return[P(t,"sat",r,C.gold,{lw:3,smooth:!0})].concat(a).concat([T(t,"k1l",.5,.2,"k1 = "+n.toFixed(2)+(n<.1?"  (repeats add nothing)":""),C.rust,13),TW(t,"cap",.5,.06,.9,"Saturation: the first repeat counts most. A larger k1 lets repeats keep adding.",C.ink,11.5)])},SC.e3_c=function(e,t){var n=sm(e),r=[];return[["D1 · 77 tokens",77,C.gold],["D3 · 68 tokens",68,C.steel]].forEach(function(e,a){var s=2.2/(1+1.2*(1-n+n*e[1]/AVGDL)),o=.36+.26*a;r.push(BR(t,"lb"+a,o,.84,.14,s/1.2*.6,e[2])),r.push(T(t,"lv"+a,o,.84-s/1.2*.6-.04,s.toFixed(2),C.ink,12)),r.push(T(t,"ln"+a,o,.9,e[0],C.ink,11))}),r.push(T(t,"bl",.5,.2,"b = "+n.toFixed(2),C.rust,13)),r.push(TW(t,"cap",.5,.06,.9,"b sets how much length counts. At b = 1 the shorter document gets the higher score for the same single word.",C.ink,11.5)),r},SC.e4_a=function(e,t){var n=[],r=sm(e);return[[384,"all-MiniLM-L6-v2"],[1536,"text-embedding-3-small"],[3072,"text-embedding-3-large"]].forEach(function(e,a){var s=1e6*e[0]*4/1e9,o=.22+.28*a;n.push(BR(t,"st"+a,o,.84,.12,s/12.288*.6*r,0===a?C.steel:1===a?C.mauve:C.gold)),n.push(T(t,"sv"+a,o,.84-s/12.288*.6*r-.04,(s*r).toFixed(1)+" GB",C.ink,12)),n.push(TW(t,"sn"+a,o,.9,.26,e[1]+" · "+e[0]+" dims",C.ink,10.5))}),n.push(TW(t,"cap",.5,.08,.9,"One million chunks, stored as 32-bit numbers. Every dimension costs memory on every chunk.",C.ink,12)),n},SC.e5_a=function(e,t){var n=sm(e);return[BR(t,"dot",.3,.84,.14,.57075*n,C.gold),BR(t,"nrm",.56,.84,.14,.5715*n,C.steel),BR(t,"cos",.82,.84,.14,.5988*n,C.sage),T(t,"l1",.3,.9,"a · b = 0.761",C.ink,11),T(t,"l2",.56,.9,"‖a‖ · ‖b‖ = 0.762",C.ink,11),T(t,"l3",.82,.9,"cos = 0.998",C.ink,11),T(t,"op",.44,.44,"÷",C.rust,22),T(t,"eq",.7,.44,"=",C.rust,22),TW(t,"cap",.5,.08,.9,"The dot product of the two vectors, divided by the product of their lengths, is the cosine.",C.ink,12)]},SC.e5_b=function(e,t){var n=1+e,r=[];return r.push(BR(t,"dot",.3,.84,.14,.761*n/2*.6,C.gold)),r.push(BR(t,"nrm",.56,.84,.14,.762*n/2*.6,C.steel)),r.push(BR(t,"cos",.82,.84,.14,.2994,C.sage)),r.push(T(t,"l1",.3,.9,"dot × "+n.toFixed(2),C.ink,11)),r.push(T(t,"l2",.56,.9,"lengths × "+n.toFixed(2),C.ink,11)),r.push(T(t,"l3",.82,.9,"cos unchanged",C.ink,11)),r.push(TW(t,"cap",.5,.08,.9,"Stretch the question vector and both numbers grow together. Their ratio, the cosine, does not move.",C.ink,12)),r};var E6=function(){for(var e=rng(7),t=[],n=0;n<60;n++)t.push([.05+.9*e(),.12+.8*e()]);for(var r=[.5,.5],a=function(e,t){return Math.hypot(e[0]-t[0],e[1]-t[1])},s=t.map(function(e,t){return t}).sort(function(e,n){return a(t[e],r)-a(t[n],r)}),o=s[0],i=0,u=[0],h={0:1},l=function(e){return t.map(function(e,t){return t}).filter(function(t){return t!==e}).sort(function(n,r){return a(t[n],t[e])-a(t[r],t[e])}).slice(0,5)};;){var c=l(i).filter(function(e){return!h[e]&&a(t[e],r)<a(t[i],r)})[0];if(void 0===c)break;h[i=c]=1,u.push(i)}return{pts:t,q:r,best:o,path:u,pathPts:u.map(function(e){return t[e]})}}();SC.e6_a=function(e,t){var n=[],r=Math.round(60*e);return E6.pts.forEach(function(e,a){var s=a<r;n.push(D(t,"p"+a,e[0],e[1],.02,s?C.sage:C.faint))}),n.push(D(t,"qq",E6.q[0],E6.q[1],.035,C.rust)),n.push(T(t,"cnt",.5,.04,"comparisons: "+r+" of 60",C.ink,13)),n.push(TW(t,"cap",.5,.96,.9,"Brute force compares the question with every point. The work grows with the number of points.",C.ink,11.5)),n},SC.e6_b=function(e,t){var n=[],r=E6.pathPts.length,a=Math.max(1,Math.round(1+(r-1)*e));E6.pts.forEach(function(e,r){n.push(D(t,"p"+r,e[0],e[1],.018,C.faint))});var s=E6.pathPts.slice(0,a);return s.length>1&&n.push(P(t,"walk",s,C.gold,{lw:2.5,t:1})),E6.path.slice(0,a).forEach(function(e,r){n.push(D(t,"h"+r,E6.pts[e][0],E6.pts[e][1],.028,C.gold))}),n.push(D(t,"qq",E6.q[0],E6.q[1],.035,C.rust)),n.push(T(t,"cnt",.5,.04,"points visited: "+a+" of 60",C.ink,13)),n.push(TW(t,"cap",.5,.96,.9,"A graph index hops between neighbours toward the question. It visits a handful of points, not all of them.",C.ink,11.5)),n},SC.e7_a=function(e,t){var n=[],r=.7/8e3,a=[["instructions",400,C.steel],["question",30,C.mauve],["reserved for the answer",600,C.grey]],s=.88;a.forEach(function(e,a){n.push(BR(t,"fx"+a,.44,s,.2,e[1]*r,e[2])),s-=e[1]*r});for(var o=Math.floor(6970/300),i=Math.round(o*e),u=0;u<o;u++)u<i&&n.push(BR(t,"ps"+u,.44,s,.2,.02625,C.sage)),u<i&&(s-=.02625);return n.push(T(t,"lab",.8,.5,i+" of "+o+" passages fit",C.ink,12)),n.push(TW(t,"cap",.5,.06,.9,"The window is a budget. Instructions, question and the answer take their share before any passage is added.",C.ink,11.5)),n},SC.e7_b=function(e,t){for(var n=[],r=Math.round(2*sm(e)),a=function(e){return.4+.6*Math.pow(2*Math.abs(e/4-.5),2)},s=0;s<5;s++)n.push(BR(t,"sl"+s,.16+.17*s,.84,.1,.55*a(s),C.faint)),n.push(T(t,"sn"+s,.16+.17*s,.9,"slot "+(s+1),C.steel,10.5));return n.push(D(t,"best",.16+.17*r,.84-.55*a(r)-.06,.035,C.gold)),n.push(T(t,"bl",.16+.17*r,.84-.55*a(r)-.12,"best passage",C.gold,11)),n.push(T(t,"att",.5,.2,"attention here: "+(100*a(r)).toFixed(0)+"%",C.ink,13)),n.push(TW(t,"cap",.5,.06,.9,"Illustrative shape, not a measurement. Models attend most to the ends of a long context; the middle is where a good passage gets lost.",C.ink,11)),n},SC.e8_a=function(e,t){var n=Math.round(5+35*e),r=n-3,a=Math.ceil(72/r),s=[];s.push(B(t,"doc",.5,.4,.86,.07,"Refund policy article · 75 words","",C.sage));for(var o=0;o<a;o++)s.push(D(t,"t"+o,wx(o*r),.5,.008,C.rust));return s.push(T(t,"fm",.5,.2,"chunk size s = "+n+" words, overlap 3",C.ink,13)),s.push(T(t,"fn",.5,.26,"n = ⌈ (75 − 3) / ("+r+") ⌉ = "+a+" chunks",C.rust,13)),s.push(TW(t,"cap",.5,.9,.9,"Smaller chunks mean more chunks: more index entries, and more repeated words from the overlap.",C.ink,11.5)),s},SC.e8_b=function(e,t){var n=sm(Math.min(1,2*e)),r=25+-3*n,a=50+-2*n,s=e<.5?"fixed size (every 25 words)":"sentence-aware (cut at full stops)",o=docBar(t,1);return o.push(chunkBar(t,"c0",0,r,.5,C.steel)),o.push(chunkBar(t,"c1",r,a,.6,C.steel)),o.push(chunkBar(t,"c2",a,75,.7,C.steel)),o.push(D(t,"k1",wx(r),.38,.014,e<.5?C.rust:C.gold)),o.push(D(t,"k2",wx(a),.38,.014,e<.5?C.rust:C.gold)),o.push(T(t,"mn",.5,.9,"method: "+s,C.ink,13)),o.push(TW(t,"cap",.5,.1,.9,"The same article, cut two ways. Sentence-aware cuts move to the full stops nearby.",C.ink,11.5)),o},SC.e9_a=function(e,t){var n=[D(t,"q",.1,.5,.04,C.rust),T(t,"ql",.1,.6,"question",C.rust,11),B(t,"idx",.78,.5,.22,.16,"Index","searched once per variant",C.steel),B(t,"mg",.94,.5,.1,.12,"merge","RRF",C.gold)];return["how do I get my money back","refund process","return and repayment"].forEach(function(r,a){var s=.25+.25*a,o=clamp01(3*e-a);o>0&&(n.push(B(t,"v"+a,.42,s,.24,.1,r,"",C.mauve)),n.push(F("qv"+a,"q","v"+a,.5*o,C.rust)),n.push(F("vi"+a,"v"+a,"idx",.5*o,C.mauve)))}),n.push(F("im","idx","mg",sm(e),C.gold)),n.push(TW(t,"cap",.5,.92,.9,"Multi-query: several phrasings of one question, each searched, then merged with RRF.",C.ink,11.5)),n},SC.e9_b=function(e,t){var n=["D4","D1"],r=e<.5?["D1","D4","D3"]:["D3","D2"],a=n.filter(function(e){return r.indexOf(e)>=0}).length,s=Array.from(new Set(n.concat(r))).length,o=a/s,i=sm(e);return[BR(t,"ui",.3,.84,.14,s/4*.55*i,C.steel),BR(t,"ii",.56,.84,.14,a/4*.55*i,C.gold),BR(t,"jj",.82,.84,.14,.55*o*i,e<.5?C.sage:C.rust),T(t,"l1",.3,.9,"union "+s,C.ink,11),T(t,"l2",.56,.9,"overlap "+a,C.ink,11),T(t,"l3",.82,.9,"Jaccard "+o.toFixed(2),C.ink,11),TW(t,"cap",.5,.08,.9,e<.5?"The rewrite kept the original’s documents and added one: overlap 2 of 3 documents.":"A rewrite that drifted: it shares no documents with the original. Measure this before you keep a rewrite.",C.ink,11.5)]};var E10_BM=["D4","D1"],E10_VEC=["D4","D1","D3","D5","D2"];SC.e10_a=function(e,t){var n=[],r=sm(e);return["D4","D1","D3","D5","D2"].forEach(function(e,a){var s=E10_BM.indexOf(e)>=0?E10_BM.indexOf(e)+1:0,o=s?1/(60+s):0,i=1/(60+(E10_VEC.indexOf(e)+1)),u=.6/.035*r,h=.84;o>0&&n.push(BR(t,"bm"+e,.1+.18*a,h,.11,o*u,C.steel)),n.push(BR(t,"vc"+e,.1+.18*a,h-o*u,.11,i*u,C.mauve)),n.push(T(t,"rn"+e,.1+.18*a,.9,e,C.ink,11)),n.push(T(t,"rv"+e,.1+.18*a,h-(o+i)*u-.04,(o+i).toFixed(4),C.ink,10.5))}),n.push(TW(t,"cap",.5,.08,.9,"Reciprocal rank fusion: steel is the keyword list, mauve the meaning list. Each adds 1 ÷ (60 + rank); D4 is first on both.",C.ink,11.5)),n},SC.e10_b=function(e,t){var n=["refund","money","back"],r={};DOCS.forEach(function(e){r[e.id]=n.reduce(function(t,n){return t+bm25Term(n,e.id,1.2,.75)},0)});var a={D4:cosv(QV["money back"],VEC.D4),D1:cosv(QV["money back"],VEC.D1),D2:cosv(QV["money back"],VEC.D2),D3:cosv(QV["money back"],VEC.D3),D5:cosv(QV["money back"],VEC.D5)},s=minmax(r),o=minmax(a),i=sm(e),u=[];return["D4","D1","D3","D5","D2"].forEach(function(e,n){var r=i*s[e]+(1-i)*o[e];u.push(BR(t,"h"+e,.1+.18*n,.84,.11,.6*r,n<2?C.gold:C.steel)),u.push(T(t,"hn"+e,.1+.18*n,.9,e,C.ink,11)),u.push(T(t,"hv"+e,.1+.18*n,.84-.6*r-.04,r.toFixed(2),C.ink,11))}),u.push(T(t,"al",.5,.2,"keywords "+(100*i).toFixed(0)+"%  ·  meaning "+(100*(1-i)).toFixed(0)+"%",C.rust,13)),u.push(TW(t,"cap",.5,.08,.9,"Weighted fusion: scale each list to 0..1, then weight it. Move α to see how the choice of keywords against meaning reorders the results.",C.ink,11.5)),u},SC.e11_a=function(e,t){for(var n=[D(t,"q",.08,.5,.04,C.rust),B(t,"rd",.9,.5,.16,.2,"Reranker","reads each pair",C.steel)],r=0,a=0;a<5;a++){var s=.2+.15*a;n.push(D(t,"c"+a,.3,s,.03,C.sage)),e>=a/5&&(r++,n.push(B(t,"pr"+a,.6,s,.18,.08,"pair "+(a+1),"",C.mauve)),n.push(F("fp"+a,"c"+a,"pr"+a,.6,C.sage)),n.push(F("fr"+a,"pr"+a,"rd",.6,C.mauve)))}return n.push(T(t,"cnt",.5,.93,"model passes so far: "+r,C.ink,13)),n.push(TW(t,"cap",.5,.06,.9,"A cross-encoder reads the question and each candidate together. Cost is one pass per candidate, every query.",C.ink,11.5)),n},SC.e11_b=function(e,t){var n=[["D4",cosv(QV["money back"],VEC.D4)],["D1",cosv(QV["money back"],VEC.D1)],["D3",cosv(QV["money back"],VEC.D3)],["D5",cosv(QV["money back"],VEC.D5)],["D2",cosv(QV["money back"],VEC.D2)]],r=.2+.8*e,a=[];n.forEach(function(e,n){var s=.14+.18*n,o=.6*e[1];a.push(BR(t,"tb"+n,s,.84,.1,o,e[1]>=r?C.gold:C.faint)),a.push(T(t,"tn"+n,s,.9,e[0],C.ink,11)),a.push(T(t,"tv"+n,s,.955,e[1].toFixed(2),C.ink,11))}),a.push(P(t,"cut",[[.06,.84-.6*r],[.94,.84-.6*r]],C.rust,{dash:[6,5],lw:1.5}));var s=Math.max.apply(null,n.map(function(e){return e[1]}));return a.push(T(t,"ans",.5,.15,(s>=r?"score clears the cut: answer from the top passage":"nothing clears the cut: say “no answer”")+" (t = "+r.toFixed(2)+")",C.rust,12,{maxw:LW(t,.9)})),a.push(TW(t,"cap",.5,.05,.9,"Scores here are the cosine values from Act 5, not reranker scores. The threshold is the decision: set it on labelled data.",C.ink,11)),a},SC.e12_a=function(e,t){for(var n=[1,0,1.5,0,0],r=[3,.631,0,0,0],a=sm(e),s=[],o=0;o<5;o++){var i=n[o]*(1-a)+r[o]*a;s.push(BR(t,"d"+o,.1+.18*o,.84,.11,i/3*.55,i>0?C.gold:C.faint)),s.push(T(t,"dl"+o,.1+.18*o,.9,"rank "+(o+1),C.ink,10.5)),s.push(T(t,"dv"+o,.1+.18*o,.84-i/3*.55-.04,i.toFixed(2),C.ink,11))}var u=n.reduce(function(e,t){return e+t},0),h=r.reduce(function(e,t){return e+t},0);return s.push(T(t,"dcg",.5,.2,"DCG "+(u*(1-a)+h*a).toFixed(2)+"  ·  "+(a<.5?"this ranking":"ideal ranking"),C.rust,13)),s.push(TW(t,"cap",.5,.08,.9,"Gain 2ⁿ−1 for each grade, discounted by log2(rank + 1). Scrub to see the ideal order: the answer first.",C.ink,11.5)),s},SC.e12_b=function(e,t){var n=sm(e),r=[];return[1,1/3].forEach(function(e,a){var s=.3+.3*a,o=.55*e*n;r.push(BR(t,"rr"+a,s,.84,.14,o,0===a?C.gold:C.steel)),r.push(T(t,"rv"+a,s,.84-o-.04,e.toFixed(3),C.ink,12)),r.push(T(t,"rl"+a,s,.9,"query "+(a+1)+" · rank "+(0===a?1:3),C.ink,10.5))}),r.push(P(t,"mean",[[.12,.84-.667*.55*n],[.88,.84-.667*.55*n]],C.rust,{dash:[6,5],lw:1.5})),r.push(T(t,"mrr",.5,.2,"MRR = (1 + 1/3) / 2 = "+(.667*n).toFixed(3),C.rust,13)),r.push(TW(t,"cap",.5,.08,.9,"Reciprocal rank: 1 divided by the rank of the first right answer, averaged over questions.",C.ink,11.5)),r};var E13=[["tl",8],["tr",3],["bl",3],["br",6]];function build(e,t,n){var r=SC[e];return r?r(t,n).filter(Boolean):[]}SC.e13_a=function(e,t){var n=Math.round(20*sm(e)),r=[],a=0,s={tl:[.3,.32],tr:[.6,.32],bl:[.3,.62],br:[.6,.62]};E13.forEach(function(e){for(var o=0;o<e[1];o++){if(a<n){var i=s[e[0]][0]+.045*(o%4-1.5),u=s[e[0]][1]+.06*Math.floor(o/4);r.push(D(t,"a"+a,i,u,.03,"tl"===e[0]||"br"===e[0]?C.sage:C.rust))}a++}}),r.push(T(t,"axt",.12,.32,"judge: pass",C.steel,11)),r.push(T(t,"axb",.12,.62,"judge: fail",C.steel,11)),r.push(T(t,"axl",.3,.47,"person: pass",C.steel,11)),r.push(T(t,"axr",.6,.47,"person: fail",C.steel,11));var o=.505,i=(.7-o)/(1-o),u=sm(e);return r.push(TW(t,"rd",.88,.4,.22,"agreement "+70..toFixed(0)+"%",C.ink,12)),r.push(TW(t,"rk",.88,.5,.22,"chance "+50.5.toFixed(1)+"%",C.ink,12)),r.push(TW(t,"rkk",.88,.6,.22,"κ = "+(i*u).toFixed(2),C.rust,14)),r.push(TW(t,"cap",.5,.92,.9,"Each dot is an answer both judged. Agreement is 70%; κ takes out the agreement you would get by chance.",C.ink,11)),r},SC.e13_b=function(e,t){var n=e<.5?"A":"B",r=[];return r.push(B(t,"o1",.3,.3,.26,.14,"order 1: A shown first","",C.steel)),r.push(B(t,"o2",.3,.6,.26,.14,"order 2: B shown first","",C.steel)),r.push(B(t,"vd",.78,.45,.26,.2,"judge verdict","picks the first answer",C.mauve)),r.push(F("v1","o1","vd",.6,C.gold)),r.push(F("v2","o2","vd",.6,C.gold)),r.push(D(t,"f1",.14,.3,.03,e<.5?C.gold:C.faint)),r.push(D(t,"f2",.14,.6,.03,e<.5?C.faint:C.gold)),r.push(T(t,"fv",.78,.68,"first place wins: "+n,C.rust,12)),r.push(TW(t,"cap",.5,.08,.9,"Position bias: swap the two answers and count again. A fair judge changes its mind with the content, not the order.",C.ink,11)),r},SC.e14_a=function(e,t){var n=Math.round(10+40*e),r=[["embed query",50,C.mauve],["keyword + meaning search (parallel)",30,C.steel],["fuse",2,C.grey],["rerank "+n+" pairs",20*n,C.gold],["LLM first token",600,C.rust]],a=r.reduce(function(e,t){return e+t[1]},0),s=.86,o=[],i=.6/1800;return r.forEach(function(e,n){var r=e[1]*i;o.push(BR(t,"lt"+n,.5,s,.22,r,e[2])),o.push(D(t,"lk"+n,.2,.22+.13*n,.018,e[2])),o.push(TW(t,"ll"+n,.8,.22+.13*n,.28,e[0]+" · "+e[1]+" ms",C.ink,10.5)),s-=r}),o.push(T(t,"tt",.3,.14,"total ≈ "+a+" ms (illustrative)",C.rust,13)),o.push(TW(t,"cap",.5,.94,.9,"Illustrative timings, not measurements. Retrieval runs in parallel; reranking grows with every candidate you send it.",C.ink,11)),o},SC.e14_b=function(e,t){var n=Math.round(1+7*e),r=[],a=.86,s=.6/3030;return[["instructions",400,C.steel],["question",30,C.mauve],["passages · "+n,300*n,C.sage],["answer (output)",200,C.grey]].forEach(function(e,n){var o=e[1]*s;r.push(BR(t,"tk"+n,.5,a,.22,o,e[2])),r.push(TW(t,"tl"+n,.82,a-o/2,.3,e[0]+" · "+e[1]+" tokens",C.ink,10.5)),a-=o}),r.push(T(t,"kk",.3,.14,n+" passages ≈ "+(430+300*n+200)+" tokens per answer",C.rust,13)),r.push(TW(t,"cap",.5,.94,.9,"Every passage you add is paid for on every question. Pick k from the budget, then from the evals.",C.ink,11)),r},SC.h0_a=function(e,t){var n=[B(t,"q",.24,.2,.36,.12,"How long do I have to return an item?","a question about our shop",C.rust),B(t,"llm",.66,.32,.4,.16,"A language model","it knows public text, not our policies",C.steel),B(t,"ans",.66,.6,.4,.14,"Answer",e>.6?"a guess, or “I don’t know”":"",e>.6?C.grey:C.faint),F("ql","q","llm",.7*sm(e),C.rust),F("la","llm","ans",.7*sm(e),C.steel)];return DOCS.forEach(function(r,a){n.push(B(t,"d"+a,.22+0*a,.5+.09*a,.26,.07,SHORT[r.id],"",C.sage)),n.push(D(t,"nx"+a,.06,.5+.09*a,.02+.01*sm(e),C.faint))}),n.push(T(t,"nopath",.22,.96,"our documents: no path to the model",C.faint,11)),n.push(TW(t,"cap",.5,.92,.9,"Ask first. Your documents are not inside the model, so it has nothing to check its answer against.",C.ink,11.5)),n},SC.h0_b=function(e,t){var n=[T(t,"hx",.5,.08,"search: refund",C.rust,13),T(t,"hm",.5,.52,"search: money back",C.steel,13)];return[["D1","Refund policy",!0],["D4","Getting your money back",!1]].forEach(function(r,a){n.push(B(t,"x"+a,.5,.2+.16*a,.8,.09,r[1],"",r[2]&&e>.3?C.gold:C.grey))}),n.push(T(t,"xm",.5,.27,e>.3?"bold match: the word refund":"",C.gold,11)),n.push(B(t,"m0",.5,.64,.8,.09,"Refund policy","",C.grey)),n.push(B(t,"m1",.5,.78,.8,.09,"Getting your money back","matches the meaning, shares no word with the query",e>.6?C.sage:C.grey)),n.push(D(t,"kx",.08,.2,.03,e>.3?C.gold:C.faint)),n.push(D(t,"ks",.08,.64,.03,e>.6?C.sage:C.faint)),n.push(D(t,"ks2",.08,.78,.03,e>.6?C.sage:C.faint)),n.push(TW(t,"cap",.5,.93,.9,"Exact match finds the letters. Meaning finds the answer even when the words differ.",C.ink,11.5)),n},driveActs(ACT_IDS.map(function(e){var t=document.getElementById(e);return{el:t,stage:MarkStage(t.querySelector("canvas"),build)}}));
+</script>
+<p class="loopingly-credit" style="text-align:center;font:12px/1.5 system-ui,sans-serif;color:#7a7a8c;margin:28px 0 12px"><a href="https://www.loopingly.com/" style="color:inherit">Loopingly</a> · Ritesh Modi · interactive explainers on how AI works</p>
+</body>
+</html>

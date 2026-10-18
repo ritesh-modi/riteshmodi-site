@@ -229,6 +229,18 @@ EXPLORABLES = {
         short="Resize retrieval chunks until they ruin the answer, then find each system's scar.",
         about="Generative AI systems in production"),
 
+    "rag-essay": dict(
+        desc="Scroll RAG from scratch: watch keyword search miss a paraphrase, vectors find it, "
+             "and hybrid search and a reranker reorder real help articles.",
+        short="Scroll RAG from scratch: keyword search, vectors, chunking, hybrid search and reranking.",
+        about="Retrieval-augmented generation: keyword search, BM25, embeddings, chunking, hybrid search and reranking"),
+
+    "rag-lab": dict(
+        desc="Drop in your own documents and build RAG in the browser: chunk them, index as text or vectors, "
+             "search, rerank, and score recall@k and MRR.",
+        short="Build RAG on your own documents in the browser, then measure it with recall@k and MRR.",
+        about="Hands-on retrieval-augmented generation lab: chunking, indexing, retrieval, reranking and evaluation"),
+
     "python-asyncio-1": dict(
         desc="Scroll asyncio from the OS up: watch one cook run three pots, a selector pull ready mail, "
              "a generator pause on its tape, and the event loop turn its dial.",
@@ -580,6 +592,10 @@ KEYWORDS = {
                          "what is a learning rate", "how does model training work"],
     "how-twenty-companies-run-generative-ai": ["generative AI in production", "real world LLM examples", "how companies use generative AI",
                                                "LLM production architecture", "retrieval chunk size"],
+    "rag-essay": ["what is RAG", "how does RAG work", "retrieval augmented generation explained", "BM25 vs vector search",
+                  "hybrid search explained", "RAG chunking explained", "what is a reranker"],
+    "rag-lab": ["RAG hands-on lab", "build RAG in the browser", "RAG chunking strategies compared", "evaluate RAG recall@k MRR",
+                "keyword vs vector vs hybrid search", "PageIndex vs vector RAG"],
     "python-asyncio-1": ["how does asyncio work", "python asyncio explained", "what is the asyncio event loop",
                          "asyncio vs threads", "python coroutines explained", "asyncio future vs task", "yield from vs await"],
     "hnsw-how-it-works": ["what is HNSW", "how does HNSW work", "HNSW explained", "how do vector databases search",
